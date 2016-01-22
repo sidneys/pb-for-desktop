@@ -1,0 +1,57 @@
+os:
+  - osx
+
+osx_image: xcode7.3
+
+sudo: required
+
+language: c
+
+branches:
+  only:
+    - release
+
+git:
+  depth: 5
+
+env:
+   - ARTIFACTS_DIRECTORY="build/release/"
+
+cache:
+  directories:
+    - "$HOME/.electron"
+    - "./node_modules"
+    - "./build/tools-cache"
+
+before_install:
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR=$HOME/.nvm sh
+  - source $HOME/.nvm/nvm.sh
+  - command -v nvm
+  - nvm install 6.5.0
+  - nvm use 6.5.0
+  - rvm use ruby-2.0.0-p648
+
+install:
+  - brew update || true
+  - brew install dpkg fakeroot || true
+  - dpkg --version; fakeroot -v
+
+before_script:
+  - npm install
+  - npm prune
+
+script:
+  - npm run build darwin
+  - npm run build linux
+
+after_success:
+  - echo "Deploying artifacts from $ARTIFACTS_DIRECTORY"
+  - npm run-script deploy-github
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/24d905038aa07dda37df
+    on_success: change
+    on_failure: always
+    on_start: never

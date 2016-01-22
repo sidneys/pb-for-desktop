@@ -1,0 +1,104 @@
+{
+  "name": "pb-for-desktop",
+  "productName": "PB for Desktop",
+  "version": "1.9.99",
+  "description": "PB for Desktop is a lightweight Pushbullet client for macOS, Windows and Linux.",
+  "license": "MIT",
+  "homepage": "https://sidneys.github.io/pb-for-desktop",
+  "author": {
+    "name": "sidneys",
+    "url": "https://github.com/sidneys"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sidneys/pb-for-desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sidneys/pb-for-desktop/issues"
+  },
+  "os": [
+    "darwin",
+    "win32",
+    "linux"
+  ],
+  "keywords": [
+    "pushbullet",
+    "pushes",
+    "notification",
+    "chrome",
+    "desktop",
+    "electron",
+    "mac",
+    "macos",
+    "osx",
+    "windows",
+    "linux",
+    "ubuntu",
+    "native",
+    "pushover"
+  ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "preferGlobal": true,
+  "scripts": {
+    "start": "./node_modules/.bin/electron ./app/main.js",
+    "build": "node ./lib/build.js -- ",
+    "cache-get": "source ./shell/deploy-bintray.sh && ecd_cache_get && ecd_cache_install",
+    "cache-put": "source ./shell/deploy-bintray.sh && ecd_cache_pack && ecd_cache_put",
+    "deploy-bintray": "source ./shell/deploy-bintray.sh && ecd_app_deploy ./build/release/*.zip",
+    "deploy-github": "node ./lib/deploy-github.js -- ",
+    "darwin-install-start": "sh ./shell/darwin-install-start.sh",
+    "darwin-start": "sh ./shell/darwin-start.sh"
+  },
+  "main": "./app/main.js",
+  "bin": {
+    "pb-for-desktop": "./bin/cli.js"
+  },
+  "dependencies": {
+    "appdirectory": "^0.1.0",
+    "chalk": "^1.1.3",
+    "electron-editor-context-menu": "^1.1.1",
+    "electron-packager": "^8.0.0",
+    "electron-prebuilt": "^1.3.5",
+    "electron-settings": "^2.2.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "file-url": "^1.1.0",
+    "fs.extra": "^1.3.2",
+    "glob": "^7.0.6",
+    "keypath": "^0.0.1",
+    "lodash": "^4.15.0",
+    "mime": "^1.3.4",
+    "minimist": "^1.2.0",
+    "node-native-zip": "latest",
+    "progress": "^1.1.8",
+    "publish-release": "^1.3.2",
+    "rimraf": "^2.5.4",
+    "string-format-obj": "^1.1.0"
+  },
+  "devDependencies": {
+    "node-inspector": "^0.12.8"
+  },
+  "optionalDependencies": {
+    "appdmg": "^0.4.5",
+    "electron-installer-debian": "^0.3.1",
+    "electron-winstaller": "^2.3.4"
+  },
+  "build": {
+    "electronVersion": "1.3.5",
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "productName": "PB for Desktop",
+    "productDescription": "PB for Desktop is a lightweight Pushbullet client for macOS, Windows and Linux.",
+    "productVersion": "1.9.99",
+    "id": "de.sidneys.pb-for-desktop",
+    "company": "sidneys.github.io",
+    "category": "public.app-category.utilities",
+    "directoryBuild": "build",
+    "directoryIcons": "icons",
+    "iconUrl": "https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/icons/win32/icon-app.ico"
+  }
+}
