@@ -1,0 +1,2 @@
+#!/bin/bash
+electron-packager . Pushbullet-Electron --platform=linux --arch=x64 --version=0.36.4 --overwrite=true --asar=false --app_version=0.0.1 --appname=Pushbullet-Electron --out=releases --overwrite=true --icon=images/app.png
