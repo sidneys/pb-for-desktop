@@ -1,0 +1,20 @@
+# Default
+logs
+*.log
+tmp
+.DS_Store
+
+# Cache
+.cache
+cache
+
+# Build
+build
+releases
+
+# Node
+node_modules/*
+jspm_packages
+
+# IDE
+.idea
