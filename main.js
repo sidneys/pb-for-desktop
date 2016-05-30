@@ -1,7 +1,7 @@
 'use strict';
 
 // Change these to customize the app
-var url = 'http://pushbullet.com';
+var url = 'file://' + __dirname + '/index.html';
 var height = 650;
 var width = 1000;
 
@@ -22,15 +22,14 @@ var isQuitting = false;
 var unreadNotification = false;
 
 function createMainWindow() {
-  var win = new electron.BrowserWindow({
+  var win = new browserWindow({
     title: appName,
     show: false,
     height: height,
     width: width,
     icon: appIcon,
     webPreferences: {
-      nodeIntegration: false, // fails without this because of CommonJS script detection
-      preload: path.join(__dirname, 'js', 'browser.js')
+      nodeIntegration: true
     }
   });
 
@@ -53,12 +52,6 @@ function createMainWindow() {
   return win;
 }
 
-function showAndCenter(win) {
-  center(win);
-  win.show();
-  win.focus();
-}
-
 function center(win) {
   var electronScreen = electron.screen;
   var size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -67,8 +60,15 @@ function center(win) {
   win.setPosition(x, y);
 }
 
+function showAndCenter(win) {
+  center(win);
+  win.show();
+  win.focus();
+}
+
+
 app.on('window-all-closed', () => {
-  if (process.platform != 'darwin') {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
