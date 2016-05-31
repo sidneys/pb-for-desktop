@@ -20,7 +20,8 @@
         "node": ">=6.0.0"
     },    
     "scripts": {
-        "debug": "electron ."
+        "debug": "electron .",
+        "build-darwin": "electron-packager . 'PushbulletDesktop' --platform=darwin --arch=x64 --version=1.2.0 --prune --asar --out=./build/darwin --overwrite --app-version=1.0.0 --build-version=1 --icon=./images/icon-app.icns --app-bundle-id=de.sidneys.PushbulletDesktop  --app-category-type=public.app-category.utilities" 
     },
     "keywords": [ "input", "hid", "keyboard" ],
     "dependencies": {
