@@ -15,6 +15,8 @@ var appName = app.getName();
 var browserWindow = electron.BrowserWindow;
 var appIcon = path.join(__dirname, 'images', 'app.png');
 var appIconEvent = path.join(__dirname, 'images', 'app_event.png');
+var trayIcon = path.join(__dirname, 'images', 'tray.png');
+var trayIconEvent = path.join(__dirname, 'images', 'tray_event.png');
 var ipc = electron.ipcMain;
 var mainWindow;
 var sysTray;
@@ -38,7 +40,7 @@ function createMainWindow() {
   win.on('focus', e => {
     if (unreadNotification) {
       unreadNotification = false;
-      sysTray.setImage(appIcon);
+      sysTray.setImage(trayIcon);
     }
   });
 
@@ -101,7 +103,7 @@ if (shouldQuit) {
 }
 
 app.on('ready', () => {
-  sysTray = new tray(appIcon);
+  sysTray = new tray(trayIcon);
   var contextMenu = menu.buildFromTemplate([
     { label: 'Show', click: function() { showAndCenter(mainWindow); } },
     { label: 'Quit', click: function() { app.quit(); } }
@@ -138,7 +140,7 @@ app.on('before-quit', () => {
 ipc.on('change-icon', () => {
   if (!unreadNotification) {
     unreadNotification = true;
-    sysTray.setImage(appIconEvent);
+    sysTray.setImage(trayIconEvent);
   }
 });
 
