@@ -55,16 +55,71 @@ var getIconForPushbulletPush = function(push) {
 };
 
 
-Notification = function(title, options) {
-  var notification = new NativeNotification(title, options);
+Notification = function(pushTitle, push) {
 
-  ipc.send('change-icon');
+    //console.debug('pushTitle',pushTitle, 'push', push);
 
-  notification.addEventListener('click', () => {
-    ipc.send('notification-click');
-  });
+    /**
+     * @constant
+     * @default
+     */
+    var DEFAULT_TITLE = null;
+    var DEFAULT_BODY = null;
+    var DEFAULT_URL = null;
+    var DEFAULT_ICON = null;
 
-  return notification;
+    var pushType = push.type;
+
+    // Populate fields for Pushbullet push types (note, link, file)
+    var title = push['title'] || push['body'] || DEFAULT_TITLE,
+        body =  push['body'] || push['title'] || DEFAULT_BODY,
+        url = DEFAULT_URL,
+        icon = getIconForPushbulletPush(push) || DEFAULT_ICON;
+
+    switch (pushType) {
+        case 'link':
+            title = title || push['url'];
+            body = body || push['url'];
+            url = push['url'];
+            break;
+        case 'note':
+            body = push['body'] || push['title'];
+            break;
+        case 'file':
+            title = title || push['file_name'];
+            body = body || push['file_type'];
+            url = push['file_url'];
+            icon = push['image_url'] || icon;
+            break;
+    }
+
+    // Prepare options for native notification
+    var options = {
+        title: title,
+        body: body,
+        icon: icon,
+        url: url
+    };
+
+    // Remove field duplicates
+    if (options.title === options.body) {
+        delete options.body;
+    }
+
+    // Trigger native notification
+    var notification = new NativeNotification(options.title, options);
+
+    // Register event handlers for main renderer
+    ipc.send('change-icon');
+
+    notification.addEventListener('click', () => {
+        ipc.send('notification-click', options);
+    });
+
+    // Error handler
+    //ipc.send('dialog-error', 'FAILED HARD!');
+
+    return notification;
 };
 
 Notification.prototype = NativeNotification.prototype;
