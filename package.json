@@ -1,5 +1,35 @@
 {
-  "name": "Pushbullet-Electron",
-  "version": "0.0.1",
-  "main": "main.js"
+    "name": "pushbullet-desktop",
+    "version": "0.0.2",
+    "description": "Pushbullet Desktop Client",
+    "license": "MIT",
+    "main": "main.js",
+    "author": {
+        "name": "sidneys",
+        "url" : "http://sidneys.github.io/pushbullet-desktop"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/sidneys/pushbullet-desktop.git"
+    },
+    "bugs": {
+        "url": "https://github.com/sidneys/pushbullet-desktop/issues"
+    },
+    "homepage": "http://sidneys.github.io/pushbullet-desktop",
+    "engines": {
+        "node": ">=6.0.0"
+    },    
+    "scripts": {
+        "debug": "electron ."
+    },
+    "keywords": [ "input", "hid", "keyboard" ],
+    "dependencies": {
+        "electron-packager": "^7.0.2"
+    },
+    "devDependencies": {
+        "electron-debug": "^1.0.0",
+        "mocha": "^2.4.5",
+        "mocha-better-spec-reporter": "^3.0.2",
+        "should": "^8.3.1"
+    }
 }
