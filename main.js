@@ -66,6 +66,21 @@ function showAndCenter(win) {
   win.focus();
 }
 
+function showError(message) {
+  var electronDialog = electron.dialog;
+  var options = {
+    type: 'warning',
+    icon: appIcon,
+    buttons: ['Dismiss'],
+    defaultId: 0,
+    title: 'Error',
+    message: 'Error',
+    detail: message
+  };
+
+  electronDialog.showMessageBox(options);
+}
+
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -127,6 +142,14 @@ ipc.on('change-icon', () => {
   }
 });
 
-ipc.on('notification-click', () => {
+ipc.on('notification-click', (event, options) => {
+  var url = options.url;
+  if (url) {
+    return electron.shell.openExternal(url);
+  }
   showAndCenter(mainWindow);
+});
+
+ipc.on('dialog-error', (event, message) => {
+  showError(message.toString());
 });
