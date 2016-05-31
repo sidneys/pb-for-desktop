@@ -70,3 +70,30 @@ Notification = function(title, options) {
 Notification.prototype = NativeNotification.prototype;
 Notification.permission = NativeNotification.permission;
 Notification.requestPermission = NativeNotification.requestPermission.bind(Notification);
+
+window.register = function() {
+    var pbOnmessage = window.pb.ws.socket.onmessage;
+
+    window.pb.ws.socket.onmessage = function() {
+        window.pb.net.get('/v2/everything', {
+            modified_after: window.pb.db.get('modified_after')
+        }, function(result) {
+            //console.debug('result', result);
+            var lastPush = result.pushes[0];
+            if (lastPush) {
+                return new Notification(null, lastPush);
+            }
+        });
+        return pbOnmessage.apply(pbOnmessage, arguments);
+    };
+};
+
+window.onload = function() {
+    window.register();
+    window.pb.ws.socket.onerror = function() {
+        window.set_timeout(10000, function() {
+            window.pb.api.listen_for_pushes();
+            window.register();
+      });
+    };
+};
