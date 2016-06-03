@@ -1,7 +1,9 @@
 'use strict';
 
-var ipc = require('electron').ipcRenderer;
-var NativeNotification = Notification;
+const { ipcRenderer }  = require('electron');
+
+let NativeNotification = Notification;
+
 
 /**
  * @description Resolves a Pushbullet Push object to an image URL.
@@ -57,8 +59,6 @@ var getIconForPushbulletPush = function(push) {
 
 Notification = function(pushTitle, push) {
 
-    //console.debug('pushTitle',pushTitle, 'push', push);
-
     /**
      * @constant
      * @default
@@ -72,7 +72,7 @@ Notification = function(pushTitle, push) {
 
     // Populate fields for Pushbullet push types (note, link, file)
     var title = push['title'] || push['body'] || DEFAULT_TITLE,
-        body =  push['body'] || push['title'] || DEFAULT_BODY,
+        body = push['body'] || push['title'] || DEFAULT_BODY,
         url = DEFAULT_URL,
         icon = getIconForPushbulletPush(push) || DEFAULT_ICON;
 
@@ -93,7 +93,7 @@ Notification = function(pushTitle, push) {
             break;
     }
 
-    // Prepare options for native notification
+    // Options for native notification
     var options = {
         title: title,
         body: body,
@@ -101,23 +101,15 @@ Notification = function(pushTitle, push) {
         url: url
     };
 
-    // Remove field duplicates
-    if (options.title === options.body) {
-        delete options.body;
-    }
-
     // Trigger native notification
     var notification = new NativeNotification(options.title, options);
 
     // Register event handlers for main renderer
-    ipc.send('change-icon');
+    ipcRenderer.send('notification-received');
 
     notification.addEventListener('click', () => {
-        ipc.send('notification-click', options);
+        ipcRenderer.send('notification-click', options);
     });
-
-    // Error handler
-    //ipc.send('dialog-error', 'FAILED HARD!');
 
     return notification;
 };
@@ -126,29 +118,84 @@ Notification.prototype = NativeNotification.prototype;
 Notification.permission = NativeNotification.permission;
 Notification.requestPermission = NativeNotification.requestPermission.bind(Notification);
 
-window.register = function() {
+/**
+ * Pushbullet API
+ * @external window.pb
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String|String}
+ */
+
+/**
+ * Requests updated Push messages by jerry-rigging into Pushbullet's web app API instance (window.pb.api).
+ * Keeps reference to the current state by locally storing the most current Push objects 'modified' parameter.
+ * @see {@link https://docs.pushbullet.com/#list-pushes}     {@link https://docs.pushbullet.com/#list-pushes|Pushbullet API}
+ * @see Pushbullet API
+ */
+window.requestPushbulletPushes = function() {
+    console.log('Requesting Pushes after: ', window.settings.notifyAfter);
+    var notifyAfter = window.settings.notifyAfter;
+
+    window.pb.net.get('/v2/pushes', {
+        modified_after: notifyAfter
+    }, function(result) {
+        var newPushes = result.pushes,
+            newestPush = newPushes[0];
+
+        console.log('Newest Push', JSON.stringify(newestPush, null, 3));
+
+        if (newPushes.length === 0) {
+            console.log('Nothing to do.');
+            return true;
+        }
+
+        window.settings.notifyAfter = notifyAfter = newestPush.modified;
+        ipcRenderer.send('settings-set', 'notifyAfter', notifyAfter);
+
+        newPushes.forEach(function(value) {
+            return new Notification(null, value);
+        });
+
+        console.log('Updated notifyAfter', window.settings.notifyAfter);
+    });
+};
+
+/**
+ * Extend the Pushbullet WebSocket onmessage handler, injecting our request logic {@link requestPushbulletPushes}.
+ * This enables us to hook into all API-related content update events in real time.
+ */
+window.extendSocketMessageHandler = function() {
     var pbOnmessage = window.pb.ws.socket.onmessage;
 
     window.pb.ws.socket.onmessage = function() {
-        window.pb.net.get('/v2/everything', {
-            modified_after: window.pb.db.get('modified_after')
-        }, function(result) {
-            //console.debug('result', result);
-            var lastPush = result.pushes[0];
-            if (lastPush) {
-                return new Notification(null, lastPush);
-            }
-        });
+        window.requestPushbulletPushes();
         return pbOnmessage.apply(pbOnmessage, arguments);
     };
 };
 
-window.onload = function() {
-    window.register();
+/**
+ * Replaces the WebSocket onerror handler.
+ * Required in order to prevent overrides of our onmessage handler hook.
+ */
+window.extendSocketErrorHandler = function() {
     window.pb.ws.socket.onerror = function() {
-        window.set_timeout(10000, function() {
-            window.pb.api.listen_for_pushes();
+        setTimeout(function() {
+            window.pb.api['listen_for_pushes']();
             window.register();
-      });
+        }, 10000);
     };
+};
+
+window.settings = {};
+
+/**
+ * Inject Pushbullet API hooks on webview page load
+ */
+window.onload = function() {
+    ipcRenderer.send('settings-get');
+
+    ipcRenderer.on('settings-get-reply', (event, result) => {
+        window.settings = result;
+        window.extendSocketMessageHandler();
+
+        console.log('[settings-get-reply]', 'result', result);
+    });
 };
