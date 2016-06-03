@@ -1,6 +1,6 @@
 {
     "name": "pushbullet-desktop",
-    "version": "0.6.3",
+    "version": "0.8.0",
     "description": "'Pushbullet for Desktop' is a lightweight Pushbullet Client for OS X, Windows & Linux, providing cross-platform native system notifications in an unobstrusive way.",
     "license": "MIT",
     "main": "index.js",
@@ -16,7 +16,9 @@
         "url": "https://github.com/sidneys/pushbullet-desktop/issues"
     },
     "homepage": "http://sidneys.github.io/pushbullet-desktop",
-    "keywords": [ "Pushbullet, Push, Notifications, Desktop, native, Electron, node, npm, Chromium, Mac, Windows, Windows 10, Linux,  Pushover" ],
+    "keywords": [
+        "Pushbullet, Push, Notifications, Desktop, native, Electron, node, npm, Chromium, Mac, Windows, Windows 10, Linux,  Pushover"
+    ],
     "engines": {
         "node": ">=6.0.0"
     },
@@ -30,15 +32,18 @@
         "lodash": "^4.13.1"
     },
     "devDependencies": {
+        "appdmg": "^0.4.5",
         "electron-builder": "^4.2.0",
         "electron-debug": "^1.0.0",
         "electron-packager": "^7.0.3",
         "electron-prebuilt": "^1.2.0"
     },
     "build": {
-        "platform": "all",
-        "folder": "./build",
-        "name": "Pushbullet for Desktop",
+        "platform": [
+            "darwin", "win32", "linux"
+        ],
+        "directory": "./build",
+        "productName": "Pushbullet for Desktop",
         "id": "de.sidneys.pushbullet-desktop",
         "electron": "1.2.1",
         "number": 1,
