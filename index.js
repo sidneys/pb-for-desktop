@@ -7,6 +7,8 @@ const path = require('path'),
     storage = require('electron-json-storage'),
     _ = require('lodash');
 
+const platform = require('./app/scripts/platform');
+
 const DEFAULT_WIDTH = 1024,
     DEFAULT_HEIGHT = 700;
 
@@ -20,13 +22,12 @@ let mainWindow,
 let appUrl = 'file://' + __dirname + '/app/index.html',
     appName = app.getName();
 
-let appIconSuffix = { darwin: '.icns', linux: '.png', win32: '.ico' },
-    appIcon = path.join(__dirname, 'icons', process.platform, 'app-icon' + appIconSuffix[process.platform]);
+let appIcon = path.join(__dirname, 'icons', platform.type, 'app-icon' + platform.icon(platform.type));
 
-let trayIconSuffix = { darwin: 'Template.png', linux: '.png', win32: '.png' },
-    trayIconDefault = path.join(__dirname, 'icons', process.platform, 'icon-tray' + trayIconSuffix[process.platform]),
-    trayIconActive = path.join(__dirname, 'icons', process.platform, 'icon-tray-active' + trayIconSuffix[process.platform]),
-    trayIconInverted = path.join(__dirname, 'icons', process.platform, 'icon-tray-inverted' + trayIconSuffix[process.platform]);
+let trayIconDefault = path.join(__dirname, 'icons', platform.type, 'icon-tray' + platform.image(platform.type)),
+    trayIconActive = path.join(__dirname, 'icons', platform.type, 'icon-tray-active' + platform.image(platform.type));
+
+
 
 var settingsStore = storage,
     settingsDefault = {
@@ -56,9 +57,17 @@ var handleError = function(message) {
  */
 var setupDock = function(doShow) {
     if (doShow === true) {
-        app.dock.show();
+        if (platform.isOSX) {
+            app.dock.show();
+        } else {
+            mainWindow.show();
+        }
     } else {
-        app.dock.hide();
+        if (platform.isOSX) {
+            app.dock.hide();
+        } else {
+            mainWindow.hide();
+        }
     }
     settings.dock = doShow;
 };
@@ -192,7 +201,7 @@ app.on('activate', () => {
 app.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (platform.type !== 'darwin') {
         app.quit();
     }
 });
@@ -213,12 +222,11 @@ app.on('ready', function() {
         // Init Tray
         sysTray = new Tray(trayIconDefault);
         sysTray.setImage(trayIconDefault);
-        sysTray.setPressedImage(trayIconInverted);
         sysTray.setToolTip(appName);
         sysTray.setContextMenu(Menu.buildFromTemplate([
-            { label: 'Show', click() { mainWindow.show(); } },
+            { label: 'Open', click() { mainWindow.show(); } },
             { type: 'separator' },
-            { label: 'Show Dock', type: 'checkbox', checked: settings.dock, click() { toggleDock(); } },
+            { label: 'Hide Application Window', type: 'checkbox', checked: !settings.dock, click() { toggleDock(); } },
             { label: 'Quit', click() { app.quit(); } }
         ]));
 
@@ -231,7 +239,7 @@ app.on('ready', function() {
         mainWindow.loadURL(appUrl);
 
         // Emitted when the window is closed.
-        mainWindow.on('closed', function() {
+        mainWindow.on('closed', () => {
             // Dereference the window object, usually you would store windows
             // in an array if your app supports multi windows, this is the time
             // when you should delete the corresponding element.
@@ -242,18 +250,17 @@ app.on('ready', function() {
             sysTray.setImage(trayIconDefault);
         });
 
-        mainWindow.on('close', e => {
+        mainWindow.on('close', ev => {
             if (mainWindow.forceClose) {
                 return;
             }
-            e.preventDefault();
+            ev.preventDefault();
             mainWindow.hide();
         });
 
         mainPage = mainWindow.webContents;
 
         mainPage.on('dom-ready', () => {
-
             mainWindow.show();
             mainWindow.center();
         });

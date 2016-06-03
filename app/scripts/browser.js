@@ -2,7 +2,7 @@
 
 const { ipcRenderer }  = require('electron');
 
-let NativeNotification = Notification;
+let OriginalNotification = Notification;
 
 
 /**
@@ -102,7 +102,7 @@ Notification = function(pushTitle, push) {
     };
 
     // Trigger native notification
-    var notification = new NativeNotification(options.title, options);
+    var notification = new OriginalNotification(options.title, options);
 
     // Register event handlers for main renderer
     ipcRenderer.send('notification-received');
@@ -114,9 +114,9 @@ Notification = function(pushTitle, push) {
     return notification;
 };
 
-Notification.prototype = NativeNotification.prototype;
-Notification.permission = NativeNotification.permission;
-Notification.requestPermission = NativeNotification.requestPermission.bind(Notification);
+Notification.prototype = OriginalNotification.prototype;
+Notification.permission = OriginalNotification.permission;
+Notification.requestPermission = OriginalNotification.requestPermission.bind(Notification);
 
 /**
  * Pushbullet API

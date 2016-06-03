@@ -1,7 +1,7 @@
 {
     "name": "pushbullet-desktop",
-    "version": "0.5.0",
-    "description": "Pushbullet for Desktop",
+    "version": "0.6.0",
+    "description": "'Pushbullet for Desktop' is a lightweight Pushbullet Client for OS X, Windows & Linux, providing cross-platform native system notifications in an unobstrusive way.",
     "license": "MIT",
     "main": "index.js",
     "author": {
@@ -16,24 +16,32 @@
         "url": "https://github.com/sidneys/pushbullet-desktop/issues"
     },
     "homepage": "http://sidneys.github.io/pushbullet-desktop",
+    "keywords": [ "Pushbullet, Push, Notifications, Desktop, native, Electron, node, npm, Chromium, Mac, Windows, Windows 10, Linux,  Pushover" ],
     "engines": {
         "node": ">=6.0.0"
     },
     "scripts": {
         "debug": "electron .",
-        "build": "electron-packager . 'Pushbullet for Desktop' --overwrite --platform=darwin --arch=x64 --version=1.2.1 --prune --asar --out=./build/darwin --app-version=0.5.0 --build-version=1 --icon=./icons/darwin/app-icon.icns --app-bundle-id=de.sidneys.pushbullet-desktop  --app-category-type=public.app-category.utilities"
+        "build": "node build.js -- "
     },
     "dependencies": {
-        "electron-builder": "^4.2.0",
+        "electron": "^0.4.1",
         "electron-json-storage": "^2.0.0",
         "lodash": "^4.13.1"
     },
     "devDependencies": {
-        "electron": "^0.4.1",
+        "electron-builder": "^4.2.0",
         "electron-debug": "^1.0.0",
-        "electron-prebuilt": "^1.2.0",
-        "mocha": "^2.4.5",
-        "mocha-better-spec-reporter": "^3.0.2",
-        "should": "^9.0.0"
+        "electron-packager": "^7.0.3",
+        "electron-prebuilt": "^1.2.0"
+    },
+    "build": {
+        "platform": "all",
+        "folder": "./build",
+        "name": "Pushbullet for Desktop",
+        "id": "de.sidneys.pushbullet-desktop",
+        "electron": "1.2.1",
+        "number": 1,
+        "category": "public.app-category.utilities"
     }
 }
