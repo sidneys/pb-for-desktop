@@ -1,7 +1,16 @@
 'use strict';
 
-const { ipcRenderer }  = require('electron');
+/**
+ * Modules
+ * External
+ */
+const { ipcRenderer }  = require('electron'),
+    remote = require('electron').remote,
+    buildEditorContextMenu = remote.require('electron-editor-context-menu');
 
+/**
+ * Notification Reference
+ */
 let OriginalNotification = Notification;
 
 
@@ -74,7 +83,8 @@ Notification = function(pushTitle, push) {
     var title = push['title'] || push['body'] || DEFAULT_TITLE,
         body = push['body'] || push['title'] || DEFAULT_BODY,
         url = DEFAULT_URL,
-        icon = getIconForPushbulletPush(push) || DEFAULT_ICON;
+        icon = getIconForPushbulletPush(push) || DEFAULT_ICON,
+        iden = push['iden'];
 
     switch (pushType) {
         case 'link':
@@ -98,8 +108,10 @@ Notification = function(pushTitle, push) {
         title: title,
         body: body,
         icon: icon,
-        url: url
+        url: url,
+        tag: iden
     };
+
 
     // Trigger native notification
     var notification = new OriginalNotification(options.title, options);
@@ -138,16 +150,16 @@ window.requestPushbulletPushes = function() {
         modified_after: notifyAfter
     }, function(result) {
         var newPushes = result.pushes,
-            newestPush = newPushes[0];
+            lastPush = newPushes[0];
 
-        console.log('Newest Push', JSON.stringify(newestPush, null, 3));
+        console.log('Newest Push', JSON.stringify(lastPush, null, 3));
 
         if (newPushes.length === 0) {
             console.log('Nothing to do.');
             return true;
         }
 
-        window.settings.notifyAfter = notifyAfter = newestPush.modified;
+        window.settings.notifyAfter = notifyAfter = lastPush.modified;
         ipcRenderer.send('settings-set', 'notifyAfter', notifyAfter);
 
         newPushes.forEach(function(value) {
@@ -163,11 +175,11 @@ window.requestPushbulletPushes = function() {
  * This enables us to hook into all API-related content update events in real time.
  */
 window.extendSocketMessageHandler = function() {
-    var pbOnmessage = window.pb.ws.socket.onmessage;
+    var originalSocketMessageHandler = window.pb.ws.socket.onmessage;
 
     window.pb.ws.socket.onmessage = function() {
         window.requestPushbulletPushes();
-        return pbOnmessage.apply(pbOnmessage, arguments);
+        return originalSocketMessageHandler.apply(originalSocketMessageHandler, arguments);
     };
 };
 
@@ -179,7 +191,7 @@ window.extendSocketErrorHandler = function() {
     window.pb.ws.socket.onerror = function() {
         setTimeout(function() {
             window.pb.api['listen_for_pushes']();
-            window.register();
+            window.extendSocketMessageHandler();
         }, 10000);
     };
 };
