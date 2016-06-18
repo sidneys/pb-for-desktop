@@ -4,27 +4,33 @@
  * Modules
  * External
  */
-const packager = require('electron-packager'),
-    fs = require('fs'),
-    appdmg = require('appdmg'),
-    path = require('path');
+const fs = require('fs'),
+    path = require('path'),
+    mkdirp = require('mkdirp'),
+    rimraf = require('rimraf'),
+    archiver = require('archiver'),
+    builder = require('electron-packager'),
+    darwinInstaller = require('appdmg'),
+    windowsInstaller = require('electron-winstaller');
 
 
 /**
  * Modules
+ * Internal
  */
 const packageJson = require('./package.json'),
     platform = require('./app/scripts/platform');
 
 
 /**
- * Options for Packager
+ * Options for electron-packager
  */
-let getOptions = function(targetPlatform) {
+let createBuildOptions = function(targetPlatform) {
     return {
         'dir': path.join(__dirname),
-        'out': path.join(__dirname, packageJson.build.directory),
+        'out': path.join(__dirname, packageJson.build.directoryStaging),
         'icon': path.join(__dirname, 'icons', targetPlatform, 'app-icon' + platform.icon(targetPlatform)),
+        'iconUrl': packageJson.build.iconUrl,
         'platform': targetPlatform,
         'arch': 'all',
         'prune': true,
@@ -35,85 +41,259 @@ let getOptions = function(targetPlatform) {
         'app-version': packageJson.version,
         'build-version': packageJson.build.number,
         'app-bundle-id': packageJson.build.id,
+        'app-company': packageJson.build.company,
         'app-category-type': packageJson.build.category,
         'helper-bundle-id': packageJson.build.id + '.helper',
         'app-copyright': 'Copyright © ' + new Date().getFullYear(),
         'version-string': {
-            'FileDescription': packageJson.description
-        }
+            'FileDescription': packageJson.build.productDescription
+        },
+        'description': packageJson.build.productDescription,
+        'ignore': [
+            path.basename(packageJson.build.directoryStaging),
+            path.basename(packageJson.build.directoryRelease),
+            targetPlatform !== 'darwin' ? '/icons/darwin($|/)' : null,
+            targetPlatform !== 'win32' ? '/icons/win32($|/)' : null,
+            targetPlatform !== 'linux' ? '/icons/linux($|/)' : null,
+            '/resources($|/)',
+            'build.js',
+            '.md',
+            '.log',
+            '/\\.DS_Store($|/)', '/\\.editorconfig($|/)', '/\\.gitignore($|/)', '/\\.idea($|/)', '/\\.jscsrc($|/)', '/\\.jshintrc($|/)', '/\\.npmignore($|/)'
+        ]
     };
 };
+
+
+/**
+ * Logger
+ */
+let log = function() {
+    var args = Array.from(arguments);
+
+    var title = args[0],
+        text =  args.slice(1).join(' ');
+
+    console.log('\x1b[1m%s: %s\x1b[0m', title, text);
+};
+
 
 /**
  * Commandline platform override (default: build all platforms)
  * @example > npm run build darwin
  * @example > npm run build win32
  */
-let platformListCli = process.argv.slice(3);
+let platformListCli = function() {
+    return process.argv.slice(3);
+};
+
+
+/**
+ * Create files / folders
+ */
+let createOnFilesystem = function() {
+    var args = Array.from(arguments);
+    for (let value of args) {
+        mkdirp.sync(path.resolve(value));
+        //console.log('Created: %s', folder);
+    }
+};
+
+
+/**
+ * Delete files / folders
+ */
+let deleteFromFilesystem = function() {
+    var args = Array.from(arguments);
+    for (let value of args) {
+        rimraf.sync(path.resolve(value) + '/**/*');
+        //console.log('Removed: %s', folder);
+    }
+};
+
+
+/**
+ * Zip files / folders
+ */
+let moveToPackage = function(sourceFilepath, packageSuffix) {
+
+    var source = path.resolve(sourceFilepath),
+        sourceBasepath = path.dirname(source),
+        sourceGlob = fs.statSync(source).isDirectory() === true ? path.basename(source) + '/**/*' : path.basename(source),
+        targetSuffix = packageSuffix || '',
+        targetExtension = '.zip',
+        target = path.join(path.dirname(source), path.basename(source, path.extname(source))) + targetSuffix + targetExtension;
+
+    let archive = archiver('zip'),
+        output = fs.createWriteStream(target);
+
+    output.on('close', function() {
+        log('Packaging complete', target);
+        rimraf.sync(source);
+    });
+
+    archive.on('error', function(err) {
+        console.error(err);
+    });
+
+    archive.pipe(output);
+
+    // packing a directory
+    archive.bulk([
+        {
+            cwd: sourceBasepath,
+            src: sourceGlob,
+            expand: true
+        }
+    ]).finalize();
+};
+
 
 /**
  * Platform Target List
  */
 var platformList = function() {
-    if ((platformListCli !== 'undefined') && (platformListCli.length > 0)) {
-        return platformListCli;
+    if ((platformListCli() !== 'undefined') && (platformListCli().length > 0)) {
+        return platformListCli();
     }
-    return packageJson.build.platform || 'all';
+    return packageJson.build.platforms;
+};
+
+
+/**
+ * Deploy: Darwin
+ */
+var deployDarwin = function(buildArtifactList, buildOptions, platformName, deployFolder) {
+
+    buildArtifactList.forEach(function(buildArtifact) {
+
+        // Deployment: Input folder
+        var inputFolder = path.join(buildArtifact, buildOptions.name + '.app');
+
+        // Deployment: Target folder
+        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + '.dmg');
+
+        // Deployment: Options
+        var deployOptions = {
+            target: deploySubfolder,
+            basepath: '',
+            specification: {
+                'title': buildOptions.name,
+                'icon': buildOptions.icon,
+                'background': path.join(__dirname, 'icons', platformName, 'installation-background.png'),
+                'contents': [
+                    { 'x': 448, 'y': 344, 'type': 'link', 'path': '/Applications' },
+                    { 'x': 192, 'y': 344, 'type': 'file', 'path': inputFolder }
+                ]
+            }
+        };
+        //console.dir(deployOptions);
+
+        // Deployment: Subfolder
+        deleteFromFilesystem(deploySubfolder);
+
+        // Deployment: Start
+        var deployHelper = darwinInstaller(deployOptions);
+
+        // Deployment: Result
+        deployHelper.on('finish', function() {
+            moveToPackage(deploySubfolder, '-v' + buildOptions['version']);
+        });
+        deployHelper.on('error', function(err) {
+            console.error('\x1b[1mPackaging error: %s\x1b[0m\r\n', err);
+        });
+    });
+};
+
+
+/**
+ * Deploy: Windows
+ */
+var deployWindows = function(buildArtifactList, buildOptions, platformName, deployFolder) {
+
+    buildArtifactList.forEach(function(buildArtifact) {
+
+        // Deployment: Input folder
+        var inputFolder = path.join(buildArtifact);
+
+        // Deployment: Target folder
+        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase());
+
+        // Deployment: Options
+        var deployOptions = {
+            appDirectory: inputFolder,
+            outputDirectory: deploySubfolder,
+            authors: buildOptions['app-company'],
+            exe: buildOptions['name'] + '.exe',
+            title: buildOptions['name'],
+            iconUrl: buildOptions['iconUrl'],
+            setupIcon: buildOptions['icon'],
+            description: buildOptions['description']
+        };
+        //console.dir(deployOptions);
+
+        // Deployment: Subfolder
+        deleteFromFilesystem(deploySubfolder);
+        createOnFilesystem(deploySubfolder);
+
+        // Deployment: Start
+        var deployHelper = windowsInstaller.createWindowsInstaller(deployOptions);
+
+        // Deployment: Result
+        deployHelper.then(function() {
+            moveToPackage(deploySubfolder, '-v' + buildOptions['version']);
+        }, function(err) {
+            console.error('\x1b[1mPackaging error: %s\x1b[0m', err);
+        });
+    });
+};
+
+
+/**
+ * Deploy: Linux
+ */
+var deployLinux = function(buildArtifactList, buildOptions, platformName, deployFolder) {
+
+    buildArtifactList.forEach(function(buildArtifact) {
+
+
+
+    });
 };
 
 
 /**
  * Print Info
  */
-console.log('\x1b[1mProject:\x1b[0m\r\n%s (%s@%s)', packageJson.build.productName, packageJson.name, packageJson.version);
-console.log('\x1b[1mTargets:\x1b[0m\r\n%s', platformList().join('\r\n'));
+log('Project', packageJson.build.productName, packageJson.name, packageJson.version);
+log('Target Platforms', platformList());
 
 
 /**
- * Packaging
+ * Prepare Directories
  */
-var packageDarwin = function(assetLocationList, options, target) {
-    assetLocationList.forEach(function(folder) {
-        var packageFilepath = path.join(options.out, options.name + '.dmg');
-
-        try {
-            fs.unlinkSync(packageFilepath);
-            console.log('Previous package removed.');
-        } catch (err) {}
-
-        var packageHelper = appdmg({
-            target: packageFilepath,
-            basepath: '',
-            specification: {
-                'title': options.name,
-                'icon': options.icon,
-                'background': path.join(__dirname, 'icons', target, 'installation-background.png'),
-                'contents': [
-                    { 'x': 448, 'y': 344, 'type': 'link', 'path': '/Applications' },
-                    { 'x': 192, 'y': 344, 'type': 'file', 'path': path.join(folder, options.name + '.app') }
-                ]
-            }
-        });
-        packageHelper.on('finish', function() { console.log('\x1b[1mPackaging complete:\x1b[0m\r\n%s', packageFilepath); });
-        packageHelper.on('error', function(err) { console.error('\x1b[1mPackaging error:\x1b[0m\r\n%s', err); });
-    });
-};
+deleteFromFilesystem(packageJson.build.directoryStaging, packageJson.build.directoryRelease);
+createOnFilesystem(packageJson.build.directoryStaging, packageJson.build.directoryRelease);
 
 
 /**
  * Building
  */
 platformList().forEach(function(target) {
-    var options = getOptions(target);
+    var options = createBuildOptions(target);
 
-    packager(options, function(err, result) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log('\x1b[1mBuilding "%s" complete. Result:\x1b[0m\r\n%s', target, result.join('\r\n'));
+    builder(options, function(err, result) {
 
-        if (target === 'darwin') {
-            packageDarwin(result, options, target);
+        if (err) { return console.error(err); }
+
+        log('Build complete', target);
+
+        if (target.startsWith('darwin')) {
+            deployDarwin(result, options, target, packageJson.build.directoryRelease);
+        } else if (target.startsWith('win')) {
+            deployWindows(result, options, target, packageJson.build.directoryRelease);
+        } else if (target.startsWith('linux')) {
+            deployLinux(result, options, target, packageJson.build.directoryRelease);
         }
     });
 });
