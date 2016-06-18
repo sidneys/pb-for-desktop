@@ -211,3 +211,19 @@ window.onload = function() {
         console.log('[settings-get-reply]', 'result', result);
     });
 };
+
+
+/**
+ * Enable the native right-click menu in Electron.
+ */
+window.addEventListener('contextmenu', ev => {
+    if (!ev.target.closest('textarea, input, [contenteditable="true"]')) {
+        return;
+    }
+
+    var menu = buildEditorContextMenu();
+
+    setTimeout(function() {
+        menu.popup(remote.getCurrentWindow());
+    }, 30);
+});
