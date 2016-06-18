@@ -160,12 +160,18 @@ window.requestPushbulletPushes = function() {
         }
 
         window.settings.notifyAfter = notifyAfter = lastPush.modified;
+
         ipcRenderer.send('settings-set', 'notifyAfter', notifyAfter);
 
-        newPushes.forEach(function(value) {
-            return new Notification(null, value);
-        });
+        newPushes.forEach(function(push) {
+            if (push.active === true) {
+                var timer = window.setTimeout(function() {
 
+                    new Notification(null, push);
+                }, 250, this);
+                clearTimeout(timer);
+            }
+        });
         console.log('Updated notifyAfter', window.settings.notifyAfter);
     });
 };
@@ -212,11 +218,11 @@ window.onload = function() {
 
         clearInterval(interval);
         ipcRenderer.send('settings-get');
-    ipcRenderer.on('settings-get-reply', (event, result) => {
-        window.settings = result;
-        window.extendSocketMessageHandler();
-        console.log('[settings-get-reply]', 'result', result);
-    });
+        ipcRenderer.on('settings-get-reply', (event, result) => {
+            window.settings = result;
+            window.extendSocketMessageHandler();
+            console.log('[settings-get-reply]', 'result', result);
+        });
 
     }, 2000, this);
 };
