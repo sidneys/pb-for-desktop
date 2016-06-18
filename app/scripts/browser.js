@@ -202,14 +202,23 @@ window.settings = {};
  * Inject Pushbullet API hooks on webview page load
  */
 window.onload = function() {
-    ipcRenderer.send('settings-get');
+    var interval = setInterval(function() {
+        if (!(window.pb && window.pb.ws.connected)) {
+            console.info('Waiting for Pushbullet Web API Socket connection.');
+            return;
+        } else {
+            console.info('Pushbullet Web API Socket connection established.');
+        }
 
+        clearInterval(interval);
+        ipcRenderer.send('settings-get');
     ipcRenderer.on('settings-get-reply', (event, result) => {
         window.settings = result;
         window.extendSocketMessageHandler();
-
         console.log('[settings-get-reply]', 'result', result);
     });
+
+    }, 2000, this);
 };
 
 
