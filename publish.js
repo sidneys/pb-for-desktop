@@ -88,5 +88,5 @@ release.on('uploaded-asset', function(name) {
 });
 
 release.on('upload-progress', function(name, progress) {
-    log('Asset uploading', name, (progress.percentage * 100) + '%');
+    log('Asset uploading', name, Math.round(progress.percentage) + ' ' + '%');
 });
