@@ -52,8 +52,14 @@ before_script:
 
 script:
   - npm run pack --verbose
+  - npm run publish  --verbose
 
 notifications:
-  email: false
+  email:
+    - sidneys.github.io@outlook.com
   webhooks:
+    urls:
     - https://webhooks.gitter.im/e/b3225bd958673b2d9f82
+    on_success: always
+    on_failure: always
+    on_start: always

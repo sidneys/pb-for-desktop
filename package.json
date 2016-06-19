@@ -1,6 +1,6 @@
 {
   "name": "pushbullet-desktop",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "'Pushbullet for Desktop' is a lightweight Pushbullet Client for OS X, Windows & Linux, providing cross-platform native system notifications in an unobstrusive way.",
   "license": "MIT",
   "main": "index.js",
@@ -24,7 +24,8 @@
   },
   "scripts": {
     "debug": "electron .",
-    "pack": "node build.js -- "
+    "pack": "node build.js -- ",
+    "publish": "node publish.js -- "
   },
   "dependencies": {
     "electron-editor-context-menu": "^1.1.1",
@@ -41,7 +42,9 @@
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.3",
     "electron-winstaller": "^2.3.1",
+    "glob": "^7.0.4",
     "mkdirp": "^0.5.1",
+    "publish-release": "^1.3.1",
     "rimraf": "^2.5.2"
   },
   "build": {
