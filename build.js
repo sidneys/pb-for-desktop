@@ -146,7 +146,8 @@ let moveFolderToPackage = function(sourceFilepath, allowedExtension) {
     });
 
     archive.on('error', function(err) {
-        console.error(err);
+        log('Archiving error', err);
+        return process.exit(1);
     });
 
     archive.pipe(output);
@@ -207,7 +208,6 @@ var deployDarwin = function(buildArtifactList, buildOptions, platformName, deplo
                 ]
             }
         };
-        //console.dir(deployOptions);
 
         // Deployment: Subfolder
         deleteFromFilesystem(deploySubfolder);
@@ -221,7 +221,8 @@ var deployDarwin = function(buildArtifactList, buildOptions, platformName, deplo
             moveFolderToPackage(deploySubfolder, deployExtension);
         });
         deployHelper.on('error', function(err) {
-            console.error('\x1b[1mPackaging error: %s\x1b[0m\r\n', err);
+            log('Packaging error', err);
+            return process.exit(1);
         });
     });
 };
@@ -259,7 +260,6 @@ var deployWindows = function(buildArtifactList, buildOptions, platformName, depl
             setupIcon: buildOptions['icon'],
             description: buildOptions['description']
         };
-        //console.dir(deployOptions);
 
         // Deployment: Subfolder
         deleteFromFilesystem(deploySubfolder);
@@ -272,7 +272,8 @@ var deployWindows = function(buildArtifactList, buildOptions, platformName, depl
         deployHelper.then(function() {
             moveFolderToPackage(deploySubfolder, deployExtension);
         }, function(err) {
-            console.error('\x1b[1mPackaging error: %s\x1b[0m', err);
+            log('Packaging error', err);
+            return process.exit(1);
         });
     });
 };
@@ -317,7 +318,10 @@ platformList().forEach(function(target) {
 
     builder(options, function(err, result) {
 
-        if (err) { return console.error(err); }
+        if (err) {
+            log('Build error', err);
+            return process.exit(1);
+        }
 
         log('Build complete', target);
 
