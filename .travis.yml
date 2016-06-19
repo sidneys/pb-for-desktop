@@ -14,8 +14,8 @@ branches:
 before_install:
   - brew update
   - brew upgrade
-  - brew install xz --universal
-  - brew install libpng --HEAD --universal
+  - brew reinstall xz --universal
+  - brew reinstall libpng --universal
   - brew install freetype --universal
   - brew install jpeg --universal
   - brew install libtool --universal
