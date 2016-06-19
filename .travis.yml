@@ -1,45 +1,40 @@
-git:
-  depth: 10
+os:
+  - osx
+
+osx_image: xcode8
+
+sudo: required
+
+language: objective-c
 
 branches:
   only:
     - master
 
-os:
-  - osx
-
-osx_image: xcode8
-language: objective-c
-compiler: clang
-sudo: false
-
-env:
-  global:
-    - SIGN_DARWIN_KEYCHAIN_NAME=travis.keychain
-    - SIGN_DARWIN_KEYCHAIN_PASSWORD=travis
-
 before_install:
-- brew install wine --HEAD --with-libgsm --with-samba
-- brew install mono
-
-install:
+  - brew update
+  - brew upgrade
+  - brew install wine
+  - brew install mono
+  - brew install makensis
+  - gem install fpm
   - export PATH=~/bin:$PATH
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
   - source /tmp/.nvm/nvm.sh
   - nvm install 6.2.2
   - nvm use 6.2.2
-  - npm install
-  - export npm_config_target=`node -pe "require('package.json').build.electron.substring(1)"`
-  - cd src && HOME=~/.electron-gyp npm_config_disturl="https://atom.io/download/atom-shell" npm_config_arch="x64" npm_config_runtime="electron" npm install && cd ..
+
+install:
+  - npm prune --verbose
+  - npm install --verbose
 
 script:
-  - npm run-script pack --verbose
+  - npm run pack --verbose
 
 cache:
   directories:
-    - node_modules
-    - src/node_modules
-    - cache
+    - ./node_modules
+    - /usr/local/Cellar
 
 notifications:
   email: false
