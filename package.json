@@ -24,7 +24,7 @@
     },
     "scripts": {
         "debug": "electron .",
-        "build": "node build.js -- "
+        "pack": "node build.js -- "
     },
     "dependencies": {
         "electron-editor-context-menu": "^1.1.1",
@@ -35,10 +35,10 @@
         "appdmg": "^0.4.5",
         "archiver": "^1.0.0",
         "electron": "^0.4.1",
-        "electron-builder": "^5.0.2",
-        "electron-debug": "^1.0.0",
-        "electron-packager": "^7.0.3",
-        "electron-prebuilt": "^1.2.2",
+        "electron-builder": "^5.4.2",
+        "electron-debug": "^1.0.1",
+        "electron-packager": "^7.0.4",
+        "electron-prebuilt": "^1.2.3",
         "electron-winstaller": "^2.3.1",
         "mkdirp": "^0.5.1",
         "rimraf": "^2.5.2"
@@ -49,7 +49,7 @@
         "platforms": [ "darwin", "win32" ],
         "directoryStaging": "./build-staging",
         "directoryRelease": "./build-release",
-        "electron": "1.2.2",
+        "electron": "1.2.3",
         "company": "sidneys.github.io",
         "id": "de.sidneys.pushbullet-desktop",
         "number": 1,

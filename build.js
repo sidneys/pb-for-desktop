@@ -72,7 +72,7 @@ let log = function() {
     var args = Array.from(arguments);
 
     var title = args[0],
-        text =  args.slice(1).join(' ');
+        text = args.slice(1).join(' ');
 
     console.log('\x1b[1m%s: %s\x1b[0m', title, text);
 };
@@ -90,41 +90,44 @@ let platformListCli = function() {
 
 /**
  * Create files / folders
+ * @param {...*} arguments - Filesystem paths
  */
 let createOnFilesystem = function() {
     var args = Array.from(arguments);
     for (let value of args) {
         mkdirp.sync(path.resolve(value));
-        //console.log('Created: %s', folder);
+        log('Removed', path.resolve(value));
     }
 };
 
 
 /**
- * Delete files / folders
+ * Delete folders / files recursively
+ * @param {...*} arguments - Filesystem paths
  */
 let deleteFromFilesystem = function() {
     var args = Array.from(arguments);
     for (let value of args) {
         rimraf.sync(path.resolve(value) + '/**/*');
-        //console.log('Removed: %s', folder);
+        log('Removed', path.resolve(value));
     }
 };
 
 
 /**
- * Zip files / folders
+ * Zip folders
+ * @param {String} sourceFilepath - Directory to compress
+ * @param {String=} allowedExtension - Restrict inclusion to files with this extension (e.g. '.exe')
  */
-let moveToPackage = function(sourceFilepath, packageSuffix) {
+let moveFolderToPackage = function(sourceFilepath, allowedExtension) {
 
     var source = path.resolve(sourceFilepath),
         sourceBasepath = path.dirname(source),
         sourceGlob = fs.statSync(source).isDirectory() === true ? path.basename(source) + '/**/*' : path.basename(source),
-        targetSuffix = packageSuffix || '',
         targetExtension = '.zip',
-        target = path.join(path.dirname(source), path.basename(source, path.extname(source))) + targetSuffix + targetExtension;
+        target = path.join(path.dirname(source), path.basename(source)) + targetExtension;
 
-    let archive = archiver('zip'),
+    let archive = archiver('zip', {}),
         output = fs.createWriteStream(target);
 
     output.on('close', function() {
@@ -142,7 +145,7 @@ let moveToPackage = function(sourceFilepath, packageSuffix) {
     archive.bulk([
         {
             cwd: sourceBasepath,
-            src: sourceGlob,
+            src: allowedExtension ? sourceGlob + '*' + allowedExtension : sourceGlob,
             expand: true
         }
     ]).finalize();
@@ -161,7 +164,11 @@ var platformList = function() {
 
 
 /**
- * Deploy: Darwin
+ * Darwin Deployment
+ * @param {Array} buildArtifactList - Directory to compress
+ * @param {Object} buildOptions - electron-packager options object
+ * @param {String} platformName - Current Platform type
+ * @param {String} deployFolder - Deployment parent folder
  */
 var deployDarwin = function(buildArtifactList, buildOptions, platformName, deployFolder) {
 
@@ -171,15 +178,18 @@ var deployDarwin = function(buildArtifactList, buildOptions, platformName, deplo
         var inputFolder = path.join(buildArtifact, buildOptions.name + '.app');
 
         // Deployment: Target folder
-        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + '.dmg');
+        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + '-v' + buildOptions['app-version']);
+
+        // Deployment: Installer extension
+        var deployExtension = '.dmg';
 
         // Deployment: Options
         var deployOptions = {
-            target: deploySubfolder,
+            target: path.join(deploySubfolder, path.basename(deploySubfolder) + deployExtension),
             basepath: '',
             specification: {
-                'title': buildOptions.name,
-                'icon': buildOptions.icon,
+                'title': buildOptions['name'],
+                'icon': buildOptions['icon'],
                 'background': path.join(__dirname, 'icons', platformName, 'installation-background.png'),
                 'contents': [
                     { 'x': 448, 'y': 344, 'type': 'link', 'path': '/Applications' },
@@ -191,13 +201,14 @@ var deployDarwin = function(buildArtifactList, buildOptions, platformName, deplo
 
         // Deployment: Subfolder
         deleteFromFilesystem(deploySubfolder);
+        createOnFilesystem(deploySubfolder);
 
         // Deployment: Start
         var deployHelper = darwinInstaller(deployOptions);
 
         // Deployment: Result
         deployHelper.on('finish', function() {
-            moveToPackage(deploySubfolder, '-v' + buildOptions['version']);
+            moveFolderToPackage(deploySubfolder, deployExtension);
         });
         deployHelper.on('error', function(err) {
             console.error('\x1b[1mPackaging error: %s\x1b[0m\r\n', err);
@@ -207,7 +218,11 @@ var deployDarwin = function(buildArtifactList, buildOptions, platformName, deplo
 
 
 /**
- * Deploy: Windows
+ * Windows Deployment
+ * @param {Array} buildArtifactList - Directory to compress
+ * @param {Object} buildOptions - electron-packager options object
+ * @param {String} platformName - Current Platform type
+ * @param {String} deployFolder - Deployment parent folder
  */
 var deployWindows = function(buildArtifactList, buildOptions, platformName, deployFolder) {
 
@@ -217,14 +232,18 @@ var deployWindows = function(buildArtifactList, buildOptions, platformName, depl
         var inputFolder = path.join(buildArtifact);
 
         // Deployment: Target folder
-        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase());
+        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + '-v' + buildOptions['app-version']);
+
+        // Deployment: Installer extension
+        var deployExtension = '.exe';
 
         // Deployment: Options
         var deployOptions = {
             appDirectory: inputFolder,
             outputDirectory: deploySubfolder,
-            authors: buildOptions['app-company'],
+            setupExe: path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + deployExtension,
             exe: buildOptions['name'] + '.exe',
+            authors: buildOptions['app-company'],
             title: buildOptions['name'],
             iconUrl: buildOptions['iconUrl'],
             setupIcon: buildOptions['icon'],
@@ -241,7 +260,7 @@ var deployWindows = function(buildArtifactList, buildOptions, platformName, depl
 
         // Deployment: Result
         deployHelper.then(function() {
-            moveToPackage(deploySubfolder, '-v' + buildOptions['version']);
+            moveFolderToPackage(deploySubfolder, deployExtension);
         }, function(err) {
             console.error('\x1b[1mPackaging error: %s\x1b[0m', err);
         });
@@ -250,7 +269,11 @@ var deployWindows = function(buildArtifactList, buildOptions, platformName, depl
 
 
 /**
- * Deploy: Linux
+ * Linux  Deployment
+ * @param {Array} buildArtifactList - Directory to compress
+ * @param {Object} buildOptions - electron-packager options object
+ * @param {String} platformName - Current Platform type
+ * @param {String} deployFolder - Deployment parent folder
  */
 var deployLinux = function(buildArtifactList, buildOptions, platformName, deployFolder) {
 
