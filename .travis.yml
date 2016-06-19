@@ -14,17 +14,25 @@ branches:
 before_install:
   - brew update
   - brew upgrade
-  - brew install wine
+  - brew install xz --universal
+  - brew install libpng --HEAD --universal
+  - brew install freetype --HEAD --universal
+  - brew install jpeg --universal
+  - brew install glibtool --universal
+  - brew install wine --HEAD --with-libgsm --with-samba
+  - brew install autoconf
+  - brew install automake
+  - brew install pkg-config
   - brew install mono
   - brew install makensis
   - gem install fpm
+
+install:
   - export PATH=~/bin:$PATH
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
   - source /tmp/.nvm/nvm.sh
   - nvm install 6.2.2
   - nvm use 6.2.2
-
-install:
   - npm prune --verbose
   - npm install --verbose
 
