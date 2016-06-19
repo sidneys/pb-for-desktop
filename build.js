@@ -73,7 +73,7 @@ let log = function() {
     var args = Array.from(arguments);
 
     var title = args[0],
-        text = args.slice(1).join(' '),
+        text = args.slice(1),
         textList = [];
 
      for (let value of text) {

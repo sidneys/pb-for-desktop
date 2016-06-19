@@ -18,6 +18,10 @@ env:
     - SIGN_DARWIN_KEYCHAIN_NAME=travis.keychain
     - SIGN_DARWIN_KEYCHAIN_PASSWORD=travis
 
+before_install:
+- brew install wine --HEAD --with-libgsm --with-samba
+- brew install mono
+
 install:
   - export PATH=~/bin:$PATH
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
