@@ -12,6 +12,7 @@ const fs = require('fs'),
     builder = require('electron-packager'),
     darwinInstaller = require('appdmg'),
     windowsInstaller = require('electron-winstaller'),
+    linuxInstaller = require('electron-installer-debian'),
     _ = require('lodash');
 
 
@@ -76,7 +77,7 @@ let log = function() {
         text = args.slice(1),
         textList = [];
 
-     for (let value of text) {
+    for (let value of text) {
         if (_.isPlainObject(value)) {
             textList.push('\r\n' + JSON.stringify(value, null, 4) + '\r\n');
         } else {
@@ -106,7 +107,7 @@ let createOnFilesystem = function() {
     var args = Array.from(arguments);
     for (let value of args) {
         mkdirp.sync(path.resolve(value));
-        log('Removed', path.resolve(value));
+        //log('Removed', path.resolve(value));
     }
 };
 
@@ -119,7 +120,7 @@ let deleteFromFilesystem = function() {
     var args = Array.from(arguments);
     for (let value of args) {
         rimraf.sync(path.resolve(value) + '/**/*');
-        log('Removed', path.resolve(value));
+        //log('Removed', path.resolve(value));
     }
 };
 
@@ -290,8 +291,35 @@ var deployLinux = function(buildArtifactList, buildOptions, platformName, deploy
 
     buildArtifactList.forEach(function(buildArtifact) {
 
+        // Deployment: Input folder
+        var inputFolder = path.join(buildArtifact);
 
+        // Deployment: Target folder
+        var deploySubfolder = path.join(path.resolve(deployFolder), path.basename(buildArtifact).replace(/\s+/g, '_').toLowerCase() + '-v' + buildOptions['app-version']);
 
+        // Deployment: Installer extension
+        var deployExtension = '.deb';
+
+        // Deployment: Options
+        var deployOptions = {
+            src: inputFolder,
+            dest: deploySubfolder,
+            bin: buildOptions['name']
+        };
+
+        // Deployment: Subfolder
+        deleteFromFilesystem(deploySubfolder);
+        createOnFilesystem(deploySubfolder);
+
+        // Deployment: Start
+        linuxInstaller(deployOptions, function(err) {
+            if (!err) {
+                return moveFolderToPackage(deploySubfolder, deployExtension);
+            } else {
+                log('Packaging error', err);
+                return process.exit(1);
+            }
+        });
     });
 };
 

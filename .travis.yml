@@ -18,22 +18,29 @@ cache:
 
 before_install:
   - brew update
-
-install:
   - brew install wine
   - wine --version
   - brew install makensis
+  - makensis -VERSION
   - brew install mono
+  - mono --version
   - gem install fpm
   - fpm --version
+  - brew install fakeroot
+  - fakeroot -v
+  - brew install dpkg
+  - dpkg --version
 
-before_script:
+install:
+  - export PATH=~/bin:$PATH
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
   - source /tmp/.nvm/nvm.sh
   - nvm install 6.2.2
   - nvm use 6.2.2
-  - npm prune --verbose
-  - npm install --verbose
+
+before_script:
+  - npm prune
+  - npm install
 
 script:
   - npm run pack --verbose
