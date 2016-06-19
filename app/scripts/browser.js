@@ -6,13 +6,33 @@
  */
 const { ipcRenderer }  = require('electron'),
     remote = require('electron').remote,
-    buildEditorContextMenu = remote.require('electron-editor-context-menu');
+    buildEditorContextMenu = remote.require('electron-editor-context-menu'),
+    path = require('path'),
+    _ = require('lodash');
+
 
 /**
  * Notification Reference
  */
 let OriginalNotification = Notification;
 
+
+/**
+ * Logger
+ */
+let log = function() {
+    var args = Array.from(arguments),
+        textList = [];
+
+    for (let value of args) {
+        if (_.isPlainObject(value)) {
+            textList.push('\r\n' + JSON.stringify(value, null, 4) + '\r\n');
+        } else {
+            textList.push(value);
+        }
+    }
+    console.log('[module:' + path.basename(__filename) + ']', textList.join(' '));
+};
 
 /**
  * @description Resolves a Pushbullet Push object to an image URL.
@@ -30,7 +50,7 @@ var getIconForPushbulletPush = function(push) {
 
     for (var account of accountList) {
         if (account['iden'].startsWith(accountIdShort)) {
-            //console.log('account', account);
+            log('account', account);
             accountImage = account['image_url'];
         }
     }
@@ -42,7 +62,7 @@ var getIconForPushbulletPush = function(push) {
 
     for (var channel of channelList) {
         if (channel['client']['iden'] === channelId) {
-            //console.log('channel', channel);
+            log('channel', channel);
             channelImage = channel['client']['image_url'];
         }
     }
@@ -54,7 +74,6 @@ var getIconForPushbulletPush = function(push) {
 
     for (var device of deviceList) {
         if (device['iden'] === deviceId) {
-            //console.log('device', device);
             deviceImage = 'http://www.pushbullet.com/img/deviceicons/' + device['icon'] + '.png';
         }
     }
@@ -77,16 +96,15 @@ Notification = function(pushTitle, push) {
     var DEFAULT_URL = null;
     var DEFAULT_ICON = null;
 
-    var pushType = push.type;
-
     // Populate fields for Pushbullet push types (note, link, file)
-    var title = push['title'] || push['body'] || DEFAULT_TITLE,
+    var type = push['type'],
+        title = push['title'] || push['body'] || DEFAULT_TITLE,
         body = push['body'] || push['title'] || DEFAULT_BODY,
         url = DEFAULT_URL,
         icon = getIconForPushbulletPush(push) || DEFAULT_ICON,
         iden = push['iden'];
 
-    switch (pushType) {
+    switch (type) {
         case 'link':
             title = title || push['url'];
             body = body || push['url'];
@@ -143,7 +161,9 @@ Notification.requestPermission = OriginalNotification.requestPermission.bind(Not
  * @see Pushbullet API
  */
 window.requestPushbulletPushes = function() {
-    console.log('Requesting Pushes after: ', window.settings.notifyAfter);
+
+    log('Requesting Pushes after: ', window.settings.notifyAfter);
+
     var notifyAfter = window.settings.notifyAfter;
 
     window.pb.net.get('/v2/pushes', {
@@ -152,10 +172,10 @@ window.requestPushbulletPushes = function() {
         var newPushes = result.pushes,
             lastPush = newPushes[0];
 
-        console.log('Newest Push', JSON.stringify(lastPush, null, 3));
+        log('Newest Push', JSON.stringify(lastPush, null, 3));
 
         if (newPushes.length === 0) {
-            console.log('Nothing to do.');
+            log('Nothing to do.');
             return true;
         }
 
@@ -165,14 +185,12 @@ window.requestPushbulletPushes = function() {
 
         newPushes.forEach(function(push) {
             if (push.active === true) {
-                var timer = window.setTimeout(function() {
-
-                    new Notification(null, push);
-                }, 250, this);
-                clearTimeout(timer);
+                window.setTimeout(function() {
+                    return new Notification(null, push);
+                }, 500, this);
             }
         });
-        console.log('Updated notifyAfter', window.settings.notifyAfter);
+        log('Updated notifyAfter', window.settings.notifyAfter);
     });
 };
 
@@ -208,12 +226,14 @@ window.settings = {};
  * Inject Pushbullet API hooks on webview page load
  */
 window.onload = function() {
+    log('[settings-get-reply]');
+
     var interval = setInterval(function() {
         if (!(window.pb && window.pb.ws.connected)) {
-            console.info('Waiting for Pushbullet Web API Socket connection.');
+            log('Waiting for Pushbullet Web API Socket connection.');
             return;
         } else {
-            console.info('Pushbullet Web API Socket connection established.');
+            log('Pushbullet Web API Socket connection established.');
         }
 
         clearInterval(interval);
@@ -221,7 +241,7 @@ window.onload = function() {
         ipcRenderer.on('settings-get-reply', (event, result) => {
             window.settings = result;
             window.extendSocketMessageHandler();
-            console.log('[settings-get-reply]', 'result', result);
+            log('[settings-get-reply]', 'result', result);
         });
 
     }, 2000, this);

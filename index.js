@@ -38,6 +38,28 @@ var settingsStore = storage,
     settings = {};
 
 
+/**
+ * Logger
+ */
+let log = function() {
+    var args = Array.from(arguments),
+        textList = [];
+
+    for (let value of args) {
+        if (_.isPlainObject(value)) {
+            textList.push('\r\n' + JSON.stringify(value, null, 4) + '\r\n');
+        } else {
+            textList.push(value);
+        }
+    }
+    console.log('[module:' + path.basename(__filename) + ']', textList.join(' '));
+};
+
+
+/**
+ * Error Handler
+ * @param {String} message - Error Message
+ */
 var handleError = function(message) {
     dialog.showMessageBox({
         type: 'warning',
@@ -46,16 +68,17 @@ var handleError = function(message) {
         defaultId: 0,
         title: 'Error',
         message: 'Error',
-        detail: message
+        detail: message || 'Error'
     });
 };
 
 
-
 /**
- * Dock
+ * Dock: Set Visibility
+ *
+ * @param {Boolean} doShow - True to show the Dock, false to hide it
  */
-var setupDock = function(doShow) {
+var setDockVisibility = function(doShow) {
     if (doShow === true) {
         if (platform.isOSX) {
             app.dock.show();
@@ -72,18 +95,21 @@ var setupDock = function(doShow) {
     settings.dock = doShow;
 };
 
+
+/**
+ * Dock: Toggle Visibility
+ */
 var toggleDock = function() {
     if (settings.dock !== null && settings.dock === true) {
-        setupDock(false);
+        setDockVisibility(false);
     } else {
-        setupDock(true);
+        setDockVisibility(true);
     }
 };
 
 
-
 /**
- * Settings
+ * Settings: Store to file
  */
 var storeSettings = function(callback) {
     settingsStore.set('settings', settings, function(error) {
@@ -91,12 +117,19 @@ var storeSettings = function(callback) {
             return handleError(error);
         }
 
-        console.log('[storeSettingsProperty]', 'settings', JSON.stringify(settings, null, 3));
+        log('[storeSettingsProperty]', 'settings', settings);
 
         callback();
     });
 };
 
+
+/**
+ * Add new property to settings
+ *
+ * @param {String} property - Property Name
+ * @param {*=} value - Initial Value
+ */
 var initSettingsProperty = function(property, value) {
     var initialValue = value || null;
     if (settings.hasOwnProperty(property)) {
@@ -104,20 +137,24 @@ var initSettingsProperty = function(property, value) {
     }
     settings[property] = initialValue || null;
 
-    console.log('[initSettingsProperty]', 'property', property, 'initialValue', initialValue, 'settingsDefaults[property]', settings[property]);
+    log('[initSettingsProperty]', 'property', property, 'initialValue', initialValue, 'settingsDefaults[property]', settings[property]);
 };
 
+
+/**
+ * Get value of global settings property. Create property if it does not exist.
+ * @param {String} property - Property Name
+ * @param {String} value - Value
+ */
 var getSettingsProperty = function(property) {
     if (typeof property === 'undefined') {
         return settings;
     }
-    if (!settings.hasOwnProperty(property)) {
-        initSettingsProperty(property);
-    }
 
-    console.log('[getSettingsProperty]', 'property', property, 'configDefaults[property]', settings[property]);
+    log('[getSettingsProperty]', 'property', property, 'configDefaults[property]', settings[property]);
     return settings[property];
 };
+
 
 var setSettingsProperty = function(property, value, callback) {
     if (typeof property === 'undefined') {
@@ -125,7 +162,7 @@ var setSettingsProperty = function(property, value, callback) {
     }
     settings[property] = value;
 
-    console.log('[setSettingsProperty]', 'property', property, 'value', value);
+    log('[setSettingsProperty]', 'property', property, 'value', value);
 
     storeSettings(callback);
     // return settings[property];
@@ -154,13 +191,16 @@ ipcMain.on('error-show', (event, message) => {
 });
 
 ipcMain.on('settings-get', (event, property) => {
-    console.log('[settings-get]', 'property', property);
+    log('[settings-get]', 'property', property);
 
+    if (!settings.hasOwnProperty(property)) {
+        initSettingsProperty(property);
+    }
     event.sender.send('settings-get-reply', getSettingsProperty(property));
 });
 
 ipcMain.on('settings-set', (event, property, value) => {
-    console.log('[settings-set]', 'property', property, 'value', value);
+    log('[settings-set]', 'property', property, 'value', value);
 
     setSettingsProperty(property, value, function() {
         event.sender.send('settings-set-reply', property, value);
@@ -221,7 +261,7 @@ app.on('ready', function() {
         // Commit Settings
         settings = result;
         _.defaults(settings, settingsDefault);
-        console.log('[settingsStore.get]', 'result', result, 'settings', settings);
+        log('[settingsStore.get]', 'result:', result, 'settings:', settings);
 
         // Init Tray
         sysTray = new Tray(trayIconDefault);
@@ -237,7 +277,7 @@ app.on('ready', function() {
         // Create the browser window.
         mainWindow = new BrowserWindow(windowOptions);
 
-        setupDock(settings.dock);
+        setDockVisibility(settings.dock);
 
         // and load the index.html of the app.
         mainWindow.loadURL(appUrl);
@@ -292,6 +332,14 @@ app.on('ready', function() {
                 { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
                 { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
                 { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
+            ]
+        }, {
+            label: 'Developer',
+            submenu: [
+                {
+                    label: 'Web Inspector', accelerator: 'Command+D',
+                    click: function() { mainWindow.openDevTools(); }
+                }
             ]
         }];
 

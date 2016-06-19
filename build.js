@@ -11,7 +11,8 @@ const fs = require('fs'),
     archiver = require('archiver'),
     builder = require('electron-packager'),
     darwinInstaller = require('appdmg'),
-    windowsInstaller = require('electron-winstaller');
+    windowsInstaller = require('electron-winstaller'),
+    _ = require('lodash');
 
 
 /**
@@ -72,9 +73,18 @@ let log = function() {
     var args = Array.from(arguments);
 
     var title = args[0],
-        text = args.slice(1).join(' ');
+        text = args.slice(1).join(' '),
+        textList = [];
 
-    console.log('\x1b[1m%s: %s\x1b[0m', title, text);
+     for (let value of text) {
+        if (_.isPlainObject(value)) {
+            textList.push('\r\n' + JSON.stringify(value, null, 4) + '\r\n');
+        } else {
+            textList.push(value);
+        }
+    }
+
+    console.log('\x1b[1m%s: %s\x1b[0m', title, textList.join(' '));
 };
 
 
@@ -127,7 +137,7 @@ let moveFolderToPackage = function(sourceFilepath, allowedExtension) {
         targetExtension = '.zip',
         target = path.join(path.dirname(source), path.basename(source)) + targetExtension;
 
-    let archive = archiver('zip', {}),
+    let archive = archiver.create('zip', {}),
         output = fs.createWriteStream(target);
 
     output.on('close', function() {
