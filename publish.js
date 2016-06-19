@@ -67,13 +67,28 @@ let createPublishOptions = function() {
 
 
 /**
- * Start Publishing
+ * Publish
  */
-publishRelease(createPublishOptions(), function(err, release) {
+let release = publishRelease(createPublishOptions(), function(err, release) {
     if (err) {
         log('Publishing error', err);
         return process.exit(1);
     }
-
     log('Publishing complete', release);
+});
+
+release.on('created-release', function() {
+    log('Release created', 'https://github.com/' + createPublishOptions().owner + '/' + createPublishOptions().repo + '/releases/tag/' + createPublishOptions().tag);
+});
+
+release.on('upload-asset', function(name) {
+    log('Asset upload commencing', name);
+});
+
+release.on('uploaded-asset', function(name) {
+    log('Uploading asset complete', name);
+});
+
+release.on('upload-progress', function(name, progress) {
+    log('Asset upload commencing', name + ' '  + progress);
 });
