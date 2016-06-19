@@ -16,9 +16,9 @@ before_install:
   - brew upgrade
   - brew install xz --universal
   - brew install libpng --HEAD --universal
-  - brew install freetype --HEAD --universal
+  - brew install freetype --universal
   - brew install jpeg --universal
-  - brew install glibtool --universal
+  - brew install libtool --universal
   - brew install wine --HEAD --with-libgsm --with-samba
   - brew install autoconf
   - brew install automake
