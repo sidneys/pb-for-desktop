@@ -10,11 +10,15 @@ rvm:
   - 2.2.0
 
 cache:
+  bundler: true
   directories:
     - node_modules
     - cache
     - $HOME/.electron
     - $HOME/.npm
+    - $HOME/.gem
+    - $HOME/travis-cache
+    - $HOME/Library/Caches/Homebrew
 
 before_install:
   - brew update
