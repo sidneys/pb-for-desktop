@@ -68,12 +68,11 @@ let createPublishOptions = function() {
 /**
  * Publish
  */
-let release = publishRelease(createPublishOptions(), function(err, release) {
+let release = publishRelease(createPublishOptions(), function(err) {
     if (err) {
-        log('Publishing error', err);
+        log('Publishing error', JSON.stringify(err, null, 4));
         return process.exit(1);
     }
-    log('Publishing complete', release);
 });
 
 release.on('created-release', function() {
@@ -85,9 +84,9 @@ release.on('upload-asset', function(name) {
 });
 
 release.on('uploaded-asset', function(name) {
-    log('Uploading asset complete', name);
+    log('Asset upload complete', name);
 });
 
 release.on('upload-progress', function(name, progress) {
-    log('Asset upload commencing', name + ' '  + progress);
+    log('Asset uploading', name, (progress.percentage * 100) + '%');
 });
