@@ -1,34 +1,33 @@
 os:
   - osx
 
-osx_image: xcode8
+sudo: false
 
-sudo: required
+language:
+  - ruby
 
-language: objective-c
+rvm:
+  - 2.2.0
 
-branches:
-  only:
-    - master
+cache:
+  directories:
+    - node_modules
+    - cache
+    - $HOME/.electron
+    - $HOME/.npm
 
 before_install:
   - brew update
-  - brew upgrade
-  - brew reinstall xz --universal
-  - brew reinstall libpng --universal
-  - brew install freetype --universal
-  - brew install jpeg --universal
-  - brew install libtool --universal
-  - brew install wine --HEAD --with-libgsm --with-samba
-  - brew install autoconf
-  - brew install automake
-  - brew install pkg-config
-  - brew install mono
-  - brew install makensis
-  - gem install fpm
 
 install:
-  - export PATH=~/bin:$PATH
+  - brew install wine
+  - wine --version
+  - brew install makensis
+  - brew install mono
+  - gem install fpm
+  - fpm --version
+
+before_script:
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
   - source /tmp/.nvm/nvm.sh
   - nvm install 6.2.2
@@ -38,11 +37,6 @@ install:
 
 script:
   - npm run pack --verbose
-
-cache:
-  directories:
-    - ./node_modules
-    - /usr/local/Cellar
 
 notifications:
   email: false
