@@ -1,0 +1,72 @@
+2016-06-20 - 1.0.5 (e0800d4)
+e0800d4 (HEAD -> master, tag: v1.0.5) Bump v1.0.5
+21111a4 Fix publish messages.
+40732fa Performance: Add build-cache to ignored folders.
+50dc87a (tag: v1.0.4) Bump 1.0.4
+1065e66 Added Release Note generator to publish module.
+1942b42 Tweaked package requirements.
+e0fcd2d Update gitignore, npmignore
+56429a9 (tag: v1.0.3) Package: Added semver, github helper modules
+cb35c75 Automation(build): Added changelog generation.
+dcc7de4 (tag: v1.0.2, tag: v1.0.1, origin/master, origin/HEAD) package(platforms): Build all 3 platforms. Bump version.
+ab0da97 Cleanup modules.
+d2bab33 fix(config): Replaced configuration file module due to win32 issues.
+6d4415a (tag: v1.0.0) automation(publish): Fix progress.stream percentage formatting (thanks - to Y.K.)
+fe3a134 automation(publish): Tweaked event emitter handlers.
+adffcd3 Bump version (1.0.0)
+4071769 automation(publish): Set release mode to 'draft' for increased control.
+15c28ce automation(publish): Added progress events for releasing.
+e4cb538 (tag: 0.9.9) Bump version 0.9.9
+90b1146 feature(publish): Add CI publish script.
+029ac13 (tag: v0.9.8, tag: 0.9.7) travis: Fixing nvm issues (31.1)
+757fbdb automation(travis): Optimise Caching
+1409f02 bump version
+3c061a6 automation(build): Fix travis, add linux building
+039b343 Travis: remove complexity
+835b498 Attempts at fixing Travis (https://github.com/Homebrew/legacy-homebrew/issues/37857)
+dc91b11 (tag: 0.9.6) automation(travis): Update brew
+b64c312 automate: Update travis.yml
+e902076 Travis tweaking.
+a2966c3 automation(travis): Add exit codes for errors. Removed console.error.
+b17e6be ci(travis): Configuration fixes.
+6a70701 bump 0.9.6
+acb2bc6 cleanup(refactor:format): Cleaned formatting using IDEA tooling. Replaced console.log with simple internal logger.
+9de43a7 automation(build): Add travis.yml configuration for CI. Improved & streamlined build.js documentation.
+6652956 module(build.js): Added v2 of build/release/deploy script. Support for packaged/zipped releases on Darwin, Win32 platforms. Optimised ignore-patterns.
+12d836b module(browser.js): Preliminary throttling for Notification invocation.
+9bf2dc4 module(browser.js): Added polling-based validation of the PB web socket connection's state.
+b6c4d03 module(browser.js): Added handlers for Application Main Menu.
+0cd5c2b fix(browser): Added documentation. Streamline variable names, fixed previously renamed window.register method.
+a590c72 module(platform.js): Streamlined platform/type/name properties.
+76b8852 electron(bootstrap): Add Application Main Menu. Expand webPreferences. Added will-navigate handler.
+07cfcbf resources: Added pushbullet-chrome-327_0 for reference.
+e2b2a1d resources(icons,git,package): Update gitignore with staging/release/deploy. Streamline platform subfolders to reflect Node best practices.
+a5d8083 (tag: 0.8.0) deployment(darwin): Improved platform-dependent build process, added installation-packaging for Darwin.
+9a3c903 (tag: 0.6.3) assets(windows): Move assets to correct folder.
+08b8a14 (tag: 0.6.2) Bump version.
+cf1eaa8 Prune 'inverted' icon image assets.
+f641ee2 (tag: 0.6.1) Version bump. Doc addendum.
+69c4678 Added build script interface for electron-userland/electron-packager. Update gitignore, npmignore for cross-platform environment usage.
+656e4bf Pruned assets and modules. Refactor asset namespace. Added additional details to package.
+2930b62 refactor(structure): Move Sources to ./app. Rename scripts to adhere to Electron best practices.
+71f911d assets: Cleanup icons, package.json.
+869269b build(darwin): Add electron packaging npm-script
+7697b0d assets(icon): Clean vector icon, add square icon, add bitmap icons for darwin/linux/win32
+4066498 assets(icon): Add PB vector icon
+d5f6b87 cleanup(scripts): Remove build script
+456eece module(package): supplemented package.json info, name change
+357bdb3 feature(tray): Add dedicated tray icons & interface
+66f05db feature(main): Added & extended IPC handlers for notification-interaction within main Electron instance
+388b964 feature(notifications): Add type-dependent configuration of notifications for all Pushbullet Push types (file, link, note) including icon & url handling
+8bed49c feature(api): Add new approach for intercepting pushes by extending pushbullet.js API method calls.
+6251168 architecture(main): Update architecture from direct URL invocation to the Chromium <webview> tag. Enabling node support. Fix formatting in electron bootstrap.
+9ac576c feature(style): Add gitignore and JS coding style definitions
+dd6e20a feature(rendering): Add resolving function for Pushbullet notification icons.
+87f89d0 (upstream/master) Removed crashReporter
+c515667 Updated build script
+71c50fe Updated build script
+ab0a111 Added build script
+4a5108e Created base app
+13da462 Initial commit
+
+
