@@ -5,12 +5,12 @@
  * External
  */
 const path = require('path'),
+    https = require('https'),
     childProcess = require('child_process'),
     glob = require('glob'),
     _ = require('lodash'),
     publishRelease = require('publish-release'),
-    semverUtils = require('semver-utils'),
-    ghReleases = require('got-github-releases');
+    semverUtils = require('semver-utils');
 
 
 /**
@@ -58,7 +58,6 @@ let createPublishOptions = function() {
         repo: packageJson.name,
         tag: 'v' + packageJson.version,
         name: packageJson.build.productName + ' ' + 'v' + packageJson.version,
-        notes: packageJson.version,
         draft: true,
         reuseRelease: true,
         reuseDraftOnly: true,
@@ -67,16 +66,30 @@ let createPublishOptions = function() {
     };
 };
 
-var createReleaseNotes = function(cb) {
-    ghReleases(packageJson.author.name + '/' + packageJson.name).then(function(releases) {
-        var startTag = 'v' + semverUtils.parse(releases.latest.tag_name).version,
-            endTag = 'v' + semverUtils.parse(packageJson.version).version,
-            text = childProcess.execSync('git log --pretty=format:"%s" ' + startTag + '...' + endTag);
 
-        console.log(startTag)
-        console.log(endTag)
+/**
+ * Create Release Notes by collecting commit messages from last version tag to current version.
+ */
+var createReleaseNotes = function(callback) {
 
-        cb(text.toString());
+    https.get({
+        host: 'api.github.com', path: '/repos/' + packageJson.author.name + '/' + packageJson.name + '/tags',
+        headers: { 'user-agent': packageJson.author },
+    }, function(res) {
+        var data = [];
+
+        res.on('data', function(chunk) {
+            data.push(chunk);
+        });
+
+        res.on('end', function() {
+            var json = JSON.parse(data),
+                startTag = json[0].name,
+                endTag = 'v' + semverUtils.parse(packageJson.version).version,
+                text = childProcess.execSync('git log --pretty=format:"%s" ' + startTag + '...' + endTag);
+
+            callback(text.toString());
+        })
     });
 };
 
@@ -85,37 +98,38 @@ var createReleaseNotes = function(cb) {
  */
 log('Number of assets ready for publishing', assetList.length);
 
+
 createReleaseNotes(function(result) {
-    console.log(result)
-});
 
-return
-let release = publishRelease(createPublishOptions(), function(err) {
-    if (err) {
-        log('Publishing error', JSON.stringify(err, null, 4));
-        return process.exit(1);
-    }
-});
+    let releaseOptions = createPublishOptions();
+    releaseOptions.notes = result;
 
-var i = 1;
-release.on('create-release', function() {
-    log('Starting to publish asset', i + 'of' + assetList.length);
-    i = i + 1;
-});
+    let release = publishRelease(releaseOptions, function(err) {
+        if (err) {
+            log('Publishing error', JSON.stringify(err, null, 4));
+            return process.exit(1);
+        }
+    });
 
-release.on('created-release', function() {
-    log('Release created', 'https://github.com/' + packageJson.author.name + '/' + packageJson.name + '/releases/tag/' + packageJson.version);
-});
+    var i = 1;
+    release.on('create-release', function() {
+        log('Starting to publish asset', i + 'of' + assetList.length);
+        i = i + 1;
+    });
 
-release.on('upload-asset', function(name) {
-    log('Asset upload commencing', name);
-});
+    release.on('created-release', function() {
+        log('Release created', 'https://github.com/' + packageJson.author.name + '/' + packageJson.name + '/releases/tag/' + packageJson.version);
+    });
 
-release.on('uploaded-asset', function(name) {
-    log('Asset upload complete', name);
-});
+    release.on('upload-asset', function(name) {
+        log('Asset upload commencing', name);
+    });
 
-release.on('upload-progress', function(name, progress) {
+    release.on('uploaded-asset', function(name) {
+        log('Asset upload complete', name);
+    });
 
-    log('Asset uploading', name, Math.round(progress.percentage) + ' ' + '%');
+    release.on('upload-progress', function(name, progress) {
+        log('Asset uploading', name, Math.round(progress.percentage) + ' ' + '%');
+    });
 });
