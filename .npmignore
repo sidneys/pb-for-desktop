@@ -17,8 +17,9 @@ coverage
 .grunt
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
-build
-release
+build-cache
+build-staging
+build-release
 
 # Dependency directory
 # Deployed apps should consider commenting this line out:

@@ -265,10 +265,10 @@ tmp
 cache
 
 # Build
-out
+build-cache
 build-staging
 build-release
-build-deploy
+
 
 # Node
 node_modules
