@@ -58,6 +58,7 @@ let createBuildOptions = function(targetPlatform) {
         'ignore': [
             path.basename(packageJson.build.directoryStaging),
             path.basename(packageJson.build.directoryRelease),
+            path.basename(packageJson.build.directoryCache),
             targetPlatform !== 'darwin' ? '/icons/darwin($|/)' : null,
             targetPlatform !== 'win32' ? '/icons/win32($|/)' : null,
             targetPlatform !== 'linux' ? '/icons/linux($|/)' : null,
