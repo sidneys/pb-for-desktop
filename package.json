@@ -1,6 +1,6 @@
 {
   "name": "pushbullet-desktop",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "'Pushbullet for Desktop' is a lightweight Pushbullet Client for OS X, Windows & Linux, providing cross-platform native system notifications in an unobstrusive way.",
   "license": "MIT",
   "main": "index.js",
@@ -51,7 +51,9 @@
     "productName": "Pushbullet for Desktop",
     "productDescription": "Lightweight Pushbullet Client for the desktop.",
     "platforms": [
-      "win32"
+      "darwin",
+      "win32",
+      "linux"
     ],
     "directoryStaging": "./build-staging",
     "directoryRelease": "./build-release",
