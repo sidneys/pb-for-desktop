@@ -102,18 +102,24 @@ log('Number of assets ready for publishing', assetList.length);
 createReleaseNotes(function(result) {
 
     let releaseOptions = createPublishOptions();
+
     releaseOptions.notes = result;
+
+    if (!releaseOptions.token) {
+            log('Variable missing', 'GITHUB_TOKEN');
+            return process.exit(1);
+    }
 
     let release = publishRelease(releaseOptions, function(err) {
         if (err) {
-            log('Publishing error', JSON.stringify(err, null, 4));
+            log('Publishing error', err);
             return process.exit(1);
         }
     });
 
     var i = 1;
     release.on('create-release', function() {
-        log('Starting to publish asset', i + 'of' + assetList.length);
+        log('Starting to publish asset', i + ' of ' + assetList.length);
         i = i + 1;
     });
 
@@ -130,6 +136,6 @@ createReleaseNotes(function(result) {
     });
 
     release.on('upload-progress', function(name, progress) {
-        log('Asset uploading', name, Math.round(progress.percentage) + ' ' + '%');
+        log('Asset uploading', name, Math.round(progress.percentage) + '%', '(~' +  Math.round(progress.eta/60) + 'm)');
     });
 });
