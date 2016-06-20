@@ -5,9 +5,12 @@
  * External
  */
 const path = require('path'),
+    childProcess = require('child_process'),
     glob = require('glob'),
     _ = require('lodash'),
-    publishRelease = require('publish-release');
+    publishRelease = require('publish-release'),
+    semverUtils = require('semver-utils'),
+    ghReleases = require('got-github-releases');
 
 
 /**
@@ -64,10 +67,29 @@ let createPublishOptions = function() {
     };
 };
 
+var createReleaseNotes = function(cb) {
+    ghReleases(packageJson.author.name + '/' + packageJson.name).then(function(releases) {
+        var startTag = 'v' + semverUtils.parse(releases.latest.tag_name).version,
+            endTag = 'v' + semverUtils.parse(packageJson.version).version,
+            text = childProcess.execSync('git log --pretty=format:"%s" ' + startTag + '...' + endTag);
+
+        console.log(startTag)
+        console.log(endTag)
+
+        cb(text.toString());
+    });
+};
 
 /**
  * Publish
  */
+log('Number of assets ready for publishing', assetList.length);
+
+createReleaseNotes(function(result) {
+    console.log(result)
+});
+
+return
 let release = publishRelease(createPublishOptions(), function(err) {
     if (err) {
         log('Publishing error', JSON.stringify(err, null, 4));
@@ -75,8 +97,14 @@ let release = publishRelease(createPublishOptions(), function(err) {
     }
 });
 
+var i = 1;
+release.on('create-release', function() {
+    log('Starting to publish asset', i + 'of' + assetList.length);
+    i = i + 1;
+});
+
 release.on('created-release', function() {
-    log('Release created', 'https://github.com/' + createPublishOptions().owner + '/' + createPublishOptions().repo + '/releases/tag/' + createPublishOptions().tag);
+    log('Release created', 'https://github.com/' + packageJson.author.name + '/' + packageJson.name + '/releases/tag/' + packageJson.version);
 });
 
 release.on('upload-asset', function(name) {
@@ -88,5 +116,6 @@ release.on('uploaded-asset', function(name) {
 });
 
 release.on('upload-progress', function(name, progress) {
+
     log('Asset uploading', name, Math.round(progress.percentage) + ' ' + '%');
 });

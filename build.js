@@ -13,7 +13,8 @@ const fs = require('fs'),
     darwinInstaller = require('appdmg'),
     windowsInstaller = require('electron-winstaller'),
     linuxInstaller = require('electron-installer-debian'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    updateChangelog = require('build-changelog/tasks/update-changelog');
 
 
 /**
@@ -47,6 +48,9 @@ let createBuildOptions = function(targetPlatform) {
         'app-category-type': packageJson.build.category,
         'helper-bundle-id': packageJson.build.id + '.helper',
         'app-copyright': 'Copyright © ' + new Date().getFullYear(),
+        'download': {
+            'cache': path.join(__dirname, packageJson.build.directoryCache)
+        },
         'version-string': {
             'FileDescription': packageJson.build.productDescription
         },
@@ -361,4 +365,20 @@ platformList().forEach(function(target) {
             deployLinux(result, options, target, packageJson.build.directoryRelease);
         }
     });
+});
+
+/**
+ * Changelog
+ */
+updateChangelog({
+    logFlags: '--oneline --decorate --first-parent --abbrev-commit',
+    nextVersion: packageJson.version,
+    folder: process.cwd(),
+    filename: 'CHANGELOG'
+}, function(err, result) {
+    if (err) {
+        log('Changelog error', err);
+        return;
+    }
+    log('Changelog updated', result);
 });
