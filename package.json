@@ -24,7 +24,7 @@
   },
   "scripts": {
     "debug": "electron .",
-    "pack": "node build.js -- ",
+    "build": "node build.js -- ",
     "publish": "node publish.js -- "
   },
   "dependencies": {
@@ -47,8 +47,7 @@
     "mkdirp": "^0.5.1",
     "publish-release": "^1.3.1",
     "rimraf": "^2.5.2",
-    "semver-utils": "latest",
-    "got-github-releases": "latest"
+    "semver-utils": "latest"
   },
   "build": {
     "productName": "Pushbullet for Desktop",
@@ -60,6 +59,7 @@
     ],
     "directoryStaging": "./build-staging",
     "directoryRelease": "./build-release",
+    "directoryCache": "./build-cache",
     "electron": "1.2.3",
     "company": "sidneys.github.io",
     "id": "de.sidneys.pushbullet-desktop",
