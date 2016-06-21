@@ -51,7 +51,7 @@ before_script:
   - npm install
 
 script:
-  - npm run pack --verbose
+  - npm run build --verbose
   - npm run publish  --verbose
 
 notifications:
