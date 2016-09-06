@@ -31,7 +31,8 @@ const _ = require('lodash'),
     squirrel = require('electron-squirrel-startup'),
     keypath = require('keypath'),
     mime = require('mime'),
-    AppDirectory = require('appdirectory');
+    AppDirectory = require('appdirectory'),
+    AutoLaunch = require('auto-launch');
 
 /**
  * Modules: Internal
@@ -47,13 +48,15 @@ const packageJson = require(path.join(moduleRoot, 'package.json')),
  * @constant
  */
 const appUrl = 'file://' + moduleRoot + '/app/index.html',
-    appName = packageJson.productName || packageJson.name,
+    appName = packageJson.name,
+    appProductName = packageJson.productName || packageJson.name,
     appVersion = packageJson.version,
     appIcon = path.join(moduleRoot, 'icons', platformHelper.type, 'app-icon' + platformHelper.iconExtension(platformHelper.type)),
     appTrayIconDefault = path.join(moduleRoot, 'icons', platformHelper.type, 'icon-tray' + platformHelper.imageExtension(platformHelper.type)),
     appTrayIconActive = path.join(moduleRoot, 'icons', platformHelper.type, 'icon-tray-active' + platformHelper.imageExtension(platformHelper.type)),
     appSoundDirectory = path.join(moduleRoot, 'sounds'),
-    appLogDirectory = (new AppDirectory(appName)).userLogs();
+    appLogDirectory = (new AppDirectory(appName)).userLogs(),
+    appLauncher = new AutoLaunch({ name: appProductName });
 
 
 /**
@@ -61,8 +64,8 @@ const appUrl = 'file://' + moduleRoot + '/app/index.html',
  */
 let mainWindow,
     mainPage,
-    mainTray,
-    appMainMenu,
+    appMenu,
+    appTray,
     appTrayMenu;
 
 
@@ -113,14 +116,6 @@ let validateFileType = function(file, targetType, cb) {
 
 
 /**
- * Check an objects' type
- */
-let getObjectType = function(o) {
-    return Object.prototype.toString.call(o).match(/^\[object\s(.*)]$/)[1];
-};
-
-
-/**
  * Log to console and file
  * @param {*} messageList - Log Message
  */
@@ -156,7 +151,7 @@ let log = function(messageList) {
  * @listens ipcMain#notification-click
  */
 ipcMain.on('notification-received', () => {
-    mainTray.setImage(appTrayIconActive);
+    appTray.setImage(appTrayIconActive);
 });
 
 
@@ -231,22 +226,20 @@ let updateDock = function(enable) {
 
 
 /**
- * Automatically add Boolean (checkbox) Settings to Electron Menus
- * @param {Electron.Menu} targetMenu - Electron Menu to add settings to
- * @param {Electron.Tray} parentTray - Electron Tray instance hosting the menu
- * @param {electronSettings#electronSettings} settingsInstance - electron-settings instance
- * @param {String=} relativeKeypath - Nested Keypath to registrable settings, e.g. 'options.app'
- * @param {Object=} eventObject - Optionally attach behaviour to options
+ * Register Configuration
+ * @param {Electron.Menu} currentMenu - Electron Menu to add settings to
+ * @param {electronSettings#electronSettings} electronSettingsInstance - 'electron-settings' instance
+ * @param {String..} relativeKeypath - Nested Keypath to registrable settings, e.g. 'options.app'
+ * @param {Object..} eventObject - Optionally attach behaviour to options
  */
-let addSettingsToTrayMenu = function(targetMenu, parentTray, settingsInstance, relativeKeypath, eventObject) {
-    let settings = keypath(relativeKeypath, settingsInstance.getSync()) || settingsInstance.getSync(),
+let registerOptionsWithMenu = function(currentMenu, electronSettingsInstance, relativeKeypath, eventObject) {
+    let settings = keypath(relativeKeypath, electronSettingsInstance.getSync()) || electronSettingsInstance.getSync(),
         settingsCount = Object.keys(settings).length;
 
-    // Create new menu instance using existing items
     let menu = new Menu();
 
     // Add existing Menu Items
-    for (let item of targetMenu.items) {
+    for (let item of currentMenu.items) {
         menu.append(new MenuItem(item));
     }
 
@@ -263,7 +256,7 @@ let addSettingsToTrayMenu = function(targetMenu, parentTray, settingsInstance, r
         log(['settingClickHandler', 'itemChecked', itemChecked]);
         log(['settingClickHandler', 'itemKeypath', itemKeypath]);
 
-        settingsInstance.setSync(itemKeypath, itemChecked);
+        electronSettingsInstance.setSync(itemKeypath, itemChecked);
 
         let handler = keypath(itemKeypath, eventObject);
 
@@ -285,7 +278,7 @@ let addSettingsToTrayMenu = function(targetMenu, parentTray, settingsInstance, r
             let newItem = new MenuItem({
                 type: 'checkbox',
                 label: _.startCase(option),
-                checked: settingsInstance.getSync(settingKeypath),
+                checked: electronSettingsInstance.getSync(settingKeypath),
                 click (item) {
                     return handleItemClick(item, settingKeypath);
                 }
@@ -308,9 +301,7 @@ let addSettingsToTrayMenu = function(targetMenu, parentTray, settingsInstance, r
         }
     }
 
-    if (getObjectType(parentTray) === 'Tray') {
-        parentTray.setContextMenu(menu);
-    }
+    appTray.setContextMenu(menu);
 };
 
 
@@ -342,23 +333,26 @@ app.on('window-all-closed', () => {
 
 
 /**
- * Default Settings
+ * Settings
  * @property {Boolean} user.showWindow - Show App Window
  * @property {Boolean} user.enableSound - Play Notification Sound
+ * @property {Boolean} user.launchOnStartup - Autostart
+ * @property {Boolean} user.showRecentPushesOnStartup - Show recent pushes
  * @property {String} app.currentVersion - Application Version
  * @property {Number} app.lastNotification - Timestamp of last delivered Pushbullet Push
  * @property {Object} app.windowPosition - Application Window position and size
  * @property {String} app.notificationFile - Notification sound
  * @property {String} app.logFile - Log file
  */
-const defaultSettings = {
+const DEFAULT_SETTINGS = {
     user: {
-        enableSound: true,
         showWindow: true,
+        enableSound: true,
+        launchOnStartup: false,
         showRecentPushesOnStartup: true
     },
     internal: {
-        name: appName,
+        name: appProductName,
         currentVersion: appVersion,
         lastNotification: Math.floor(Date.now() / 1000) - 86400,
         windowPosition: {
@@ -368,18 +362,25 @@ const defaultSettings = {
             height: 598
         },
         notificationFile: path.join(appSoundDirectory, 'notification-default.wav'),
-        logFile: path.join(appLogDirectory, appName + '.log')
+        logFile: path.join(appLogDirectory, appProductName + '.log')
     }
 };
 
 
 /**
- * Default Settings Click Event Handlers
+ * Events attached to settings
  */
-const defaultSettingsEvents = {
+const DEFAULT_EVENTS = {
     user: {
         showWindow: function(show) {
-            return updateDock(show);
+            updateDock(show);
+        },
+        launchOnStartup: function(launch) {
+            if (launch) {
+                appLauncher.enable();
+            } else {
+                appLauncher.disable();
+            }
         }
     },
     internal: {
@@ -414,7 +415,7 @@ app.on('ready', () => {
     });
 
     // Settings Defaults
-    electronSettings.defaults(defaultSettings);
+    electronSettings.defaults(DEFAULT_SETTINGS);
     electronSettings.applyDefaultsSync();
 
     // Log Directory
@@ -422,13 +423,13 @@ app.on('ready', () => {
         return log(['appLogDirectory', err]);
     });
 
-    // Add Settings to Electrons global
+    // Add globals to Electrons 'global'
     global.electronSettings = electronSettings;
 
-    // Tray Menu
-    mainTray = new Tray(appTrayIconDefault);
-    mainTray.setImage(appTrayIconDefault);
-    mainTray.setToolTip(appName);
+    // Init Tray
+    appTray = new Tray(appTrayIconDefault);
+    appTray.setImage(appTrayIconDefault);
+    appTray.setToolTip(appProductName);
     appTrayMenu = Menu.buildFromTemplate([
         {
             label: 'Show',
@@ -437,39 +438,17 @@ app.on('ready', () => {
         {
             label: 'Quit',
             click() { app.quit(); }
-        },
-        {
-            type: 'separator'
-        },
-        {
-            type: 'normal',
-            id: 'notificationFile',
-            label: 'Change Sound Effect...',
-            click() {
-                dialog.showOpenDialog({
-                    title: 'Pick Soundfile (aiff, m4a, mp3, mp4, m4a)', properties: ['openFile', 'showHiddenFiles'],
-                    defaultPath: appSoundDirectory,
-                    filters: [{ name: 'Sound', extensions: ['aiff', 'm4a', 'mp3', 'mp4', 'wav'] }]
-                }, defaultSettingsEvents.internal.notificationFile);
-            }
         }
     ]);
 
-
-    // Register Menu
-    mainTray.setContextMenu(appTrayMenu);
-
-
-    // Add Boolean Settings to Menu
-    addSettingsToTrayMenu(appTrayMenu, mainTray, electronSettings, 'user', defaultSettingsEvents);
-
+    appTray.setContextMenu(appTrayMenu);
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
         backgroundColor: '#ecf0f0',
         minWidth: 400,
         icon: appIcon,
-        title: appName,
+        title: appProductName,
         show: false,
         titleBarStyle: 'default',
         alwaysOnTop: true,
@@ -498,7 +477,7 @@ app.on('ready', () => {
 
     /** @listens mainWindow:focus */
     mainWindow.on('focus', () => {
-        mainTray.setImage(appTrayIconDefault);
+        appTray.setImage(appTrayIconDefault);
     });
 
     /** @listens mainWindow:show */
@@ -540,21 +519,51 @@ app.on('ready', () => {
             mainPage.openDevTools();
         }
 
+        registerOptionsWithMenu(appTrayMenu, electronSettings, 'user', DEFAULT_EVENTS);
     });
 
-    // App Menu
-    appMainMenu = Menu.buildFromTemplate(defaultAppMenu());
-    Menu.setApplicationMenu(appMainMenu);
+    // Create the Application's main menu
+    appMenu = Menu.buildFromTemplate(defaultAppMenu());
 
-    // Commit Settings
+    appMenu.items[0].submenu.insert(1, new MenuItem({ type: 'separator' }));
+    appMenu.items[0].submenu.insert(2, new MenuItem({
+        type: 'normal',
+        id: 'notificationFile',
+        label: 'Change Notification Sound...',
+        click() {
+            dialog.showOpenDialog({
+                title: 'Pick Soundfile (aiff, m4a, mp3, mp4, m4a)', properties: ['openFile', 'showHiddenFiles'],
+                defaultPath: appSoundDirectory,
+                filters: [{ name: 'Sound', extensions: ['aiff', 'm4a', 'mp3', 'mp4', 'wav'] }]
+            }, DEFAULT_EVENTS.internal.notificationFile);
+        }
+    }));
+
+    Menu.setApplicationMenu(appMenu);
+
+    // Update Settings
     electronSettings.set('internal.currentVersion', appVersion)
         .then(() => {
             log(['internal.currentVersion', appVersion]);
-        });
+        }).then(function(err) {
+        log(['electronSettings', 'internal.currentVersion', err]);
+    });
 
-    // Load Settings
+    // Apply Settings
     electronSettings.get('user.showWindow')
         .then(value => {
             updateDock(value);
-        });
+        }).then(function(err) {
+        log(['electronSettings', 'user.showWindow', err]);
+    });
+    electronSettings.get('user.launchOnStartup')
+        .then(value => {
+            if (value) {
+                appLauncher.enable();
+            } else {
+                appLauncher.disable();
+            }
+        }).then(function(err) {
+        log(['electronSettings', 'user.launchOnStartup', err]);
+    });
 });
