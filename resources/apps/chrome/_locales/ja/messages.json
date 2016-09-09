@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ 友だちを追加"
+   },
+   "add_link_tooltip": {
+      "message": "現在のページをリンク"
+   },
+   "advanced": {
+      "message": "高度な設定"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Pushbulletのデスクトップアプリが通知を管理しています。"
+   },
+   "all_of_my_devices": {
+      "message": "すべての端末"
+   },
+   "cancel": {
+      "message": "キャンセル"
+   },
+   "changelog_tab": {
+      "message": "新着情報"
+   },
+   "channels": {
+      "message": "チャンネル"
+   },
+   "clear": {
+      "message": "クリア"
+   },
+   "decryption_failed_body": {
+      "message": "すべてのデバイスに一致するパスワードを確認してください。"
+   },
+   "decryption_failed_title": {
+      "message": "暗号化に失敗しました"
+   },
+   "devices": {
+      "message": "端末"
+   },
+   "devices_placeholder": {
+      "message": "デバイスを選択して下さい。"
+   },
+   "dismiss": {
+      "message": "消去"
+   },
+   "done": {
+      "message": "完了"
+   },
+   "encryption_password_needed_body": {
+      "message": "パスワードを入力するにはここをクリック"
+   },
+   "encryption_password_needed_title": {
+      "message": "暗号化されたデータの受信"
+   },
+   "end_to_end_password_desc": {
+      "message": "パスワードを入力する場合、各デバイスごとに入力する必要があります。"
+   },
+   "end_to_end_password_label": {
+      "message": "エンド ツー エンド暗号化のパスワード"
+   },
+   "file_too_big": {
+      "message": "ファイルが大きすぎます"
+   },
+   "friends": {
+      "message": "フレンド"
+   },
+   "from": {
+      "message": "$1 からのプッシュ"
+   },
+   "general": {
+      "message": "一般"
+   },
+   "go_to_link": {
+      "message": "リンク先へ移動"
+   },
+   "how_to_unmute_app": {
+      "message": "アプリをミュートされて、どのようにそれをミュートを行う?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Pushbullet の Android アプリを開き、左から引き出しを抜く ' 通知ミラーリング」をタップします。'はいくつかのアプリ'、ここをタップし、アプリを再度有効にします。"
+   },
+   "learn_more": {
+      "message": "詳細情報"
+   },
+   "me": {
+      "message": "私"
+   },
+   "message_placeholder": {
+      "message": "送信するにはメッセージを入力してenter キーを押してください"
+   },
+   "message_placeholder_files": {
+      "message": "メッセージを入力するか、ファイルをドロップ"
+   },
+   "message_placeholder_link": {
+      "message": ""
+   },
+   "mirror_context_message": {
+      "message": "$1 経由 Pushbullet 時刻 $2"
+   },
+   "mute": {
+      "message": "ミュート"
+   },
+   "mute_app": {
+      "message": "$1 の通知をミュート"
+   },
+   "muted_app": {
+      "message": "$1 をミュートしました"
+   },
+   "new_sms_thread": {
+      "message": "新しいテキストメッセージ"
+   },
+   "no_notifications": {
+      "message": "現在、通知はありません。"
+   },
+   "no_pushes": {
+      "message": "最近の履歴はありません"
+   },
+   "notifications": {
+      "message": "通知"
+   },
+   "now": {
+      "message": "今"
+   },
+   "num_new_messages": {
+      "message": "$1 新着"
+   },
+   "option_allow_instant_push": {
+      "message": "インスタントプッシュを有効化　通知先："
+   },
+   "option_allow_instant_push_desc": {
+      "message": "キーボード ショート カットを介して、選択したデバイスに現在のタブを押します。"
+   },
+   "option_automatically_attach_link": {
+      "message": "デバイスへのメッセージを自動的に現在のタブをアタッチします。"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "これでより高速にリンクをデバイスに送信できます。"
+   },
+   "option_background_permission": {
+      "message": "ブラウザを閉じた後も Pushbullet の処理を続行"
+   },
+   "option_background_permission_desc": {
+      "message": "ブラウザを開いたままにしなくても通知を確認できるようになります。"
+   },
+   "option_clipboard_permission": {
+      "message": "ユニバーサル コピー＆ペースト"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "ある端末でコピーしたテキストを、設定が有効になっている他の端末で貼り付けられます。"
+   },
+   "option_instant_push_shortcuts": {
+      "message": "(現在 $1) を設定するには、ここをクリックします。"
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "設定されていません"
+   },
+   "option_notification_duration": {
+      "message": "通知を自動的に隠すまでの時間："
+   },
+   "option_only_show_titles": {
+      "message": "通知のタイトルのみ表示"
+   },
+   "option_only_show_titles_desc": {
+      "message": "これは Pushbullet プライベート メッセージを保つ通知のタイトルだけが表示を行います。"
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "このブラウザへプッシュしたものを自動的に開く"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "このブラウザへ何かをプッシュしたら自動的に新しいタブで開きます。"
+   },
+   "option_play_sound": {
+      "message": "通知を受け取ったらサウンドを再生"
+   },
+   "option_play_sound_desc": {
+      "message": "通知を受け取ったら短いサウンドを鳴らして知らせます。"
+   },
+   "option_show_context_menu": {
+      "message": "Pushbullet をコンテキストメニューに表示"
+   },
+   "option_show_context_menu_desc": {
+      "message": "右クリックメニューに Pushbullet を表示します。"
+   },
+   "option_show_mirrors": {
+      "message": "コンピュータ上に通知を表示する"
+   },
+   "option_show_mirrors_desc": {
+      "message": "このチェック ボックスをオフ (あなたはまだ私たちのツールバーのアイコンにはカウントを見ることができます) を示す通知から私たちを停止します。"
+   },
+   "option_show_notification_count": {
+      "message": "ツールバーのアイコンに通知数を表示"
+   },
+   "option_show_notification_count_desc": {
+      "message": "通知数を参照するには、ツールバーを見てください。"
+   },
+   "option_use_dark_icon": {
+      "message": "ダークアイコンを使用"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "ツールバーのアイコンにダークグレーのアイコンを使用します。"
+   },
+   "options": {
+      "message": "設定"
+   },
+   "panel_cant_sign_in": {
+      "message": "サインイン出来ませんか？一時的にAdblockを無効にしてみてください。それでも問題が解決しない場合、Pushbulletはサインインするのためにサード パーティのcookieを有効にする必要があります。それらはサインインの後に再び無効にできます。"
+   },
+   "panel_sign_up": {
+      "message": "Pushbullet.com にサインアップ →"
+   },
+   "panel_third_party_cookies": {
+      "message": "ここをクリックして設定の変更方法を見る"
+   },
+   "pending": {
+      "message": "保留中"
+   },
+   "people": {
+      "message": "人"
+   },
+   "phone": {
+      "message": "携帯電話"
+   },
+   "push_context_message": {
+      "message": "$2 で $1"
+   },
+   "pushbullet_pro_feature": {
+      "message": "この機能を有効にるすにはPushbullet Proが必要です。"
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro が必要"
+   },
+   "recipient_placeholder": {
+      "message": "To"
+   },
+   "remove_link_tooltip": {
+      "message": "現在のページをアンリンク"
+   },
+   "reply": {
+      "message": "返信"
+   },
+   "reply_limit_reached": {
+      "message": "今月の無料メッセージの制限に達しました。"
+   },
+   "reply_limit_upgrade": {
+      "message": "Pushbullet Pro にアップグレードすれば、無制限にメッセージを送信できます。"
+   },
+   "reply_limit_warning": {
+      "message": "今月の無料メッセージの限界に近づいています。"
+   },
+   "retry": {
+      "message": "再試行"
+   },
+   "save": {
+      "message": "保存"
+   },
+   "see_full_history": {
+      "message": "完全な履歴"
+   },
+   "send_failed": {
+      "message": "送信に失敗しました"
+   },
+   "sending": {
+      "message": "送信しています..."
+   },
+   "sign_in": {
+      "message": "サインイン"
+   },
+   "sign_out": {
+      "message": "サインアウト"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "携帯電話は電源をオンにする必要があり、送信するテキストのためにインターネット接続しています。"
+   },
+   "sms_recipient_placeholder": {
+      "message": "連絡先、または電話番号"
+   },
+   "snooze": {
+      "message": "1 時間スヌーズ"
+   },
+   "thanks_for_installing_message": {
+      "message": "ここをクリックしてサインイン"
+   },
+   "thanks_for_installing_title": {
+      "message": "Pushbullet をご利用いただきありがとうございます"
+   },
+   "title_placeholder": {
+      "message": "タイトル"
+   },
+   "undo": {
+      "message": "元に戻す"
+   },
+   "unmute_app": {
+      "message": "$1 のミュートを解除"
+   },
+   "unsnooze": {
+      "message": "スヌーズ解除"
+   },
+   "unsubscribe_from_channel": {
+      "message": "$1 をフォローします。"
+   },
+   "unsubscribed_from_channel": {
+      "message": "もはや次 $1"
+   },
+   "updated_notif_message": {
+      "message": "クリックして新着情報を確認する"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet がアップデートされました！"
+   },
+   "url_placeholder": {
+      "message": "リンクの url"
+   }
+}

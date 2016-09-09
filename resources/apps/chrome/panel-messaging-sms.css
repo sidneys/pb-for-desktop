@@ -1,0 +1,106 @@
+#sms-right {
+    width: 100%;
+    height: 100%;
+}
+#sms-compose-right {
+    width: 100%;
+    height: 100%;
+}
+#sms-right-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#sms-right-top.with-input {
+    bottom: 62px;
+}
+.firefox #sms-right-top.with-input {
+    bottom: 76px;
+}
+#sms-right-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #d0d0d0;
+}
+#sms-send-holder {
+    float: right;
+    display: table;
+    width: 52px;
+    height: 60px;
+    font-size: 36px;
+    text-align: center;
+    color: #5c6868;
+}
+#sms-send-holder i {
+    display: table-cell;
+    vertical-align: middle;
+}
+#sms-send-holder:hover {
+    cursor: pointer;
+    color: #4ab367;
+}
+#sms-input-holder {
+    margin-left: 10px;
+}
+#sms-input {
+    padding: 15px 0 10px 0;
+    border: 0;
+}
+#sms-device {
+    border: 0;
+}
+#sms-picker-holder {
+    background-color: white;
+    border-bottom: 1px solid #d0d0d0;
+}
+#sms-picker-holder .picker-label {
+    width: 64px;
+    border: none;
+}
+#sms-picker-holder .picker-overlay {
+    width: 175px;
+}
+#sms-device-picker {
+    width: 200px;
+}
+#sms-disclaimer-tooltip {
+    display: none;
+    position: absolute;
+    top: 56px;
+    left: 10px;
+    width: 220px;
+    font-size: 12px;
+    z-index: 100;
+    background-color: #5c6868;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+#compose-message-holder {
+    margin-right: 52px;
+}
+#compose-message {
+    border: none;
+    height: 350px;
+}
+#compose-send-holder {
+    float: right;
+    display: table;
+    width: 52px;
+    height: 60px;
+    font-size: 36px;
+    text-align: center;
+    color: #5c6868;
+}
+#compose-send-holder i {
+    display: table-cell;
+    vertical-align: middle;
+}
+#compose-send-holder:hover {
+    cursor: pointer;
+    color: #4ab367;
+}

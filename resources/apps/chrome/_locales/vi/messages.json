@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "Thêm bạn"
+   },
+   "add_link_tooltip": {
+      "message": "Liên kết trang hiện tại"
+   },
+   "advanced": {
+      "message": "Nâng cao"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Ứng dụng Pushbullet cho máy tính đang quản lý các thông báo."
+   },
+   "all_of_my_devices": {
+      "message": "Tất Cả Thiết Bị"
+   },
+   "cancel": {
+      "message": "Hủy bỏ"
+   },
+   "changelog_tab": {
+      "message": "Có gì mới"
+   },
+   "channels": {
+      "message": "Kênh"
+   },
+   "clear": {
+      "message": "Xoá"
+   },
+   "decryption_failed_body": {
+      "message": "Vui lòng xác nhận mật khẩu dùng cho mọi thiết bị"
+   },
+   "decryption_failed_title": {
+      "message": "Giải mã bất thành"
+   },
+   "devices": {
+      "message": "Thiết bị"
+   },
+   "devices_placeholder": {
+      "message": "Chọn một thiết bị"
+   },
+   "dismiss": {
+      "message": "Bỏ qua"
+   },
+   "done": {
+      "message": "Xong"
+   },
+   "encryption_password_needed_body": {
+      "message": "Bấm vào để nhập mã"
+   },
+   "encryption_password_needed_title": {
+      "message": "Mã hóa dữ liệu nhận được"
+   },
+   "end_to_end_password_desc": {
+      "message": "Nếu bạn chọn nhập mật mã, mật mã này sẽ dùng để đăng nhập trên từng thiết bị bạn có."
+   },
+   "end_to_end_password_label": {
+      "message": "Mã hóa mật khẩu end-to-end"
+   },
+   "file_too_big": {
+      "message": "File quá lớn"
+   },
+   "friends": {
+      "message": "Bạn bè"
+   },
+   "from": {
+      "message": "Từ $1"
+   },
+   "general": {
+      "message": "Tổng quan"
+   },
+   "go_to_link": {
+      "message": "Đi đến liên kết"
+   },
+   "how_to_unmute_app": {
+      "message": "Tôi đã tắt thông báo một ứng dụng, làm thế nào để mở lại?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Mở ứng dụng Pushbullet Android, kéo thanh bên trái, sau đó nhấp chọn 'Nhân Bản Thông Báo'. Ở đây, chọn 'Chỉ áp dụng cho vài ứng dụng', sau đó bật lại ứng dụng."
+   },
+   "learn_more": {
+      "message": "Tìm hiểu thêm"
+   },
+   "me": {
+      "message": "Tôi"
+   },
+   "message_placeholder": {
+      "message": "Nhập một tin nhắn, nhấn enter để gửi"
+   },
+   "message_placeholder_files": {
+      "message": "Nhập một tin nhắn hoặc kéo thả một tập tin"
+   },
+   "message_placeholder_link": {
+      "message": "Thêm một tin nhắn, nhấn enter để gửi"
+   },
+   "mirror_context_message": {
+      "message": "$1 thông qua Pushbullet lúc $2"
+   },
+   "mute": {
+      "message": "Tắt âm"
+   },
+   "mute_app": {
+      "message": "Tắt âm các thông báo của $1"
+   },
+   "muted_app": {
+      "message": "Đã tắt âm của $1"
+   },
+   "new_sms_thread": {
+      "message": "Tin nhắn mới"
+   },
+   "no_notifications": {
+      "message": "Hiện không có tin nhắn"
+   },
+   "no_pushes": {
+      "message": "Không có lịch sử gần đây"
+   },
+   "notifications": {
+      "message": "Thông báo"
+   },
+   "now": {
+      "message": "Hiện tại"
+   },
+   "num_new_messages": {
+      "message": "$1 tin nhắn mới"
+   },
+   "option_allow_instant_push": {
+      "message": "Kích hoạt truyền ngay đến"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Truyền tab hiện tại đến thiết bị được chọn thông qua phím tắt."
+   },
+   "option_automatically_attach_link": {
+      "message": "Tự động đính kèm tab hiện tại vào tin nhắn đến thiết bị"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Giúp gửi đường dẫn đến thiết bị nhanh hơn."
+   },
+   "option_background_permission": {
+      "message": "Giữ cho Pushbullet hoạt động khi đã đóng trình duyệt"
+   },
+   "option_background_permission_desc": {
+      "message": "Điều này sẽ cho phép bạn thấy các thông báo của bạn mà không cần phải giữ cho cửa sổ trình duyệt luôn được mở."
+   },
+   "option_clipboard_permission": {
+      "message": "Toàn quyền sao & chép"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Sao văn bản từ một thiết bị, sau đó chép qua bên khác đã được kích hoạt cài đặt này."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Nhấn vào đây để thiết lập (hiện tại là $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "chưa thiết lập"
+   },
+   "option_notification_duration": {
+      "message": "Tự động ẩn thông báo sau"
+   },
+   "option_only_show_titles": {
+      "message": "Chỉ hiển thị tiêu đề của thông báo"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Điều này sẽ làm Pushbullet chỉ hiển thị tiêu đề của các thông báo, giữ riêng tư cho tin nhắn."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Tự động mở mọi thứ tôi truyền cho trình duyệt này"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Điều này khiến Pushbullet tự động mở trong tab mới mọi thứ bạn truyền đến trình duyệt này."
+   },
+   "option_play_sound": {
+      "message": "Phát âm thanh khi có một thông báo đến"
+   },
+   "option_play_sound_desc": {
+      "message": "Điều này khiến Pushbullet phát 1 đoạn âm thanh ngắn khi có thông báo đến, nhằm nhắc bạn về điều đó."
+   },
+   "option_show_context_menu": {
+      "message": "Hiển thị Pushbullet trên menu ngữ cảnh trong trình duyệt của tôi"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Hiển thị Pushbullet trong danh sách các tùy chọn khi bấm chuột phải."
+   },
+   "option_show_mirrors": {
+      "message": "Hiển thị các thông báo trên máy tính của tôi"
+   },
+   "option_show_mirrors_desc": {
+      "message": "Bỏ chọn dòng này sẽ làm ứng dụng ngừng hiện thông báo (bạn vẫn có thể thấy số đếm ở biểu tượng trên thanh công cụ)."
+   },
+   "option_show_notification_count": {
+      "message": "Hiển thị số lượng thông báo ở biểu tượng trên thanh công cụ"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Xem số lượng thông báo nhanh chóng trên thanh công cụ."
+   },
+   "option_use_dark_icon": {
+      "message": "Dùng biểu tượng tối"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Điều này sẽ khiến biểu tượng trên thanh công cụ chuyển sang màu xám tối."
+   },
+   "options": {
+      "message": "Cài đặt"
+   },
+   "panel_cant_sign_in": {
+      "message": "Không thể đăng nhập? Hãy thử tạm thời tắt chặn quảng cáo. Nếu chưa được, Pushbullet đòi hỏi cookie bên thứ ba cần được kích hoạt để đăng nhập. Bạn có thể vô hiệu hóa chúng sau khi đã đăng nhập."
+   },
+   "panel_sign_up": {
+      "message": "Đăng ký trên Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Nhấn vào đây để biết cách thay đổi thiết lập này."
+   },
+   "pending": {
+      "message": "Đang chờ xử lý"
+   },
+   "people": {
+      "message": "Mọi người"
+   },
+   "phone": {
+      "message": "Điện thoại"
+   },
+   "push_context_message": {
+      "message": "$1 lúc $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Pushbullet Pro yêu cầu kích hoạt tính năng này."
+   },
+   "pushbullet_pro_required": {
+      "message": "Yêu cầu Pushbullet Pro"
+   },
+   "recipient_placeholder": {
+      "message": "Đến"
+   },
+   "remove_link_tooltip": {
+      "message": "Bỏ liên kết trang hiện tại"
+   },
+   "reply": {
+      "message": "Trả lời"
+   },
+   "reply_limit_reached": {
+      "message": "Bạn đã đến giới hạn tin nhắn miễn phí hàng tháng."
+   },
+   "reply_limit_upgrade": {
+      "message": "Nâng cấp lên Pushbullet Pro để gửi tin nhắn không giới hạn."
+   },
+   "reply_limit_warning": {
+      "message": "Bạn đã gần đến giới hạn tin nhắn miễn phí hàng tháng."
+   },
+   "retry": {
+      "message": "Thử lại"
+   },
+   "save": {
+      "message": "Lưu"
+   },
+   "see_full_history": {
+      "message": "Xem lịch sử đầy đủ"
+   },
+   "send_failed": {
+      "message": "Gửi không thành công"
+   },
+   "sending": {
+      "message": "Đang gửi..."
+   },
+   "sign_in": {
+      "message": "Đăng nhập"
+   },
+   "sign_out": {
+      "message": "Đăng xuất"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "Điện thoại phải đang mở và có mạng để gửi tin nhắn."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Số liên lạc hoặc số điện thoại"
+   },
+   "snooze": {
+      "message": "Báo lại sau 1h"
+   },
+   "thanks_for_installing_message": {
+      "message": "Bấm vào đây để đăng nhập"
+   },
+   "thanks_for_installing_title": {
+      "message": "Cảm ơn đã cài đặt Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Tiêu đề"
+   },
+   "undo": {
+      "message": "Hoàn tác"
+   },
+   "unmute_app": {
+      "message": "Bỏ tắt âm của $1"
+   },
+   "unsnooze": {
+      "message": "Bỏ báo lại"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Bỏ theo dõi $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Không còn theo dõi $1"
+   },
+   "updated_notif_message": {
+      "message": "Bấm vào để xem có gì mới"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet đã được cập nhật!"
+   },
+   "url_placeholder": {
+      "message": "Đường dẫn url"
+   }
+}

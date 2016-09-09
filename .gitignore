@@ -10,23 +10,22 @@ logs
 temp
 tmp
 
-# Cache
+# Caches
 .cache
 cache
-.sass-cache/
+.sass-cache
 
 # JetBrains
-.idea/
+.idea
 *.sln.iml
+
+# VSCode
+.vscode
 
 # Compiled
 build
 
-# Node
+# Dependencies
 node_modules
 jspm_packages
-cache-ecb
-
-
-# ELECTRON-CLOUD-DEPLOY CACHES
-electron-cloud-deploy-cache
+bower_components

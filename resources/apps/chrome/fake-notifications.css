@@ -1,0 +1,90 @@
+.fake-notification {
+    position: relative;
+    font-size: 15px;
+    line-height: 20px;
+    color: #333;
+    background-color: white;
+    white-space: pre-wrap;
+    overflow: hidden;
+}
+.fake-notification-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 28px;
+    width: 28px;
+    padding: 6px;
+    cursor: pointer;
+}
+.fake-notification-close:hover {
+    background-color: #f5f5f5;
+}
+.fake-notification-image-holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 80px;
+    background-color: #f7f7f7;
+}
+.fake-notification-image {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;  
+    top: 0;  
+    bottom: 0;  
+    left: 0;  
+    right: 0;  
+    margin: auto;  
+}
+.fake-notification-text-holder {
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 80px;
+    padding: 6px 26px 0 96px;
+}
+.fake-notification-text-holder div {
+    margin-bottom: 4px;
+}
+.fake-notification-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.fake-notification-message {
+    font-size: 13px;
+    line-height: 16px;
+    overflow: hidden;
+    max-height: 82px;
+}
+.fake-notification-context-message {
+    color: #999;
+    font-size: 13px;
+    line-height: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.fake-notification-button {
+    overflow: hidden;
+    cursor: default;
+    padding: 0 16px;
+}
+.fake-notification-button:hover {
+    background-color: #f5f5f5;
+}
+.fake-notification-button-icon {
+    float: left;
+    display: inline-block;
+    margin: 12px 16px 12px 0;
+    height: 16px;
+    width: 16px;
+}
+.fake-notification-button span {
+    font-size: 13px;
+    line-height: 40px;
+}
+.fake-notification-bottom-border {
+    border-bottom: 1px solid #eee;
+}

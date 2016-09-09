@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "Ismerős hozzáadása"
+   },
+   "add_link_tooltip": {
+      "message": "Jelenlegi oldal linkelése"
+   },
+   "advanced": {
+      "message": "Speciális"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "A Pushbullet asztali alkalmazás kezeli az értesítéseket. Letiltva az értesítéseket az asztali alkalmazás beállításaiban visszaadja az irányítást a böngésző bővítménynek."
+   },
+   "all_of_my_devices": {
+      "message": "Minden eszköz"
+   },
+   "cancel": {
+      "message": "Mégse"
+   },
+   "changelog_tab": {
+      "message": "Mi újság"
+   },
+   "channels": {
+      "message": "Csatornák"
+   },
+   "clear": {
+      "message": "Törlés"
+   },
+   "decryption_failed_body": {
+      "message": "Győződjön meg róla, hogy a jelszavak egyeznek minden eszközén"
+   },
+   "decryption_failed_title": {
+      "message": "Sikertelen volt a visszafejtés"
+   },
+   "devices": {
+      "message": "Készülékek"
+   },
+   "devices_placeholder": {
+      "message": "Válasszon egy készüléket"
+   },
+   "dismiss": {
+      "message": "Elutasít"
+   },
+   "done": {
+      "message": "Kész"
+   },
+   "encryption_password_needed_body": {
+      "message": "Kattintson ide jelszava megadásához"
+   },
+   "encryption_password_needed_title": {
+      "message": "Titkosított adat fogadva"
+   },
+   "end_to_end_password_desc": {
+      "message": "Ha kiválasztja hogy jelszót állít be, ez a jelszó lesz beállítva minden eszközén."
+   },
+   "end_to_end_password_label": {
+      "message": "Végpont titkosítás jelszava"
+   },
+   "file_too_big": {
+      "message": "A fájl túl nagy"
+   },
+   "friends": {
+      "message": "Barátok"
+   },
+   "from": {
+      "message": "A következőtől: $1"
+   },
+   "general": {
+      "message": "Általános"
+   },
+   "go_to_link": {
+      "message": "Menj a linkre"
+   },
+   "how_to_unmute_app": {
+      "message": "Elnémítottam egy alkalmazást, hogy vonhatom vissza?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Nyissa meg a Pushbullet Android alkalmazást, nyissa meg a bal oldali fület és menjen a \"Tükrözés\"-re. Itt érintse meg a \"Csak néhány alkalmazásnak\" pontot, és engedélyezze újra az alkalmazást."
+   },
+   "learn_more": {
+      "message": "Tudj meg többet"
+   },
+   "me": {
+      "message": "Nekem"
+   },
+   "message_placeholder": {
+      "message": "Írjon be egy üzenetet, nyomja meg az entert a küldéshez"
+   },
+   "message_placeholder_files": {
+      "message": "Írjon be egy üzenetet vagy húzzon ide egy fájlt"
+   },
+   "message_placeholder_link": {
+      "message": "Adjon hozzá egy üzenetet, nyomja meg az entert a küldéshez"
+   },
+   "mirror_context_message": {
+      "message": "$1 Pushbullet-en keresztül $2-kor"
+   },
+   "mute": {
+      "message": "Némítás"
+   },
+   "mute_app": {
+      "message": "Némítsd a(z) $1 értesítéseit"
+   },
+   "muted_app": {
+      "message": "$1 lenémítva"
+   },
+   "new_sms_thread": {
+      "message": "Új szöveges üzenet"
+   },
+   "no_notifications": {
+      "message": "Most nincsenek értesítések"
+   },
+   "no_pushes": {
+      "message": "Nincs újabb előzmény"
+   },
+   "notifications": {
+      "message": "Értesítések"
+   },
+   "now": {
+      "message": "Most"
+   },
+   "num_new_messages": {
+      "message": "$1 új üzenet"
+   },
+   "option_allow_instant_push": {
+      "message": "Engedélyezi az azonnali küldést neki: "
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Küldje el a jelenlegi lapot a kiválasztott eszközre gyorsbillentyűvel."
+   },
+   "option_automatically_attach_link": {
+      "message": "Automatikusan csatolja a jelenlegi lapot az üzenetekhez"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Ezzel a linkek küldése gyorsabb lesz."
+   },
+   "option_background_permission": {
+      "message": "Fusson tovább a Pushbullet a böngésző bezárása után"
+   },
+   "option_background_permission_desc": {
+      "message": "Ez lehetővé teszi, hogy lássa az értesítéseit anélkül, hogy egy böngészőablakot nyitva tartana."
+   },
+   "option_clipboard_permission": {
+      "message": "Univerzális másolás & beillesztés"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Másoljon szöveget az egyik eszközén, majd illessze be egy másikon, melyen ez a beállítás engedélyezve van."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Ide kattintva állíthatja be (jelenleg $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "nincs beállítva"
+   },
+   "option_notification_duration": {
+      "message": "Értesítések elrejtése automatikusan"
+   },
+   "option_only_show_titles": {
+      "message": "Csak az értesítés címeket mutassa"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Ezzel a Pushbullet csak az értesítést mutatja, elrejtve az üzenet tartalmát."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Automatikusan nyissa meg a dolgokat, amiket ennek a böngészőnek küldök."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Ezzel a Pushbullet egy új lapon automatikusan megnyit mindent, amit a böngészőnek küld."
+   },
+   "option_play_sound": {
+      "message": "Hangeffektus lejátszása, amikor értesítés érkezik"
+   },
+   "option_play_sound_desc": {
+      "message": "A Pushbullet egy rövid hangjelzéssel figyelmeztet a bejövő értesítésre."
+   },
+   "option_show_context_menu": {
+      "message": "Mutassa a Pushbullet-et a környezeti menüben"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Mutassa a Pushbullet-et a jobb-klikk menü opcióiban."
+   },
+   "option_show_mirrors": {
+      "message": "Mutassa az értesítéseket a számítógépen."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Ezzel kikapcsolja az értesítések megjelenítését (a számláló továbbra is látható lesz az eszköztár ikonon)."
+   },
+   "option_show_notification_count": {
+      "message": "Értesítés számláló mutatása az ikonon"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Mutassa az értesítések számát az eszköztár ikonon."
+   },
+   "option_use_dark_icon": {
+      "message": "Sötét ikon használata"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Ez az eszköztár ikont szürkére színezi."
+   },
+   "options": {
+      "message": "Beállítások"
+   },
+   "panel_cant_sign_in": {
+      "message": "Nem tud bejelentkezni? Próbálja meg átmenetileg kikapcsolni az Adblock-ot. Ha ez nem segít, a Pushbullet-nek szüksége van a harmadik féltől származó sütik engedélyezésére a bejelentkezéshez. Később újra letilthatja őket, miután sikerült a bejelentkezés."
+   },
+   "panel_sign_up": {
+      "message": "Iratkozzon fel a Pushbullet.com-ra →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Kattintson ide, hogy hogyan kell megváltoztatni ezt a beállítást."
+   },
+   "pending": {
+      "message": "Függőben lévő"
+   },
+   "people": {
+      "message": "Emberek"
+   },
+   "phone": {
+      "message": "Telefon"
+   },
+   "push_context_message": {
+      "message": "$1, $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Pushbullet Pro szükséges a funkcióhoz."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro szükséges"
+   },
+   "recipient_placeholder": {
+      "message": "Ide"
+   },
+   "remove_link_tooltip": {
+      "message": "Link törlése"
+   },
+   "reply": {
+      "message": "Válasz"
+   },
+   "reply_limit_reached": {
+      "message": "Elérte az ingyenes üzenet limitet ebben a hónapban."
+   },
+   "reply_limit_upgrade": {
+      "message": "Frissítsen Pushbullet Pro-ra tetszőleges számú üzenetküldéshez."
+   },
+   "reply_limit_warning": {
+      "message": "Lassan eléri az ingyenes üzenet limitet ebben a hónapban."
+   },
+   "retry": {
+      "message": "Újra"
+   },
+   "save": {
+      "message": "Mentés"
+   },
+   "see_full_history": {
+      "message": "Teljes előzménylista"
+   },
+   "send_failed": {
+      "message": "Küldés sikertelen"
+   },
+   "sending": {
+      "message": "Küldés..."
+   },
+   "sign_in": {
+      "message": "Bejelentkezés"
+   },
+   "sign_out": {
+      "message": "Kijelentkezés"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "A telefonnak bekapcsolva kell lennie, és internetkapcsolattal kell rendelkeznie szöveges üzenetek küldéséhez."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Névjegy vagy telefonszám"
+   },
+   "snooze": {
+      "message": "1 óra Szundi"
+   },
+   "thanks_for_installing_message": {
+      "message": "Kattintson ide a bejelentkezéshez"
+   },
+   "thanks_for_installing_title": {
+      "message": "Köszönjük, hogy telepítette a Pushbullet-et"
+   },
+   "title_placeholder": {
+      "message": "Cím"
+   },
+   "undo": {
+      "message": "Visszavonás"
+   },
+   "unmute_app": {
+      "message": "$1 némítás feloldása"
+   },
+   "unsnooze": {
+      "message": "Szundi vége"
+   },
+   "unsubscribe_from_channel": {
+      "message": "$1 követésének megszüntetése"
+   },
+   "unsubscribed_from_channel": {
+      "message": "$1 többé nincs követve"
+   },
+   "updated_notif_message": {
+      "message": "Kattintson ide, hogy mi az új!"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet frissítve!"
+   },
+   "url_placeholder": {
+      "message": "Link URL-címe"
+   }
+}

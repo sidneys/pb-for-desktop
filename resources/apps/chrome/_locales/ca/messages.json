@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ Afegeix un amic"
+   },
+   "add_link_tooltip": {
+      "message": "Enllaça amb la pàgina actual"
+   },
+   "advanced": {
+      "message": "Avançat"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "La aplicació d'escriptori Pushbullet està gestionant les notificacions. Desactivant les notificacions des de la configuració de l'aplicació per escriptori, retornarà el control a l'extensió."
+   },
+   "all_of_my_devices": {
+      "message": "Tots el meus dispositius"
+   },
+   "cancel": {
+      "message": "Cancel·la"
+   },
+   "changelog_tab": {
+      "message": "Novetats"
+   },
+   "channels": {
+      "message": "Canals"
+   },
+   "clear": {
+      "message": "Neteja"
+   },
+   "decryption_failed_body": {
+      "message": "Sisplau confirmeu que la contrasenya coincideix en tots els dispositius"
+   },
+   "decryption_failed_title": {
+      "message": "Ha fallat la desencriptació"
+   },
+   "devices": {
+      "message": "Dispositius"
+   },
+   "devices_placeholder": {
+      "message": "Sel·leccioneu un dispositiu"
+   },
+   "dismiss": {
+      "message": "Descarta"
+   },
+   "done": {
+      "message": "Fet"
+   },
+   "encryption_password_needed_body": {
+      "message": "Feu clic aquí per introduir la contrasenya"
+   },
+   "encryption_password_needed_title": {
+      "message": "S'han rebut dades encriptades"
+   },
+   "end_to_end_password_desc": {
+      "message": "Si trieu introduir una contrasenya, aquesta s'ha d'introduir a tots els vostres dispositius."
+   },
+   "end_to_end_password_label": {
+      "message": "Contrasenya de xifratge punt a punt"
+   },
+   "file_too_big": {
+      "message": "Fitxer massa gran"
+   },
+   "friends": {
+      "message": "Amics"
+   },
+   "from": {
+      "message": "De $1"
+   },
+   "general": {
+      "message": "General"
+   },
+   "go_to_link": {
+      "message": "Vés a l'enllaç"
+   },
+   "how_to_unmute_app": {
+      "message": "He emmudit una aplicació, com m'ho faig per desfer-ho?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Obriu l'aplicació de Pushbullet a Android, extregueu el calaix de l'esquerra i premeu \"Sincronització de notificacions\". Allí, sel·leccioneu l'opció de \"Tan sols per algunes aplicacions\" i reestabliu l'aplicació."
+   },
+   "learn_more": {
+      "message": "Més informació"
+   },
+   "me": {
+      "message": "Jo"
+   },
+   "message_placeholder": {
+      "message": "Entreu un missatge, premeu intro per enviar"
+   },
+   "message_placeholder_files": {
+      "message": "Entreu un missatge o deixeu un fitxer"
+   },
+   "message_placeholder_link": {
+      "message": "Afegiu un missatge, premeu intro per enviar"
+   },
+   "mirror_context_message": {
+      "message": "$1 mitjançant Pushbullet a les $2"
+   },
+   "mute": {
+      "message": "Silencia"
+   },
+   "mute_app": {
+      "message": "Silencia $1 notificacions"
+   },
+   "muted_app": {
+      "message": "Silenciades $1"
+   },
+   "new_sms_thread": {
+      "message": "Nou missatge de text"
+   },
+   "no_notifications": {
+      "message": "No hi ha notificacions"
+   },
+   "no_pushes": {
+      "message": "No hi ha historial recent"
+   },
+   "notifications": {
+      "message": "Notificacions"
+   },
+   "now": {
+      "message": "Ara mateix"
+   },
+   "num_new_messages": {
+      "message": "$1 nous missatges"
+   },
+   "option_allow_instant_push": {
+      "message": "Permet enviament instantani a"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Empènyer el tabulador actual al dispositiu escollit mitjançant drecera de teclats."
+   },
+   "option_automatically_attach_link": {
+      "message": "Adjunta automàticament la pestanya actual als missatges al vostre dispositiu"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Açò envia els enllaços més ràpid als dispositius."
+   },
+   "option_background_permission": {
+      "message": "Continua executant Pushbullet quan el navegador es tanqui"
+   },
+   "option_background_permission_desc": {
+      "message": "Això li permetrà veure les notificacions sense necessitat de mantenir una finestra del navegador oberta."
+   },
+   "option_clipboard_permission": {
+      "message": "Copiar i enganxar universals"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Copia text en un dispositiu, després enganxa'l en qualsevol altre que també tingui aquesta opció habilitada."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Cliqueu aquí per establir (actualment $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "no activat"
+   },
+   "option_notification_duration": {
+      "message": "Amaga notificacions automàticament després de"
+   },
+   "option_only_show_titles": {
+      "message": "Mostra només els títols de notificació"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Això farà que Pushbullet tan sols mostri el títol de les notificacions, mantenint la privacitat del missatge."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Obre el que envio a aquest navegador automàticament."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Això farà que Pushbullet obri el que envieu a aquest navegador automàticament en una nova pestanya."
+   },
+   "option_play_sound": {
+      "message": "Reprodueix un so quan arriba una notificació"
+   },
+   "option_play_sound_desc": {
+      "message": "Això farà emetre un curt so quan arriba una notificació, alertant-vos d'ella."
+   },
+   "option_show_context_menu": {
+      "message": "Mostra Pushbullet al menú de context"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Mostra el Pushbullet a la llista d'opcions de menú de clic dret."
+   },
+   "option_show_mirrors": {
+      "message": "Mostra les notificacions al meu ordinador."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Desmarcant aquesta opció farà que Pushbullet no us mostri les notificacions (però el recompte seguirà present a la barra d'eines)."
+   },
+   "option_show_notification_count": {
+      "message": "Mostra el recompte de notificacions a la barra d'eines"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Comprova el número de notificacions per respondre en un cop d'ull a la barra d'eines."
+   },
+   "option_use_dark_icon": {
+      "message": "Utilitza Icona fosca"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Això posarà la nostra icona de la barra d'eines en gris fosc."
+   },
+   "options": {
+      "message": "Configuració"
+   },
+   "panel_cant_sign_in": {
+      "message": "No aconsegueixes entrar? Prova de desconnectar temporalment l'Adblock. Si això no resultés, Pushbullet necessitarà que les cookies de tercers estiguin activades per iniciar sessió.  Pots desactivar-les altre cop,  després de l'inici de sessió."
+   },
+   "panel_sign_up": {
+      "message": "Registreu-vos a Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Feu clic aquí per saber com canviar aquesta configuració."
+   },
+   "pending": {
+      "message": "Pendent"
+   },
+   "people": {
+      "message": "Persones"
+   },
+   "phone": {
+      "message": "Telèfon"
+   },
+   "push_context_message": {
+      "message": "$1 a les $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Es necessari Pushbullet Pro per habilitar aquesta característica."
+   },
+   "pushbullet_pro_required": {
+      "message": "Es necessari Pushbullet Pro"
+   },
+   "recipient_placeholder": {
+      "message": "A"
+   },
+   "remove_link_tooltip": {
+      "message": "Desfés l'enllaçament amb la pàgina actual"
+   },
+   "reply": {
+      "message": "Respon"
+   },
+   "reply_limit_reached": {
+      "message": "Has arribat el límit de missatges gratis per aquest mes."
+   },
+   "reply_limit_upgrade": {
+      "message": "Actualitza a Pushbullet Pro per enviar missatges il·limitats."
+   },
+   "reply_limit_warning": {
+      "message": "Estàs a prop d'arribar al límit de missatges gratis d'aquest mes."
+   },
+   "retry": {
+      "message": "Torna-ho a provar"
+   },
+   "save": {
+      "message": "Desa"
+   },
+   "see_full_history": {
+      "message": "Visualitza l'historial sencer"
+   },
+   "send_failed": {
+      "message": "Ha fallat l'enviament"
+   },
+   "sending": {
+      "message": "Enviant..."
+   },
+   "sign_in": {
+      "message": "Inicia sessió"
+   },
+   "sign_out": {
+      "message": "Tanca la sessió"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "El telèfon ha d'estar encès i tenir una connexió activa a internet perquè els missatges es puguin enviar."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Contacte o número de telèfon"
+   },
+   "snooze": {
+      "message": "Repetició"
+   },
+   "thanks_for_installing_message": {
+      "message": "Feu clic aquí per iniciar la sessió"
+   },
+   "thanks_for_installing_title": {
+      "message": "Gràcies per instal·lar Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Títol"
+   },
+   "undo": {
+      "message": "Desfés"
+   },
+   "unmute_app": {
+      "message": "Reactiva so $1"
+   },
+   "unsnooze": {
+      "message": "Reactiva"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Deixar de seguir a $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Ja no seguiu a $1"
+   },
+   "updated_notif_message": {
+      "message": "Feu clic aquí per veure les novetats"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet s'ha actualitzat!"
+   },
+   "url_placeholder": {
+      "message": "URL de l'enllaç"
+   }
+}

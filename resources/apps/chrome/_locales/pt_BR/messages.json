@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ Adicionar amigo"
+   },
+   "add_link_tooltip": {
+      "message": "Link da página atual"
+   },
+   "advanced": {
+      "message": "Avançado"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "O aplicativo de desktop Pushbullet está gerenciando as notificações."
+   },
+   "all_of_my_devices": {
+      "message": "Todos os meus dispositivos"
+   },
+   "cancel": {
+      "message": "Cancelar"
+   },
+   "changelog_tab": {
+      "message": " O que há de novo"
+   },
+   "channels": {
+      "message": "Canais"
+   },
+   "clear": {
+      "message": "Limpar"
+   },
+   "decryption_failed_body": {
+      "message": "Por favor, confirme se sua senha corresponde em todos os dispositivos"
+   },
+   "decryption_failed_title": {
+      "message": "Falha na descriptografia"
+   },
+   "devices": {
+      "message": "Dispositivos"
+   },
+   "devices_placeholder": {
+      "message": "Selecione um dispositivo"
+   },
+   "dismiss": {
+      "message": "Dispensar"
+   },
+   "done": {
+      "message": "Feito"
+   },
+   "encryption_password_needed_body": {
+      "message": "Clique aqui para digitar sua senha"
+   },
+   "encryption_password_needed_title": {
+      "message": "Dados criptografados recebidos"
+   },
+   "end_to_end_password_desc": {
+      "message": "Se você optar por inserir uma senha, essa senha será necessária em cada um dos seus dispositivos."
+   },
+   "end_to_end_password_label": {
+      "message": "Senha criptografada de ponta a ponta"
+   },
+   "file_too_big": {
+      "message": "Arquivo muito grande"
+   },
+   "friends": {
+      "message": "Amigos"
+   },
+   "from": {
+      "message": "De $1"
+   },
+   "general": {
+      "message": "Geral"
+   },
+   "go_to_link": {
+      "message": "Ir para link"
+   },
+   "how_to_unmute_app": {
+      "message": "Silenciei uma aplicação. Como reativo?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Abra o app do Pushbullet no Android, puxe a gaveta da esquerda e depois toque em 'Espelhamento'. Toque em, 'apenas para alguns apps' e, em seguida, re-habilite o app."
+   },
+   "learn_more": {
+      "message": "Saiba mais"
+   },
+   "me": {
+      "message": "Eu"
+   },
+   "message_placeholder": {
+      "message": "Digite uma mensagem, pressione enter para enviar"
+   },
+   "message_placeholder_files": {
+      "message": "Digite uma mensagem ou solte um arquivo"
+   },
+   "message_placeholder_link": {
+      "message": "Adicione uma mensagem, pressione enter para enviar"
+   },
+   "mirror_context_message": {
+      "message": "$1 via Pushbullet às $2"
+   },
+   "mute": {
+      "message": "Desativar notificações"
+   },
+   "mute_app": {
+      "message": "Desativar notificações de $1"
+   },
+   "muted_app": {
+      "message": "Notificações de $1 desativadas"
+   },
+   "new_sms_thread": {
+      "message": "Nova mensagem de texto"
+   },
+   "no_notifications": {
+      "message": "Sem notificações no momento"
+   },
+   "no_pushes": {
+      "message": "Nenhuma história recente"
+   },
+   "notifications": {
+      "message": "Notificações"
+   },
+   "now": {
+      "message": "Agora"
+   },
+   "num_new_messages": {
+      "message": "$1 mensagens novas"
+   },
+   "option_allow_instant_push": {
+      "message": "Habilitar envio instantâneo para"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Enviar a aba atual para o dispositivo escolhido através de um atalho de teclado."
+   },
+   "option_automatically_attach_link": {
+      "message": "Anexar automaticamente a aba atual às mensagens enviadas para um dispositivo"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Isto faz o envio links para dispositivos mais rápido."
+   },
+   "option_background_permission": {
+      "message": "Manter o Pushbullet executando com o navegador fechado"
+   },
+   "option_background_permission_desc": {
+      "message": "Permite que você veja suas notificações sem precisar ter uma janela do navegador aberta."
+   },
+   "option_clipboard_permission": {
+      "message": "Copiar e colar universal"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Copie o texto em um dispositivo e, em seguida, cole em qualquer outro que também tem essa configuração habilitada."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Clique aqui para definir (atualmente $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "não definido"
+   },
+   "option_notification_duration": {
+      "message": "Ocultar notificações automaticamente após"
+   },
+   "option_only_show_titles": {
+      "message": "Mostrar apenas títulos das notificações"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Isto fará o Pushbullet mostrar apenas o título das notificações, mantendo a mensagem privada."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Abrir automaticamente o que eu enviar a este navegador."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Isto faz com que o Pushbullet abra automaticamente em uma nova aba qualquer coisa que você enviar para este navegador."
+   },
+   "option_play_sound": {
+      "message": "Tocar um som quando chegar notificações"
+   },
+   "option_play_sound_desc": {
+      "message": "Isto faz com que o Pushbullet alerte você ao chegar uma notificação, tocando um som curto."
+   },
+   "option_show_context_menu": {
+      "message": "Mostrar Pushbullet no menu de contexto"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Mostra o Pushbullet no menu que surge ao clicar com o botão direito do mouse."
+   },
+   "option_show_mirrors": {
+      "message": "Mostrar notificações no meu computador."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Desmarcar isto fará com que as notificações não sejam mostradas (mas ainda poderá consulta-las no ícone da barra de ferramentas)."
+   },
+   "option_show_notification_count": {
+      "message": "Mostrar número de notificações no ícone da barra de ferramentas"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Veja de relance quantas notificações possui na sua barra de ferramentas."
+   },
+   "option_use_dark_icon": {
+      "message": "Usar ícone escuro"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Usa um ícone cinza escuro na barra de ferramentas."
+   },
+   "options": {
+      "message": "Configurações"
+   },
+   "panel_cant_sign_in": {
+      "message": "Não consegue logar? Tente desativar temporariamente o Adblock. Se isso não ajudar, o Pushbullet requer cookies de terceiros para habilitar o login. Você pode desativá-los novamente depois de entrar."
+   },
+   "panel_sign_up": {
+      "message": "Cadastre-se em Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Clique aqui aprender a alterar esta configuração."
+   },
+   "pending": {
+      "message": "Pendente"
+   },
+   "people": {
+      "message": "Pessoas"
+   },
+   "phone": {
+      "message": "Telefone"
+   },
+   "push_context_message": {
+      "message": "$1 às $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "O Pushbullet Pro é necessário para habilitar esse recurso."
+   },
+   "pushbullet_pro_required": {
+      "message": "É necessário o Pushbullet Pro"
+   },
+   "recipient_placeholder": {
+      "message": "Para"
+   },
+   "remove_link_tooltip": {
+      "message": "Remover ligação para esta página"
+   },
+   "reply": {
+      "message": "Responder"
+   },
+   "reply_limit_reached": {
+      "message": "Você alcançou o limite de mensagens gratuitas nesse mês."
+   },
+   "reply_limit_upgrade": {
+      "message": "Atualize para o Pushbullet Pro para enviar mensagens ilimitadas."
+   },
+   "reply_limit_warning": {
+      "message": "Você está se aproximando do limite de mensagens gratuitas mensais."
+   },
+   "retry": {
+      "message": "Tentar novamente"
+   },
+   "save": {
+      "message": "Salvar"
+   },
+   "see_full_history": {
+      "message": "Ver histórico completo"
+   },
+   "send_failed": {
+      "message": "Falha no envio"
+   },
+   "sending": {
+      "message": "Enviando..."
+   },
+   "sign_in": {
+      "message": "Iniciar sessão"
+   },
+   "sign_out": {
+      "message": "Encerrar sessão"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "O telefone deve estar ligado e ter conexão à internet para enviar os textos."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Contato ou número de telefone"
+   },
+   "snooze": {
+      "message": "Adiar 1 h"
+   },
+   "thanks_for_installing_message": {
+      "message": "Clique aqui para iniciar sessão"
+   },
+   "thanks_for_installing_title": {
+      "message": "Obrigado por instalar o Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Título"
+   },
+   "undo": {
+      "message": "Desfazer"
+   },
+   "unmute_app": {
+      "message": "Reativar notificações de $1"
+   },
+   "unsnooze": {
+      "message": "Restaurar notificações"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Deixar de seguir $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Já não segue $1"
+   },
+   "updated_notif_message": {
+      "message": "Clique aqui para ver as novidades"
+   },
+   "updated_notif_title": {
+      "message": "O Pushbullet atualizou!"
+   },
+   "url_placeholder": {
+      "message": "Url do link"
+   }
+}

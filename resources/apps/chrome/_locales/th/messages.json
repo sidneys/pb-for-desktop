@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ เพิ่มเพื่อน"
+   },
+   "add_link_tooltip": {
+      "message": "ลิงก์หน้าปัจจุบัน"
+   },
+   "advanced": {
+      "message": "ขั้นสูง"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "แอป Pushbullet สำหรับเดสก์ท็อปกำลังจัดการการแจ้งเตือน ปิดรับการแจ้งเตือนในหน้าตั้งค่าของแอปสำหรับเดสก์ท็อปเพื่อใช้ส่วนขยายควบคุมแทน"
+   },
+   "all_of_my_devices": {
+      "message": "อุปกรณ์ทั้งหมดของฉัน"
+   },
+   "cancel": {
+      "message": "ยกเลิก"
+   },
+   "changelog_tab": {
+      "message": "มีอะไรใหม่"
+   },
+   "channels": {
+      "message": "ช่อง"
+   },
+   "clear": {
+      "message": "ล้าง"
+   },
+   "decryption_failed_body": {
+      "message": "กรุณายืนยันว่ารหัสผ่านของคุณตรงกับบนทุกอุปกรณ์"
+   },
+   "decryption_failed_title": {
+      "message": "การถอดรหัสล้มเหลว"
+   },
+   "devices": {
+      "message": "อุปกรณ์"
+   },
+   "devices_placeholder": {
+      "message": "เลือกอุปกรณ์"
+   },
+   "dismiss": {
+      "message": "ปิด"
+   },
+   "done": {
+      "message": "เสร็จ"
+   },
+   "encryption_password_needed_body": {
+      "message": "คลิกที่นี่เพื่อใส่รหัสผ่านของคุณ"
+   },
+   "encryption_password_needed_title": {
+      "message": "ได้รับข้อมูลที่มีการเข้ารหัส"
+   },
+   "end_to_end_password_desc": {
+      "message": "หากคุณเลือกที่จะใส่รหัสผ่าน คุณจะต้องป้อนรหัสผ่านนี้ทุกอุปกรณ์ของคุณ"
+   },
+   "end_to_end_password_label": {
+      "message": "รหัสผ่านการเข้ารหัสปลายทางถึงปลายทาง"
+   },
+   "file_too_big": {
+      "message": "ไฟล์ใหญ่เกินไป"
+   },
+   "friends": {
+      "message": "เพื่อน"
+   },
+   "from": {
+      "message": "จาก $1"
+   },
+   "general": {
+      "message": "ทั่วไป"
+   },
+   "go_to_link": {
+      "message": "ไปยังลิงก์"
+   },
+   "how_to_unmute_app": {
+      "message": "ฉันไม่แสดงการแจ้งเตือนแอป, จะแสดงอีกครั้งได้อย่างไร?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "เปิดแอป Pushbullet บนแอนดรอยด์ ดึงแถบด้านข้างออกมาจากทางซ้าย จากนั้นแตะ 'การซิงค์' แล้วแตะ 'เฉพาะบางแอป' จากนั้นเปิดใช้งานอีกครั้ง"
+   },
+   "learn_more": {
+      "message": "เรียนรู้เพิ่มเติม"
+   },
+   "me": {
+      "message": "ฉัน"
+   },
+   "message_placeholder": {
+      "message": "พิมพ์ข้อความ, กด enter เพื่อส่ง"
+   },
+   "message_placeholder_files": {
+      "message": "พิมพ์ข้อความ หรือวางไฟล์"
+   },
+   "message_placeholder_link": {
+      "message": "พิมพ์ข้อความ, กด enter เพื่อส่ง"
+   },
+   "mirror_context_message": {
+      "message": "$1 ผ่าน Pushbullet เมื่อ $2"
+   },
+   "mute": {
+      "message": "ไม่แสดง"
+   },
+   "mute_app": {
+      "message": "ไม่ต้องแสดงการแจ้งเตือนจาก $1"
+   },
+   "muted_app": {
+      "message": "ไม่แสดง $1"
+   },
+   "new_sms_thread": {
+      "message": "ข้อความใหม่"
+   },
+   "no_notifications": {
+      "message": "ไม่มีการแจ้งเตือนในขณะนี้"
+   },
+   "no_pushes": {
+      "message": "ไม่มีประวัติล่าสุด"
+   },
+   "notifications": {
+      "message": "การแจ้งเตือน"
+   },
+   "now": {
+      "message": "ตอนนี้"
+   },
+   "num_new_messages": {
+      "message": "$1 ข้อความใหม่"
+   },
+   "option_allow_instant_push": {
+      "message": "เปิดใช้งานการส่งแบบทันทีไปยัง"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "ส่งแท็บปัจจุบันไปยังอุปกรณ์ที่เลือกไว้ด้วยคีย์ลัด"
+   },
+   "option_automatically_attach_link": {
+      "message": "แนบลิงก์ของแท็บปัจจุบันไปกับข้อความที่ส่งไปยังอุปกรณ์โดยอัตโนมัติ"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "ทำให้การส่งลิงก์ไปยังอุปกรณ์ต่างๆ เร็วขึ้น"
+   },
+   "option_background_permission": {
+      "message": "ให้ Pushbullet ทำงานต่อไปเมื่อฉันปิดเบราว์เซอร์"
+   },
+   "option_background_permission_desc": {
+      "message": "ตัวเลือกนี้จะทำให้คุณสามารถดูการแจ้งเตือนโดยไม่ต้องเปิดหน้าต่างเบราว์เซอร์ทิ้งไว้"
+   },
+   "option_clipboard_permission": {
+      "message": "คัดลอก & วางครอบจักรวาล"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "คัดลอกข้อความจากอุปกรณ์หนึ่ง จากนั้นวางบนอุปกรณ์อื่นๆ ที่มีการเปิดการตั้งค่านี้ไว้"
+   },
+   "option_instant_push_shortcuts": {
+      "message": "คลิกที่นี่เพื่อตั้งค่า (ขณะนี้ $1)"
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "ไม่ได้ตั้งค่า"
+   },
+   "option_notification_duration": {
+      "message": "ซ่อนการแจ้งเตือนอัตโนมัติหลังจาก"
+   },
+   "option_only_show_titles": {
+      "message": "แสดงเฉพาะหัวข้อการแจ้งเตือน"
+   },
+   "option_only_show_titles_desc": {
+      "message": "นี่จะทำให้ Pushbullet แสดงเฉพาะหัวข้อการแจ้งเตือน, เก็บข้อความไว้เป็นความลับ"
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "เปิดสิ่งที่ฉันส่งมายังเบราว์เซอร์นี้โดยอัตโนมัติ"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "ตัวเลือกนี้จะทำให้ Pushbullet เปิดทุกอย่างที่คุณส่งมายังเบราว์เซอร์นี้ในแท็บใหม่โดยอัตโนมัติ"
+   },
+   "option_play_sound": {
+      "message": "ส่งเสียงเมื่อมีการแจ้งเตือน"
+   },
+   "option_play_sound_desc": {
+      "message": "ตัวเลือกนี้จะทำให้ Pushbullet ส่งเสียงสั้นๆ เมื่อมีการแจ้งเตือนมาถึง"
+   },
+   "option_show_context_menu": {
+      "message": "แสดง Pushbullet ในเมนูคลิกขวา"
+   },
+   "option_show_context_menu_desc": {
+      "message": "แสดงตัวเลือก Pushbullet ในรายการของเมนูคลิกขวา"
+   },
+   "option_show_mirrors": {
+      "message": "แสดงการแจ้งเตือนบนคอมพิวเตอร์ของฉัน"
+   },
+   "option_show_mirrors_desc": {
+      "message": "ไม่เลือกสิ่งนี้จะหยุดแสดงการแจ้งเตือน (คุณยังสามารถดูจำนวนการแจ้งเตือนได้บนไอคอนในแถบเครื่องมือ)"
+   },
+   "option_show_notification_count": {
+      "message": "แสดงจำนวนการแจ้งเตือนในแถบเครื่องมือ"
+   },
+   "option_show_notification_count_desc": {
+      "message": "ดูจำนวนการแจ้งเตือนอย่างรวดเร็วในแถบเครื่องมือของคุณ"
+   },
+   "option_use_dark_icon": {
+      "message": "ใช้ไอคอนสีเข้ม"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "ตัวเลือกนี้จะทำให้ไอคอนบนแถบเครื่องมือเปลี่ยนเป็นสีเทาเข้ม"
+   },
+   "options": {
+      "message": "ตั้งค่า"
+   },
+   "panel_cant_sign_in": {
+      "message": "ไม่สามารถเข้าสู่ระบบ? ลองปิดใช้ Adblock ชั่วคราว หากยังไม่ได้ Pushbullet จำเป็นต้องการคุกกี้ของบุคคลที่สามเพื่อเปิดให้เข้าสู่ระบบได้ คุณสามารถปิดมันได้อีกครั้งหลังเข้าสู่ระบบเสร็จ"
+   },
+   "panel_sign_up": {
+      "message": "ลงทะเบียนที่ Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "คลิกที่นี่เพื่อดูวิธีเปลี่ยนการตั้งค่านี้"
+   },
+   "pending": {
+      "message": "รอดำเนินการ"
+   },
+   "people": {
+      "message": "ผู้คน"
+   },
+   "phone": {
+      "message": "โทรศัพท์"
+   },
+   "push_context_message": {
+      "message": "$1 เมื่อ $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "ต้องการ Pushbullet โปรเพื่อเปิดใช้งานคุณสมบัตินี้"
+   },
+   "pushbullet_pro_required": {
+      "message": "ต้องใช้ Pushbullet โปร"
+   },
+   "recipient_placeholder": {
+      "message": "ถึง"
+   },
+   "remove_link_tooltip": {
+      "message": "ไม่ต้องลิงก์หน้าปัจจุบัน"
+   },
+   "reply": {
+      "message": "ตอบกลับ"
+   },
+   "reply_limit_reached": {
+      "message": "คุณมาถึงขีดจำกัดข้อความฟรีของเดือนนี้แล้ว"
+   },
+   "reply_limit_upgrade": {
+      "message": "อัปเกรดเป็น Pushbullet โปรเพื่อส่งข้อความได้ไม่จำกัด"
+   },
+   "reply_limit_warning": {
+      "message": "คุณกำลังเข้าใกล้ขีดจำกัดข้อความฟรีของเดือนนี้"
+   },
+   "retry": {
+      "message": "ลองใหม่"
+   },
+   "save": {
+      "message": "บันทึก"
+   },
+   "see_full_history": {
+      "message": "ดูประวัติทั้งหมด"
+   },
+   "send_failed": {
+      "message": "การส่งล้มเหลว"
+   },
+   "sending": {
+      "message": "กำลังส่ง..."
+   },
+   "sign_in": {
+      "message": "เข้าสู่ระบบ"
+   },
+   "sign_out": {
+      "message": "ออกจากระบบ"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "โทรศัพท์ต้องเปิดอยู่ และมีการเชื่อมต่ออินเทอร์เน็ตเพื่อส่งข้อความ"
+   },
+   "sms_recipient_placeholder": {
+      "message": "ผู้ติดต่อหรือหมายเลขโทรศัพท์"
+   },
+   "snooze": {
+      "message": "เลื่อน 1 ชั่วโมง"
+   },
+   "thanks_for_installing_message": {
+      "message": "คลิกที่นี่เพื่อเข้าสู่ระบบ"
+   },
+   "thanks_for_installing_title": {
+      "message": "ของคุณสำหรับการติดตั้ง Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "หัวข้อ"
+   },
+   "undo": {
+      "message": "ยกเลิก"
+   },
+   "unmute_app": {
+      "message": "แสดง $1"
+   },
+   "unsnooze": {
+      "message": "ยกเลิกเลื่อน"
+   },
+   "unsubscribe_from_channel": {
+      "message": "เลิกติดตาม $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "ไม่ติดตาม $1 อีกต่อไป"
+   },
+   "updated_notif_message": {
+      "message": "คลิกที่นี่เพื่อดูว่ามีอะไรใหม่"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet อัปเดตแล้ว!"
+   },
+   "url_placeholder": {
+      "message": "URL ลิงก์"
+   }
+}

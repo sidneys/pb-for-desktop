@@ -1,9 +1,12 @@
-os:
-  - osx
-
-osx_image: xcode7.3
-
-sudo: required
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.2
+      sudo: required
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: clang
 
 language: c
 
@@ -11,42 +14,42 @@ branches:
   only:
     - release
 
-git:
-  depth: 5
-
 env:
-   - ARTIFACTS_DIRECTORY="build/release/"
+  global:
+    - ARTIFACTS_DIRECTORY="build/output/"
 
 cache:
   directories:
     - "$HOME/.electron"
     - "./node_modules"
-    - "./build/tools-cache"
+
+addons:
+  apt:
+    packages:
+      - icnsutils
+      - gcc-multilib
+      - g++-multilib
+      - graphicsmagick
+      - rpm
+      - xz-utils
 
 before_install:
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR=$HOME/.nvm sh
   - source $HOME/.nvm/nvm.sh
-  - command -v nvm
-  - nvm install 6.5.0
-  - nvm use 6.5.0
-  - rvm use ruby-2.0.0-p648
+  - nvm install 7.2.1
+  - nvm use 7.2.1
 
 install:
-  - brew update || true
-  - brew install dpkg fakeroot || true
-  - dpkg --version; fakeroot -v
+  - npm install
 
 before_script:
-  - npm install
-  - npm prune
+  - echo "Deploying artifacts from $ARTIFACTS_DIRECTORY"
 
 script:
-  - npm run build darwin
-  - npm run build linux
+  - npm run-script build
 
 after_success:
-  - echo "Deploying artifacts from $ARTIFACTS_DIRECTORY"
-  - npm run-script deploy-github
+  - npm run-script deploy:github
 
 notifications:
   webhooks:

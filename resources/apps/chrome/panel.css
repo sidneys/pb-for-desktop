@@ -1,0 +1,193 @@
+* {
+    outline: none;
+}
+html {
+    background-color: white;
+    height: 100%
+}
+body {
+    width: 640px;
+    height: 451px;
+}
+body.popout {
+    height: 100%;
+    width: 100%;
+}
+#header {
+    padding: 10px 10px 0 10px;
+}
+#logo {
+    background-size: 190px 36px;
+    width: 190px;
+    height: 36px;
+}
+.track {
+    display: inline-block;
+    margin: 0 10px;
+    width: 175px;
+    text-align: center;
+    vertical-align: top;
+    font-size: 15px;
+}
+#bullet {
+    width: 30px;
+    margin-left: 3px;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+#bullet-link {
+    float: left;
+    cursor: pointer;
+    display: inline-block;
+}
+#popout-holder {
+    float: right;
+    padding: 6px 8px 8px 8px;
+    height: 41px;
+}
+#popout-holder:hover {
+    cursor: pointer;
+    background-color: #38a06d;
+}
+#settings-gear {
+    float: right;
+    padding: 8px 10px 8px 10px;
+    -moz-transition: background-color .3s ease;
+    -webkit-transition: background-color .3s ease;
+    transition: background-color .3s ease;
+}
+#settings-gear:hover {
+    cursor: pointer;
+    background-color: #38a06d;
+}
+#settings-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 150px;
+    z-index: 400;
+    color:#34495e;
+    background-color: #ecf0f0;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+}
+.settings-option {
+    cursor: pointer;
+    line-height: 36px;
+    padding: 0 10px;
+    font-size: 13px;
+}
+.settings-option:hover {
+    background-color: #ced1d5;
+}
+#menu-sink {
+    position:absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: transparent;
+    z-index: 300;
+}
+.tab {
+    max-width: 120px;
+    min-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 10px;
+    text-align: center;
+}
+#notifications-tab {
+    max-width: 170px;
+}
+#sms-tab {
+    max-width: 80px;
+    min-width: 70px;
+}
+#content {
+    position: absolute;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.tab-content {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+}
+.popout .tab-content {
+    height: 100%;
+}
+#notifications-content {
+    background-color: #ecf0f0;
+}
+#notifications-holder {
+    height: 100%;
+    overflow-y: scroll;
+}
+.fake-notification {
+    max-width: 390px;
+    margin: 15px auto;
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,0.3);
+}
+#notifications-empty {
+    width: 100%;
+    height: 83%;
+    background-image: url(bg_sam.png);
+    background-size: 248px 186px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.mac #notifications-empty.desktop-app {
+    background-image: url(bg_apple.png);
+    background-size: 140px;
+}
+.windows #notifications-empty.desktop-app {
+    background-image: url(bg_windows.png);
+    background-size: 140px 140px;
+}
+#notifications-empty-text {
+    position: absolute;
+    bottom: 90px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #95a5a6;
+}
+#messaging-content-left {
+    position: absolute;
+    left: 0;
+    width: 240px;
+    top: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #ecf0f0;
+    border-right: 1px solid #d0d0d0;
+}
+#messaging-content-right {
+    position: absolute;
+    left: 240px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.picker-label {
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 48px;
+    border-bottom: 1px solid #ecf0f0;
+    padding: 0 5px 0 15px;
+}
+#messaging-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+}

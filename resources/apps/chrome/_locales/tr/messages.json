@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "Bir arkadaş ekle"
+   },
+   "add_link_tooltip": {
+      "message": "Geçerli sayfanın bağlantısı"
+   },
+   "advanced": {
+      "message": "Gelişmiş"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Bildirimleri, Pushbullet Masaüstü Uygulaması yönetiyor."
+   },
+   "all_of_my_devices": {
+      "message": "Tüm cihazlarım"
+   },
+   "cancel": {
+      "message": "İptal"
+   },
+   "changelog_tab": {
+      "message": "Yenilikler"
+   },
+   "channels": {
+      "message": "Kanallar"
+   },
+   "clear": {
+      "message": "Temizle"
+   },
+   "decryption_failed_body": {
+      "message": "Lütfen parolanızın tüm cihazlarda eşleştiğini onaylayın"
+   },
+   "decryption_failed_title": {
+      "message": "Şifre çözülemedi"
+   },
+   "devices": {
+      "message": "Cihazlar"
+   },
+   "devices_placeholder": {
+      "message": "Bir cihaz seçin"
+   },
+   "dismiss": {
+      "message": "Gizle"
+   },
+   "done": {
+      "message": "Bitti"
+   },
+   "encryption_password_needed_body": {
+      "message": "Parolanızı girmek için buraya tıklayın"
+   },
+   "encryption_password_needed_title": {
+      "message": "Şifrelenmiş veri alındı"
+   },
+   "end_to_end_password_desc": {
+      "message": "Eğer bir parola belirlemek isterseniz yazmanız yeterlidir. Bu parolanın tüm cihazlarınızda girilmesi gerekmektedir."
+   },
+   "end_to_end_password_label": {
+      "message": "Uçtan uca şifreleme parolası"
+   },
+   "file_too_big": {
+      "message": "Dosya çok büyük"
+   },
+   "friends": {
+      "message": "Arkadaşlar"
+   },
+   "from": {
+      "message": " $1'dan"
+   },
+   "general": {
+      "message": "Genel"
+   },
+   "go_to_link": {
+      "message": "Bağlantıya git"
+   },
+   "how_to_unmute_app": {
+      "message": "Susturulmuş bir uygulamanın sesini nasıl açarım?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Pushbullet Android uygulamasında ekranı sola çekerek çekmeceyi açın, 'Yansıtma' seçeneğine dokunun. 'Uygulamalar için bildirim ayarları'ndan uygulamayı tekrar aktive edin."
+   },
+   "learn_more": {
+      "message": "Daha fazla bilgi edinin"
+   },
+   "me": {
+      "message": "Ben"
+   },
+   "message_placeholder": {
+      "message": "Bir mesaj yazın ve göndermek için enter tuşuna basın"
+   },
+   "message_placeholder_files": {
+      "message": "Bir mesaj yazın veya bir dosya bırakın"
+   },
+   "message_placeholder_link": {
+      "message": "Bir mesaj yazın ve göndermek için enter tuşuna basın"
+   },
+   "mirror_context_message": {
+      "message": "$1 Pushbullet ile saat $2"
+   },
+   "mute": {
+      "message": "Sustur"
+   },
+   "mute_app": {
+      "message": "$1 bildirimlerini kapat"
+   },
+   "muted_app": {
+      "message": "$1 susturuldu"
+   },
+   "new_sms_thread": {
+      "message": "Yeni metin iletisi"
+   },
+   "no_notifications": {
+      "message": "Şu an için bildirim yok"
+   },
+   "no_pushes": {
+      "message": "Hiç gönderi yok"
+   },
+   "notifications": {
+      "message": "Bildirimler"
+   },
+   "now": {
+      "message": "Şimdi"
+   },
+   "num_new_messages": {
+      "message": "$1 yeni ileti"
+   },
+   "option_allow_instant_push": {
+      "message": "Anlık bildirim göndermek için etkinleştirin"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Geçerli sekmeyi seçtiğiniz cihaza klavye kısayolu ile yollayın."
+   },
+   "option_automatically_attach_link": {
+      "message": "Geçerli sekmeyi cihaza göndereceğiniz mesajlara otomatik olarak ilişkilendirin"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Bu cihazlara daha hızlı bağlantı göndermenizi sağlar."
+   },
+   "option_background_permission": {
+      "message": "Tarayıcı kapalı olduğunda bile Pushbullet'i açık tut"
+   },
+   "option_background_permission_desc": {
+      "message": "Bildirimleri tarayıcıyı açık tutmak zorunda kalmadan görmenize olanak sağlar."
+   },
+   "option_clipboard_permission": {
+      "message": "Evrensel kopyala & yapıştır"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Metni kopyalayın ve bu ayarın açık olduğu herhangi bir cihazda yapıştırın."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Ayarlamak için buraya tıkla (şu anda $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "ayarlanmadı"
+   },
+   "option_notification_duration": {
+      "message": "Bildirimleri şu kadar sonra otomatik gizle"
+   },
+   "option_only_show_titles": {
+      "message": "Yalnızca bildirim başlıklarını göster"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Bu Pushbullet'in, telefonunuzdan gelen bildirimlerin sadece başlığını görüntülemesini, iletilerin gizli tutmasını sağlar."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Bağlantıları otomatik olarak tarayıcıda aç."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Bu Pushbullet'in, yolladığınız bağlantıları otomatik olarak yeni sekmede açmasını sağlar."
+   },
+   "option_play_sound": {
+      "message": "Bir bildirim geldiğinde ses çal"
+   },
+   "option_play_sound_desc": {
+      "message": "Bu Pushbullet'in, bir bildirim geldiğinde kısa bir ses çalarak sizi uyarmasını sağlar."
+   },
+   "option_show_context_menu": {
+      "message": "Pushbullet'i context menüsünde göster"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Pushbullet sağ tıklama ile açılan menüde gösterilir."
+   },
+   "option_show_mirrors": {
+      "message": "Bildirimlerinizi bilgisayarınız üzerinde görün."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Tiki kaldırarak bildirimlerinizin görüntülenmesini durdurursunuz (ama hala araç çubuğu simgesinde bildirim sayısını görebilirsiniz)."
+   },
+   "option_show_notification_count": {
+      "message": "Araç çubuğu simgesinde bildirim sayısını göster"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Bildirim sayısını araç çubuğu simgesinde görebilirsiniz."
+   },
+   "option_use_dark_icon": {
+      "message": "Karanlık ikon kullan"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Araç çubuğundaki ikonun rengini koyu griye dönüştür."
+   },
+   "options": {
+      "message": "Ayarlar"
+   },
+   "panel_cant_sign_in": {
+      "message": "Giriş yapılamadı mı? Geçici olarak Adblock'u devre dışı bırakmayı deneyin. Bu işe yaramazsa, Pushbullet'e giriş yapmak için gereken üçüncü-parti çerezlerini açın. Giriş yaptıktan sonra tekrar devre dışı bırakabilirsiniz."
+   },
+   "panel_sign_up": {
+      "message": "Pushbullet.com üzerinden kaydolun →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Ayarların nasıl değiştirileceğini görmek için buraya tıkla."
+   },
+   "pending": {
+      "message": "Bekleyen"
+   },
+   "people": {
+      "message": "Kişiler"
+   },
+   "phone": {
+      "message": "Telefon"
+   },
+   "push_context_message": {
+      "message": "$1 ile saat $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Bu özelliği etkinleştirmek için Pushbullet Pro gereklidir."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro Gerekli"
+   },
+   "recipient_placeholder": {
+      "message": "Kime"
+   },
+   "remove_link_tooltip": {
+      "message": "Geçerli sayfanın bağlantısını kaldır"
+   },
+   "reply": {
+      "message": "Yanıtla"
+   },
+   "reply_limit_reached": {
+      "message": "Bu ay için ücretsiz mesaj sınırına ulaştınız."
+   },
+   "reply_limit_upgrade": {
+      "message": "Sınırsız mesaj göndermek için Pushbullet Pro yükseltin."
+   },
+   "reply_limit_warning": {
+      "message": "Bu ay için ücretsiz mesaj sınırına yaklaşıyorsunuz."
+   },
+   "retry": {
+      "message": "Tekrar dene"
+   },
+   "save": {
+      "message": "Kaydet"
+   },
+   "see_full_history": {
+      "message": "Tüm geçmişi gör"
+   },
+   "send_failed": {
+      "message": "Gönderme başarısız"
+   },
+   "sending": {
+      "message": "Gönderiliyor..."
+   },
+   "sign_in": {
+      "message": "Oturum Aç"
+   },
+   "sign_out": {
+      "message": "Oturumu Kapat"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "SMS göndermek için telefonunuz açık ve bir İnternet bağlantınız olmalıdır."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Kişi veya telefon numarası"
+   },
+   "snooze": {
+      "message": "1 saat ertele"
+   },
+   "thanks_for_installing_message": {
+      "message": "Oturum açmak için tıklayın"
+   },
+   "thanks_for_installing_title": {
+      "message": "Pushbullet'i yüklediğiniz için teşekkür ederiz"
+   },
+   "title_placeholder": {
+      "message": "Başlık"
+   },
+   "undo": {
+      "message": "Geri al"
+   },
+   "unmute_app": {
+      "message": " $1 Sesi aç"
+   },
+   "unsnooze": {
+      "message": "Ertelemeyi durdur"
+   },
+   "unsubscribe_from_channel": {
+      "message": "$1 takibi bırak"
+   },
+   "unsubscribed_from_channel": {
+      "message": "$1 artık takip etmiyorsunuz"
+   },
+   "updated_notif_message": {
+      "message": "Yenilikleri görmek için buraya tıklayın"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet güncellendi!"
+   },
+   "url_placeholder": {
+      "message": "Bağlantı adresi"
+   }
+}
