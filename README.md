@@ -1,2 +1,3 @@
-# Pushbullet-Electron
-A simple Pushbullet client written with Electron.
+# PB for Desktop Landingpage
+
+[https://sidneys.github.ios/pb-for-desktop](https://sidneys.github.ios/pb-for-desktop)
