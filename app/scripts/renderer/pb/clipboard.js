@@ -89,18 +89,18 @@ let publishClip = function(clip) {
     }, function(result) {
         // Error
         if (!result) {
-            logger.devtools('Clipboard Publish Error');
+            logger.devtools('clipboard', 'publish failed');
             return;
         }
 
         // Error: Pushbullet Pro
         if (result.error) {
-            logger.devtools('Clipboard Publish Error (Permissions)', result.error.message);
+            logger.devtools('clipboard', 'publish error', result.error.message);
             return;
         }
 
         // OK
-        logger.devtools('Clipboard Publish OK');
+        logger.devtools('clipboard', 'publish');
     });
 };
 
@@ -126,7 +126,7 @@ let clipboardWatcher = () => {
             publishClip(text);
 
             // DEBUG
-            logger.devtools('Clipboard Update (Image)', image);
+            logger.devtools('clipboard', 'update image', image);
         }
 
         if (textHasDiff(text, lastText)) {
@@ -134,7 +134,7 @@ let clipboardWatcher = () => {
             publishClip(text);
 
             // DEBUG
-            logger.devtools('Clipboard Update (Text)', text);
+            logger.devtools('clipboard', 'update text', text);
         }
     }, defaultInterval);
 };
@@ -155,7 +155,7 @@ let initializeClipboard = function() {
         try {
             message = JSON.parse(ev.data);
         } catch (err) {
-            logger.error('window.addWSMessageHandler', err);
+            logger.error('clipboard', 'addWSMessageHandler()', err);
         }
 
         let messageType = message.type,
@@ -166,9 +166,6 @@ let initializeClipboard = function() {
                 receiveClip(pushObject);
             }
         }
-
-        // DEBUG
-        logger.devtools('message', message);
     });
 
     /**

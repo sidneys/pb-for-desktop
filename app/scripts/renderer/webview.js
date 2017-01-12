@@ -39,6 +39,7 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 const dom = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
+const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 
 
 /**
@@ -147,46 +148,17 @@ webview.addEventListener('load-commit', (ev) => {
     }
 });
 
-/**
- * Pass IPC messages between Main <-> Renderer/Host <-> Embedded Webviews
- *
- * @listens webview:ipcEvent#ipc-message
- * @fires ipcRenderer:ipcEvent
- */
-webview.addEventListener('ipc-message', (ev) => {
 
-    // Pass to main process
-    ipcRenderer.send(ev.channel, ev.args.join());
-
-    // Local handlers
-    switch (ev.channel) {
-        // Network
-        case 'network':
-            let status = ev.args[0];
-            switch (status) {
-                case 'online':
-                    dismissSpinner();
-                    break;
-                case 'offline':
-                    presentSpinner();
-                    break;
-            }
+connectivityService.on('connection', (message, state) => {
+    if (message === 'update') {
+        switch (state) {
+            case 'online':
+                dismissSpinner();
+                break;
+            case 'offline':
+                presentSpinner();
+                break;
+        }
     }
-
-    // DEBUG
-    logger.debug('webview', 'ipc-message', ev.channel, ev.args[0]);
 });
 
-
-/**
- * @listens ipcRenderer:ipcEvent#notification-create
- */
-ipcRenderer.on('notification-create', (ev, message) => {
-    if (!message) { return; }
-
-    return new Notification(appProductName, {
-        title: appProductName,
-        body: message,
-        silent: true
-    });
-});

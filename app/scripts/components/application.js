@@ -83,20 +83,3 @@ ipcMain.on('log', (event, message) => {
     logger.log(message);
 });
 
-/**
- * @listens ipcMain:ipcEvent#network
- */
-ipcMain.on('network', (event, status) => {
-    switch (status) {
-        case 'online':
-            trayMenu.setState('enabled');
-            break;
-        case 'offline':
-            trayMenu.setState('disabled');
-            break;
-    }
-
-    // DEBUG
-    logger.debug('application', 'network', status);
-});
-

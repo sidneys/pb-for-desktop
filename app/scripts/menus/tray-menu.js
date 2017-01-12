@@ -35,6 +35,8 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
+const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
+const snoozeService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'snooze-service'));
 
 
 /**
@@ -49,93 +51,18 @@ let appVersion = packageJson.version;
  * @global
  */
 let appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked');
-let appTrayIconEnabled = path.join(appRootPath, 'icons', platformHelper.type, 'icon-tray-enabled' + platformHelper.templateImageExtension(platformHelper.type));
-let appTrayIconDisabled = path.join(appRootPath, 'icons', platformHelper.type, 'icon-tray-disabled' + platformHelper.templateImageExtension(platformHelper.type));
+let appTrayIconDefault = path.join(appRootPath, 'icons', platformHelper.type, 'icon-tray-default' + platformHelper.templateImageExtension(platformHelper.type));
+let appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, 'icon-tray-transparent' + platformHelper.templateImageExtension(platformHelper.type));
+let appTrayIconPaused = path.join(appRootPath, 'icons', platformHelper.type, 'icon-tray-paused' + platformHelper.templateImageExtension(platformHelper.type));
 
 /**
  * @global
  */
-let appTray;
-let trayMenu;
+let trayMenu = {};
 
-/**
- * @global
- */
-global.snoozeUntil = 0;
-let snoozeTimeout;
-
-
-/**
- * Set Tray Icon State
- * @param {String} state - Tray Icon Enable/Disable
- */
-let setTrayIconState = (state) => {
-    switch (state) {
-        case 'enabled':
-            appTray.setImage(appTrayIconEnabled);
-            break;
-        case 'disabled':
-            appTray.setImage(appTrayIconDisabled);
-            break;
-    }
-};
-
-/**
- * Show Internal Notification
- * @param {String} message - Content
- */
-let showNotification = (message) => {
-    BrowserWindow.getAllWindows()[0].webContents.send('notification-create', message);
-};
 
 /*
- * Snooze Notifications
- * @param {String} item - Menu item
- * @param {Number} duration - Snooze duration in minutes
- */
-let snoozeNotifications = (menuItem, duration) => {
-
-    let relatedItems = menuItem.menu.items.filter((item) => { return item.id && item.id.startsWith('snooze') && item.id !== menuItem.id; });
-    let itemEnabled = menuItem.checked;
-    let durationMs = parseInt(duration * (60 * 1000));
-    let durationHours = parseInt(duration / 60);
-
-    // Reset related menu items
-    relatedItems.forEach((item) => {
-        item.checked = false;
-    });
-
-    // Clear Timer
-    clearTimeout(snoozeTimeout);
-
-    // Abort Snooze
-    if ((global.snoozeUntil !== 0)) {
-        global.snoozeUntil = 0;
-        setTrayIconState('enabled');
-        showNotification('Aborting Snooze');
-    }
-
-    // Init Snooze
-    if ((global.snoozeUntil === 0) && itemEnabled) {
-        // Calculate Timestamp
-        let snoozeEnd = (Date.now() + durationMs);
-        global.snoozeUntil = snoozeEnd;
-        setTrayIconState('disabled');
-        showNotification(`Entered Snooze (${durationHours} Hours)`);
-
-        // Schedule to waking up
-        snoozeTimeout = setTimeout(function() {
-            // End Snooze
-            clearTimeout(snoozeTimeout);
-            global.snoozeUntil = 0;
-            menuItem.checked = false;
-            setTrayIconState('enabled');
-            showNotification(`Waking Up from Snooze (${durationHours} Hours)`);
-        }, (snoozeEnd - Date.now()));
-    }
-};
-
-/*
+ *
  * Tray Menu Template
  */
 let trayMenuTemplate = [
@@ -192,7 +119,7 @@ let trayMenuTemplate = [
                 id: 'snooze-60',
                 type: 'checkbox',
                 click(menuItem) {
-                    snoozeNotifications(menuItem, 60);
+                    snoozeService.snooze(menuItem, 60);
                 }
             },
             {
@@ -200,7 +127,7 @@ let trayMenuTemplate = [
                 id: 'snooze-240',
                 type: 'checkbox',
                 click(menuItem) {
-                    snoozeNotifications(menuItem, 240);
+                    snoozeService.snooze(menuItem, 240);
                 }
             },
             {
@@ -208,7 +135,7 @@ let trayMenuTemplate = [
                 id: 'snooze-480',
                 type: 'checkbox',
                 click(menuItem) {
-                    snoozeNotifications(menuItem, 480);
+                    snoozeService.snooze(menuItem, 480);
                 }
             }
         ]
@@ -248,44 +175,111 @@ let trayMenuTemplate = [
     }
 ];
 
-/**
- *  Init Tray Menu
- */
-let createTrayMenu = () => {
-    appTray = new Tray(appTrayIconDisabled);
-    appTray.setToolTip(appProductName);
-    trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
-    appTray.setContextMenu(trayMenu);
 
-    /** @listens appTray#click*/
-    appTray.on('click', () => {
-        let win = BrowserWindow.getAllWindows()[0];
+class TrayMenu extends Tray {
+    constructor() {
+        super(appTrayIconDefault);
 
-        if (platformHelper.isWindows) {
-            if (win.isVisible()) {
-                win.hide();
-            } else {
-                win.show();
+        this.setToolTip(appProductName);
+        this.setContextMenu(Menu.buildFromTemplate(trayMenuTemplate));
+
+        // DEBUG
+        logger.log('tray-menu', 'createTrayMenu');
+
+        this.on('click', function(ev) {
+            let win = BrowserWindow.getAllWindows()[0];
+
+            if (platformHelper.isWindows) {
+                if (win.isVisible()) {
+                    win.hide();
+                } else {
+                    win.show();
+                }
             }
+
+            // DEBUG
+            logger.debug('tray-menu', 'click', ev);
+        });
+    }
+
+    /**
+     * Set Tray Icon State
+     * @param {String} state - Tray Icon Enable/Disable
+     */
+
+    setState(state) {
+        // DEBUG
+        logger.debug('tray-menu', 'state', state);
+
+        switch (state) {
+            case 'default':
+                this.setImage(appTrayIconDefault);
+                break;
+            case 'transparent':
+                this.setImage(appTrayIconTransparent);
+                break;
+            case 'paused':
+                this.setImage(appTrayIconPaused);
+                break;
         }
-    });
+    }
+}
+
+
+/**
+ * @listens ipcMain:ipcEvent#network
+ */
+connectivityService.once('connection', (status, message) => {
+    if (status === 'online') {
+        trayMenu.setState('default');
+
+        // DEBUG
+        logger.debug('tray-item', 'connection', 'online', message);
+    }
+});
+
+/**
+ * @listens ipcMain:ipcEvent#network
+ */
+connectivityService.on('connection', (status, message) => {
+    if (status === 'changed') {
+        switch (message) {
+            case 'online':
+                trayMenu.setState('default');
+                break;
+            case 'offline':
+                trayMenu.setState('transparent');
+                break;
+        }
+        // DEBUG
+        logger.debug('tray-item', 'connection', 'changed', message);
+    }
+});
+
+/**
+ * @listens ipcMain:ipcEvent#network
+ */
+snoozeService.on('snooze', (status) => {
+    switch (status) {
+        case 'enabled':
+            trayMenu.setState('paused');
+            break;
+        case 'disabled':
+            trayMenu.setState('default');
+            break;
+    }
 
     // DEBUG
-    logger.log('tray-menu', 'createTrayMenu');
+    logger.debug('tray-item', 'snooze', 'status', status);
+});
 
-    return trayMenu;
-};
 
 app.on('ready', () => {
-    global.snoozeUntil = snoozeUntil;
-    createTrayMenu();
+    trayMenu = new TrayMenu();
 });
 
 
 /**
  * @exports
  */
-module.exports = {
-    create: createTrayMenu,
-    setState: setTrayIconState
-};
+module.exports = trayMenu;

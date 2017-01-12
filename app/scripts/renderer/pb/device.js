@@ -100,7 +100,7 @@ let deleteInactiveDevices = function(done) {
     cb();
 
     // DEBUG
-    logger.devtools('deleteInactiveDevices', deleteInactiveDevices.length);
+    logger.devtools('device', 'deleteInactiveDevices()', deleteInactiveDevices.length);
 };
 
 /**
@@ -123,7 +123,7 @@ let deleteAdditionalDevices = function(done) {
     cb();
 
     // DEBUG
-    logger.devtools('deleteSuperflousDevices', superflousDevicesList.length);
+    logger.devtools('device', 'deleteSuperflousDevices()', superflousDevicesList.length);
 };
 
 /**
