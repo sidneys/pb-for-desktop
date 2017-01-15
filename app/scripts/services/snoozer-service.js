@@ -12,14 +12,6 @@ const path = require('path');
 
 /**
  * Modules
- * Electron
- * @global
- * @constant
- */
-const { app, BrowserWindow, dialog, Menu, Tray } = require('electron');
-
-/**
- * Modules
  * External
  * @global
  * @const
@@ -36,23 +28,38 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 const notificationService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'notification-service'));
 
 
-
 /**
  * @global
  */
 global.snoozeUntil = 0;
 
 
-
-class Snooze extends EventEmitter {
+/**
+ * Snoozer
+ * @class
+ * @extends EventEmitter
+ */
+class Snoozer extends EventEmitter {
     constructor() {
         super();
+
+        this.init();
+    }
+
+    init() {
+        logger.debug('snoozer-service', 'init()');
 
         this.snoozeUntil = 0;
         this.snoozeTimeout = null;
     }
 
+    /**
+     * Commence snoozing
+     * @fires Snoozer:enabled
+     * @fires Snoozer:disabled
+     */
     snooze(menuItem, duration) {
+        logger.debug('snoozer-service', 'snooze()');
 
         let relatedItems = menuItem.menu.items.filter((item) => { return item.id && item.id.startsWith('snooze') && item.id !== menuItem.id; });
         let itemEnabled = menuItem.checked;
@@ -72,7 +79,7 @@ class Snooze extends EventEmitter {
             global.snoozeUntil = 0;
             notificationService.show('Aborting Snooze');
 
-            this.emit('snooze', 'disabled');
+            this.emit('disabled');
         }
 
         // Init Snooze
@@ -82,7 +89,7 @@ class Snooze extends EventEmitter {
             global.snoozeUntil = snoozeEnd;
             notificationService.show(`Entered Snooze (${durationHours} Hours)`);
 
-            this.emit('snooze', 'enabled');
+            this.emit('enabled');
 
             // Schedule to waking up
             this.snoozeTimeout = setTimeout(function() {
@@ -92,12 +99,9 @@ class Snooze extends EventEmitter {
                 this.menuItem.checked = false;
                 notificationService.show(`Waking Up from Snooze (${durationHours} Hours)`);
 
-                this.emit('snooze', 'disabled');
+                this.emit('disabled');
             }, (snoozeEnd - Date.now()));
         }
-
-        // DEBUG
-        logger.debug('snooze-service', 'snooze');
     }
 }
 
@@ -105,4 +109,4 @@ class Snooze extends EventEmitter {
 /**
  * @exports
  */
-module.exports = new Snooze();
+module.exports = new Snoozer();

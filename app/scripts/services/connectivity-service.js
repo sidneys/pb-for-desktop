@@ -7,18 +7,15 @@
  * @global
  * @constant
  */
-const EventEmitter = require('events');
 const path = require('path');
 
-/**
+ /**
  * Modules
  * External
  * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
-const isOnline = require('is-online');
-
 
 /**
  * Modules
@@ -28,30 +25,54 @@ const isOnline = require('is-online');
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 
+/**
+ * Modules
+ * Node
+ * @global
+ * @constant
+ */
+const EventEmitter = require('events');
+
+/**
+ * Modules
+ * External
+ * @global
+ * @constant
+ */
+const isOnline = require('is-online');
+
 
 /**
  * @global
+ * @constant
  */
 const defaultHostnameList = ['www.google.com'];
-const defaultTimeout = 2000;
-const defaultInterval = 5000;
+const defaultTimeout = 3000;
+const defaultInterval = 20000;
 
 
-
+/**
+ * Connectivity Monitor
+ * @class
+ * @extends EventEmitter
+ */
 class Connectivity extends EventEmitter {
     constructor() {
         super();
 
         this.online = false;
-        this._startMonitoring();
+        // -1: did not run, 0: unchanged, 1: changed
+        this.didChange = -1;
 
-        this.emit('connection', 'monitoring');
+        this.init();
     }
 
     /**
-     * @private
+     * Start Polling
      */
-    _startMonitoring() {
+    init() {
+        logger.debug('connectivity-service', 'init()');
+
         setInterval(() => {
             isOnline({ timeout: defaultTimeout, hostnames: defaultHostnameList }).then(online => {
                 this.setConnection(online);
@@ -59,27 +80,34 @@ class Connectivity extends EventEmitter {
         }, defaultInterval, this);
     }
 
+    /**
+     * Sets Connection State
+     */
     setConnection(state) {
+        if (this.didChange !== -1) {
+            if (state !== this.online) {
+                this.didChange = 1;
+            } else {
+                this.didChange = 0;
+            }
+        }
+
         this.online = state;
 
-        if (this.online === true) {
-            this.emit('connection', 'online',  state);
-        } else {
-            this.emit('connection', 'offline',  state);
+        if (this.didChange !== 0) {
+            if (this.online) {
+                /** @fires Connectivity#online */
+                this.emit('online');
+            } else {
+                /** @fires Connectivity#offline */
+                this.emit('offline');
+            }
         }
-
-        if (this.online !== state) {
-            this.emit('connection', 'changed',  state);
-        }
-
-         // DEBUG
-        logger.debug('connection', state);
     }
 }
 
-//global.connectivity = new Connectivity();
 
 /**
  * @exports
  */
-module.exports= new Connectivity();
+module.exports = new Connectivity();

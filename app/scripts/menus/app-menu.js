@@ -5,7 +5,7 @@
  * Modules
  * Node
  * @global
- * @const
+ * @constant
  */
 const path = require('path');
 
@@ -13,7 +13,7 @@ const path = require('path');
  * Modules
  * External
  * @global
- * @const
+ * @constant
  */
 const appRootPath = require('app-root-path').path;
 
@@ -21,7 +21,7 @@ const appRootPath = require('app-root-path').path;
  * Modules
  * Electron
  * @global
- * @const
+ * @constant
  */
 const { app, Menu, shell }  = require('electron');
 
@@ -29,30 +29,29 @@ const { app, Menu, shell }  = require('electron');
  * Modules
  * Internal
  * @global
- * @const
+ * @constant
  */
 const packageJson = require(path.join(appRootPath, 'package.json'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 
 
 /**
- * App
  * @global
- * @constant
  */
-let appName = packageJson.productName || packageJson.name;
+let appProductName = packageJson.productName || packageJson.name;
 let appHomepage = packageJson.homepage;
 
 /**
  * @global
  */
-let appMenu;
+let appMenu = {};
 
 
 /**
  * App Menu Template
  */
-let appMenuTemplate = () => {
-    const template = [
+let getAppMenuTemplate = () => {
+    let template = [
         {
             label: 'Edit',
             submenu: [
@@ -153,10 +152,10 @@ let appMenuTemplate = () => {
 
     if (process.platform === 'darwin') {
         template.unshift({
-            label: appName,
+            label: appProductName,
             submenu: [
                 {
-                    label: 'About ' + appName,
+                    label: 'About ' + appProductName,
                     role: 'about'
                 },
                 {
@@ -171,7 +170,7 @@ let appMenuTemplate = () => {
                     type: 'separator'
                 },
                 {
-                    label: 'Hide ' + appName,
+                    label: 'Hide ' + appProductName,
                     accelerator: 'Command+H',
                     role: 'hide'
                 },
@@ -194,40 +193,22 @@ let appMenuTemplate = () => {
                 }
             ]
         });
-        const windowMenu = template.find(function(m) { return m.role === 'window'; });
-        if (windowMenu) {
-            windowMenu.submenu.push(
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Bring All to Front',
-                    role: 'front'
-                }
-            );
-        }
     }
 
     return template;
 };
 
-/**
- *  Create the AppMenu
- */
-let createAppMenu = function() {
-    appMenu = Menu.buildFromTemplate(appMenuTemplate());
-    Menu.setApplicationMenu(appMenu);
 
-    return appMenu;
-};
-
+/** @listens Electron.App#on */
 app.on('ready', () => {
-    createAppMenu();
+    logger.debug('app-menu', 'App:ready');
+
+    appMenu = Menu.buildFromTemplate(getAppMenuTemplate());
+    Menu.setApplicationMenu(appMenu);
 });
+
 
 /**
  * @exports
  */
-module.exports = {
-    create: createAppMenu
-};
+module.exports = appMenu;

@@ -32,17 +32,14 @@ const appRootPath = require('app-root-path').path;
  * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: false });
 
 
 /**
- * Pushbullet
- * Globals
  * @global
+ * @constant
  */
-let pb;
-let defaultInterval = 1000;
-
+const defaultInterval = 1000;
 
 
 /**
@@ -50,62 +47,77 @@ let defaultInterval = 1000;
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
 let getDevice = () => {
-    return pb.api.devices.all.filter((device) => {
+    logger.debug('clipboard', 'getDevice()');
+
+    return window.pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
     })[0];
 };
 
 /**
- * Receive Clipboard
+ * Receive clipboard content
  * @param {Object} clip
  */
-let receiveClip = function(clip) {
-    pb.lastClip = clipboard.readText();
+let receiveClip = (clip) => {
+    logger.debug('clipboard', 'receiveClip()');
+
+    window.pb.lastClip = clipboard.readText();
 
     clipboard.writeText(clip.body);
 };
 
+/**
+ * Publish clipboard content
+ * @param {Object} clip
+ */
 let publishClip = function(clip) {
+    logger.debug('clipboard', 'publishClip()');
+
     let data = {
         'type': 'clip',
-        'source_user_iden': pb.account.iden,
+        'source_user_iden': window.pb.account.iden,
         'source_device_iden': getDevice().iden,
         'body': clip
     };
 
     let push;
-    if (pb.e2e.enabled) {
+    if (window.pb.e2e.enabled) {
         push = {
             'encrypted': true,
-            'ciphertext': pb.e2e.encrypt(JSON.stringify(data))
+            'ciphertext': window.pb.e2e.encrypt(JSON.stringify(data))
         };
     } else {
         push = data;
     }
 
-    pb.net.post('/v2/ephemerals', {
+    window.pb.net.post('/v2/ephemerals', {
         'type': 'push',
         'push': push
     }, function(result) {
         // Error
         if (!result) {
-            logger.devtools('clipboard', 'publish failed');
+            logger.devtools('clipboard', 'error');
             return;
         }
 
         // Error: Pushbullet Pro
         if (result.error) {
-            logger.devtools('clipboard', 'publish error', result.error.message);
+            logger.devtools('clipboard', 'error', result.error.message);
             return;
         }
 
         // OK
-        logger.devtools('clipboard', 'publish');
+        logger.devtools('clipboard', 'published');
     });
 };
 
+/**
+ * Monitor clipboard content
+ * @param {Object} clip
+ */
+let monitorClipboard = () => {
+    logger.debug('clipboard', 'monitorClipboard()');
 
-let clipboardWatcher = () => {
     let lastText = clipboard.readText();
     let lastImage = clipboard.readImage();
 
@@ -143,7 +155,9 @@ let clipboardWatcher = () => {
 /**
  * Init
  */
-let initializeClipboard = function() {
+let initializeClipboard = () => {
+    logger.debug('clipboard', 'initializeClipboard()');
+
     /**
      * Receiver
      * @listens window:Event#message
@@ -168,18 +182,14 @@ let initializeClipboard = function() {
         }
     });
 
-    /**
-     * Publisher
-     * @listens window:Event#message
-     */
-    clipboardWatcher();
+    monitorClipboard();
 };
 
 
-/**
- * @listens window:Event#load
- */
+/** @listens window:Event#load */
 window.addEventListener('load', () => {
+    logger.debug('clipboard', 'window:load');
+
     let pollingInterval = setInterval(function() {
         if (!window.pb) {
             return;

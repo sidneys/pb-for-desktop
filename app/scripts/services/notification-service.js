@@ -36,18 +36,16 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 
 /**
  * Show Internal Notification
- * @param {String} message - Content
+ * @param {String} message - Title
+ * @param {Object} body - Content
  */
-let showNotification = (message) => {
+let showNotification = (message, body) => {
     let mainWindow = BrowserWindow.getAllWindows()[0];
-    mainWindow.webContents.executeJavaScript(`new Notification('${message}', { icon: '../../images/icon-text.png', body: '${message}',  silent: true });`, true)
-        .then((result) => {
-            // DEBUG
-            logger.debug('notification-service', 'result', result);
-        });
 
-    // DEBUG
-    logger.debug('notification-service', 'show', message);
+    mainWindow.webContents.executeJavaScript(`new Notification('${message}', ${JSON.stringify(body)});`, true)
+        .then((result) => {
+            logger.debug('notification-service', 'complete', result);
+        });
 };
 
 

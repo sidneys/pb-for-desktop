@@ -97,6 +97,7 @@ html.darwin #titlebar {
     right: 0;
     bottom: 0;
     left: 0;
+    transform: scale3d(1.5, 1.5, 1.5);
 
     animation: gradient 2000ms ease infinite;
     background: radial-gradient(circle farthest-corner at 50% 50%, rgba(93, 187, 118, 1), rgba(30, 62, 8, 1));
@@ -129,7 +130,7 @@ html.darwin #titlebar {
     height: 75px;
     width: 75px;
 
-    animation: rotating 1000ms linear infinite;
+    animation: rotating 1500ms linear infinite;
 
     transition: opacity 500ms ease-out 0ms;
     opacity: 1;

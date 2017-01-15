@@ -8,6 +8,7 @@
  * @constant
  */
 const fs = require('fs-extra');
+const os = require('os');
 const path = require('path');
 
 /**
@@ -29,8 +30,8 @@ const BrowserWindow = electron.BrowserWindow ? electron.BrowserWindow : remote.B
  */
 const _ = require('lodash');
 const appRootPath = require('app-root-path').path;
-const appdirectory = require('appdirectory');
-const autoLaunch = require('auto-launch');
+const Appdirectory = require('appdirectory');
+const AutoLaunch = require('auto-launch');
 const electronSettings = require('electron-settings');
 const fileType = require('file-type');
 const keypath = require('keypath');
@@ -42,11 +43,10 @@ const readChunk = require('read-chunk');
  * @global
  * @constant
  */
-const dialog = require(path.join(appRootPath, 'app', 'scripts', 'components', 'dialog'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-
+const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'messenger-service'));
 
 /**
  * App
@@ -59,13 +59,13 @@ let appVersion = packageJson.version;
  * Paths
  * @global
  */
-let appLogDirectory = (new appdirectory(appName)).userLogs();
+let appLogDirectory = (new Appdirectory(appName)).userLogs();
 let appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked');
 
 /**
  * @global
  */
-let autoLauncher = new autoLaunch({
+let autoLauncher = new AutoLaunch({
         name: appName,
         isHidden: true,
         mac: {
@@ -185,9 +185,8 @@ let settingsEventHandlers = {
             if (filePathList) {
                 validateFileType(filePathList, 'audio', function(err, file) {
                     if (err) {
-                        dialog.displayMessage(
-                            'File could not be read',
-                            'The file could not be read. Compatible formats are: .aiff, .m4a, .mp3, .mp4, .wav.'
+                        messengerService.showError(
+                            `Incompatible filetype.${os.EOL}${os.EOL}Compatible formats are: .aiff, .m4a, .mp3, .mp4, .wav.`
                         );
                     }
 

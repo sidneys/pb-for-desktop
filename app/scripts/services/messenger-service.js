@@ -40,31 +40,29 @@ const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'))
 /**
  * App
  * @global
+ * @constant
  */
-let appProductName = packageJson.productName || packageJson.name;
+const appProductName = packageJson.productName || packageJson.name;
 
 /**
  * @global
+ * @constant
  */
-let defaultDelay = 1000;
+const defaultDelay = 1000;
 
 
 /**
  * Display Message Box
- *
  * @param {String} title - Title
  * @param {String} message - Message
  * @param {Array} buttonList - Buttons
  * @param {Boolean} isError - Buttons
  * @param {Function=} callback - Callback
- *
- * @private
  */
 let displayDialog = function(title, message, buttonList, isError, callback) {
     let cb = callback || function() {};
     let dialogTitle = title || appProductName;
     let dialogMessage = message || title;
-
 
     let messageTimeout = setTimeout(function() {
         dialog.showMessageBox({
@@ -84,15 +82,11 @@ let displayDialog = function(title, message, buttonList, isError, callback) {
 };
 
 
-
 /**
  * Info
- *
  * @param {String=} title - Title
  * @param {String=} message - Message
  * @param {Function=} callback - Callback
- *
- * @public
  */
 let showInfo = function(title, message, callback) {
     let cb = callback || function() {};
@@ -101,13 +95,10 @@ let showInfo = function(title, message, callback) {
 };
 
 /**
- * Question Yes/No
- *
+ * Yes/No
  * @param {String=} title - Title
  * @param {String=} message - Error Message
  * @param {Function=} callback - Callback
- *
- * @public
  */
 let showQuestion = function(title, message, callback) {
     let cb = callback || function() {};
@@ -117,11 +108,8 @@ let showQuestion = function(title, message, callback) {
 
 /**
  * Error
- *
  * @param {String} message - Error Message
  * @param {Function=} callback - Callback
- *
- * @public
  */
 let showError = function(message, callback) {
     let cb = callback || function() {};
@@ -144,7 +132,7 @@ let showError = function(message, callback) {
  * @exports
  */
 module.exports = {
-    showInfo: showInfo,
     showError: showError,
+    showInfo: showInfo,
     showQuestion: showQuestion
 };

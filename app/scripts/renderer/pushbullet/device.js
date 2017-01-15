@@ -27,13 +27,10 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 
 
 /**
- * Pushbullet
- * Globals
  * @global
+ * @constant
  */
-let pb;
-let defaultInterval = 1000;
-
+const defaultInterval = 1000;
 
 
 /**
@@ -41,6 +38,8 @@ let defaultInterval = 1000;
  * @return {{has_sms: boolean, icon: string, manufacturer: string, model: string, nickname: string}}
  */
 let createDeviceValues = () => {
+    logger.debug('device', 'createDeviceValues()');
+
     return {
         has_sms: false,
         icon: 'desktop',
@@ -55,7 +54,9 @@ let createDeviceValues = () => {
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
 let getDevices = () => {
-    return pb.api.devices.all.filter((device) => {
+    logger.debug('device', 'getDevices()');
+
+    return window.pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
     });
 };
@@ -65,6 +66,8 @@ let getDevices = () => {
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
 let getActiveDevices = () => {
+    logger.debug('device', 'getActiveDevices()');
+
     return getDevices().filter((device) => {
         return (device.active === true);
     });
@@ -75,6 +78,8 @@ let getActiveDevices = () => {
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
 let getInactiveDevices = () => {
+    logger.debug('device', 'getInactiveDevices()');
+
     return getDevices().filter((device) => {
         return (device.active === false);
     });
@@ -85,12 +90,14 @@ let getInactiveDevices = () => {
  * @param {Function=} done - callback
  */
 let deleteInactiveDevices = function(done) {
+    logger.debug('device', 'deleteInactiveDevices()');
+
     let cb = done || function() {};
     let inactiveDevicesList = getInactiveDevices() || [];
 
     let devicesProcessed = 0;
     inactiveDevicesList.forEach((device) => {
-        pb.api.devices.delete(device);
+        window.pb.api.devices.delete(device);
         devicesProcessed++;
         if (devicesProcessed === inactiveDevicesList.length) {
             return cb();
@@ -98,9 +105,6 @@ let deleteInactiveDevices = function(done) {
     });
 
     cb();
-
-    // DEBUG
-    logger.devtools('device', 'deleteInactiveDevices()', deleteInactiveDevices.length);
 };
 
 /**
@@ -108,12 +112,14 @@ let deleteInactiveDevices = function(done) {
  * @param {Function=} done - callback
  */
 let deleteAdditionalDevices = function(done) {
+    logger.debug('device', 'deleteAdditionalDevices()');
+
     let cb = done || function() {};
     let superflousDevicesList = getActiveDevices().splice(1, getActiveDevices().length) || [];
 
     let devicesProcessed = 0;
     superflousDevicesList.forEach((device) => {
-        pb.api.devices.delete(device);
+        window.pb.api.devices.delete(device);
         devicesProcessed++;
         if (devicesProcessed === superflousDevicesList.length) {
             return cb();
@@ -121,19 +127,15 @@ let deleteAdditionalDevices = function(done) {
     });
 
     cb();
-
-    // DEBUG
-    logger.devtools('device', 'deleteSuperflousDevices()', superflousDevicesList.length);
 };
 
 /**
  * Create 'pb-for-desktop' device
  */
 let createDevice = function() {
-    pb.api.devices.create(createDeviceValues());
+    logger.debug('device', 'createDevice()');
 
-    // DEBUG
-    logger.devtools('createDevice');
+    window.pb.api.devices.create(createDeviceValues());
 };
 
 
@@ -141,6 +143,8 @@ let createDevice = function() {
  * Init
  */
 let initializeDevice = function() {
+    logger.debug('device', 'initializeDevice()');
+
     // Delete inactive devices
     deleteInactiveDevices(function() {
         // Delete superflous devices
@@ -157,16 +161,14 @@ let initializeDevice = function() {
 };
 
 
-/**
- * @listens window:Event#load
- */
+/** @listens window#onload */
 window.addEventListener('load', () => {
+    logger.debug('device', 'window:load');
+
     let pollingInterval = setInterval(function() {
         if (!window.pb) {
             return;
         }
-
-        pb = window.pb;
 
         initializeDevice();
 

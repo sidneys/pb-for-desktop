@@ -16,7 +16,7 @@ const url = require('url');
  * @global
  * @constant
  */
-const { ipcRenderer, remote }  = require('electron');
+const { remote }  = require('electron');
 
 /**
  * Modules
@@ -34,7 +34,6 @@ const parseDomain = require('parse-domain');
  * @global
  * @constant
  */
-const packageJson = require(path.join(appRootPath, 'package.json'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const dom = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
@@ -43,50 +42,36 @@ const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'se
 
 
 /**
- * App
- * @global
- */
-let appProductName = packageJson.productName || packageJson.name;
-
-/**
- * Live Reload
- * @global
- */
-let electronConnectClient = electronConnect.client;
-
-
-//noinspection JSUnresolvedFunction
-/**
  * DOM Components
+ * @global
+ * @constant
  */
-let webview = document.getElementById('webview'),
-    spinner = document.getElementById('spinner'),
-    controls = document.getElementById('controls'),
-    buttons = {
-        home: {
-            target: document.querySelector('.controls__button.home'),
-            event() { webview.goBack(); }
-        }
-    };
+const webview = document.getElementById('webview');
+const spinner = document.getElementById('spinner');
+const controls = document.getElementById('controls');
+const buttons = {
+    home: {
+        target: document.querySelector('.controls__button.home'),
+        event() { webview.goBack(); }
+    }
+};
 
 /**
- * Show Spinner
+ * Present Spinner
  */
 let presentSpinner = function() {
     dom.setVisibility(spinner, true, 1000);
 };
 
 /**
- * Hide Spinner
+ * Dismiss Spinner
  */
 let dismissSpinner = function() {
     dom.setVisibility(spinner, false, 1000);
 };
 
 
-/**
- * @listens webview:dom-ready
- */
+/** @listens webview:dom-ready */
 webview.addEventListener('dom-ready', () => {
     // Register Platform
     dom.addPlatformClass();
@@ -102,27 +87,29 @@ webview.addEventListener('dom-ready', () => {
 
     // Livereload
     if (isLivereload) {
-        electronConnectClient.create();
+        electronConnect.client.create();
     }
 });
 
-/**
- * @listens webview:did-fail-load
- */
+/** @listens webview:did-fail-load */
 webview.addEventListener('did-fail-load', () => {
-    presentSpinner();
+    if (!connectivityService.online) {
+        presentSpinner();
+    }
+
+    logger.devtools('connectivityService', connectivityService.online);
 });
 
-/**
- * @listens webview:did-finish-load
- */
+/** @listens webview:did-finish-load */
 webview.addEventListener('did-finish-load', () => {
-    dismissSpinner();
+    if (connectivityService.online) {
+        dismissSpinner();
+    }
+
+    logger.devtools('connectivityService', connectivityService.online);
 });
 
-/**
- * @listens webview:new-window
- */
+/** @listens webview:new-window */
 webview.addEventListener('new-window', (ev) => {
     let protocol = url.parse(ev.url).protocol;
 
@@ -131,9 +118,7 @@ webview.addEventListener('new-window', (ev) => {
     }
 });
 
-/**
- * @listens webview:will-navigate
- */
+/** @listens webview#will-navigate */
 webview.addEventListener('load-commit', (ev) => {
     let domain = (parseDomain(ev.url)).domain || '';
 
@@ -148,17 +133,18 @@ webview.addEventListener('load-commit', (ev) => {
     }
 });
 
+/** @listens connectivityService#on */
+connectivityService.on('online', () => {
+    logger.debug('webview', 'connectivityService:online');
 
-connectivityService.on('connection', (message, state) => {
-    if (message === 'update') {
-        switch (state) {
-            case 'online':
-                dismissSpinner();
-                break;
-            case 'offline':
-                presentSpinner();
-                break;
-        }
-    }
+    dismissSpinner();
 });
+
+/** @listens connectivityService#on */
+connectivityService.on('offline', () => {
+    logger.debug('webview', 'connectivityService:offline');
+
+    presentSpinner();
+});
+
 
