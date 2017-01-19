@@ -71,9 +71,9 @@ class MainWindow extends BrowserWindow {
     constructor() {
         super({
             acceptFirstMouse: true,
-            autoHideMenuBar: true,
-            backgroundColor: '#4AB367',
-            frame: !platformHelper.isMacOS,
+            autoHideMenuBar: false,
+            backgroundColor: platformHelper.isMacOS ? '#0095A5A6' : '#95A5A6',
+            frame: true,
             fullscreenable: true,
             icon: appIcon,
             minHeight: 512,
@@ -81,7 +81,9 @@ class MainWindow extends BrowserWindow {
             show: false,
             thickFrame: true,
             title: appProductName,
-            titleBarStyle: platformHelper.isMacOS ? 'hidden-inset' : 'default',
+            titleBarStyle: 'default',
+            transparent: false,
+            vibrancy: 'dark',
             webPreferences: {
                 nodeIntegration: true,
                 allowDisplayingInsecureContent: true,

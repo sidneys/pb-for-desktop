@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "PushBullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "electron": "^1.4.14",
-    "electron-builder": "^11.3.0",
+    "electron-builder": "^11.4.4",
     "electron-builder-squirrel-windows": "^11.4.0",
     "fkill": "^4.1.0",
     "glob": "^7.1.1",

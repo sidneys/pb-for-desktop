@@ -47,13 +47,42 @@ const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pus
  * @global
  * @default
  */
-let defaultPollingInterval = 1000;
+let defaultInterval = 1000;
 
 
 /**
- * Remove setup menu item
+ * User Interface tweaks
  */
-let registerInterfaceOptimizations = () => {
+let applyInterfaceOptimizations = () => {
+    logger.debug('inject', 'applyInterfaceOptimizations()');
+
+    let pollingInterval = setTimeout(() => {
+        // Header: remove shadow
+        let header = document.getElementById('mobile-header') || document.getElementById('header');
+        header.style.boxShadow = 'none';
+
+        // Sink: transparent background
+        let sink = document.getElementById('sink');
+        sink.style.backgroundColor = 'transparent';
+
+        // Dark areas: transparent background
+        document.querySelectorAll('div').forEach((el) => {
+            if (el.style.backgroundColor === 'rgb(149, 165, 166)') {
+                el.style.backgroundColor = 'transparent';
+            }
+        });
+
+        clearInterval(pollingInterval);
+    }, defaultInterval, this);
+
+};
+
+/**
+ * Navigation tweaks
+ */
+let registerNavigationOptimizations = () => {
+    logger.debug('inject', 'registerNavigationOptimizations()');
+
     let pollingInterval = setInterval(() => {
         if (!window.pb) { return; }
 
@@ -64,19 +93,19 @@ let registerInterfaceOptimizations = () => {
         // Set initial view
         window.onecup['goto']('/#people');
 
-        // Optimize header layout
-        let header = document.getElementById('mobile-header') || document.getElementById('header');
-        header.style.boxShadow = 'none';
+        applyInterfaceOptimizations();
 
         clearInterval(pollingInterval);
-    }, defaultPollingInterval, this);
+    }, defaultInterval, this);
 };
 
 /**
  * Proxy pb.ws
  */
 let registerErrorProxyobject = () => {
-    let pollingInterval = setInterval(function() {
+    logger.debug('inject', 'registerErrorProxyobject()');
+
+    let pollingInterval = setInterval(() => {
         if (!window.pb) { return; }
         window.pb.error = new Proxy(window.pb.error, {
             set: function(target, name, value) {
@@ -84,14 +113,16 @@ let registerErrorProxyobject = () => {
             }
         });
         clearInterval(pollingInterval);
-    }, defaultPollingInterval, this);
+    }, defaultInterval, this);
 };
 
 /**
  * Proxy pb.api.pushes.objs
  */
 let registerPushProxyobject = () => {
-    let pollingInterval = setInterval(function() {
+    logger.debug('inject', 'registerPushProxyobject()');
+
+    let pollingInterval = setInterval(() => {
         if (!window.pb) { return; }
 
         window.pb.api.pushes.objs = new Proxy(window.pb.api.pushes.objs, {
@@ -117,20 +148,21 @@ let registerPushProxyobject = () => {
 
                 pushesObj[iden] = newPush;
 
-                // DEBUG
                 logger.debug('inject', 'proxy', 'iden', iden, 'appIsTarget', appIsTarget, 'pushExists', pushExists);
             }
         });
 
         clearInterval(pollingInterval);
-    }, defaultPollingInterval, this);
+    }, defaultInterval, this);
 };
 
 /**
  * Listen for Pushbullet Stream
  */
 let registerWebsocketListeners = () => {
-    let pollingInterval = setInterval(function() {
+    logger.debug('inject', 'registerWebsocketListeners()');
+
+    let pollingInterval = setInterval(() => {
         if (!window.pb) { return; }
 
         /**
@@ -166,35 +198,18 @@ let registerWebsocketListeners = () => {
         });
 
         clearInterval(pollingInterval);
-    }, defaultPollingInterval, this);
+    }, defaultInterval, this);
 };
-
-
-/**
- * Add native context menus
- * @listens window:PointerEvent#contextmenu
- */
-window.addEventListener('contextmenu', (ev) => {
-    if (!ev.target['closest']('textarea, input, [contenteditable="true"]')) { return; }
-
-    let menu = editorContextMenu();
-
-    let menuTimeout = setTimeout(function() {
-        menu.popup(remote.getCurrentWindow());
-        return clearTimeout(menuTimeout);
-    }, 60);
-});
-
 
 /**
  * Initialize
  */
 let initialize = () => {
-    /**
-     * @listens connectivityService#online
-     */
+    /** @listens connectivityService#on */
     connectivityService.once('online', () => {
-        registerInterfaceOptimizations();
+        logger.debug('inject', 'connectivityService#on');
+
+        registerNavigationOptimizations();
         registerErrorProxyobject();
         registerPushProxyobject();
         registerWebsocketListeners();
@@ -211,15 +226,38 @@ let initialize = () => {
             location.reload();
         }
 
-        // DEBUG
-        logger.debug('window:load', 'reachable', connectivityService.online);
+
     });
 };
 
 
-/**
- * @listens window:Event#load
- */
+/** @listens window#resize */
+window.addEventListener('resize', () => {
+    logger.debug('inject', 'window#resize');
+
+    applyInterfaceOptimizations();
+});
+
+/** @listens window#contextmenu */
+window.addEventListener('contextmenu', (ev) => {
+    logger.debug('inject', 'window#contextmenu');
+
+    if (!ev.target['closest']('textarea, input, [contenteditable="true"]')) {
+        return;
+    }
+
+    let menu = editorContextMenu();
+
+    let menuTimeout = setTimeout(() => {
+        menu.popup(remote.getCurrentWindow());
+        return clearTimeout(menuTimeout);
+    }, 60);
+});
+
+/** @listens window#on */
 window.addEventListener('load', () => {
+    logger.debug('inject', 'window#load');
+
     initialize();
 });
+

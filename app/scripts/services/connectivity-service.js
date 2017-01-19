@@ -47,8 +47,8 @@ const isOnline = require('is-online');
  * @constant
  */
 const defaultHostnameList = ['www.google.com'];
-const defaultTimeout = 3000;
-const defaultInterval = 20000;
+const defaultTimeout = 2000;
+const defaultInterval = 10000;
 
 
 /**

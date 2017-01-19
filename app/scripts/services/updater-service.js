@@ -38,6 +38,7 @@ const semverCompare = require('semver-compare');
  */
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'messenger-service'));
 
@@ -162,7 +163,7 @@ let bumpInternalVersion = () => {
 app.on('ready', () => {
     logger.debug('updater-service', 'App:ready');
 
-    //if (isDebug) { return; }
+    if (isDebug) { return; }
 
     try {
         updateManager = new UpdateManager();
