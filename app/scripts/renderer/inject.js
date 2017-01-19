@@ -134,14 +134,22 @@ let registerPushProxyobject = () => {
                 let pushExists = Boolean(window.pb.api.pushes.all.filter(function(push) { return push.iden === newPush.iden; }).length);
                 if (pushExists) { return false; }
 
-                // Check if push is targeted to specific device id
+                // Default: Show push
                 let appIsTarget = true;
-                let devicesObjs = window.pb.api.devices.objs;
-                let targetIden = newPush.target_device_iden;
-                if (targetIden && devicesObjs[targetIden]) {
-                    if (devicesObjs[targetIden].model && (devicesObjs[targetIden].model !== 'pb-for-desktop')) {
+
+                // Check if push is targeted to specific device
+                let currentDevicesObjs = window.pb.api.devices.objs;
+                let targetDeviceIden = newPush.target_device_iden;
+                if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
+                    if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
                         appIsTarget = false;
                     }
+                }
+
+                // Check if push is directed
+                let targetDirection = newPush.direction;
+                if (targetDirection && targetDirection === 'outgoing') {
+                    appIsTarget = false;
                 }
 
                 if (appIsTarget) { pbPush.enqueuePush(newPush); }
@@ -149,6 +157,7 @@ let registerPushProxyobject = () => {
                 pushesObj[iden] = newPush;
 
                 logger.debug('inject', 'proxy', 'iden', iden, 'appIsTarget', appIsTarget, 'pushExists', pushExists);
+                logger.debug('inject', newPush);
             }
         });
 
