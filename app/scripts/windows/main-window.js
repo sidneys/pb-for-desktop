@@ -59,7 +59,7 @@ const appIcon = path.join(appRootPath, 'icons', platformHelper.type, 'icon' + pl
 /**
  * @global
  */
-let mainWindow = {};
+let mainWindow;
 
 
 /**
@@ -173,6 +173,28 @@ class MainWindow extends BrowserWindow {
     }
 }
 
+
+/**
+ * Create Window
+ */
+let createMainWindow = () => {
+    logger.debug('main-window', 'createMainWindow()');
+
+    if (mainWindow) { return; }
+
+    mainWindow = new MainWindow();
+};
+
+/**
+ * Get Window
+ */
+let getMainWindow = () => {
+    logger.debug('main-window', 'getMainWindow()');
+
+    return mainWindow;
+};
+
+
 /** @listens Electron.App#on */
 app.on('activate', () => {
     logger.debug('main-window', 'App:activate');
@@ -184,11 +206,11 @@ app.on('activate', () => {
 app.on('ready', () => {
     logger.debug('main-window', 'App:ready');
 
-    mainWindow = new MainWindow();
+    createMainWindow();
 });
 
 
 /**
  * @exports
  */
-module.exports = mainWindow;
+module.exports = getMainWindow();
