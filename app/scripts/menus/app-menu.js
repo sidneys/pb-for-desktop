@@ -31,8 +31,8 @@ const { app, Menu, shell }  = require('electron');
  * @global
  * @constant
  */
-const packageJson = require(path.join(appRootPath, 'package.json'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const packageJson = require(path.join(appRootPath, 'package.json'));
 
 
 /**

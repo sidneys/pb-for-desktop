@@ -34,11 +34,11 @@ const parseDomain = require('parse-domain');
  * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 const dom = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
-const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 
 
 /**
@@ -46,6 +46,7 @@ const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'se
  * @global
  * @constant
  */
+const body = document.querySelector('body');
 const webview = document.getElementById('webview');
 const spinner = document.getElementById('spinner');
 const controls = document.getElementById('controls');
@@ -118,19 +119,31 @@ webview.addEventListener('new-window', (ev) => {
     }
 });
 
-/** @listens webview#will-navigate */
+/** @listens webview#on */
 webview.addEventListener('load-commit', (ev) => {
-    let domain = (parseDomain(ev.url)).domain || '';
+    if (!parseDomain(ev.url)) { return; }
+
+    let domain = parseDomain(ev.url).domain || '';
+    let path = url.parse(ev.url).path || '';
 
     switch (domain) {
         case 'google':
         case 'youtube':
         case 'facebook':
             dom.setVisibility(controls, true);
+
+            body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
-        default:
+        case 'pushbullet':
             dom.setVisibility(controls, false);
+
+            if (path.includes('signin')) {
+                body.style.backgroundColor = 'rgb(236, 240, 240)';
+            } else {
+                body.style.backgroundColor = 'transparent';
+            }
     }
+
 });
 
 /** @listens connectivityService#on */

@@ -41,6 +41,11 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: f
  */
 const defaultInterval = 1000;
 
+/**
+ * @global
+ */
+let pb;
+
 
 /**
  * Get 'pb-for-desktop' device
@@ -49,7 +54,7 @@ const defaultInterval = 1000;
 let getDevice = () => {
     logger.debug('clipboard', 'getDevice()');
 
-    return window.pb.api.devices.all.filter((device) => {
+    return pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
     })[0];
 };
@@ -61,7 +66,7 @@ let getDevice = () => {
 let receiveClip = (clip) => {
     logger.debug('clipboard', 'receiveClip()');
 
-    window.pb.lastClip = clipboard.readText();
+    pb.lastClip = clipboard.readText();
 
     clipboard.writeText(clip.body);
 };
@@ -75,22 +80,22 @@ let publishClip = function(clip) {
 
     let data = {
         'type': 'clip',
-        'source_user_iden': window.pb.account.iden,
+        'source_user_iden': pb.account.iden,
         'source_device_iden': getDevice().iden,
         'body': clip
     };
 
     let push;
-    if (window.pb.e2e.enabled) {
+    if (pb.e2e.enabled) {
         push = {
             'encrypted': true,
-            'ciphertext': window.pb.e2e.encrypt(JSON.stringify(data))
+            'ciphertext': pb.e2e.encrypt(JSON.stringify(data))
         };
     } else {
         push = data;
     }
 
-    window.pb.net.post('/v2/ephemerals', {
+    pb.net.post('/v2/ephemerals', {
         'type': 'push',
         'push': push
     }, function(result) {
@@ -155,14 +160,14 @@ let monitorClipboard = () => {
 /**
  * Init
  */
-let initializeClipboard = () => {
+let initialize = () => {
     logger.debug('clipboard', 'initializeClipboard()');
 
     /**
      * Receiver
      * @listens window:Event#message
      */
-    window.pb.ws.socket.addEventListener('message', (ev) => {
+    pb.ws.socket.addEventListener('message', (ev) => {
 
         let message;
 
@@ -191,13 +196,11 @@ window.addEventListener('load', () => {
     logger.debug('clipboard', 'window:load');
 
     let pollingInterval = setInterval(function() {
-        if (!window.pb) {
-            return;
-        }
+        if (!window.pb || !window.pb.account) { return; }
 
         pb = window.pb;
 
-        initializeClipboard();
+        initialize();
 
         clearInterval(pollingInterval);
     }, defaultInterval, this);

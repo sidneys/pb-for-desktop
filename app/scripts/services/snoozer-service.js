@@ -35,6 +35,12 @@ global.snoozeUntil = 0;
 
 
 /**
+ * Singleton
+ * @global
+ */
+let snoozer;
+
+/**
  * Snoozer
  * @class
  * @extends EventEmitter
@@ -63,8 +69,6 @@ class Snoozer extends EventEmitter {
 
         let relatedItems = menuItem.menu.items.filter((item) => { return item.id && item.id.startsWith('snooze') && item.id !== menuItem.id; });
         let itemEnabled = menuItem.checked;
-        let durationMs = parseInt(duration * (60 * 1000));
-        let durationHours = parseInt(duration / 60);
 
         // Reset related menu items
         relatedItems.forEach((item) => {
@@ -79,34 +83,74 @@ class Snoozer extends EventEmitter {
             global.snoozeUntil = 0;
             notificationService.show('Aborting Snooze');
 
-            this.emit('disabled');
+            this.emit('snooze', false);
         }
 
         // Init Snooze
         if ((global.snoozeUntil === 0) && itemEnabled) {
-            // Calculate Timestamp
-            let snoozeEnd = (Date.now() + durationMs);
-            global.snoozeUntil = snoozeEnd;
-            notificationService.show(`Entered Snooze (${durationHours} Hours)`);
-
-            this.emit('enabled');
-
-            // Schedule to waking up
-            this.snoozeTimeout = setTimeout(function() {
-                // End Snooze
-                clearTimeout(this.snoozeTimeout);
-                global.snoozeUntil = 0;
-                this.menuItem.checked = false;
-                notificationService.show(`Waking Up from Snooze (${durationHours} Hours)`);
-
-                this.emit('disabled');
-            }, (snoozeEnd - Date.now()));
+            this.scheduleSnooze(menuItem, duration);
         }
+    }
+
+    scheduleSnooze(menuItem, duration) {
+        let durationMs = parseInt(duration * (60 * 1000));
+        let durationHours = parseInt(duration / 60);
+
+        // Calculate Timestamp
+        let snoozeEnd = (Date.now() + durationMs);
+        global.snoozeUntil = snoozeEnd;
+        notificationService.show(`Entered Snooze (${durationHours} Hours)`);
+
+        this.emit('snooze', true);
+
+        // Schedule to waking up
+        this.snoozeTimeout = setTimeout(() => {
+            logger.debug('snoozer-service', 'setTimeout()', durationHours);
+
+            // End Snooze
+            clearTimeout(this.snoozeTimeout);
+            global.snoozeUntil = 0;
+            menuItem.checked = false;
+            notificationService.show(`Woke Up from Snooze (${durationHours} Hours)`);
+
+            this.emit('snooze', false);
+        }, (snoozeEnd - Date.now()));
+    }
+
+    /**
+     * Status
+     * @returns {boolean}
+     */
+    isActive(){
+       return global.snoozeUntil !== 0;
     }
 }
 
 
 /**
+ * Initializer
+ */
+let init = () => {
+    logger.debug('snoozer-service', 'create()');
+
+    snoozer = new Snoozer();
+};
+
+/**
+ * Getter
+ */
+let get = () => {
+    logger.debug('snoozer-service', 'get()');
+
+    if (!snoozer) { return; }
+    return snoozer;
+};
+
+
+init();
+
+
+/**
  * @exports
  */
-module.exports = new Snoozer();
+module.exports = get();

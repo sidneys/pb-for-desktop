@@ -3,18 +3,27 @@
 
 /**
  * Modules
- * Electron
+ * Node
  * @global
- * @const
+ * @constant
  */
-const { remote } = require('electron');
+const path = require('path');
 
+  /**
+ * Modules
+ * External
+ * @global
+ * @constant
+ */
+const appRootPath = require('app-root-path').path;
 
 /**
- * Developer Mode
+ * Modules
+ * Internal
  * @global
+ * @constant
  */
-let isDebug = (process.env.DEBUG) || (remote && remote.process && remote.process.env.DEBUG);
+const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 
 
 /**

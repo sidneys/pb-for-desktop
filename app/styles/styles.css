@@ -211,12 +211,31 @@ webview {
    ========================================================================== */
 
 #spinner__statustext {
-    margin-top: 2rem;
     font-family: 'Helvetica', 'Arial', sans-serif;
     font-weight: 500;
     color: white;
     text-align: center;
     font-size: 1.25rem;
+    text-transform: uppercase;
+    margin-top: 2rem;
+
+    animation: shaking 2000ms ease-in-out infinite;
+
+    transition: opacity 500ms ease-out 0ms, margin 2000ms ease-out 0ms;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hide #spinner__statustext {
+    margin: 2% 2% 0% 2%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.show #spinner__statustext {
+    margin: 2% 2% 2% 2%;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* ==========================================================================
@@ -235,6 +254,21 @@ webview {
     }
     100% {
         transform: rotate3d(0, 1, 0, 360deg);
+    }
+}
+
+@-webkit-keyframes shaking {
+    0% {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
+    }
+    50% {
+        transform: scale3d(0.95, 0.95, 0.95);
+        filter: blur(1px);
+    }
+    100% {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
     }
 }
 

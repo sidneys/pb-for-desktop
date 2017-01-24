@@ -34,6 +34,12 @@ const defaultInterval = 1000;
 
 
 /**
+ * @global
+ */
+let pb;
+
+
+/**
  * Create 'pb-for-desktop' device values
  * @return {{has_sms: boolean, icon: string, manufacturer: string, model: string, nickname: string}}
  */
@@ -56,7 +62,7 @@ let createDeviceValues = () => {
 let getDevices = () => {
     logger.debug('device', 'getDevices()');
 
-    return window.pb.api.devices.all.filter((device) => {
+    return pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
     });
 };
@@ -97,7 +103,7 @@ let deleteInactiveDevices = function(done) {
 
     let devicesProcessed = 0;
     inactiveDevicesList.forEach((device) => {
-        window.pb.api.devices.delete(device);
+        pb.api.devices.delete(device);
         devicesProcessed++;
         if (devicesProcessed === inactiveDevicesList.length) {
             return cb();
@@ -119,7 +125,7 @@ let deleteAdditionalDevices = function(done) {
 
     let devicesProcessed = 0;
     superflousDevicesList.forEach((device) => {
-        window.pb.api.devices.delete(device);
+        pb.api.devices.delete(device);
         devicesProcessed++;
         if (devicesProcessed === superflousDevicesList.length) {
             return cb();
@@ -135,14 +141,14 @@ let deleteAdditionalDevices = function(done) {
 let createDevice = function() {
     logger.debug('device', 'createDevice()');
 
-    window.pb.api.devices.create(createDeviceValues());
+    pb.api.devices.create(createDeviceValues());
 };
 
 
 /**
  * Init
  */
-let initializeDevice = function() {
+let initialize = function() {
     logger.debug('device', 'initializeDevice()');
 
     // Delete inactive devices
@@ -166,11 +172,11 @@ window.addEventListener('load', () => {
     logger.debug('device', 'window:load');
 
     let pollingInterval = setInterval(function() {
-        if (!window.pb) {
-            return;
-        }
+        if (!window.pb || !window.pb.account) { return; }
 
-        initializeDevice();
+        pb = window.pb;
+
+        initialize();
 
         clearInterval(pollingInterval);
     }, defaultInterval, this);

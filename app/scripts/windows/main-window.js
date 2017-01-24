@@ -33,12 +33,11 @@ const electronConnect = require('electron-connect');
  * @global
  * @constant
  */
-const packageJson = require(path.join(appRootPath, 'package.json'));
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
-const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const packageJson = require(path.join(appRootPath, 'package.json'));
+const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 
 /**
@@ -46,14 +45,9 @@ const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
  * @global
  * @constant
  */
+const appIcon = path.join(appRootPath, 'icons', platformHelper.type, 'icon' + platformHelper.iconImageExtension(platformHelper.type));
 const appProductName = packageJson.productName || packageJson.name;
 const appUrl = 'file://' + path.join(appRootPath, 'app', 'html', 'main.html');
-
-/**
- * Paths
- * @global
- */
-const appIcon = path.join(appRootPath, 'icons', platformHelper.type, 'icon' + platformHelper.iconImageExtension(platformHelper.type));
 
 
 /**
@@ -113,29 +107,21 @@ class MainWindow extends BrowserWindow {
         /** @listens Electron.BrowserWindow#on */
         this.on('show', () => {
             logger.debug('main-window', 'BrowserWindow:show');
-
-            settings.settings.set('internal.isVisible', true).then(() => {});
         });
 
         /** @listens Electron.BrowserWindow#on */
         this.on('hide', () => {
             logger.debug('main-window', 'BrowserWindow:hide');
-
-            settings.settings.set('internal.isVisible', false).then(() => {});
         });
 
         /** @listens Electron.BrowserWindow#on */
         this.on('move', () => {
             logger.debug('main-window', 'BrowserWindow:move');
-
-            settings.settings.setSync('internal.windowBounds', BrowserWindow.getAllWindows()[0].getBounds());
         });
 
         /** @listens Electron.BrowserWindow#on */
         this.on('resize', () => {
             logger.debug('main-window', 'BrowserWindow:resize');
-
-            settings.settings.setSync('internal.windowBounds', BrowserWindow.getAllWindows()[0].getBounds());
         });
 
         /** @listens Electron~WebContents#on */
@@ -151,12 +137,6 @@ class MainWindow extends BrowserWindow {
         /** @listens Electron~WebContents#on */
         this.webContents.on('dom-ready', () => {
             logger.debug('main-window', 'WebContents:dom-ready');
-
-            if (settings.settings.getSync('internal.isVisible')) {
-                this.show();
-            } else {
-                this.hide();
-            }
 
             // DEBUG
             if (isDebug) {

@@ -34,12 +34,20 @@ const fileUrl = require('file-url');
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
+
 
 /**
- * Settings
+ * @global
+ * @constant
+ */
+const defaultInterval = 1000;
+
+
+/**
  * @global
  */
-let globalElectronSettings = remote.getGlobal('electronSettings');
+let pb;
 
 /**
  * Notification
@@ -91,7 +99,7 @@ let playSoundFile = function(filePath, callback) {
         return cb(null, soundFile);
     });
 
-    globalElectronSettings.get('internal.soundVolume').then(soundVolume => {
+    settings.electronSettings.get('soundVolume').then(soundVolume => {
         AudioElement.volume = parseFloat(soundVolume);
         AudioElement.play();
     });
@@ -112,7 +120,7 @@ let getIconForPushbulletPush = function(push) {
     // Accounts (Google, Facebook ..)
     let accountImage;
     let accountIdShort = push['receiver_iden'];
-    let accountList = window.pb.api.accounts.all;
+    let accountList = pb.api.accounts.all;
 
     for (let account of accountList) {
         if (account['iden'].startsWith(accountIdShort)) {
@@ -123,7 +131,7 @@ let getIconForPushbulletPush = function(push) {
     // Channels (IFTTT, Zapier ..)
     let channelImage,
         channelId = push['client_iden'],
-        channelList = window.pb.api.grants.all;
+        channelList = pb.api.grants.all;
 
     for (let channel of channelList) {
         if (channel['client']['iden'] === channelId) {
@@ -134,7 +142,7 @@ let getIconForPushbulletPush = function(push) {
     // Devices (Phone, Tablet ..)
     let deviceImage,
         deviceId = push['source_device_iden'],
-        deviceList = window.pb.api.devices.all;
+        deviceList = pb.api.devices.all;
 
     for (let device of deviceList) {
         if (device['iden'] === deviceId) {
@@ -235,10 +243,10 @@ class PushbulletNotification {
         // Trigger native notification
         let notification = new Notification(options.title, options);
 
-        globalElectronSettings.get('user.playSoundEffects')
-            .then(playSoundEffects => {
-                if (playSoundEffects === true) {
-                    globalElectronSettings.get('user.soundFile')
+        settings.electronSettings.get('soundEnabled')
+            .then(soundEnabled => {
+                if (soundEnabled === true) {
+                    settings.electronSettings.get('soundFile')
                         .then(notificationFile => {
                             playSoundFile(notificationFile, function(err, file) {
                                 if (err) {
@@ -268,9 +276,6 @@ class PushbulletNotification {
 let createPushbulletNotification = (push) => {
     logger.debug('push', 'createPushbulletNotification()');
 
-    // If snooze is active, global.snoozeUntil is === 0
-    let isSnoozed = Boolean(remote.getGlobal('snoozeUntil'));
-
     // DEBUG
     // logger.debug('snoozed', isSnoozed);
 
@@ -292,14 +297,11 @@ let createPushbulletNotification = (push) => {
 let fetchRecentPushes = (limit) => {
     logger.debug('push', 'fetchRecentPushes()');
 
-    if (!window.pb) {
-        return;
-    }
 
     let queueLimit = limit || 0;
 
     // Get hashmap of all pushes
-    let pushesReference = window.pb.api.pushes.objs,
+    let pushesReference = pb.api.pushes.objs,
         pushesList = [];
 
     // Build list of active pushes
@@ -347,13 +349,13 @@ let enqueuePushList = (pushesList, filterPushes, cb) => {
         return callback(pushesList.length);
     }
 
-    globalElectronSettings.get('internal.lastNotification')
+    settings.electronSettings.get('lastNotification')
         .then(lastNotification => {
 
             let nextPushesList = pushesList;
             let notifyAfter = lastNotification || 0;
 
-            // Remove pushes older than 'internal.lastNotification' from array
+            // Remove pushes older than 'lastNotification' from array
             if (filterPushes) {
                 nextPushesList = pushesList.filter(function(element) {
                     return (element.created) > notifyAfter;
@@ -366,11 +368,10 @@ let enqueuePushList = (pushesList, filterPushes, cb) => {
                     // Show local notification
                     createPushbulletNotification(push);
 
-                    // Update 'internal.lastNotification' with timestamp from most recent push
+                    // Update 'lastNotification' with timestamp from most recent push
                     if (push.created > notifyAfter) {
                         // Sync Settings
-                        globalElectronSettings.set('internal.lastNotification', push.modified)
-                            .then(() => {});
+                        settings.electronSettings.set('lastNotification', push.modified).then(() => {});
                     }
 
                     // Callback
@@ -415,6 +416,20 @@ let enqueueRecentPushes = (cb) => {
         callback(length);
     });
 };
+
+
+/** @listens window:#load */
+window.addEventListener('load', () => {
+    logger.debug('push', 'window:load');
+
+    let pollingInterval = setInterval(function() {
+        if (!window.pb || !window.pb.account) { return; }
+
+        pb = window.pb;
+
+        clearInterval(pollingInterval);
+    }, defaultInterval, this);
+});
 
 
 /**

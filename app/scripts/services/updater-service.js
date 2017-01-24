@@ -26,9 +26,8 @@ const { app, BrowserWindow } = electron;
  * @constant
  */
 const appRootPath = require('app-root-path').path;
-const electronSettings = require('electron-settings');
-const electronAutoUpdater = require('electron-auto-updater').autoUpdater;
 const semverCompare = require('semver-compare');
+const { autoUpdater } = require('electron-updater');
 
 /**
  * Modules
@@ -36,11 +35,12 @@ const semverCompare = require('semver-compare');
  * @global
  * @constant
  */
-const packageJson = require(path.join(appRootPath, 'package.json'));
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'messenger-service'));
+const packageJson = require(path.join(appRootPath, 'package.json'));
+const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
 
 
 /**
@@ -52,11 +52,17 @@ const appProductName = packageJson.productName || packageJson.name;
 const appVersion = packageJson.version;
 
 /**
+ * @default
  * @global
  */
-let updateManager = {};
 let isCheckingOrInstallingUpdates = false;
 
+
+/**
+ * Singleton
+ * @global
+ */
+let updateManager;
 
 /**
  * Update Manager
@@ -73,37 +79,55 @@ class UpdateManager {
     init() {
         logger.debug('updater-service', 'init()');
 
+        // Set Logger
+        autoUpdater.logger = logger;
+
         /** @listens AutoUpdater#on */
-        electronAutoUpdater.on('error', (error) => {
+        autoUpdater.on('error', (error) => {
             logger.error('updater-service', 'AutoUpdater:error', error.message);
 
             isCheckingOrInstallingUpdates = false;
         });
 
         /** @listens AutoUpdater#on */
-        electronAutoUpdater.on('checking-for-update', () => {
-            logger.debug('updater-service', 'AutoUpdater:checking-for-update');
+        autoUpdater.on('checking-for-update', () => {
+            logger.log('updater-service', 'AutoUpdater:checking-for-update');
 
             isCheckingOrInstallingUpdates = true;
         });
 
         /** @listens AutoUpdater#on */
-        electronAutoUpdater.on('update-available', () => {
-            logger.debug('updater-service', 'AutoUpdater:update-available');
+        autoUpdater.on('update-available', () => {
+            logger.log('updater-service', 'AutoUpdater:update-available');
 
             isCheckingOrInstallingUpdates = true;
         });
 
         /** @listens AutoUpdater#on */
-        electronAutoUpdater.on('update-not-available', () => {
-            logger.debug('updater-service', 'AutoUpdater:update-not-available');
+        autoUpdater.on('update-not-available', () => {
+            logger.log('updater-service', 'AutoUpdater:update-not-available');
 
             isCheckingOrInstallingUpdates = false;
         });
 
         /** @listens AutoUpdater#on */
-        electronAutoUpdater.on('update-downloaded', () => {
-            logger.debug('updater-service', 'AutoUpdater:update-downloaded');
+        autoUpdater.on('download-progress', (ev, progress) => {
+            logger.log('updater-service', 'AutoUpdater:download-progress', JSON.stringify(progress));
+
+            BrowserWindow.getAllWindows()[0].setProgressBar(progress.percent / 100);
+        });
+
+        /** @listens AutoUpdater#on */
+        autoUpdater.on('progress', (ev, progress) => {
+            logger.log('updater-service', 'AutoUpdater:progress', JSON.stringify(progress));
+
+            BrowserWindow.getAllWindows()[0].setProgressBar(progress.percent / 100);
+        });
+
+
+        /** @listens AutoUpdater#on */
+        autoUpdater.on('update-downloaded', () => {
+            logger.log('updater-service', 'AutoUpdater:update-downloaded');
 
             isCheckingOrInstallingUpdates = true;
 
@@ -114,7 +138,7 @@ class UpdateManager {
                 `Restart now?`, (response) => {
                     if (response === 0) {
                         BrowserWindow.getAllWindows().forEach((window) => { window.destroy(); });
-                        electronAutoUpdater.quitAndInstall();
+                        autoUpdater.quitAndInstall();
                     }
                     if (response === 1) { return true; }
 
@@ -127,14 +151,14 @@ class UpdateManager {
         if (mainWindow) {
             mainWindow.on('show', () => {
                 if (!isCheckingOrInstallingUpdates) {
-                    electronAutoUpdater.checkForUpdates();
+                    autoUpdater.checkForUpdates();
                 }
             });
         }
 
-        electronAutoUpdater.checkForUpdates();
+        autoUpdater.checkForUpdates();
 
-        return electronAutoUpdater;
+        return autoUpdater;
     }
 }
 
@@ -142,26 +166,28 @@ class UpdateManager {
 /**
  * Bump version in Settings file
  */
-let bumpInternalVersion = () => {
+let bumpVersion = () => {
     logger.debug('updater-service', 'bumpInternalVersion()');
 
-    let currentVersion = electronSettings.getSync('internal.currentVersion');
+    let currentVersion = settings.getConfigurationItem('currentVersion').get();
     let wasUpdated = Boolean(semverCompare(packageJson.version, currentVersion) === 1);
 
     if (wasUpdated) {
-        electronSettings.setSync('internal.currentVersion', packageJson.version);
+        settings.getConfigurationItem('currentVersion').set(packageJson.version);
         messengerService.showInfo(`Update complete`, `${appProductName} has been updated to ${appVersion}.`);
 
-        logger.debug('updater-service', 'App:ready', 'wasUpdated', wasUpdated);
-        logger.debug('updater-service', 'App:ready', 'packageJson.version', packageJson.version);
-        logger.debug('updater-service', 'App:ready', 'currentVersion', currentVersion);
+        logger.log('updater-service', 'App:ready', 'wasUpdated', wasUpdated);
+        logger.log('updater-service', 'App:ready', 'packageJson.version', packageJson.version);
+        logger.log('updater-service', 'App:ready', 'currentVersion', currentVersion);
     }
 };
 
 
-/** @listens Electron.App#on */
-app.on('ready', () => {
-    logger.debug('updater-service', 'App:ready');
+/**
+ * Initializer
+ */
+let init = () => {
+    logger.debug('updater-service', 'create()');
 
     if (isDebug) { return; }
 
@@ -171,11 +197,29 @@ app.on('ready', () => {
         logger.error('updater-service', error.message);
     }
 
-    bumpInternalVersion();
+    bumpVersion();
+};
+
+/**
+ * Getter
+ */
+let get = () => {
+    logger.debug('updater-service', 'get()');
+
+    if (!updateManager) { return; }
+    return updateManager;
+};
+
+
+/** @listens Electron.App#on */
+app.on('ready', () => {
+    logger.debug('updater-service', 'App:ready');
+
+    init();
 });
 
 
 /**
  * @exports
  */
-module.exports = updateManager;
+module.exports = get();

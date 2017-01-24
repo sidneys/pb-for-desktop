@@ -7,6 +7,7 @@
  * @global
  * @constant
  */
+const EventEmitter = require('events');
 const path = require('path');
 
  /**
@@ -27,14 +28,6 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: t
 
 /**
  * Modules
- * Node
- * @global
- * @constant
- */
-const EventEmitter = require('events');
-
-/**
- * Modules
  * External
  * @global
  * @constant
@@ -48,8 +41,14 @@ const isOnline = require('is-online');
  */
 const defaultHostnameList = ['www.google.com'];
 const defaultTimeout = 2000;
-const defaultInterval = 10000;
+const defaultInterval = 5000;
 
+
+/**
+ * Singleton
+ * @global
+ */
+let connectivity;
 
 /**
  * Connectivity Monitor
@@ -108,6 +107,29 @@ class Connectivity extends EventEmitter {
 
 
 /**
+ * Initializer
+ */
+let init = () => {
+    logger.debug('connectivity-service', 'create()');
+
+    connectivity = new Connectivity();
+};
+
+/**
+ * Getter
+ */
+let get = () => {
+    logger.debug('connectivity-service', 'get()');
+
+    if (!connectivity) { return; }
+    return connectivity;
+};
+
+
+init();
+
+
+/**
  * @exports
  */
-module.exports = new Connectivity();
+module.exports = get();
