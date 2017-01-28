@@ -52,9 +52,9 @@ const appVersion = packageJson.version;
  * @global
  * @constant
  */
-const appTrayIconDefault = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-default-${platformHelper.templateImageExtension(platformHelper.type)}`);
-const appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent-${platformHelper.templateImageExtension(platformHelper.type)}`);
-const appTrayIconPaused = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-paused-${platformHelper.templateImageExtension(platformHelper.type)}`);
+const appTrayIconDefault = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-default${platformHelper.templateImageExtension(platformHelper.type)}`);
+const appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
+const appTrayIconPaused = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-paused${platformHelper.templateImageExtension(platformHelper.type)}`);
 
 
 /**
@@ -88,7 +88,7 @@ let getTrayMenuTemplate = () => {
         {
             id: 'showOnlyInTray',
             label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
-            icon: path.join(appRootPath, 'app', 'images', `icon-show-app-window-${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-show-app-window${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
             checked: settings.getConfigurationItem('showOnlyInTray').get(),
             click(menuItem) {
@@ -98,7 +98,7 @@ let getTrayMenuTemplate = () => {
         {
             id: 'launchOnStartup',
             label: 'Launch on Startup',
-            icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup-${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
             checked: settings.getConfigurationItem('launchOnStartup').get(),
             click(menuItem) {
@@ -108,7 +108,7 @@ let getTrayMenuTemplate = () => {
         {
             id: 'replayOnLaunch',
             label: 'Replay Pushes on Start',
-            icon: path.join(appRootPath, 'app', 'images', `icon-replay-on-launch-${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-replay-on-launch${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
             checked: settings.getConfigurationItem('replayOnLaunch').get(),
             click(menuItem) {
@@ -121,7 +121,7 @@ let getTrayMenuTemplate = () => {
         {
             id: 'Snooze',
             label: 'Snooze',
-            icon: path.join(appRootPath, 'app', 'images', `icon-snooze-${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-snooze${platformHelper.menuItemImageExtension}`),
             submenu: [
                 {
                     label: 'Snooze for 1 Hour',
@@ -155,7 +155,7 @@ let getTrayMenuTemplate = () => {
         {
             id: 'soundEnabled',
             label: 'Play Sound Effects',
-            icon: path.join(appRootPath, 'app', 'images', `icon-play-sound-effects-${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-play-sound-effects${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
             checked: settings.getConfigurationItem('soundEnabled').get(),
             click(menuItem) {
@@ -167,7 +167,7 @@ let getTrayMenuTemplate = () => {
             label: 'Open Sound File...',
             type: 'normal',
             click() {
-                settings.getConfigurationItem('soundFile').apply();
+                settings.getConfigurationItem('soundFile').implement();
             }
         },
         {

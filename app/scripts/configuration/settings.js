@@ -112,18 +112,6 @@ let setShowOnlyInTray = function(setShowOnlyInTray) {
 };
 
 
-/**
- * Show App in Dock / Taskbar
- * @param {Boolean} isVisible - True: show dock icon, false: hide icon
- */
-let setIsVisible = function(isVisible) {
-    logger.debug('settings', 'setIsVisible()', isVisible);
-
-    if (isVisible) {
-        getPrimaryWindow().show();
-    } else { getPrimaryWindow().hide(); }
-};
-
 
 /**
  * Items
@@ -148,7 +136,7 @@ let configurationItems = {
         set(currentVersion) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, currentVersion);
+            electronSettings.set(this.keypath, currentVersion).then(() => {});
         }
     },
     /** Show Window */
@@ -162,12 +150,13 @@ let configurationItems = {
             logger.debug('settings', this.keypath, 'init()');
 
             // Apply
-            this.apply(this.get());
+            this.implement(this.get());
 
             /** @listens Electron.BrowserWindow#on */
             getPrimaryWindow().on('show', () => { this.set(true); });
             getPrimaryWindow().on('hide', () => { this.set(false); });
-            getPrimaryWindow().webContents.on('dom-ready', () => { this.apply(this.get()); });
+            /** @listens Electron~WebContents#on */
+            getPrimaryWindow().webContents.on('dom-ready', () => { this.implement(this.get()); });
         },
         get(){
             logger.debug('settings', this.keypath, 'get()');
@@ -177,14 +166,18 @@ let configurationItems = {
         set(isVisible){
             logger.debug('settings', this.keypath, 'set()', isVisible);
 
-            this.apply(isVisible);
-            electronSettings.setSync(this.keypath, isVisible);
+            electronSettings.set(this.keypath, isVisible).then(() => {});
         },
-        apply(isVisible){
-            logger.debug('settings', this.keypath, 'apply()', isVisible);
+        implement(isVisible){
+            logger.debug('settings', this.keypath, 'implement()', isVisible);
 
-            setIsVisible(isVisible);
-        },
+            if (isVisible) {
+                getPrimaryWindow().show();
+            }
+            else {
+                getPrimaryWindow().hide();
+            }
+        }
     },
     /** Last Push Timestamp */
     lastNotification: {
@@ -204,7 +197,7 @@ let configurationItems = {
         set(lastNotification) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, lastNotification);
+            electronSettings.set(this.keypath, lastNotification).then(() => {});
         }
     },
     /** Autostart */
@@ -225,11 +218,11 @@ let configurationItems = {
         set(launchOnStartup){
             logger.debug('settings', this.keypath, 'set()', launchOnStartup);
 
-            this.apply(launchOnStartup);
-            electronSettings.setSync(this.keypath, launchOnStartup);
+            this.implement(launchOnStartup);
+            electronSettings.set(this.keypath, launchOnStartup).then(() => {});
         },
-        apply(launchOnStartup){
-            logger.debug('settings', this.keypath, 'apply()', launchOnStartup);
+        implement(launchOnStartup){
+            logger.debug('settings', this.keypath, 'implement()', launchOnStartup);
 
             if (launchOnStartup) { autoLauncher.enable(); }
             else { autoLauncher.disable(); }
@@ -253,7 +246,7 @@ let configurationItems = {
         set(logFile) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, logFile);
+            electronSettings.set(this.keypath, logFile).then(() => {});
         }
     },
     /** Play Sounds */
@@ -274,7 +267,7 @@ let configurationItems = {
         set(soundVolume) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, soundVolume);
+            electronSettings.set(this.keypath, soundVolume).then(() => {});
         }
     },
     /** Show recent pushes */
@@ -295,7 +288,7 @@ let configurationItems = {
         set(soundVolume) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, soundVolume);
+            electronSettings.set(this.keypath, soundVolume).then(() => {});
         }
     },
     /** Show Main Window */
@@ -309,12 +302,12 @@ let configurationItems = {
             logger.debug('settings', this.keypath, 'init()');
 
             // Apply
-            this.apply(this.get());
+            this.implement(this.get());
 
             /** @listens Electron.BrowserWindow#on */
             getPrimaryWindow().on('show-only-in-tray', (showOnlyInTray) => {
                 logger.debug('settings', this.keypath, 'BrowserWindow:show-only-in-tray');
-                this.apply(showOnlyInTray);
+                this.implement(showOnlyInTray);
                 this.set(showOnlyInTray);
             });
         },
@@ -326,11 +319,11 @@ let configurationItems = {
         set(showOnlyInTray) {
             logger.debug('settings', this.keypath, 'set()');
 
-            this.apply(showOnlyInTray);
-            electronSettings.setSync(this.keypath, showOnlyInTray);
+            this.implement(showOnlyInTray);
+            electronSettings.set(this.keypath, showOnlyInTray).then(() => {});
         },
-        apply(showOnlyInTray) {
-            logger.debug('settings', this.keypath, 'apply()', showOnlyInTray);
+        implement(showOnlyInTray) {
+            logger.debug('settings', this.keypath, 'implement()', showOnlyInTray);
 
             setShowOnlyInTray(showOnlyInTray);
         }
@@ -360,11 +353,11 @@ let configurationItems = {
         },
         set(soundFile) {
             logger.debug('settings', this.keypath, 'set()');
-            electronSettings.setSync(this.keypath, soundFile);
+            electronSettings.set(this.keypath, soundFile).then(() => {});
         },
-        apply(){
+        implement(){
             messengerService.openFile('Change Sound', 'audio', appSoundDirectory, (error, soundFile) => {
-                logger.debug('settings', this.keypath, 'apply()', soundFile);
+                logger.debug('settings', this.keypath, 'implement()', soundFile);
 
                 if (error) {
                     logger.error('settings', error.message);
@@ -393,7 +386,7 @@ let configurationItems = {
         set(soundVolume) {
             logger.debug('settings', this.keypath, 'set()');
 
-            electronSettings.setSync(this.keypath, soundVolume);
+            electronSettings.set(this.keypath, soundVolume).then(() => {});
         }
     },
     /** Window position and size */
@@ -407,12 +400,11 @@ let configurationItems = {
             logger.debug('settings', this.keypath, 'init()');
 
             // Apply
-            this.apply(this.get());
+            this.implement(this.get());
 
-
+            /** @listens Electron.BrowserWindow#on */
             getPrimaryWindow().on('move', () => { this.set(getPrimaryWindow().getBounds()); });
             getPrimaryWindow().on('resize', () => { this.set(getPrimaryWindow().getBounds()); });
-            getPrimaryWindow().webContents.on('dom-ready', () => { this.apply(this.get()); });
         },
         get(){
             logger.debug('settings', this.keypath, 'get()');
@@ -422,11 +414,10 @@ let configurationItems = {
         set(windowBounds){
             logger.debug('settings', this.keypath, 'set()', JSON.stringify(windowBounds));
 
-            this.apply(this.get());
-            electronSettings.setSync(this.keypath, windowBounds);
+            electronSettings.set(this.keypath, windowBounds).then(() => {});
         },
-        apply(windowBounds){
-            logger.debug('settings', this.keypath, 'apply()', JSON.stringify(windowBounds));
+        implement(windowBounds){
+            logger.debug('settings', this.keypath, 'implement()', JSON.stringify(windowBounds));
 
             getPrimaryWindow().setBounds(windowBounds);
         }
@@ -478,25 +469,6 @@ let initConfigurationItems = () => {
     }, defaultInterval);
 };
 
-/**
- * Handle App Settings Click
- * @param {Electron.MenuItem} menuItem - Menu item
- * @param {Object} settingsInstance - electron-settings instance
- * @param {String=} settingKeypath - Nested Keypath to registrable settings, e.g. 'options.app'
- * @param {Object=} eventObject - Optionally attach behaviour to options
- */
-let toggleSettingsProperty = function(menuItem, settingsInstance, settingKeypath, eventObject) {
-    let itemKeypath = settingKeypath;
-
-    settingsInstance.setSync(itemKeypath, menuItem.checked);
-
-    let handler = keypath(itemKeypath, eventObject);
-
-    if (_.isFunction(handler)) {
-        handler(menuItem);
-    }
-};
-
 
 app.on('ready', () => {
     // Settings Defaults
@@ -523,6 +495,5 @@ module.exports = {
     electronSettings: electronSettings,
     getConfigurationItem: getConfigurationItem,
     setShowAppWindow: setShowOnlyInTray,
-    settingsDefaults: getConfigurationDefaults(),
-    toggleSettingsProperty: toggleSettingsProperty
+    settingsDefaults: getConfigurationDefaults()
 };

@@ -65,7 +65,7 @@ class MainWindow extends BrowserWindow {
     constructor() {
         super({
             acceptFirstMouse: true,
-            autoHideMenuBar: false,
+            autoHideMenuBar: !isDebug,
             backgroundColor: platformHelper.isMacOS ? '#0095A5A6' : '#95A5A6',
             frame: true,
             fullscreenable: true,
