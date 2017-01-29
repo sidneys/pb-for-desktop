@@ -26,6 +26,7 @@ const { remote } = require('electron');
  */
 const appRootPath = require('app-root-path').path;
 const editorContextMenu = remote.require('electron-editor-context-menu');
+const isOnline = require('is-online');
 
 /**
  * Modules
@@ -33,7 +34,6 @@ const editorContextMenu = remote.require('electron-editor-context-menu');
  * @global
  * @constant
  */
-const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
@@ -47,6 +47,11 @@ const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration
  */
 const appIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${platformHelper.iconImageExtension(platformHelper.type)}`);
 
+/**
+ * @global
+ * @constant
+ */
+const defaultInterval = 5000;
 
 //noinspection JSUnusedLocalSymbols
 /**
@@ -56,13 +61,6 @@ const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'renderer', '
 //noinspection JSUnusedLocalSymbols
 const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard')); // jshint ignore:line
 const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'push')); // jshint ignore:line
-
-
-/**
- * @global
- * @default
- */
-let defaultInterval = 1000;
 
 
 /**
@@ -246,13 +244,13 @@ let registerWebsocketListeners = () => {
 };
 
 /**
- * Initialize
+ * Init
  */
-let initialize = () => {
-    /** @listens connectivityService#on */
+let init = () => {
+    logger.debug('inject', 'init()');
 
-    connectivityService.once('online', () => {
-        logger.debug('inject', 'connectivityService#once');
+    isOnline({ hostnames: [ 'www.pushbullet.com' ] }).then(online => {
+        logger.debug('inject', 'init()', 'isOnline');
 
         registerNavigationOptimizations();
         registerErrorProxyobject();
@@ -302,7 +300,7 @@ window.addEventListener('load', () => {
         pb = window.pb;
         onecup = window.onecup;
 
-        initialize();
+        init();
 
         clearInterval(pollingInterval);
     }, defaultInterval, this);

@@ -62,14 +62,14 @@ let isCheckingOrInstallingUpdates = false;
  * Singleton
  * @global
  */
-let updateManager;
+global.updaterService = null;
 
 /**
- * Update Manager
+ * Updater
  * @class
  * @returns autoUpdater
  */
-class UpdateManager {
+class Updater {
     constructor() {
         if (platformHelper.isLinux) { return; }
 
@@ -184,15 +184,17 @@ let bumpVersion = () => {
 
 
 /**
- * Initializer
+ * Init
  */
 let init = () => {
-    logger.debug('updater-service', 'create()');
+    logger.debug('updater-service', 'init()');
 
     if (isDebug) { return; }
 
     try {
-        updateManager = new UpdateManager();
+        if (!global.updaterService) {
+            global.updaterService = new Updater();
+        }
     } catch (error) {
         logger.error('updater-service', error.message);
     }
@@ -206,8 +208,9 @@ let init = () => {
 let get = () => {
     logger.debug('updater-service', 'get()');
 
-    if (!updateManager) { return; }
-    return updateManager;
+    if (global.updaterService) {
+        return global.updaterService;
+    }
 };
 
 

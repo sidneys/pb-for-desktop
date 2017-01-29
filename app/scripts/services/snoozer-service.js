@@ -38,7 +38,7 @@ global.snoozeUntil = 0;
  * Singleton
  * @global
  */
-let snoozer;
+global.snoozerService = null;
 
 /**
  * Snoozer
@@ -128,12 +128,14 @@ class Snoozer extends EventEmitter {
 
 
 /**
- * Initializer
+ * Init
  */
 let init = () => {
-    logger.debug('snoozer-service', 'create()');
+    logger.debug('snoozer-service', 'init()');
 
-    snoozer = new Snoozer();
+    if (!global.snoozerService) {
+        global.snoozerService = new Snoozer();
+    }
 };
 
 /**
@@ -142,8 +144,9 @@ let init = () => {
 let get = () => {
     logger.debug('snoozer-service', 'get()');
 
-    if (!snoozer) { return; }
-    return snoozer;
+    if (global.snoozerService) {
+        return global.snoozerService;
+    }
 };
 
 

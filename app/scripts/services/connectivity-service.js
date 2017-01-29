@@ -48,10 +48,10 @@ const defaultInterval = 5000;
  * Singleton
  * @global
  */
-let connectivity;
+global.connectivityService = null;
 
 /**
- * Connectivity Monitor
+ * Connectivity
  * @class
  * @extends EventEmitter
  */
@@ -107,12 +107,14 @@ class Connectivity extends EventEmitter {
 
 
 /**
- * Initializer
+ * Init
  */
 let init = () => {
-    logger.debug('connectivity-service', 'create()');
-
-    connectivity = new Connectivity();
+    logger.debug('connectivity-service', 'init()');
+    
+    if (!global.connectivityService) {
+        global.connectivityService = new Connectivity();
+    }
 };
 
 /**
@@ -121,8 +123,9 @@ let init = () => {
 let get = () => {
     logger.debug('connectivity-service', 'get()');
 
-    if (!connectivity) { return; }
-    return connectivity;
+    if (global.connectivityService) {
+        return global.connectivityService;
+    }
 };
 
 

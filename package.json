@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "3.5.3",
+  "version": "3.6.0",
   "description": "PushBullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",

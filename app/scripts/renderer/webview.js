@@ -72,6 +72,21 @@ let dismissSpinner = function() {
 };
 
 
+/** @listens connectivityService#on */
+connectivityService.on('online', () => {
+    logger.debug('webview', 'connectivityService:online');
+
+    dismissSpinner();
+});
+
+/** @listens connectivityService#on */
+connectivityService.on('offline', () => {
+    logger.debug('webview', 'connectivityService:offline');
+
+    presentSpinner();
+});
+
+
 /** @listens webview:dom-ready */
 webview.addEventListener('dom-ready', () => {
     // Register Platform
@@ -94,20 +109,20 @@ webview.addEventListener('dom-ready', () => {
 
 /** @listens webview:did-fail-load */
 webview.addEventListener('did-fail-load', () => {
+    logger.debug('webview', 'webview:did-fail-load');
+
     if (!connectivityService.online) {
         presentSpinner();
     }
-
-    logger.devtools('connectivityService', connectivityService.online);
 });
 
 /** @listens webview:did-finish-load */
 webview.addEventListener('did-finish-load', () => {
+    logger.debug('webview', 'webview:did-finish-load');
+
     if (connectivityService.online) {
         dismissSpinner();
     }
-
-    logger.devtools('connectivityService', connectivityService.online);
 });
 
 /** @listens webview:new-window */
@@ -145,19 +160,4 @@ webview.addEventListener('load-commit', (ev) => {
     }
 
 });
-
-/** @listens connectivityService#on */
-connectivityService.on('online', () => {
-    logger.debug('webview', 'connectivityService:online');
-
-    dismissSpinner();
-});
-
-/** @listens connectivityService#on */
-connectivityService.on('offline', () => {
-    logger.debug('webview', 'connectivityService:offline');
-
-    presentSpinner();
-});
-
 

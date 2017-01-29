@@ -49,13 +49,14 @@ const appProductName = packageJson.productName || packageJson.name;
  * @param {String} message - Title
  */
 let showNotification = (message) => {
-    let options = {
+    const options = {
         body: message,
         icon: appIcon,
         silent: true
     };
+    const code = `new Notification('${appProductName}', ${JSON.stringify(options)});`;
 
-    BrowserWindow.getAllWindows()[0].webContents.executeJavaScript(`new Notification('${appProductName}', ${JSON.stringify(options)});`, true).then(() => {});
+    BrowserWindow.getAllWindows()[0].webContents.executeJavaScript(code, true).then(() => {});
 };
 
 
