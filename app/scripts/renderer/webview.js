@@ -34,7 +34,7 @@ const parseDomain = require('parse-domain');
  * @global
  * @constant
  */
-const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
+// const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 const dom = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
@@ -72,19 +72,19 @@ let dismissSpinner = function() {
 };
 
 
-/** @listens connectivityService#on */
-connectivityService.on('online', () => {
-    logger.debug('webview', 'connectivityService:online');
-
-    dismissSpinner();
-});
-
-/** @listens connectivityService#on */
-connectivityService.on('offline', () => {
-    logger.debug('webview', 'connectivityService:offline');
-
-    presentSpinner();
-});
+// /** @listens connectivityService#on */
+// connectivityService.on('online', () => {
+//     logger.debug('webview', 'connectivityService:online');
+//
+//     dismissSpinner();
+// });
+//
+// /** @listens connectivityService#on */
+// connectivityService.on('offline', () => {
+//     logger.debug('webview', 'connectivityService:offline');
+//
+//     presentSpinner();
+// });
 
 
 /** @listens webview:dom-ready */
@@ -111,18 +111,18 @@ webview.addEventListener('dom-ready', () => {
 webview.addEventListener('did-fail-load', () => {
     logger.debug('webview', 'webview:did-fail-load');
 
-    if (!connectivityService.online) {
+    // if (!connectivityService.online) {
         presentSpinner();
-    }
+    // }
 });
 
 /** @listens webview:did-finish-load */
 webview.addEventListener('did-finish-load', () => {
     logger.debug('webview', 'webview:did-finish-load');
 
-    if (connectivityService.online) {
+    // if (connectivityService.online) {
         dismissSpinner();
-    }
+    // }
 });
 
 /** @listens webview:new-window */

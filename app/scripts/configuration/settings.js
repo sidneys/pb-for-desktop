@@ -373,7 +373,7 @@ let configurationItems = {
         /** @readonly */
         keypath: 'soundVolume',
         /** @default */
-        default: 0.25,
+        default: 0.5,
 
         init(){
             logger.debug('settings', this.keypath, 'init()');

@@ -31,11 +31,11 @@ const appRootPath = require('app-root-path').path;
  * @global
  * @constant
  */
+// const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
-const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
 const snoozerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'snoozer-service'));
 
 
@@ -233,19 +233,19 @@ class TrayMenu extends Tray {
 }
 
 
-/** @listens connectivityService#on */
-connectivityService.on('online', () => {
-    //logger.debug('tray-menu', 'connectivityService:online');
-    if (snoozerService.isActive()) { return; }
-    trayMenu.setState('default');
-});
-
-/** @listens connectivityService#on */
-connectivityService.on('offline', () => {
-    //logger.debug('tray-menu', 'connectivityService:offline');
-    if (snoozerService.isActive()) { return; }
-    trayMenu.setState('transparent');
-});
+// /** @listens connectivityService#on */
+// connectivityService.on('online', () => {
+//     //logger.debug('tray-menu', 'connectivityService:online');
+//     if (snoozerService.isActive()) { return; }
+//     trayMenu.setState('default');
+// });
+//
+// /** @listens connectivityService#on */
+// connectivityService.on('offline', () => {
+//     //logger.debug('tray-menu', 'connectivityService:offline');
+//     if (snoozerService.isActive()) { return; }
+//     trayMenu.setState('transparent');
+// });
 
 /** @listens snoozerService#on */
 snoozerService.on('snooze', (snoozing) => {

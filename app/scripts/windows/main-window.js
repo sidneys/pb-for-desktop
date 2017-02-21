@@ -79,12 +79,13 @@ class MainWindow extends BrowserWindow {
             transparent: false,
             vibrancy: 'dark',
             webPreferences: {
-                nodeIntegration: true,
                 allowDisplayingInsecureContent: true,
-                experimentalFeatures: true,
                 allowRunningInsecureContent: true,
-                webSecurity: false,
-                webaudio: true
+                experimentalFeatures: true,
+                nodeIntegration: true,
+                webaudio: true,
+                webgl: false,
+                webSecurity: false
             }
         });
 

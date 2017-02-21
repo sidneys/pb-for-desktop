@@ -54,8 +54,9 @@ let pb;
  * @constant
  * @default
  */
-let notificationInterval = 3000;
-let maxRecentNotifications = 5;
+const notificationInterval = 3000;
+const maxRecentNotifications = 5;
+const soundVolume = parseFloat(settings.getConfigurationItem('soundVolume').get());
 
 /**
  * Notification Defaults
@@ -99,10 +100,8 @@ let playSoundFile = function(filePath, callback) {
         return cb(null, soundFile);
     });
 
-    settings.electronSettings.get('soundVolume').then(soundVolume => {
-        AudioElement.volume = parseFloat(soundVolume);
-        AudioElement.play();
-    });
+    AudioElement.volume = parseFloat(soundVolume);
+    AudioElement.play();
 };
 
 /**
@@ -246,9 +245,8 @@ class PushbulletNotification {
         settings.electronSettings.get('soundEnabled')
             .then(soundEnabled => {
                 if (soundEnabled === true) {
-                    settings.electronSettings.get('soundFile')
-                        .then(notificationFile => {
-                            playSoundFile(notificationFile, function(err, file) {
+                    settings.electronSettings.get('soundFile').then(soundFile => {
+                            playSoundFile(soundFile, function(err, file) {
                                 if (err) {
                                     logger.error('playSoundFile', file, err);
                                 }
@@ -368,10 +366,9 @@ let enqueuePushList = (pushesList, filterPushes, cb) => {
                     // Show local notification
                     createPushbulletNotification(push);
 
-                    // Update 'lastNotification' with timestamp from most recent push
                     if (push.created > notifyAfter) {
-                        // Sync Settings
-                        settings.electronSettings.set('lastNotification', push.modified).then(() => {});
+                        // Update 'lastNotification' with timestamp from most recent push
+                        settings.getConfigurationItem('lastNotification').set(push.modified);
                     }
 
                     // Callback

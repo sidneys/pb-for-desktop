@@ -49,6 +49,12 @@ if (electronSquirrelStartup) {
     app.quit();
 }
 
+/**
+ * Disable GPU
+ * @global
+ */
+app.disableHardwareAcceleration();
+
 
 /** @listens Electron.App#before-quit */
 app.on('before-quit', () => {
