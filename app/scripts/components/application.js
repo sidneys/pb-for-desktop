@@ -68,7 +68,7 @@ app.on('quit', () => {
     logger.debug('application', 'App:quit');
 
     logger.debug('application', 'settings', `settingsFilePath: '${settings.electronSettings.getSettingsFilePath()}'`);
-    logger.debug('application', 'settings', util.inspect(settings.electronSettings.getSync()));
+    logger.debug('application', 'settings', `${util.inspect(settings.electronSettings.getSync())}`);
 });
 
 /** @listens Electron.App#on */

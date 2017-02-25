@@ -239,21 +239,22 @@ class PushbulletNotification {
             silent: true
         };
 
-        // Trigger native notification
+        // Trigger Notification
         let notification = new Notification(options.title, options);
 
-        settings.electronSettings.get('soundEnabled')
-            .then(soundEnabled => {
-                if (soundEnabled === true) {
-                    settings.electronSettings.get('soundFile').then(soundFile => {
-                            playSoundFile(soundFile, function(err, file) {
-                                if (err) {
-                                    logger.error('playSoundFile', file, err);
-                                }
-                            });
-                        });
+        // Get sound setting
+        let soundEnabled = settings.getConfigurationItem('soundEnabled').get();
+
+        if (soundEnabled === true) {
+            // Get sound file
+            let soundFile = settings.getConfigurationItem('soundFile').get();
+
+            playSoundFile(soundFile, function(err, file) {
+                if (err) {
+                    logger.error('playSoundFile', file, err);
                 }
             });
+        }
 
         /**
          * @listens notification:PointerEvent#click´
@@ -347,38 +348,35 @@ let enqueuePushList = (pushesList, filterPushes, cb) => {
         return callback(pushesList.length);
     }
 
-    settings.electronSettings.get('lastNotification')
-        .then(lastNotification => {
+    let lastNotification = settings.getConfigurationItem('lastNotification').get();
+    let nextPushesList = pushesList;
+    let notifyAfter = lastNotification || 0;
 
-            let nextPushesList = pushesList;
-            let notifyAfter = lastNotification || 0;
+    // Remove pushes older than 'lastNotification' from array
+    if (filterPushes) {
+        nextPushesList = pushesList.filter(function(element) {
+            return (element.created) > notifyAfter;
+        });
+    }
 
-            // Remove pushes older than 'lastNotification' from array
-            if (filterPushes) {
-                nextPushesList = pushesList.filter(function(element) {
-                    return (element.created) > notifyAfter;
-                });
+    nextPushesList.forEach(function(push, pushIndex) {
+        let notificationTimeout = setTimeout(function() {
+
+            // Show local notification
+            createPushbulletNotification(push);
+
+            if (push.created > notifyAfter) {
+                // Update 'lastNotification' with timestamp from most recent push
+                settings.getConfigurationItem('lastNotification').set(push.modified);
             }
 
-            nextPushesList.forEach(function(push, pushIndex) {
-                let notificationTimeout = setTimeout(function() {
-
-                    // Show local notification
-                    createPushbulletNotification(push);
-
-                    if (push.created > notifyAfter) {
-                        // Update 'lastNotification' with timestamp from most recent push
-                        settings.getConfigurationItem('lastNotification').set(push.modified);
-                    }
-
-                    // Callback
-                    if (nextPushesList.length === (pushIndex + 1)) {
-                        callback(nextPushesList.length);
-                        clearTimeout(notificationTimeout);
-                    }
-                }, (parseInt(notificationInterval) * (pushIndex + 1)), self);
-            }, self);
-        });
+            // Callback
+            if (nextPushesList.length === (pushIndex + 1)) {
+                callback(nextPushesList.length);
+                clearTimeout(notificationTimeout);
+            }
+        }, (parseInt(notificationInterval) * (pushIndex + 1)), self);
+    }, self);
 };
 
 /**

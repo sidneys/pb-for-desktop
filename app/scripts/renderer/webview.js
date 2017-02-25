@@ -139,6 +139,7 @@ webview.addEventListener('load-commit', (ev) => {
     if (!parseDomain(ev.url)) { return; }
 
     let domain = parseDomain(ev.url).domain || '';
+    let subdomain = parseDomain(ev.url).subdomain || '';
     let path = url.parse(ev.url).path || '';
 
     switch (domain) {
@@ -150,14 +151,19 @@ webview.addEventListener('load-commit', (ev) => {
             body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
         case 'pushbullet':
-            dom.setVisibility(controls, false);
+            // Pushbullet 'help'
+            if (subdomain.includes('help')) {
+                dom.setVisibility(controls, true);
+            } else {
+                dom.setVisibility(controls, false);
+            }
 
+            // Pushbullet 'signin'
             if (path.includes('signin')) {
                 body.style.backgroundColor = 'rgb(236, 240, 240)';
             } else {
                 body.style.backgroundColor = 'transparent';
             }
     }
-
 });
 

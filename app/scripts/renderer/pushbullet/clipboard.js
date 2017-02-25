@@ -48,6 +48,16 @@ let pb;
 
 
 /**
+ * Get "pro" account status
+ * @return {Boolean} True if "pro" account
+ */
+let getAccountProStatus = () => {
+    logger.debug('clipboard', 'getProStatus()');
+
+    return Boolean(pb.account.pro);
+};
+
+/**
  * Get 'pb-for-desktop' device
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
@@ -163,6 +173,12 @@ let monitorClipboard = () => {
 let initialize = () => {
     logger.debug('clipboard', 'initializeClipboard()');
 
+    if (!getAccountProStatus()) {
+        logger.devtools('clipboard', '"pro" account not found');
+
+        return;
+    }
+
     /**
      * Receiver
      * @listens window:Event#message
@@ -177,8 +193,8 @@ let initialize = () => {
             logger.error('clipboard', 'addWSMessageHandler()', err);
         }
 
-        let messageType = message.type,
-            pushObject = message.push;
+        let messageType = message.type;
+        let pushObject = message.push;
 
         if (pushObject && messageType === 'push') {
             if (pushObject.type && pushObject.type === 'clip') {
