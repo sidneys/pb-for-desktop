@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const { BrowserWindow } = require('electron');
@@ -20,15 +18,13 @@ const { BrowserWindow } = require('electron');
 /**
  * Modules
  * External
- * @global
- * @const
+ * @constant
  */
 const appRootPath = require('app-root-path').path;
 
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
 const packageJson = require(path.join(appRootPath, 'package.json'));
@@ -36,9 +32,9 @@ const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'))
 
 
 /**
- * App
- * @global
+ * Application
  * @constant
+ * @default
  */
 const appIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${platformHelper.iconImageExtension(platformHelper.type)}`);
 const appProductName = packageJson.productName || packageJson.name;
@@ -47,6 +43,9 @@ const appProductName = packageJson.productName || packageJson.name;
 /**
  * Show Internal Notification
  * @param {String} message - Title
+ * @function
+ *
+ * @public
  */
 let showNotification = (message) => {
     const options = {

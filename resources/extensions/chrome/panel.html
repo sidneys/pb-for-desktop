@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Pushbullet</title>
+        <link rel="stylesheet" type="text/css" href="base.css">
+        <link rel="stylesheet" type="text/css" href="picker.css">
+        <link rel="stylesheet" type="text/css" href="dropzone.css">
+        <link rel="stylesheet" type="text/css" href="fake-notifications.css">
+        <link rel="stylesheet" type="text/css" href="chat-ui.css">
+        <link rel="stylesheet" type="text/css" href="panel-messaging-push.css">
+        <link rel="stylesheet" type="text/css" href="panel-messaging-sms.css">
+        <link rel="stylesheet" type="text/css" href="panel-messaging.css">
+        <link rel="stylesheet" type="text/css" href="panel.css">
+        <script src="utils.js"></script>
+        <script src="page.js"></script>
+        <script src="picker.js"></script>
+        <script src="dropzone.js"></script>
+        <script src="moment.js"></script>
+        <script src="fake-notifications.js"></script>
+        <script src="chat-ui.js"></script>
+        <script src="chat-push.js"></script>
+        <script src="chat-sms.js"></script>
+        <script src="panel-notifications.js"></script>
+        <script src="panel-messaging-push.js"></script>
+        <script src="panel-messaging-sms.js"></script>
+        <script src="panel-messaging.js"></script>
+        <script src="panel.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+                <div class="not-signed-in" style="padding-bottom:10px;">
+                    <a id="logo-link">
+                        <div id="logo"></div>
+                    </a>
+                    <div style="float:right;">
+                        <a id="sign-in" style="color:white;font-weight:bold;cursor:pointer;text-transform:uppercase;line-height:40px;padding-right:10px;"></a>
+                    </div>
+                </div>
+                <div id="tabs" class="signed-in">
+                    <a id="bullet-link">
+                        <img id="bullet" src="bullet@2x.png">
+                    </a>
+                    <div id="people-tab" class="tab selected"></div>
+                    <div id="devices-tab" class="tab"></div>
+                    <div id="sms-tab" class="tab" style="display:none;"></div>
+                    <div id="notifications-tab" class="tab"></div>
+                    <div id="popout-holder">
+                        <img src="control_popout.png" width="24">
+                    </div>
+                    <div id="settings-gear">
+                        <img src="control_settings.png" height="20" width="20">
+                    </div>
+                </div>
+            </div>
+            <div id="content">
+                <div class="not-signed-in" style="padding:20px;">
+                    <div style="margin-bottom:30px;">
+                        <div class="track">
+                            <img src="track_links.png" height="140">
+                            <p>
+                                Instantly share links between any of your devices. Never email yourself a link again just to get it somewhere else.
+                            </p>
+                        </div>
+                        <div class="track">
+                            <img src="track_chat.png" height="140">
+                            <p>
+                                Pushbullet works on all of your devices, making sharing and chatting with friends more convenient than ever.
+                            </p>
+                        </div>
+                        <div class="track">
+                            <img src="track_files.png" height="140">
+                            <p>
+                                Moving pictures and files between your devices has never been easier. Just drag and drop onto Pushbullet.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin:20px 0;">
+                        <button id="sign-up"></button>
+                    </div>
+                    <p class="firefox" style="margin-top:30px;">
+                        <span id='cant-sign-in' style="color:#7f8c8c;"></span> <a id="third-party-cookies" href="#"></a>
+                    </p>
+                </div>
+                <div class="signed-in" style="height:100%;">
+                    <div id="messaging-content" class="tab-content" style="display:none;">
+                        <div id="messaging-content-left"></div>
+                        <div id="messaging-content-right">
+                            <div id="push-right" style="display:none;">
+                                <div id="push-right-top">
+                                    <div id="push-chat-scroll" class="chat-scroll">
+                                        <div id="push-chat-table" class="chat-table">
+                                            <div id="push-chat-cell" class="chat-cell"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="push-right-bottom">
+                                    <div id="me-device-picker-holder">
+                                        <div id="me-device-picker-label" class="picker-label"></div>
+                                        <div style="overflow:hidden;position:relative;">
+                                            <input id="me-device" type="text">
+                                            <div id="me-device-overlay" class="picker-overlay"></div>
+                                        </div>
+                                        <div id="me-device-picker" class="picker"></div>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                    <div id="push-send-holder">
+                                        <i id="push-send-icon" class="pushfont-send"></i>
+                                    </div>
+                                    <div style="margin-right:52px;">
+                                        <div id="push-link-holder">
+                                            <div id="push-link-favicon-holder">
+                                                <img id="push-link-favicon">
+                                            </div>
+                                            <div id="push-link-details">
+                                                <input id="push-link-title" type="text">
+                                                <input id="push-link-url" type="text">
+                                                <img id="push-link-close" src="action_cancel.png" width="24">
+                                            </div>
+                                        </div>
+                                        <div id="push-link-holder-poker"></div>
+                                        <div>
+                                            <div id="push-add-link">
+                                                <i class="pushfont-linkpip"></i>
+                                            </div>
+                                            <div id="push-input-holder">
+                                                <textarea id="push-input" tabindex="1"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="sms-right" style="display:none;">
+                                <div id="sms-update-required" style="text-align:center;padding:50px;font-size:17px;line-height:22px;display:none;">
+                                    <div>To continue texting, please update the Pushbullet app on your phone.</div>
+                                    <div style="margin-top:10px;font-size:14px;">(Sorry for the inconvenience!)</div>
+                                </div>
+                                <div id="sms-right-top">
+                                    <div id="sms-chat-scroll" class="chat-scroll">
+                                        <div id="sms-chat-table" class="chat-table">
+                                            <div id="sms-chat-cell"class="chat-cell"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="sms-right-bottom">
+                                    <div id="sms-send-holder">
+                                        <i id="sms-send-icon" class="pushfont-send"></i>
+                                    </div>
+                                    <div style="margin-right:52px;">
+                                        <div>
+                                            <div id="sms-input-holder">
+                                                <textarea id="sms-input" tabindex="1"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="sms-compose-right" style="display:none;">
+                                <div id="compose-recipient-picker-label" class="picker-label"></div>
+                                <div style="overflow:hidden;position:relative;">
+                                    <input id="compose-recipient" type="text">
+                                    <div id="compose-recipient-overlay" class="picker-overlay"></div>
+                                </div>
+                                <div id="compose-recipient-picker" class="picker" tabindex="1"></div>
+                                <div id="compose-input-holder">
+                                    <div id="compose-send-holder">
+                                        <i class="pushfont-send"></i>
+                                    </div>
+                                    <div id="compose-message-holder">
+                                        <textarea id="compose-message" tabindex="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="drop-zone" class="drop-zone">
+                                <img id="drop-zone-image" class="drop-zone-image" src="upload.png">
+                            </div>
+                            <div id="messaging-banner"></div>
+                        </div>
+                        <div id="push-add-link-tooltip"></div>
+                        <div id="sms-disclaimer-tooltip"></div>
+                    </div>
+                    <div id="notifications-content" class="tab-content" style="display:none;">
+                        <div id="notifications-holder"></div>
+                        <div id="notifications-empty">
+                            <div id="notifications-empty-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="menu-sink" style="display:none;"></div>
+            <div id="settings-menu" style="display:none;">
+                <div id="snooze" class="settings-option">
+                </div>
+                <div id="options" class="settings-option">
+                </div>
+                <div id="sign-out" class="settings-option">
+                </div>
+            </div>
+            <input type="file" id="file-input" name="upload" style="display:none;" />
+        </div>
+    </body>
+</html>

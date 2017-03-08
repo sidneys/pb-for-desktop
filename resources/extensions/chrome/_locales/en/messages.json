@@ -1,0 +1,317 @@
+{
+   "add_a_friend": {
+      "message": "Add a friend"
+   },
+   "add_link_tooltip": {
+      "message": "Link current page"
+   },
+   "advanced": {
+      "message": "Advanced"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "The Pushbullet desktop app is managing notifications."
+   },
+   "all_of_my_devices": {
+      "message": "All Devices"
+   },
+   "cancel": {
+      "message": "Cancel"
+   },
+   "changelog_tab": {
+      "message": "What's New"
+   },
+   "channels": {
+      "message": "Channels"
+   },
+   "clear": {
+      "message": "Clear"
+   },
+   "decryption_failed_body": {
+      "message": "Please confirm your password matches on all devices"
+   },
+   "decryption_failed_title": {
+      "message": "Decryption failed"
+   },
+   "devices": {
+      "message": "Devices"
+   },
+   "devices_placeholder": {
+      "message": "Select a device"
+   },
+   "dismiss": {
+      "message": "Dismiss"
+   },
+   "done": {
+      "message": "Done"
+   },
+   "encryption_password_needed_body": {
+      "message": "Click here to enter your password"
+   },
+   "encryption_password_needed_title": {
+      "message": "Encrypted data received"
+   },
+   "end_to_end_password_desc": {
+      "message": "If you choose to enter a password, this password will need to be entered on each of your devices."
+   },
+   "end_to_end_password_label": {
+      "message": "End-to-end encryption password"
+   },
+   "file_too_big": {
+      "message": "File too big"
+   },
+   "friends": {
+      "message": "Friends"
+   },
+   "from": {
+      "message": "From $1"
+   },
+   "general": {
+      "message": "General"
+   },
+   "go_to_link": {
+      "message": "Go to link"
+   },
+   "how_to_unmute_app": {
+      "message": "I muted an app, how do I unmute it?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Open the Pushbullet Android app, pull out the drawer from the left, then tap 'Notification Mirroring'. Here, tap 'Only for some apps', then re-enable the app."
+   },
+   "learn_more": {
+      "message": "Learn more"
+   },
+   "me": {
+      "message": "Me"
+   },
+   "message_placeholder": {
+      "message": "Type a message, press enter to send"
+   },
+   "message_placeholder_files": {
+      "message": "Type a message or drop a file"
+   },
+   "message_placeholder_link": {
+      "message": "Add a message, press enter to send"
+   },
+   "mirror_context_message": {
+      "message": "$1 via Pushbullet at $2"
+   },
+   "mute": {
+      "message": "Mute"
+   },
+   "mute_app": {
+      "message": "Mute $1 notifications"
+   },
+   "muted_app": {
+      "message": "Muted $1"
+   },
+   "new_sms_thread": {
+      "message": "New text message"
+   },
+   "no_notifications": {
+      "message": "No notifications right now"
+   },
+   "no_pushes": {
+      "message": "No recent history"
+   },
+   "notifications": {
+      "message": "Notifications"
+   },
+   "now": {
+      "message": "Now"
+   },
+   "num_new_messages": {
+      "message": "$1 new messages"
+   },
+   "option_allow_instant_push": {
+      "message": "Enable instant pushing to"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Push the current tab to the chosen device via keyboard shortcut."
+   },
+   "option_automatically_attach_link": {
+      "message": "Automatically attach the current tab to messages to a device"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "This makes sending links to devices faster."
+   },
+   "option_background_permission": {
+      "message": "Keep Pushbullet running when my browser is closed"
+   },
+   "option_background_permission_desc": {
+      "message": "This will enable you to see your notifications without having to keep a browser window open."
+   },
+   "option_clipboard_permission": {
+      "message": "Universal copy & paste"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Copy text on one device, then paste it on any other that also has this setting enabled."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Click here to set (currently $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "not set"
+   },
+   "option_notification_duration": {
+      "message": "Hide notifications automatically after"
+   },
+   "option_only_show_titles": {
+      "message": "Only show notification titles"
+   },
+   "option_only_show_titles_desc": {
+      "message": "This will make Pushbullet only show the title of notifications, keeping the message private."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Open things I push to this browser automatically"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "This will make Pushbullet open anything you push to this browser automatically in a new tab."
+   },
+   "option_play_sound": {
+      "message": "Play a sound when a notification arrives"
+   },
+   "option_play_sound_desc": {
+      "message": "This will make Pushbullet play a short sound when a notification arrives, alerting you to it."
+   },
+   "option_show_context_menu": {
+      "message": "Show Pushbullet in my browser context menu"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Show Pushbullet in the list of right-click menu options."
+   },
+   "option_show_mirrors": {
+      "message": "Show notifications on my computer"
+   },
+   "option_show_mirrors_desc": {
+      "message": "Unchecking this will stop us from showing notifications (you can still see a count in our toolbar icon)."
+   },
+   "option_show_notification_count": {
+      "message": "Show notification count on toolbar icon"
+   },
+   "option_show_notification_count_desc": {
+      "message": "See your notification count at a glance in your toolbar."
+   },
+   "option_use_dark_icon": {
+      "message": "Use dark icon"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "This will make our toolbar icon a dark gray."
+   },
+   "options": {
+      "message": "Settings"
+   },
+   "panel_cant_sign_in": {
+      "message": "Can't get signed in? Try temporarily disabling Adblock. If that doesn't help, Pushbullet requires third-party cookies to be enabled to sign in. You can disable them again after getting signed-in."
+   },
+   "panel_sign_up": {
+      "message": "Sign up on Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Click here for how to change this setting."
+   },
+   "pending": {
+      "message": "Pending"
+   },
+   "people": {
+      "message": "People"
+   },
+   "phone": {
+      "message": "Phone"
+   },
+   "push_context_message": {
+      "message": "$1 at $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Pushbullet Pro is required to enable this feature."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro Required"
+   },
+   "recipient_placeholder": {
+      "message": "To"
+   },
+   "remove_link_tooltip": {
+      "message": "Un-link current page"
+   },
+   "reply": {
+      "message": "Reply"
+   },
+   "reply_limit_reached": {
+      "message": "You've reached the free message limit for this month."
+   },
+   "reply_limit_upgrade": {
+      "message": "Upgrade to Pushbullet Pro to send unlimited messages."
+   },
+   "reply_limit_warning": {
+      "message": "You're getting close to the free message limit for this month."
+   },
+   "retry": {
+      "message": "Retry"
+   },
+   "save": {
+      "message": "Save"
+   },
+   "see_full_history": {
+      "message": "See full history"
+   },
+   "send_failed": {
+      "message": "Send failed"
+   },
+   "sending": {
+      "message": "Sending"
+   },
+   "sign_in": {
+      "message": "Sign in"
+   },
+   "sign_out": {
+      "message": "Sign out"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "Phone must be powered on and have an internet connection for the texts to send."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Contact or phone number"
+   },
+   "snooze": {
+      "message": "Snooze 1hr"
+   },
+   "stuck_pending": {
+      "message": "Stuck pending?"
+   },
+   "thanks_for_installing_message": {
+      "message": "Click here to get signed in"
+   },
+   "thanks_for_installing_title": {
+      "message": "Thanks for installing Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Title"
+   },
+   "undo": {
+      "message": "Undo"
+   },
+   "unmute_app": {
+      "message": "Unmute $1"
+   },
+   "unsnooze": {
+      "message": "Unsnooze"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Unfollow $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "No longer following $1"
+   },
+   "updated_notif_message": {
+      "message": "Click here to see what's new"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet has updated!"
+   },
+   "url_placeholder": {
+      "message": "Link url"
+   }
+}

@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "Tilføj en ven"
+   },
+   "add_link_tooltip": {
+      "message": "Link nuværende side"
+   },
+   "advanced": {
+      "message": "Avanceret"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Pushbullet desktop appen håndterer meddelelser."
+   },
+   "all_of_my_devices": {
+      "message": "Alle mine enheder"
+   },
+   "cancel": {
+      "message": "Annuller"
+   },
+   "changelog_tab": {
+      "message": "Hvad er nyt"
+   },
+   "channels": {
+      "message": "Kanaler"
+   },
+   "clear": {
+      "message": "Ryd"
+   },
+   "decryption_failed_body": {
+      "message": "Verificér venligst at din adgangskode matcher på alle enheder"
+   },
+   "decryption_failed_title": {
+      "message": "Dekryptering mislykkedes"
+   },
+   "devices": {
+      "message": "Enheder"
+   },
+   "devices_placeholder": {
+      "message": "Vælg en enhed"
+   },
+   "dismiss": {
+      "message": "Minimer"
+   },
+   "done": {
+      "message": "Udført"
+   },
+   "encryption_password_needed_body": {
+      "message": "Klik her for at indtaste din adgangskode"
+   },
+   "encryption_password_needed_title": {
+      "message": "Krypteret data modtaget"
+   },
+   "end_to_end_password_desc": {
+      "message": "Vælger at angive en adgangskode, skal denne adgangskoden ligeledes angives på hver af dine enheder."
+   },
+   "end_to_end_password_label": {
+      "message": "Punkt-til-punkt krypteret adgangskode"
+   },
+   "file_too_big": {
+      "message": "Fil for stor"
+   },
+   "friends": {
+      "message": "Venner"
+   },
+   "from": {
+      "message": "Fra $1"
+   },
+   "general": {
+      "message": "Generelt"
+   },
+   "go_to_link": {
+      "message": "Gå til link"
+   },
+   "how_to_unmute_app": {
+      "message": "Jeg satte en app på lydløs, hvordan slår jeg lyden til igen?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Åbn Pushbullet Android app'en, træk skuffen ud fra venstre, tryk dernæst 'Spejling'. Tryk her 'Kun for visse apps', og genaktivér derefter app'en."
+   },
+   "learn_more": {
+      "message": "Få mere at vide"
+   },
+   "me": {
+      "message": "Mig"
+   },
+   "message_placeholder": {
+      "message": "Skriv en besked, tryk Retur for at afsende"
+   },
+   "message_placeholder_files": {
+      "message": "Skriv en besked eller slip en fil her"
+   },
+   "message_placeholder_link": {
+      "message": "Tilføj en besked, tryk Enter for at afsende"
+   },
+   "mirror_context_message": {
+      "message": "$1 via Pushbullet på $2"
+   },
+   "mute": {
+      "message": "Dæmp"
+   },
+   "mute_app": {
+      "message": "Dæmp $1 notifikationer"
+   },
+   "muted_app": {
+      "message": "Dæmpede $1"
+   },
+   "new_sms_thread": {
+      "message": "Ny SMS-besked"
+   },
+   "no_notifications": {
+      "message": "Ingen notifikationer lige nu"
+   },
+   "no_pushes": {
+      "message": "Ingen seneste historik"
+   },
+   "notifications": {
+      "message": "Notifikationer"
+   },
+   "now": {
+      "message": "Nu"
+   },
+   "num_new_messages": {
+      "message": "$1 nye beskeder"
+   },
+   "option_allow_instant_push": {
+      "message": "Aktivér øjeblikkelig skub til"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Skub den aktuelle fane til den valgte enhed via tastaturgenvej."
+   },
+   "option_automatically_attach_link": {
+      "message": "Vedhæft automatisk den aktuelle fane til beskeden til en enhed"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Dette gør afsendelse af links til enheder hurtigere."
+   },
+   "option_background_permission": {
+      "message": "Hold Pushbullet kørende når min browser er lukket"
+   },
+   "option_background_permission_desc": {
+      "message": "Dette vil gøre dig i stand til at se dine notifikationer uden at have et browservindue åbent."
+   },
+   "option_clipboard_permission": {
+      "message": "Universel kopiér & indsæt"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Kopiér en tekst på én enhed, og indsæt den på enhver enhed, hvor denne indstilling ligeledes er aktiveret."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Klik her for at angive (i øjeblikket $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "ikke angivet"
+   },
+   "option_notification_duration": {
+      "message": "Skjul mine notifikationer automatisk efter"
+   },
+   "option_only_show_titles": {
+      "message": "Viser kun notifikationers titler"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Dette får Pushbullet til kun at vise notifikationstitlen, og holde selve beskeden skjult (privat)."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Åben ting jeg pusher automatisk i denne browser."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Dette vil få Pushbullet til at åbne alt, du pusher til denne browser, automatisk i en ny fane."
+   },
+   "option_play_sound": {
+      "message": "Afspil en lyd når en notifikation modtages"
+   },
+   "option_play_sound_desc": {
+      "message": "Dette vil få Pushbullet til at afspille en kort lyd når en notifikation modtages, for at advare om dette."
+   },
+   "option_show_context_menu": {
+      "message": "Vis Pushbullet i kontekstmenuen"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Vis Pushbullet i listen over højreklik menuindstillinger."
+   },
+   "option_show_mirrors": {
+      "message": "Vis notifikationer på min computer."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Afmarkering af dette vil hindre os i at vise notifikationer (du kan fortsat se antal i vores værktøjsbjælken)."
+   },
+   "option_show_notification_count": {
+      "message": "Vis notifikationstæller på værktøjsbjælke-ikonet"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Se med et øjekast din notifikationstæller i din værktøjsbjælke."
+   },
+   "option_use_dark_icon": {
+      "message": "Brug mørkt ikon"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Dette vil gøre vores værktøjslinie-ikon mørkegråt."
+   },
+   "options": {
+      "message": "Indstillinger"
+   },
+   "panel_cant_sign_in": {
+      "message": "Problemer med at logge ind? Prøv midlertidigt at deaktivere Adblock. Hvis det ikke hjælper, kræver Pushbullet at tredjeparts-cookies er aktiveret for at logge ind. Du kan deaktivere dem efter at have logget ind."
+   },
+   "panel_sign_up": {
+      "message": "Tilmeld dig på Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Klik her for at se hvordan du ændrer denne indstilling."
+   },
+   "pending": {
+      "message": "Afventende"
+   },
+   "people": {
+      "message": "Personer"
+   },
+   "phone": {
+      "message": "Telefon"
+   },
+   "push_context_message": {
+      "message": "$1 på $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Pushbullet Pro er tvunget til at aktivere denne funktion."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro påkrævet"
+   },
+   "recipient_placeholder": {
+      "message": "Til"
+   },
+   "remove_link_tooltip": {
+      "message": "Fjern link til nuværende side"
+   },
+   "reply": {
+      "message": "Besvar"
+   },
+   "reply_limit_reached": {
+      "message": "Du har nået grænsen for gratis beskeder for denne måned."
+   },
+   "reply_limit_upgrade": {
+      "message": "Opgradér til Pushbullet Pro for ubegrænset at sende beskeder."
+   },
+   "reply_limit_warning": {
+      "message": "Du nærmer dig grænsen for gratis beskeder for denne måned."
+   },
+   "retry": {
+      "message": "Forsøg igen"
+   },
+   "save": {
+      "message": "Gem"
+   },
+   "see_full_history": {
+      "message": "Se fuld historik"
+   },
+   "send_failed": {
+      "message": "Afsendelse mislykkedes"
+   },
+   "sending": {
+      "message": "Afsender..."
+   },
+   "sign_in": {
+      "message": "Log ind"
+   },
+   "sign_out": {
+      "message": "Log ud"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "Enheden skal være tændt og tilsluttet Internet for kunne afsende SMS'er."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Kontakt eller telefonnummer"
+   },
+   "snooze": {
+      "message": "Snooze 1t"
+   },
+   "thanks_for_installing_message": {
+      "message": "Klik her for at logge ind"
+   },
+   "thanks_for_installing_title": {
+      "message": "Tak for at du installerede Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Titel"
+   },
+   "undo": {
+      "message": "Fortryd"
+   },
+   "unmute_app": {
+      "message": "Lyd til $1"
+   },
+   "unsnooze": {
+      "message": "Unsnooze"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Følg ikke $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Følges ikke længere $1"
+   },
+   "updated_notif_message": {
+      "message": "Klik her for at se hvad der er nyt"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet er opdateret!"
+   },
+   "url_placeholder": {
+      "message": "Link url"
+   }
+}

@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ Lisää ystävä"
+   },
+   "add_link_tooltip": {
+      "message": "Linkki nykyiselle sivulle"
+   },
+   "advanced": {
+      "message": "Lisäasetukset"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Pushbulletin työpöytäsovellus hallinnoi ilmoituksia. Poistamalla ilmoitukset käytöstä työpöytäsovelluksen asetuksista palauttaa hallinnan laajennukselle."
+   },
+   "all_of_my_devices": {
+      "message": "Kaikkiin laitteisiini"
+   },
+   "cancel": {
+      "message": "Peruuta"
+   },
+   "changelog_tab": {
+      "message": "Mitä uutta"
+   },
+   "channels": {
+      "message": "Kanavat"
+   },
+   "clear": {
+      "message": "Tyhjennä"
+   },
+   "decryption_failed_body": {
+      "message": "Vahvista salasanasi kaikissa laitteissasi"
+   },
+   "decryption_failed_title": {
+      "message": "Salauksen purkaminen epäonnistui"
+   },
+   "devices": {
+      "message": "Laitteet"
+   },
+   "devices_placeholder": {
+      "message": "Valitse laite"
+   },
+   "dismiss": {
+      "message": "Hylkää"
+   },
+   "done": {
+      "message": "Valmis"
+   },
+   "encryption_password_needed_body": {
+      "message": "Klikkaa tästä syöttääksesi salasanan"
+   },
+   "encryption_password_needed_title": {
+      "message": "Salattuja tietoja vastaanotettu"
+   },
+   "end_to_end_password_desc": {
+      "message": "Jos päätät kirjoittaa salasanan, sen täytyy syöttää kullakin laitteilla."
+   },
+   "end_to_end_password_label": {
+      "message": "Päästä päähän -salaussalasana"
+   },
+   "file_too_big": {
+      "message": "Tiedosto on liian suuri"
+   },
+   "friends": {
+      "message": "Ystävät"
+   },
+   "from": {
+      "message": "Lähettäjä $1"
+   },
+   "general": {
+      "message": "Yleiset"
+   },
+   "go_to_link": {
+      "message": "Siirry linkkiin"
+   },
+   "how_to_unmute_app": {
+      "message": "Kuinka poistan sovelluksesta mykistyksen?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Avaa Pushbullet Androidissa, avaa vetopaneeli vasemmalta, ja sitten napauta 'Peilaus'. Valitse 'Hallitse sovelluksia' ja valitse sovellus."
+   },
+   "learn_more": {
+      "message": "Opi lisää"
+   },
+   "me": {
+      "message": "Minä"
+   },
+   "message_placeholder": {
+      "message": "Kirjoita viesti, paina enteriä lähettääksesi"
+   },
+   "message_placeholder_files": {
+      "message": "Kirjoita viesti tai pudota tiedosto"
+   },
+   "message_placeholder_link": {
+      "message": "Lisää viesti, paina enteriä lähettääksesi"
+   },
+   "mirror_context_message": {
+      "message": "$1 Pushbulletin kautta klo $2"
+   },
+   "mute": {
+      "message": "Mykistä"
+   },
+   "mute_app": {
+      "message": "Mykistä ilmoitukset sovellukselta $1"
+   },
+   "muted_app": {
+      "message": "$1 mykistetty"
+   },
+   "new_sms_thread": {
+      "message": "Uusi tekstiviesti"
+   },
+   "no_notifications": {
+      "message": "Ei ilmoituksia juuri nyt"
+   },
+   "no_pushes": {
+      "message": "Ei lähihistoriaa"
+   },
+   "notifications": {
+      "message": "Ilmoitukset"
+   },
+   "now": {
+      "message": "Nyt"
+   },
+   "num_new_messages": {
+      "message": "$1 uutta viestiä"
+   },
+   "option_allow_instant_push": {
+      "message": "Ota pikatyöntö käyttöön laitteelle"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Työnnä nykyinen välilehti valitulle laitteelle pikanäppäimellä."
+   },
+   "option_automatically_attach_link": {
+      "message": "Automaattisesti liittää laitteelle nykyisen välilehden"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Tämä nopeuttaa linkkien lähettämistä laitteisiin."
+   },
+   "option_background_permission": {
+      "message": "Pidä Pushbullet käynnissä, kun selain on suljettu"
+   },
+   "option_background_permission_desc": {
+      "message": "Näin voit nähdä ilmoitukset tarvitsematta pitää selaimen ikkunaa auki."
+   },
+   "option_clipboard_permission": {
+      "message": "Universaali kopiointi ja liittäminen"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Kopioi teksti yhdellä laitteella ja liitä se toisaalle, jossa tämä asetus on myös käytössä."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Määritä napauttamalla tätä (tällä hetkellä $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "ei määritetty"
+   },
+   "option_notification_duration": {
+      "message": "Piilota ilmoitukset automaattisesti"
+   },
+   "option_only_show_titles": {
+      "message": "Näytä vain ilmoituksen otsikot"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Tämän myötä Pushbullet näyttää ilmoituksista vain otsikon ja pitää viestin yksityisenä."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Avaa työntämäni asiat tähän selaimeen automaattisesti"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Pushbullet avaa kaikki työntämäsi asiat automaattisesti uuteen välilehteen selaimessa."
+   },
+   "option_play_sound": {
+      "message": "Anna äänimerkki, kun ilmoitus saapuu"
+   },
+   "option_play_sound_desc": {
+      "message": "Pushbullet toistaa lyhyen äänen ilmoituksen saapuessa."
+   },
+   "option_show_context_menu": {
+      "message": "Näytä Pushbullet selaimen pikavalikossa"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Näytä Pushbullet oikean klikkauksen valikossa."
+   },
+   "option_show_mirrors": {
+      "message": "Näytä ilmoitukset tietokoneellani."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Poistamalla valinnan estät meitä näyttämästä ilmoituksia (voit silti nähdä määrän työkalurivin kuvakkeessa)."
+   },
+   "option_show_notification_count": {
+      "message": "Näytä ilmoitusten määrä työkalurivin kuvakkeessa"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Näytä ilmoitusten määrä yhdellä silmäyksellä työkalurivissä."
+   },
+   "option_use_dark_icon": {
+      "message": "Käytä tummaa kuvaketta"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Tämä tekee työkalurivin kuvakkeesta tummanharmaan."
+   },
+   "options": {
+      "message": "Asetukset"
+   },
+   "panel_cant_sign_in": {
+      "message": "Etkö voi kirjautua? Yritä väliaikaisesti poistaa Adblock käytöstä. Jos tämä ei auta, Pushbullet vaatii kolmannen osapuolen evästeiden olevan käytössä kirjautumiseen. Voit poistaa ne käytöstä kirjautumisen jälkeen."
+   },
+   "panel_sign_up": {
+      "message": "Rekisteröidy →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Klikkaa tästä, miten voit muuttaa kyseistä asetusta."
+   },
+   "pending": {
+      "message": "Vireillä"
+   },
+   "people": {
+      "message": "Ihmiset"
+   },
+   "phone": {
+      "message": "Puhelin"
+   },
+   "push_context_message": {
+      "message": "$1 klo $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Tämä ominaisuus edellyttää Pushbullet Pron."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro vaaditaan"
+   },
+   "recipient_placeholder": {
+      "message": "Vastaanottaja"
+   },
+   "remove_link_tooltip": {
+      "message": "Poista nykyisen sivun linkki"
+   },
+   "reply": {
+      "message": "Vastaa"
+   },
+   "reply_limit_reached": {
+      "message": "Ilmaisten viestien raja on tullut täyteen tältä kuukaudelta."
+   },
+   "reply_limit_upgrade": {
+      "message": "Päivitä Pushbullet Prohon lähettääksesi rajattomasti viestejä."
+   },
+   "reply_limit_warning": {
+      "message": "Ilmaisten viestien raja on tulossa täyteen tältä kuukaudelta."
+   },
+   "retry": {
+      "message": "Yritä uudelleen"
+   },
+   "save": {
+      "message": "Tallenna"
+   },
+   "see_full_history": {
+      "message": "Näytä koko historia"
+   },
+   "send_failed": {
+      "message": "Lähettäminen epäonnistui"
+   },
+   "sending": {
+      "message": "Lähetetään..."
+   },
+   "sign_in": {
+      "message": "Kirjaudu sisään"
+   },
+   "sign_out": {
+      "message": "Kirjaudu ulos"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "Puhelin on oltava päällä ja siinä on oltava yhteys internetiin lähettääksesi tekstiviestejä."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Yhteystieto tai puhelinnumero"
+   },
+   "snooze": {
+      "message": "Mykistä tunniksi"
+   },
+   "thanks_for_installing_message": {
+      "message": "Klikkaa tästä kirjautuaksesi sisään"
+   },
+   "thanks_for_installing_title": {
+      "message": "Kiitos Pushbulletin asentamisesta"
+   },
+   "title_placeholder": {
+      "message": "Otsikko"
+   },
+   "undo": {
+      "message": "Kumoa"
+   },
+   "unmute_app": {
+      "message": "Poista mykistys sovellukselta $1"
+   },
+   "unsnooze": {
+      "message": "Poista mykistys"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Lopeta $1 seuraaminen"
+   },
+   "unsubscribed_from_channel": {
+      "message": "$1 ei seurata enää"
+   },
+   "updated_notif_message": {
+      "message": "Katso, mikä on uutta"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet on päivitetty!"
+   },
+   "url_placeholder": {
+      "message": "Linkin URL-osoite"
+   }
+}

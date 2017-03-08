@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ Добавяне на приятел"
+   },
+   "add_link_tooltip": {
+      "message": "Връзка към текущата страница"
+   },
+   "advanced": {
+      "message": "Разширени"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Известията се управляват от приложението за работен плот на Pushbullet. Забраняването на известията в настройките му ще върне контрола на разширението."
+   },
+   "all_of_my_devices": {
+      "message": "Всички мои устройства"
+   },
+   "cancel": {
+      "message": "Отказ"
+   },
+   "changelog_tab": {
+      "message": "Новите неща"
+   },
+   "channels": {
+      "message": "Канали"
+   },
+   "clear": {
+      "message": "Изчистване"
+   },
+   "decryption_failed_body": {
+      "message": "Проверете дали паролата ви съвпада на всички устройства"
+   },
+   "decryption_failed_title": {
+      "message": "Дешифрирането е неуспешно"
+   },
+   "devices": {
+      "message": "Устройства"
+   },
+   "devices_placeholder": {
+      "message": "Изберете устройство"
+   },
+   "dismiss": {
+      "message": "Отхвърляне"
+   },
+   "done": {
+      "message": "Готово"
+   },
+   "encryption_password_needed_body": {
+      "message": "Щракнете тук, за да въведете паролата си"
+   },
+   "encryption_password_needed_title": {
+      "message": "Получени шифровани данни"
+   },
+   "end_to_end_password_desc": {
+      "message": "Ако изберете да въведете парола, ще трябва да я въведете на всяко от вашите устройства."
+   },
+   "end_to_end_password_label": {
+      "message": "Парола за шифроване от край до край"
+   },
+   "file_too_big": {
+      "message": "Файлът е твърде голям"
+   },
+   "friends": {
+      "message": "Приятели"
+   },
+   "from": {
+      "message": "От $1"
+   },
+   "general": {
+      "message": "Общи"
+   },
+   "go_to_link": {
+      "message": "Отваряне на връзката"
+   },
+   "how_to_unmute_app": {
+      "message": "Спрях известията от приложение, как да ги включа отново?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Отворете приложението Pushbullet за Android, отворете менюто отляво, след което натиснете „Синхронизиране“. Тук, натиснете „Само за определени приложения“ и включете повторно приложението."
+   },
+   "learn_more": {
+      "message": "Научете повече"
+   },
+   "me": {
+      "message": "Аз"
+   },
+   "message_placeholder": {
+      "message": "Въведете съобщение и натиснете Еnter за изпращане"
+   },
+   "message_placeholder_files": {
+      "message": "Въведете съобщение или плъзнете файл тук"
+   },
+   "message_placeholder_link": {
+      "message": "Добавете съобщение и натиснете Ентер за изпращане"
+   },
+   "mirror_context_message": {
+      "message": "$1 чрез Pushbullet в $2"
+   },
+   "mute": {
+      "message": "Спиране"
+   },
+   "mute_app": {
+      "message": "Спиране на $1 известия"
+   },
+   "muted_app": {
+      "message": "Спрени $1"
+   },
+   "new_sms_thread": {
+      "message": "Ново текстово съобщение"
+   },
+   "no_notifications": {
+      "message": "Няма известия в момента"
+   },
+   "no_pushes": {
+      "message": "Няма хронология"
+   },
+   "notifications": {
+      "message": "Известия"
+   },
+   "now": {
+      "message": "Сега"
+   },
+   "num_new_messages": {
+      "message": "$1 нови съобщения"
+   },
+   "option_allow_instant_push": {
+      "message": "Включване на незабавно изпращане до"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Изпращане на текущия раздел към избраното устройство чрез клавишна комбинация."
+   },
+   "option_automatically_attach_link": {
+      "message": "Автоматично прикачване на текущия раздел към съобщенията към устройство"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Това прави изпращането на връзки към устройствата по-бързо."
+   },
+   "option_background_permission": {
+      "message": "Pushbullet да работи, дори когато браузъра е затворен"
+   },
+   "option_background_permission_desc": {
+      "message": "Това ще ви позволи да виждате вашите съобщения, без да се налага да държите отворен прозореца на браузъра."
+   },
+   "option_clipboard_permission": {
+      "message": "Универсално копиране и поставяне"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Копирайте текст на едно устройство, след това го поставете на всяко друго, което също има включена тази настройка."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Щракнете тук, за да зададете (в момента $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "не е зададена"
+   },
+   "option_notification_duration": {
+      "message": "Автоматично скриване на известията след"
+   },
+   "option_only_show_titles": {
+      "message": "Да се показват само заглавията на известията"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Pushbullet ще показва само заглавията на известията, запазвайки поверителността на съобщението."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Автоматично отваряне на нещата, които изпращам до този браузър."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Това ще накара Pushbullet автоматично да отваря в нов раздел всичко, което изпращате до този браузър."
+   },
+   "option_play_sound": {
+      "message": "Звуков сигнал при пристигане на известие"
+   },
+   "option_play_sound_desc": {
+      "message": "Това ще накара Pushbullet да пуска кратък звук, за да ви предупреди, когато пристигне известие."
+   },
+   "option_show_context_menu": {
+      "message": "Да се показва Pushbullet в контекстното меню"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Показване на Pushbullet в списъка с опции при щракване с десния бутон на мишката."
+   },
+   "option_show_mirrors": {
+      "message": "Показване на известия на компютъра."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Премахването на отметката от това поле ще спре показването на известия (все още можете да виждате броя им върху нашата икона в лентата с инструменти)."
+   },
+   "option_show_notification_count": {
+      "message": "Показване броя на известията върху иконата на лентата с инструменти"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Виждайте броя на известията си в лентата с инструменти."
+   },
+   "option_use_dark_icon": {
+      "message": "Да се използва тъмна икона"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Това ще направи нашата икона в лентата тъмно сива."
+   },
+   "options": {
+      "message": "Настройки"
+   },
+   "panel_cant_sign_in": {
+      "message": "Не можете да влезете? Опитайте временно да деактивирате Adblock. Ако това не помогне, Pushbullet изисква да позволите бисквитките от трети лица. Можете да ги забраните отново, след като влезете."
+   },
+   "panel_sign_up": {
+      "message": "Регистрация на Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Щракнете тук, за да разберете как да промените тази настройка."
+   },
+   "pending": {
+      "message": "Чакащо"
+   },
+   "people": {
+      "message": "Хора"
+   },
+   "phone": {
+      "message": "Телефон"
+   },
+   "push_context_message": {
+      "message": "$1 в $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "За тази функция е необходим Pushbullet Pro."
+   },
+   "pushbullet_pro_required": {
+      "message": "Изисква се Pushbullet Pro"
+   },
+   "recipient_placeholder": {
+      "message": "До"
+   },
+   "remove_link_tooltip": {
+      "message": "Премахване на връзката за текущата страница"
+   },
+   "reply": {
+      "message": "Отговор"
+   },
+   "reply_limit_reached": {
+      "message": "Достигнахте лимита на безплатните съобщения за този месец."
+   },
+   "reply_limit_upgrade": {
+      "message": "Надградете до Pushbullet Pro, за да изпращате неограничен брой съобщения."
+   },
+   "reply_limit_warning": {
+      "message": "Наближавате лимита на безплатните съобщения за този месец."
+   },
+   "retry": {
+      "message": "Нов опит"
+   },
+   "save": {
+      "message": "Запис"
+   },
+   "see_full_history": {
+      "message": "Преглед на пълната хронология"
+   },
+   "send_failed": {
+      "message": "Неуспешно изпращане"
+   },
+   "sending": {
+      "message": "Изпращане..."
+   },
+   "sign_in": {
+      "message": "Вход"
+   },
+   "sign_out": {
+      "message": "Изход"
+   },
+   "sms": {
+      "message": "SMS"
+   },
+   "sms_disclaimer": {
+      "message": "Телефонът трябва да е включен и да има връзка с Интернет, за да се изпратят съобщенията."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Контакт или телефонен номер"
+   },
+   "snooze": {
+      "message": "Спиране за 1 час"
+   },
+   "thanks_for_installing_message": {
+      "message": "Щракнете тук, за да влезете"
+   },
+   "thanks_for_installing_title": {
+      "message": "Благодарим ви, че инсталирахте Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Заглавие"
+   },
+   "undo": {
+      "message": "Отмяна"
+   },
+   "unmute_app": {
+      "message": "Възстановяване на $1"
+   },
+   "unsnooze": {
+      "message": "Възобновяване"
+   },
+   "unsubscribe_from_channel": {
+      "message": "Отписване от $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Вече не следите $1"
+   },
+   "updated_notif_message": {
+      "message": "Щракнете тук, за да видите новите неща"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet е актуализиран!"
+   },
+   "url_placeholder": {
+      "message": "Адрес на връзката"
+   }
+}

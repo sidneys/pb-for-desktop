@@ -1,0 +1,168 @@
+.chat-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
+.chat-table {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.chat-cell {
+    display: table-cell;
+    vertical-align: bottom;
+    height: 100%;
+}
+.chat-cell p {
+    margin: 6px 0;
+    white-space: pre-wrap;
+}
+.chat-cell a {
+    margin: 6px 0;
+    color: #232a2a;
+    text-decoration: underline;
+}
+.chat-cell a:hover {
+    color: #232a2a;
+}
+.chat-cell .left a {
+    color: white;
+}
+.chat-cell .left:hover a {
+    color: white;
+}
+#chat-empty-state {
+    text-align: center;
+    padding: 15px;
+    opacity: 0.5;
+}
+#chat-empty-state img {
+    max-width: 160px;
+}
+#chat-empty-state p {
+    margin-top: -10px;
+    color: #5c6868;
+}
+.chunk-holder {
+    margin: 15px 0 10px 0;
+}
+.chat-time-divider {
+    text-align: center;
+    font-size: 11px;
+    color: #5c6868;
+}
+.chat-row {
+    position: relative;
+    margin: 5px 10px;
+    overflow: hidden;
+    min-height: 30px;
+}
+.chat-row.queued {
+    opacity: 0.5;
+}
+.chat-bubble {
+    float: right;
+    border-radius: 2px;
+    background-color: #ecf0f0;
+    margin-right: 40px;
+    margin-left: 14px;
+    overflow: hidden;
+    min-height: 30px;
+}
+.chat-bubble.left {
+    float: left;
+    color: white;
+    background-color: #7c94a1;
+    margin-right: 14px;
+    margin-left: 40px;
+}
+.chat-bubble.left.sms {
+    background-color: #579697;
+}
+.chat-bubble.failed {
+    background-color: #f6beb6;
+}
+.chat-bubble-contents {
+    margin: 6px 8px;
+}
+.chat-thumbnail {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.chat-thumbnail.left {
+    left: 0;
+}
+.chat-poker {
+    position: absolute;
+    bottom: 0;
+    right: 30px;
+    fill: #ecf0f0;
+    height: 10px;
+    width: 12px;
+}
+.chat-poker.left {
+    position: absolute;
+    bottom: 0;
+    left: 30px;
+    fill: #7c94a1;
+    height: 10px;
+    width: 12px;
+}
+.chat-poker.left.sms {
+    fill: #579697;
+}
+.chat-poker.failed {
+    fill: #f6beb6;
+}
+.chat-title {
+    font-weight: bold;
+    word-wrap: break-word;
+}
+.chat-body {
+    word-wrap: break-word;
+}
+.chat-url {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.chat-image {
+    display: block;
+    cursor: pointer;
+    margin-bottom: 6px;
+}
+.chat-progress-bar {
+    height: 14px;
+    background-color: #95a5a6;
+}
+.chat-progress-bar-fill {
+    height: 100%;
+    background-color: #5c6868;
+}
+.chat-date {
+    font-size: 11px;
+    line-height: 13px;
+    color: #5c6868;
+}
+.chat-delete {
+    float: right;
+    color: #232a2a;
+    padding: 3px;
+}
+.chat-delete:hover {
+    cursor: pointer;
+    background-color: #ecf0f0;
+}
+.fail-button {
+    padding-right: 10px;
+}
+.fail-message {
+    padding-right: 20px;
+}

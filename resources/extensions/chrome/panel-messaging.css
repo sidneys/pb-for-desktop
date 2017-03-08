@@ -1,0 +1,51 @@
+.stream-row {
+    position: relative;
+    overflow: hidden;
+    padding: 10px;
+}
+.stream-row:hover {
+    cursor: pointer;
+    background-color: #f9fbfb;
+}
+.stream-row.selected {
+    background-color: white;
+    padding: 9px 10px;
+    border-top: 1px solid #d0d0d0;
+    border-bottom: 1px solid #d0d0d0;
+}
+.stream-row-image {
+    display: block;
+    float: left;
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+}
+.stream-row-content {
+    margin: 0 25px 0 46px;
+}
+.stream-row-content .secondary {
+    color: #95a5a6;
+}
+.stream-row .pop-out-stream {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 27px;
+    display: none;
+}
+.stream-row:hover .pop-out-stream {
+    display: block;
+}
+.stream-row .pop-out-stream:hover {
+    cursor: pointer;
+    color: #4ab367;
+}
+.stream-row .pushfont-popout {
+    text-align: center;
+    font-size: 24px;
+    line-height: 54px;
+    margin-top: 2px;
+    vertical-align: middle;
+}

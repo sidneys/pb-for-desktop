@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "+ 添加聯絡人"
+   },
+   "add_link_tooltip": {
+      "message": "插入目前網頁連結"
+   },
+   "advanced": {
+      "message": "進階設定"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "Pushbullet 桌面端程式正負責管理通知訊息。停用桌面端程式之後則由瀏覽器套件控制。"
+   },
+   "all_of_my_devices": {
+      "message": "所有裝置"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "changelog_tab": {
+      "message": "更新內容"
+   },
+   "channels": {
+      "message": "頻道"
+   },
+   "clear": {
+      "message": "清除"
+   },
+   "decryption_failed_body": {
+      "message": "請確認您的密碼符合在所有裝置上"
+   },
+   "decryption_failed_title": {
+      "message": "解密失敗"
+   },
+   "devices": {
+      "message": "裝置"
+   },
+   "devices_placeholder": {
+      "message": "選擇裝置"
+   },
+   "dismiss": {
+      "message": "清除"
+   },
+   "done": {
+      "message": "完成"
+   },
+   "encryption_password_needed_body": {
+      "message": "按一下此處輸入您的密碼"
+   },
+   "encryption_password_needed_title": {
+      "message": "接收到加密資料"
+   },
+   "end_to_end_password_desc": {
+      "message": "如果您選擇輸入此密碼，此密碼將需要輸入到您每個設備上。"
+   },
+   "end_to_end_password_label": {
+      "message": "點對點加密密碼"
+   },
+   "file_too_big": {
+      "message": "檔案過大"
+   },
+   "friends": {
+      "message": "朋友"
+   },
+   "from": {
+      "message": "來自 $1"
+   },
+   "general": {
+      "message": "一般"
+   },
+   "go_to_link": {
+      "message": "開啟連結"
+   },
+   "how_to_unmute_app": {
+      "message": "我關閉了一個 app 的通知，如何再度開啟？"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "開啟 Android 裡的 Pushbullet，從左邊滑出選單後，點擊「通知同步」>「個別應用程式設定」，然後重新啟動應用程式。"
+   },
+   "learn_more": {
+      "message": "了解更多"
+   },
+   "me": {
+      "message": "我"
+   },
+   "message_placeholder": {
+      "message": "輸入訊息，按下 Enter 傳送"
+   },
+   "message_placeholder_files": {
+      "message": "輸入訊息或拖曳檔案至此"
+   },
+   "message_placeholder_link": {
+      "message": "新增訊息，按下 Enter 傳送"
+   },
+   "mirror_context_message": {
+      "message": "$1 透過 Pushbullet 傳到 $2"
+   },
+   "mute": {
+      "message": "消音"
+   },
+   "mute_app": {
+      "message": "停止同步來自 $1 的通知"
+   },
+   "muted_app": {
+      "message": "$1 的通知已消音"
+   },
+   "new_sms_thread": {
+      "message": "新簡訊"
+   },
+   "no_notifications": {
+      "message": "目前沒有任何通知訊息"
+   },
+   "no_pushes": {
+      "message": "沒有最近的歷史紀錄"
+   },
+   "notifications": {
+      "message": "通知"
+   },
+   "now": {
+      "message": "現在"
+   },
+   "num_new_messages": {
+      "message": "$1 則新訊息"
+   },
+   "option_allow_instant_push": {
+      "message": "開啟及時推送"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "用鍵盤快速鍵將目前分頁推送至指定的裝置"
+   },
+   "option_automatically_attach_link": {
+      "message": "自動將目前分頁夾帶到訊息中"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "這會加快推送連結到裝置的速度"
+   },
+   "option_background_permission": {
+      "message": "在瀏覽器關閉後繼續執行 Pushbullet"
+   },
+   "option_background_permission_desc": {
+      "message": "開啓後將使 Pushbullet 成爲背景應用程式，即使所有分頁關閉後依然可以正常接收通知"
+   },
+   "option_clipboard_permission": {
+      "message": "跨裝置剪貼簿"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "從一台裝置複製文字，然後在任何一台也啟用此設定的裝置貼上。"
+   },
+   "option_instant_push_shortcuts": {
+      "message": "點擊此處以設置 (目前為$1)"
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "未設定"
+   },
+   "option_notification_duration": {
+      "message": "通知顯示時間長度"
+   },
+   "option_only_show_titles": {
+      "message": "僅顯示訊息標題"
+   },
+   "option_only_show_titles_desc": {
+      "message": "這將使Pushbullet僅顯示通知訊息的標題，內容保密"
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "自動開啓傳送到瀏覽器的訊息"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "當收到新訊息時，自動在新分頁開啓接收的圖片、連結或其他内容"
+   },
+   "option_play_sound": {
+      "message": "收到通知時播放音效"
+   },
+   "option_play_sound_desc": {
+      "message": "當 Pushbullet 接收到通知時播放音效"
+   },
+   "option_show_context_menu": {
+      "message": "在右鍵選單中加入 Pushbullet 選項"
+   },
+   "option_show_context_menu_desc": {
+      "message": "當您在選取的文字或圖片上點擊右鍵時，於選單中顯示 Pushbullet 的選項"
+   },
+   "option_show_mirrors": {
+      "message": "在我的電腦上顯示通知"
+   },
+   "option_show_mirrors_desc": {
+      "message": "取消勾選後將停止顯示通知 (您仍可以從工具列的圖示看到未讀通知計數)"
+   },
+   "option_show_notification_count": {
+      "message": "在工具列的圖示上顯示未讀計數"
+   },
+   "option_show_notification_count_desc": {
+      "message": "只需一瞥您的工具列便可知道有幾則通知。"
+   },
+   "option_use_dark_icon": {
+      "message": "使用黑色圖示"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "使工具列上的圖示變爲灰黑色調"
+   },
+   "options": {
+      "message": "設定"
+   },
+   "panel_cant_sign_in": {
+      "message": "無法登入嗎？請暫時停用 Adblock。若仍然無效，請檢查 cookies 設定，Pushbullet 需要開啟第三方 cookies 進行登入。您可以在登入後再次關閉。"
+   },
+   "panel_sign_up": {
+      "message": "在 Pushbullet.com 上註冊 →"
+   },
+   "panel_third_party_cookies": {
+      "message": "點此瞭解如何修改此設置"
+   },
+   "pending": {
+      "message": "等候"
+   },
+   "people": {
+      "message": "聯絡人"
+   },
+   "phone": {
+      "message": "手機"
+   },
+   "push_context_message": {
+      "message": "$1 在 $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Pushbullet Pro 需要啟用此功能。"
+   },
+   "pushbullet_pro_required": {
+      "message": "請升級至 Pro 版本"
+   },
+   "recipient_placeholder": {
+      "message": "傳送至"
+   },
+   "remove_link_tooltip": {
+      "message": "移除目前網頁連結"
+   },
+   "reply": {
+      "message": "回覆"
+   },
+   "reply_limit_reached": {
+      "message": "您已用盡本月的免費訊息則數"
+   },
+   "reply_limit_upgrade": {
+      "message": "升級至 Pushbullet Pro 便可無止盡地傳輸訊息"
+   },
+   "reply_limit_warning": {
+      "message": "您即將用盡本月的免費訊息則數"
+   },
+   "retry": {
+      "message": "重試"
+   },
+   "save": {
+      "message": "保存"
+   },
+   "see_full_history": {
+      "message": "檢視完整紀錄"
+   },
+   "send_failed": {
+      "message": "傳送失敗"
+   },
+   "sending": {
+      "message": "傳送中..."
+   },
+   "sign_in": {
+      "message": "登入"
+   },
+   "sign_out": {
+      "message": "登出"
+   },
+   "sms": {
+      "message": "簡訊"
+   },
+   "sms_disclaimer": {
+      "message": "手機必須保持開機並連線上網際網路才能傳送文字訊息。"
+   },
+   "sms_recipient_placeholder": {
+      "message": "聯絡人或電話號碼"
+   },
+   "snooze": {
+      "message": "休眠一小時"
+   },
+   "thanks_for_installing_message": {
+      "message": "點擊此處開始登入"
+   },
+   "thanks_for_installing_title": {
+      "message": "感謝您安裝 Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "標題"
+   },
+   "undo": {
+      "message": "復原"
+   },
+   "unmute_app": {
+      "message": "恢復 $1 的通知"
+   },
+   "unsnooze": {
+      "message": "停止休眠"
+   },
+   "unsubscribe_from_channel": {
+      "message": "取消追蹤 $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "不再追蹤 $1"
+   },
+   "updated_notif_message": {
+      "message": "按一下這裡看看有什麼新功能"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet 已更新！"
+   },
+   "url_placeholder": {
+      "message": "連結網址"
+   }
+}

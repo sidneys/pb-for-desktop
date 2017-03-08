@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const fs = require('fs-extra');
@@ -14,7 +13,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const { app, dialog } = require('electron');
@@ -22,7 +20,6 @@ const { app, dialog } = require('electron');
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const _ = require('lodash');
@@ -33,26 +30,25 @@ const readChunk = require('read-chunk');
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 
 /**
- * App
- * @global
+ * Application
  * @constant
+ * @default
  */
 const appProductName = packageJson.productName || packageJson.name;
 
 /**
- * @global
  * @constant
+ * @default
  */
-const defaultDelay = 1000;
+const defaultTimeout = 250;
 
 
 /**
@@ -62,13 +58,16 @@ const defaultDelay = 1000;
  * @param {Array} buttonList - Buttons
  * @param {Boolean} isError - Buttons
  * @param {Function=} callback - Callback
+ * @function
+ *
+ * @private
  */
 let displayDialog = function(title, message, buttonList, isError, callback) {
     let cb = callback || function() {};
     let dialogTitle = title || appProductName;
     let dialogMessage = message || title;
 
-    let messageTimeout = setTimeout(function() {
+    let timeout = setTimeout(() => {
         dialog.showMessageBox({
             type: isError ? 'error' : 'warning',
             buttons: buttonList || ['OK'],
@@ -77,19 +76,22 @@ let displayDialog = function(title, message, buttonList, isError, callback) {
             message: dialogTitle,
             detail: os.EOL + dialogMessage + os.EOL
         }, (response) => {
-            logger.log('displayDialog', `title: '${title}' message: '${message}' response: '${response} (${buttonList[response]})'`);
+            logger.debug('displayDialog', `title: '${title}' message: '${message}' response: '${response} (${buttonList[response]})'`);
             cb(response);
         });
 
-        clearTimeout(messageTimeout);
-    }, defaultDelay);
+        clearTimeout(timeout);
+    }, defaultTimeout);
 };
 
 /**
  * Validate Files by Mimetype
+ * @function
+ *
+ * @private
  */
 let validateFileType = function(file, acceptedFiletype, cb) {
-    logger.debug('messenger-service', 'validateFileType()', file, acceptedFiletype);
+    logger.debug('validateFileType', file, acceptedFiletype);
 
     let filePath = path.normalize(file.toString());
 
@@ -100,7 +102,7 @@ let validateFileType = function(file, acceptedFiletype, cb) {
         let isValidFile = _.startsWith(detectedType, acceptedFiletype);
 
         if (!isValidFile) {
-            logger.error('messenger-service', 'validFileType()', detectedType);
+            logger.error('validFileType', detectedType);
 
             return cb(new Error(`Filetype incorrect: ${detectedType}`));
         }
@@ -115,6 +117,9 @@ let validateFileType = function(file, acceptedFiletype, cb) {
  * @param {String=} title - Title
  * @param {String=} message - Message
  * @param {Function=} callback - Callback
+ * @function
+ *
+ * @public
  */
 let showInfo = function(title, message, callback) {
     let cb = callback || function() {};
@@ -129,6 +134,9 @@ let showInfo = function(title, message, callback) {
  * @param {String} fileType - audio,video
  * @param {String=} folder - Initial lookup folder
  * @param {Function=} callback - Callback
+ * @function
+ *
+ * @public
  */
 let openFile = function(title, fileType, folder, callback) {
     let cb = callback || function() {};
@@ -159,14 +167,14 @@ let openFile = function(title, fileType, folder, callback) {
     }, (filePath) => {
 
         if (!filePath) {
-            logger.error('messenger-service', 'showOpenDialog()', 'filepath required');
+            logger.error('showOpenDialog', 'filepath required');
             return cb(new Error(`Filepath missing`));
         }
 
         validateFileType(filePath, fileType, function(err, filePath) {
             if (err) {
                 return displayDialog(`Incompatible file.${os.EOL}`, `Compatible formats are: ${fileTypes[fileType]}`, ['Dismiss'], false, () => {
-                    logger.error('messenger-service', 'validateFileType()', err);
+                    logger.error('validateFileType', err);
                     cb(new Error(`File content error: ${filePath}`));
                 });
             }
@@ -181,9 +189,14 @@ let openFile = function(title, fileType, folder, callback) {
  * @param {String=} title - Title
  * @param {String=} message - Error Message
  * @param {Function=} callback - Callback
+ * @function
+ *
+ * @public
  */
 let showQuestion = function(title, message, callback) {
     let cb = callback || function() {};
+
+    app.focus();
 
     return displayDialog(title, message, ['Yes', 'No'], false, cb);
 };
@@ -192,6 +205,9 @@ let showQuestion = function(title, message, callback) {
  * Error
  * @param {String} message - Error Message
  * @param {Function=} callback - Callback
+ * @function
+ *
+ * @public
  */
 let showError = function(message, callback) {
     let cb = callback || function() {};
@@ -206,6 +222,8 @@ let showError = function(message, callback) {
         app.dock.bounce('critical');
     }
 
+    app.focus();
+
     return displayDialog('Error', message, ['Cancel', 'OK', `Quit ${appProductName}`], true, cb);
 };
 
@@ -214,8 +232,8 @@ let showError = function(message, callback) {
  * @exports
  */
 module.exports = {
+    openFile: openFile,
     showError: showError,
     showInfo: showInfo,
-    openFile: openFile,
     showQuestion: showQuestion
 };

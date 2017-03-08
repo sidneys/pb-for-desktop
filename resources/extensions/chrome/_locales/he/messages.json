@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "הוסף חבר/ה"
+   },
+   "add_link_tooltip": {
+      "message": "קישור לעמוד הנוכחי"
+   },
+   "advanced": {
+      "message": "מתקדם"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "אפליקציית שולחן העבודה של Pushbullet מנהלת התראות. השבתת התראות בהגדרות אפליקציית שולחן העבודה תחזיר את השליטה לתוסף הדפדפן."
+   },
+   "all_of_my_devices": {
+      "message": "כל המכשירים שלי"
+   },
+   "cancel": {
+      "message": "ביטול"
+   },
+   "changelog_tab": {
+      "message": "מה חדש"
+   },
+   "channels": {
+      "message": "ערוצים"
+   },
+   "clear": {
+      "message": "נקה"
+   },
+   "decryption_failed_body": {
+      "message": "בדוק שהסיסמה שלך זהה בכל המכשירים"
+   },
+   "decryption_failed_title": {
+      "message": "הפענוח נכשל"
+   },
+   "devices": {
+      "message": "מכשירים"
+   },
+   "devices_placeholder": {
+      "message": "בחירת מכשיר"
+   },
+   "dismiss": {
+      "message": "התעלם"
+   },
+   "done": {
+      "message": "בוצע"
+   },
+   "encryption_password_needed_body": {
+      "message": "לחץ כאן כדי להזין את הסיסמה שלך"
+   },
+   "encryption_password_needed_title": {
+      "message": "התקבלו נתונים מוצפנים"
+   },
+   "end_to_end_password_desc": {
+      "message": "אם תזין סיסמה, עליך להזינה בכל המכשירים שלך."
+   },
+   "end_to_end_password_label": {
+      "message": "סיסמה להצפנה מקצה-לקצה"
+   },
+   "file_too_big": {
+      "message": "קובץ גדול מדי"
+   },
+   "friends": {
+      "message": "חברים"
+   },
+   "from": {
+      "message": "מאת $1"
+   },
+   "general": {
+      "message": "כללי"
+   },
+   "go_to_link": {
+      "message": "פתח קישור"
+   },
+   "how_to_unmute_app": {
+      "message": "השתקתי אפליקציה, כיצד אני מבטל את ההשתקה?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "פתח את אפליקציית Pushbullet בנייד, פתח את התפריט משמאל ולאחר מכן הקש על 'שיקוף הודעות'. הקש על 'בחר אילו אפליקציות לאפשר' ולאחר מכן הפעל מחדש את היישום."
+   },
+   "learn_more": {
+      "message": "ללמוד עוד"
+   },
+   "me": {
+      "message": "אני"
+   },
+   "message_placeholder": {
+      "message": "הקלידו הודעה, לחצו על האנטר לשליחה"
+   },
+   "message_placeholder_files": {
+      "message": "הקלידו הודעה או תגררו קובץ"
+   },
+   "message_placeholder_link": {
+      "message": "הוסיפו הודעה, לחצו על האנטר לשליחה"
+   },
+   "mirror_context_message": {
+      "message": "$1 דרך Pushbullet ב-$2"
+   },
+   "mute": {
+      "message": "השתק"
+   },
+   "mute_app": {
+      "message": "השתק $1 התראות"
+   },
+   "muted_app": {
+      "message": "$1 הושתק"
+   },
+   "new_sms_thread": {
+      "message": "הודעת טקסט חדשה"
+   },
+   "no_notifications": {
+      "message": "אין התראות חדשות"
+   },
+   "no_pushes": {
+      "message": "אין היסטוריה אחרונה"
+   },
+   "notifications": {
+      "message": "התראות"
+   },
+   "now": {
+      "message": "עכשיו"
+   },
+   "num_new_messages": {
+      "message": "$1 הודעות חדשות"
+   },
+   "option_allow_instant_push": {
+      "message": "אפשר דחיפה מיידית אל"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "דחוף מיידית את הלשונית הנוכחית אל המכשיר שנבחר בעזרת קיצור דרך במקלדת."
+   },
+   "option_automatically_attach_link": {
+      "message": "צרף אוטומטית את הלשונית הנוכחית להודעות אל המכשיר"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "האפשרות הזו הופכת את השליחה של קישורים למכשיר למהירה יותר."
+   },
+   "option_background_permission": {
+      "message": "אפשר ל-Pushbullet לעבוד גם כשהדפדפן שלי סגור"
+   },
+   "option_background_permission_desc": {
+      "message": "אופציה זו תאפשר לך לראות את ההתראות שלך גם בלי הצורך להשאיר את הדפדפן שלך פתוח."
+   },
+   "option_clipboard_permission": {
+      "message": "העתק והדבק אוניברסלי"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "תעתיק את הטקסט מהמכשיר הראשון, ואז תדביק אותו על כל מכשיר אחר שההגדרה הזאת דלוקה בו."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "לחצו כאן כדי להגדיר (נוכחי $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "לא הוגדר"
+   },
+   "option_notification_duration": {
+      "message": "הסתר התראות מיד לאחר"
+   },
+   "option_only_show_titles": {
+      "message": "הצג כותרות התראות בלבד."
+   },
+   "option_only_show_titles_desc": {
+      "message": "פעולה זו תגרום ל-Pushbullet להציג רק את כותרות ההתראות של הטלפון שלך, ויסתיר את התוכן שלהן."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "פתח אוטומטית כל מה שאני דוחף (Push) בדפדפן זה."
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "פעולה זו תגרום ל-Pushbullet לפתוח אוטומטית כל מה שאתם דוחפים (Push) בדפדפן זה בלשונית חדשה."
+   },
+   "option_play_sound": {
+      "message": "השמע צליל בעת קבלת התראה."
+   },
+   "option_play_sound_desc": {
+      "message": "פעולה זו תגרום ל-Pushbullet להשמיע צליל קצר בעת קבלת התראה."
+   },
+   "option_show_context_menu": {
+      "message": "הצג את Pushbullet בתפריט ההקשר (context menu)"
+   },
+   "option_show_context_menu_desc": {
+      "message": "הצגת Pushbullet ברשימת התפריט בנפתח במקש ימני."
+   },
+   "option_show_mirrors": {
+      "message": "הצג התראות במחשב שלי."
+   },
+   "option_show_mirrors_desc": {
+      "message": "ביטול סימון זה יבטל את הצגת ההודעות (עדיין אפשר לראות את מספר ההודעות החדשות בסרגל הכלים)."
+   },
+   "option_show_notification_count": {
+      "message": "הצג את מספר ההתראות על סמל סרגל הכלים"
+   },
+   "option_show_notification_count_desc": {
+      "message": "הראה את ספירת ההודעות במבט בסרגל הכלים."
+   },
+   "option_use_dark_icon": {
+      "message": "השתמש בסמל כהה"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "פעולה זו תשנה את צבע הסמל שלנו בסרגל הכלים לאפור כהה."
+   },
+   "options": {
+      "message": "הגדרות"
+   },
+   "panel_cant_sign_in": {
+      "message": "לא מצליח להתחבר? נסה זמנית להשבית את Adblock. אם זה לא עוזר, Pushbullet דורשת שעוגיות צד שלישי יהיו פעילות להתחברות. תוכל להשביתם שוב לאחר שתתחבר."
+   },
+   "panel_sign_up": {
+      "message": "הירשם באתר Pushbullet.com ←"
+   },
+   "panel_third_party_cookies": {
+      "message": "לחצו כאן כדי להבין איך לשנות הגדרה זו."
+   },
+   "pending": {
+      "message": "ממתין"
+   },
+   "people": {
+      "message": "אנשים"
+   },
+   "phone": {
+      "message": "טלפון"
+   },
+   "push_context_message": {
+      "message": "$1 ב-$2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "נדרש חשבון Pushbullet Pro כדי להפעיל תכונה זו."
+   },
+   "pushbullet_pro_required": {
+      "message": "דורש Pushbullet Pro"
+   },
+   "recipient_placeholder": {
+      "message": "אל"
+   },
+   "remove_link_tooltip": {
+      "message": "הסר קישור מהדף הנוכחי"
+   },
+   "reply": {
+      "message": "השב"
+   },
+   "reply_limit_reached": {
+      "message": "הגעת למגבלה החודשית של הודעות חינמיות."
+   },
+   "reply_limit_upgrade": {
+      "message": "שדרג ל- Pushbullet Pro כדי לשלוח הודעות ללא הגבלה."
+   },
+   "reply_limit_warning": {
+      "message": "אתה מתקרב למגבלת החודשית של הודעות חינמיות."
+   },
+   "retry": {
+      "message": "נסה שוב"
+   },
+   "save": {
+      "message": "שמור"
+   },
+   "see_full_history": {
+      "message": "צפייה בהיסטוריה מלאה"
+   },
+   "send_failed": {
+      "message": "שליחה נכשלה"
+   },
+   "sending": {
+      "message": "שולח..."
+   },
+   "sign_in": {
+      "message": "התחברות למערכת"
+   },
+   "sign_out": {
+      "message": "יציאה מהמערכת"
+   },
+   "sms": {
+      "message": "סמס"
+   },
+   "sms_disclaimer": {
+      "message": "חובה שהטלפון יהיה דלוק ומחובר לאינטרנט כדי לשלוח הודעות."
+   },
+   "sms_recipient_placeholder": {
+      "message": "איש קשר או מספר טלפון"
+   },
+   "snooze": {
+      "message": "השהה לשעה"
+   },
+   "thanks_for_installing_message": {
+      "message": "לחצו כדי להתחבר למערכת"
+   },
+   "thanks_for_installing_title": {
+      "message": "תודה שהתקנתם את Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "כותרת"
+   },
+   "undo": {
+      "message": "בטל"
+   },
+   "unmute_app": {
+      "message": "בטל השתקה עבור $1"
+   },
+   "unsnooze": {
+      "message": "בטל השהייה"
+   },
+   "unsubscribe_from_channel": {
+      "message": "הפסק לעקוב אחר $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "לא עוקב יותר אחר $1"
+   },
+   "updated_notif_message": {
+      "message": "לחצו כאן כדי לראות מה חדש"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet עודכן!"
+   },
+   "url_placeholder": {
+      "message": "קישור"
+   }
+}

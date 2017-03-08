@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const electron = require('electron');
@@ -21,7 +19,6 @@ const { app, BrowserWindow, shell } = electron;
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
@@ -30,20 +27,19 @@ const electronConnect = require('electron-connect');
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 
 /**
- * App
- * @global
+ * Application
  * @constant
+ * @default
  */
 const appIcon = path.join(appRootPath, 'icons', platformHelper.type, 'icon' + platformHelper.iconImageExtension(platformHelper.type));
 const appProductName = packageJson.productName || packageJson.name;
@@ -51,7 +47,7 @@ const appUrl = 'file://' + path.join(appRootPath, 'app', 'html', 'main.html');
 
 
 /**
- * @global
+ * @instance
  */
 let mainWindow;
 
@@ -93,11 +89,13 @@ class MainWindow extends BrowserWindow {
     }
 
     init() {
-        logger.debug('main-window', 'init()');
+        logger.debug('init');
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#close
+         */
         this.on('close', ev => {
-            logger.debug('main-window', 'BrowserWindow:close');
+            logger.debug('MainWindow#close');
 
             if (!app.isQuitting) {
                 ev.preventDefault();
@@ -105,29 +103,39 @@ class MainWindow extends BrowserWindow {
             }
         });
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#show
+         */
         this.on('show', () => {
-            logger.debug('main-window', 'BrowserWindow:show');
+            logger.debug('MainWindow#show');
         });
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#hide
+         */
         this.on('hide', () => {
-            logger.debug('main-window', 'BrowserWindow:hide');
+            logger.debug('MainWindow#hide');
         });
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#move
+         */
         this.on('move', () => {
-            logger.debug('main-window', 'BrowserWindow:move');
+            logger.debug('MainWindow#move');
         });
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#resize
+         */
         this.on('resize', () => {
-            logger.debug('main-window', 'BrowserWindow:resize');
+            logger.debug('MainWindow#resize');
         });
 
-        /** @listens Electron~WebContents#on */
+        /**
+         * @listens Electron~WebContents#will-navigate
+         */
         this.webContents.on('will-navigate', (event, url) => {
-            logger.debug('main-window', 'WebContents:will-navigate');
+            logger.debug('MainWindow.webContents#will-navigate');
 
             event.preventDefault();
             if (url) {
@@ -135,9 +143,11 @@ class MainWindow extends BrowserWindow {
             }
         });
 
-        /** @listens Electron~WebContents#on */
+        /**
+         * @listens Electron~WebContents#dom-ready
+         */
         this.webContents.on('dom-ready', () => {
-            logger.debug('main-window', 'WebContents:dom-ready');
+            logger.debug('MainWindow.webContents#dom-ready');
 
             // DEBUG
             if (isDebug) {
@@ -159,7 +169,7 @@ class MainWindow extends BrowserWindow {
  * Create Window
  */
 let createMainWindow = () => {
-    logger.debug('main-window', 'createMainWindow()');
+    logger.debug('createMainWindow');
 
     if (mainWindow) { return; }
 
@@ -170,22 +180,26 @@ let createMainWindow = () => {
  * Get Window
  */
 let getMainWindow = () => {
-    logger.debug('main-window', 'getMainWindow()');
+    logger.debug('getMainWindow');
 
     return mainWindow;
 };
 
 
-/** @listens Electron.App#on */
+/**
+ * @listens Electron.App#on
+ */
 app.on('activate', () => {
-    logger.debug('main-window', 'App:activate');
+    logger.debug('app#activate');
 
     mainWindow.show();
 });
 
-/** @listens Electron.App#on */
-app.on('ready', () => {
-    logger.debug('main-window', 'App:ready');
+/**
+ * @listens Electron.App#on
+ */
+app.once('ready', () => {
+    logger.debug('app#ready');
 
     createMainWindow();
 });

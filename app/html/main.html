@@ -21,13 +21,12 @@
     </div>
 
     <webview id="webview"
-
-             src="https://pushbullet.com"
-             preload="../scripts/renderer/inject.js"
-
              allowpopups="on"
              autosize="on"
-             disablewebsecurity="on">
+             disablewebsecurity="on"
+             partition="persist:app"
+             preload="../scripts/pushbullet/index.js"
+             src="http://pushbullet.com">
     </webview>
 
     <script src="../scripts/renderer/webview.js"></script>

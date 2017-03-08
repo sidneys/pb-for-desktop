@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Pushbullet Inc</string>
+	<key>Builder Version</key>
+	<string>11601.3.9</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pushbullet</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.pushbullet.safari</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>312.0</string>
+	<key>CFBundleVersion</key>
+	<string>312</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>global.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>panel.html</string>
+				<key>Height</key>
+				<real>456</real>
+				<key>Identifier</key>
+				<string>toolbar-popover</string>
+				<key>Width</key>
+				<real>640</real>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>toolbar-button</string>
+				<key>Image</key>
+				<string>safari_logo.png</string>
+				<key>Label</key>
+				<string>Pushbullet</string>
+				<key>Popover</key>
+				<string>toolbar-popover</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>end-script.js</string>
+			</array>
+		</dict>
+		<key>Whitelist</key>
+		<array>
+			<string>http://*/*</string>
+			<string>https://*/*</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>Easily share links and more from Safari to your phone or tablet.</string>
+	<key>DeveloperIdentifier</key>
+	<string>EA43GFGP5M</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>https://update.pushbullet.com/Safari.plist</string>
+	<key>Website</key>
+	<string>https://www.pushbullet.com</string>
+</dict>
+</plist>

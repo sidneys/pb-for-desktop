@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "إضافة صديق"
+   },
+   "add_link_tooltip": {
+      "message": "ربط إلى الصفحة الحالية"
+   },
+   "advanced": {
+      "message": "متقدم"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "تطبيق Pushbullet على سطح المكتب يقوم بإدارة الإشعارات."
+   },
+   "all_of_my_devices": {
+      "message": "جميع أجهزتي"
+   },
+   "cancel": {
+      "message": "إلغاء الأمر"
+   },
+   "changelog_tab": {
+      "message": "ما هو الجديد"
+   },
+   "channels": {
+      "message": "القنوات"
+   },
+   "clear": {
+      "message": "واضح"
+   },
+   "decryption_failed_body": {
+      "message": "رجاءً تأكد من تطابق كلمة مرورك في كل الاجهزة"
+   },
+   "decryption_failed_title": {
+      "message": "فشل في فك التشفير"
+   },
+   "devices": {
+      "message": "الأجهزة"
+   },
+   "devices_placeholder": {
+      "message": "تحديد جهاز"
+   },
+   "dismiss": {
+      "message": "Dismiss"
+   },
+   "done": {
+      "message": "انتهى"
+   },
+   "encryption_password_needed_body": {
+      "message": "أضغط هنا لادخال كلمة مرورك"
+   },
+   "encryption_password_needed_title": {
+      "message": "تم تلقي البيانات المشفرة"
+   },
+   "end_to_end_password_desc": {
+      "message": "إذا قمت بوضع كلمة مرور, سوف تستخدم نفسها في كل الأجهزة."
+   },
+   "end_to_end_password_label": {
+      "message": "ينتهي من فك التشفير الأول و الثاني معاً"
+   },
+   "file_too_big": {
+      "message": "الملف كبير جداً"
+   },
+   "friends": {
+      "message": "أصدقاء"
+   },
+   "from": {
+      "message": "من $1"
+   },
+   "general": {
+      "message": "عام"
+   },
+   "go_to_link": {
+      "message": "انتقل للرابط"
+   },
+   "how_to_unmute_app": {
+      "message": "كتمت التطبيق, كيف الغي الكتم عنه؟"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "افتح التطبيق, اسحب من اليسار ثم أضغط هنا 'فقط لبعض التطبيقات\" ثم اعد تفعيل التطبيق."
+   },
+   "learn_more": {
+      "message": "أعرف أكثر"
+   },
+   "me": {
+      "message": "أنا"
+   },
+   "message_placeholder": {
+      "message": "اكتب رسالة, أضغط ادخال للإرسال"
+   },
+   "message_placeholder_files": {
+      "message": "Type a message or drop a file"
+   },
+   "message_placeholder_link": {
+      "message": "Add a message, press enter to send"
+   },
+   "mirror_context_message": {
+      "message": "$1 بواسطة Pushbullet في $2"
+   },
+   "mute": {
+      "message": "كتم الصوت"
+   },
+   "mute_app": {
+      "message": "Mute $1 notifications"
+   },
+   "muted_app": {
+      "message": "$1 صامت"
+   },
+   "new_sms_thread": {
+      "message": "نص جديد"
+   },
+   "no_notifications": {
+      "message": "حاليا لا توجد إشعارات"
+   },
+   "no_pushes": {
+      "message": "لا التاريخ الحديث"
+   },
+   "notifications": {
+      "message": "الاشعارات"
+   },
+   "now": {
+      "message": "الان"
+   },
+   "num_new_messages": {
+      "message": "$1 الرسائل الجديدة"
+   },
+   "option_allow_instant_push": {
+      "message": "تفعيل الارسال الفوري إلى"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Push the current tab to the chosen device via keyboard shortcut."
+   },
+   "option_automatically_attach_link": {
+      "message": "يحول الرسائل تلقائياً إلى جهازك من ضغطه واحدة"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "وهذا يجعل التواصل بين الأجهزه أسرع."
+   },
+   "option_background_permission": {
+      "message": "الحفاظ على تشغيل Pushbullet عند إغلاق المتصفح الخاص بي"
+   },
+   "option_background_permission_desc": {
+      "message": "هذا سوف يتيح لك مشاهدة إشعاراتك دون الحاجة إلى إبقاء نافذة المتصفح مفتوحة."
+   },
+   "option_clipboard_permission": {
+      "message": "نسخ و لصق عام"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "انسخ النص في جهازٍ ما ، ثم إلصقه في أي جهاز آخر لديه هذه الميزة وهي مفعلة."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "أضغط هنا لإعادة الضبط."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "لم تتم إعادة الضبط"
+   },
+   "option_notification_duration": {
+      "message": "إخفاء الإشعارات تلقائياً بعد"
+   },
+   "option_only_show_titles": {
+      "message": "إظهار عناوين الإشعارات فقط."
+   },
+   "option_only_show_titles_desc": {
+      "message": "وهذا سيجعل Pushbullet فقط يظهر عنوان الإشعار ، محتفظا بخصوصية رسائلك."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "الفتح بواسطة هذا المتصف دائماً"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "وهذا سيجعل Pushbullet يفتح أي شيء أرسلته إلى هذا المستعرض تلقائياً في نافذة تصفح جديدة."
+   },
+   "option_play_sound": {
+      "message": "التنبيه عند وصول اشعار جديد"
+   },
+   "option_play_sound_desc": {
+      "message": "هذا سيجعل Pushbullet ينبهك بالصوت عند وصول الإشعار."
+   },
+   "option_show_context_menu": {
+      "message": "إظهار Pushbullet في قائمة المتصفحات"
+   },
+   "option_show_context_menu_desc": {
+      "message": "إظهار Pushbullet في قائمة خيارات زر الفأرة الأيمن."
+   },
+   "option_show_mirrors": {
+      "message": "السماح بعرض الاشعارات على جهازي"
+   },
+   "option_show_mirrors_desc": {
+      "message": "يؤدي إلى إيقاف الاشعارات."
+   },
+   "option_show_notification_count": {
+      "message": "إظهار عدد الإشعارات على رمز شريط الأدوات"
+   },
+   "option_show_notification_count_desc": {
+      "message": "تفقّد عدد الإشعارات بنظرة على شريط الأدوات."
+   },
+   "option_use_dark_icon": {
+      "message": "رموز داكنة"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "هذا سيجعل رمز شريط الأدوات رمادي اللون."
+   },
+   "options": {
+      "message": "الإعدادات"
+   },
+   "panel_cant_sign_in": {
+      "message": "لا يمكن تسجيل الدخول؟ حاول مؤقتا تعطيل حظر الاعلانات. اذا لم ينفع هذا الاجراء. فربماعليك تفعيل الكوكيز. تستطيع تعطيلها مرة اخرى بعد تسجيل الدخول."
+   },
+   "panel_sign_up": {
+      "message": "سجل في ( pushbullet )"
+   },
+   "panel_third_party_cookies": {
+      "message": "لتغيير الاعدادات اضغط هنا"
+   },
+   "pending": {
+      "message": "معلقة"
+   },
+   "people": {
+      "message": "أشخاص"
+   },
+   "phone": {
+      "message": "الهاتف"
+   },
+   "push_context_message": {
+      "message": "$1 في $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "عضوية التميز لـ Pushbullet تتطلب تفعيل المميزات."
+   },
+   "pushbullet_pro_required": {
+      "message": "يتطلب اشتراك التميز"
+   },
+   "recipient_placeholder": {
+      "message": "إلى"
+   },
+   "remove_link_tooltip": {
+      "message": "إلغاء ربط هذه الصفحة"
+   },
+   "reply": {
+      "message": "Reply"
+   },
+   "reply_limit_reached": {
+      "message": "لقد وصلت لحد الرسائل هذا الشهر."
+   },
+   "reply_limit_upgrade": {
+      "message": "اشترك الآن, لرسائل غير محدودة."
+   },
+   "reply_limit_warning": {
+      "message": "رسائل محدودة لهذا الشهر."
+   },
+   "retry": {
+      "message": "إعادة المحاولة"
+   },
+   "save": {
+      "message": "حفظ"
+   },
+   "see_full_history": {
+      "message": "شاهد كل سجلك السابق"
+   },
+   "send_failed": {
+      "message": "فشل الإرسال"
+   },
+   "sending": {
+      "message": "جاري الارسال ..."
+   },
+   "sign_in": {
+      "message": "تسجيل الدخول"
+   },
+   "sign_out": {
+      "message": "تسجيل الخروج"
+   },
+   "sms": {
+      "message": "الرسائل النصية \"SMS\""
+   },
+   "sms_disclaimer": {
+      "message": "يجب أن يكون الهاتف شغال و يتوفر فيه اتصال بالانترنت للمراسلة."
+   },
+   "sms_recipient_placeholder": {
+      "message": "جهة اتصال أو رقم هاتف"
+   },
+   "snooze": {
+      "message": "غفوة لمدة ساعة"
+   },
+   "thanks_for_installing_message": {
+      "message": "انقر هنا للتسجيل الدخول"
+   },
+   "thanks_for_installing_title": {
+      "message": "Thanks for installing Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "العنوان"
+   },
+   "undo": {
+      "message": "تراجع"
+   },
+   "unmute_app": {
+      "message": "إلغاء كتم الصوت $1"
+   },
+   "unsnooze": {
+      "message": "تنشيط"
+   },
+   "unsubscribe_from_channel": {
+      "message": "عدم متابعة $1"
+   },
+   "unsubscribed_from_channel": {
+      "message": "لا تتابعه اطلاقا $1"
+   },
+   "updated_notif_message": {
+      "message": "Click here to see what's new"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet has updated!"
+   },
+   "url_placeholder": {
+      "message": "Link url"
+   }
+}

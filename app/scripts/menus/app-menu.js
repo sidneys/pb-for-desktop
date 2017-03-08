@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
@@ -20,35 +18,38 @@ const appRootPath = require('app-root-path').path;
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
-const { app, Menu, shell }  = require('electron');
+const { app, Menu, shell } = require('electron');
 
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const packageJson = require(path.join(appRootPath, 'package.json'));
 
 
 /**
- * @global
+ * Application
+ * @constant
+ * @default
  */
-let appProductName = packageJson.productName || packageJson.name;
-let appHomepage = packageJson.homepage;
+const appProductName = packageJson.productName || packageJson.name;
+const appHomepage = packageJson.homepage;
+
 
 /**
- * @global
+ * @instance
  */
 let appMenu = {};
 
-
 /**
  * App Menu Template
+ * @function
+ *
+ * @private
  */
 let getAppMenuTemplate = () => {
     let template = [
@@ -96,27 +97,27 @@ let getAppMenuTemplate = () => {
                 {
                     label: 'Reload',
                     accelerator: 'CmdOrCtrl+R',
-                    click: function(item, focusedWindow) {
+                    click: (item, focusedWindow) => {
                         if (focusedWindow) {focusedWindow.reload();}
                     }
                 },
                 {
                     label: 'Toggle Full Screen',
-                    accelerator: (function() {
+                    accelerator: (() => {
                         if (process.platform === 'darwin') {return 'Ctrl+Command+F';}
                         else {return 'F11';}
                     })(),
-                    click: function(item, focusedWindow) {
+                    click: (item, focusedWindow) => {
                         if (focusedWindow) {focusedWindow.setFullScreen(!focusedWindow.isFullScreen());}
                     }
                 },
                 {
                     label: 'Toggle Developer Tools',
-                    accelerator: (function() {
+                    accelerator: (() => {
                         if (process.platform === 'darwin') {return 'Alt+Command+I';}
                         else {return 'Ctrl+Shift+I';}
                     })(),
-                    click: function(item, focusedWindow) {
+                    click: (item, focusedWindow) => {
                         if (focusedWindow) {focusedWindow.toggleDevTools();}
                     }
                 }
@@ -144,7 +145,7 @@ let getAppMenuTemplate = () => {
             submenu: [
                 {
                     label: 'Learn More',
-                    click: function() { shell.openExternal(appHomepage); }
+                    click: () => { shell.openExternal(appHomepage); }
                 }
             ]
         }
@@ -189,7 +190,7 @@ let getAppMenuTemplate = () => {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: function() { app.quit(); }
+                    click: () => { app.quit(); }
                 }
             ]
         });
@@ -199,9 +200,11 @@ let getAppMenuTemplate = () => {
 };
 
 
-/** @listens Electron.App#on */
-app.on('ready', () => {
-    logger.debug('app-menu', 'App:ready');
+/**
+ * @listens Electron.App#ready
+ */
+app.once('ready', () => {
+    logger.debug('app#ready');
 
     appMenu = Menu.buildFromTemplate(getAppMenuTemplate());
     Menu.setApplicationMenu(appMenu);

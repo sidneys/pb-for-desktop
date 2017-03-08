@@ -1,0 +1,54 @@
+{
+   "background": {
+      "scripts": [ "forge.min.js", "utils.js", "pb.js", "http.js", "analytics.js", "settings.js", "notifier.js", "listeners.js", "end-to-end.js", "alive.js", "awake.js", "connection.js", "local.js", "device.js", "mirroring.js", "files.js", "pushing.js", "chats.js", "pushes.js", "sms.js", "clipboard.js", "context-menu.js", "log-request.js", "pong.js", "keyboard-shortcuts.js", "main.js" ]
+   },
+   "browser_action": {
+      "default_icon": {
+         "19": "icon_19.png",
+         "38": "icon_38.png"
+      },
+      "default_popup": "panel.html",
+      "default_title": "Pushbullet"
+   },
+   "commands": {
+      "dismiss-most-recent-notification": {
+         "description": "Dismiss the most recent notification",
+         "suggested_key": {
+            "default": "Ctrl+Shift+K",
+            "mac": "Command+Shift+K"
+         }
+      },
+      "instant-push-current-tab": {
+         "description": "Instantly push the current tab (configure in Options)",
+         "suggested_key": {
+            "default": "Ctrl+Shift+X",
+            "mac": "Command+Shift+X"
+         }
+      },
+      "pop-out-panel": {
+         "description": "Pop out the push panel",
+         "suggested_key": {
+            "default": "Ctrl+Shift+E",
+            "mac": "Command+Shift+E"
+         }
+      }
+   },
+   "default_locale": "en",
+   "description": "Bringing together your devices, friends, and the things you care about.",
+   "homepage_url": "https://www.pushbullet.com",
+   "icons": {
+      "128": "icon_128.png",
+      "16": "icon_16.png",
+      "48": "icon_48.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKyWCIbMIUOs36oTwHVQjwECLV/PTT6Q9ZdSNv4ZpEa+HpUf9p+ymPICoIUru44Q4onwrBH+hllZi/p7SVhawEXW8YQDr4d7UINJIsHlvnDh9MdHGBRrZEDWGZVg84HEVqGdJ0n35G6BMrTYKOtZTj3uYa9FpUSrGLPW2sKSuTPQIDAQAB",
+   "manifest_version": 2,
+   "minimum_chrome_version": "31",
+   "name": "Pushbullet",
+   "optional_permissions": [ "background", "clipboardRead", "clipboardWrite" ],
+   "options_page": "options.html",
+   "permissions": [ "tabs", "activeTab", "contextMenus", "cookies", "notifications", "idle", "https://*/*", "http://*/*" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "335",
+   "web_accessible_resources": [ "icon_19.png", "icon_48.png", "icon_128.png", "action_cancel.png", "action_halt.png", "action_undo.png", "action_reply.png", "action_overflow.png", "action_android.png", "action_tick.png", "action_web.png", "chip_person.png", "chip_group.png", "lock.png" ]
+}

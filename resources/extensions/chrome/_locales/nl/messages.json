@@ -1,0 +1,314 @@
+{
+   "add_a_friend": {
+      "message": "Vriend toevoegen"
+   },
+   "add_link_tooltip": {
+      "message": "Link naar huidige pagina toevoegen"
+   },
+   "advanced": {
+      "message": "Geavanceerd"
+   },
+   "alert_desktop_app_notifications": {
+      "message": "De Pushbullet-desktopapp beheert de meldingen. Als je meldingen uitschakelt in de desktopapp, worden meldingen weer door de extensie beheerd."
+   },
+   "all_of_my_devices": {
+      "message": "Alle apparaten"
+   },
+   "cancel": {
+      "message": "Annuleren"
+   },
+   "changelog_tab": {
+      "message": "Wat is er nieuw"
+   },
+   "channels": {
+      "message": "Kanalen"
+   },
+   "clear": {
+      "message": "Wissen"
+   },
+   "decryption_failed_body": {
+      "message": "Controleer of je wachtwoord op al je apparaten hetzelfde is."
+   },
+   "decryption_failed_title": {
+      "message": "Ontsleutelen mislukt"
+   },
+   "devices": {
+      "message": "Apparaten"
+   },
+   "devices_placeholder": {
+      "message": "Kies een apparaat"
+   },
+   "dismiss": {
+      "message": "Sluiten"
+   },
+   "done": {
+      "message": "Gereed"
+   },
+   "encryption_password_needed_body": {
+      "message": "Klik hier om je wachtwoord in te vullen."
+   },
+   "encryption_password_needed_title": {
+      "message": "Versleutelde gegevens ontvangen"
+   },
+   "end_to_end_password_desc": {
+      "message": "Als je een wachtwoord instelt, moet je dat wachtwoord op al je apparaten invullen."
+   },
+   "end_to_end_password_label": {
+      "message": "Wachtwoord end-to-endversleuteling"
+   },
+   "file_too_big": {
+      "message": "Bestand te groot"
+   },
+   "friends": {
+      "message": "Vrienden"
+   },
+   "from": {
+      "message": "Van $1"
+   },
+   "general": {
+      "message": "Algemeen"
+   },
+   "go_to_link": {
+      "message": "Link openen"
+   },
+   "how_to_unmute_app": {
+      "message": "Ik heb een app gedempt. Hoe maak ik dit ongedaan?"
+   },
+   "how_to_unmute_app_answer": {
+      "message": "Open het menu in de Android-app en tik op 'Meldingen synchroniseren'. Tik vervolgens op 'Alleen voor bepaalde apps' en schakel de app opnieuw in."
+   },
+   "learn_more": {
+      "message": "Meer informatie"
+   },
+   "me": {
+      "message": "Mij"
+   },
+   "message_placeholder": {
+      "message": "Typ een bericht, druk op Enter om te verzenden"
+   },
+   "message_placeholder_files": {
+      "message": "Typ een bericht of sleep een bestand hierheen"
+   },
+   "message_placeholder_link": {
+      "message": "Voeg een bericht toe, druk op Enter om te verzenden"
+   },
+   "mirror_context_message": {
+      "message": "$1 via Pushbullet om $2"
+   },
+   "mute": {
+      "message": "Dempen"
+   },
+   "mute_app": {
+      "message": "Meldingen van $1 dempen"
+   },
+   "muted_app": {
+      "message": "$1 gedempt"
+   },
+   "new_sms_thread": {
+      "message": "Nieuw sms-bericht"
+   },
+   "no_notifications": {
+      "message": "Er zijn momenteel geen meldingen"
+   },
+   "no_pushes": {
+      "message": "Geen recente geschiedenis"
+   },
+   "notifications": {
+      "message": "Meldingen"
+   },
+   "now": {
+      "message": "Zojuist"
+   },
+   "num_new_messages": {
+      "message": "$1 nieuwe berichten"
+   },
+   "option_allow_instant_push": {
+      "message": "Direct pushen naar"
+   },
+   "option_allow_instant_push_desc": {
+      "message": "Het huidige tabblad naar het geselecteerde apparaat pushen met een sneltoets."
+   },
+   "option_automatically_attach_link": {
+      "message": "Het huidige tabblad automatisch toevoegen aan berichten naar een apparaat"
+   },
+   "option_automatically_attach_link_desc": {
+      "message": "Zo kun je sneller links naar apparaten verzenden."
+   },
+   "option_background_permission": {
+      "message": "Pushbullet actief houden als ik mijn browser sluit"
+   },
+   "option_background_permission_desc": {
+      "message": "Hiermee kun je meldingen zien zonder je browser open te hoeven houden."
+   },
+   "option_clipboard_permission": {
+      "message": "Klembord synchroniseren"
+   },
+   "option_clipboard_permission_desc": {
+      "message": "Kopieer tekst op dit apparaat en plak het vervolgens op apparaten waar deze functie ook is ingeschakeld."
+   },
+   "option_instant_push_shortcuts": {
+      "message": "Klik hier om in te stellen (momenteel $1)."
+   },
+   "option_instant_push_shortcuts_not_set": {
+      "message": "niet ingesteld"
+   },
+   "option_notification_duration": {
+      "message": "Meldingen automatisch verbergen na"
+   },
+   "option_only_show_titles": {
+      "message": "Alleen titels van meldingen weergeven"
+   },
+   "option_only_show_titles_desc": {
+      "message": "Pushbullet zal alleen de titel van meldingen weergeven. De inhoud blijft verborgen."
+   },
+   "option_open_my_pushes_automatically": {
+      "message": "Dingen die ik naar deze browser push automatisch openen"
+   },
+   "option_open_my_pushes_automatically_desc": {
+      "message": "Hiermee wordt alles wat je naar deze browser pusht automatisch in een nieuw tabblad geopend."
+   },
+   "option_play_sound": {
+      "message": "Geluid afspelen bij nieuwe meldingen"
+   },
+   "option_play_sound_desc": {
+      "message": "Hiermee wordt een geluid afgespeeld als je een nieuwe melding ontvangt."
+   },
+   "option_show_context_menu": {
+      "message": "Pushbullet in het contextmenu weergeven"
+   },
+   "option_show_context_menu_desc": {
+      "message": "Pushbullet in het rechtermuisklikmenu weergeven."
+   },
+   "option_show_mirrors": {
+      "message": "Meldingen weergeven op mijn computer."
+   },
+   "option_show_mirrors_desc": {
+      "message": "Vink dit uit om geen meldingen meer te zien (je ziet nog wel het aantal meldingen op het werkbalkpictogram)."
+   },
+   "option_show_notification_count": {
+      "message": "Aantal meldingen op werkbalkpictogram weergeven"
+   },
+   "option_show_notification_count_desc": {
+      "message": "Zie in één oogopslag het aantal meldingen op de werkbalk."
+   },
+   "option_use_dark_icon": {
+      "message": "Donker pictogram gebruiken"
+   },
+   "option_use_dark_icon_desc": {
+      "message": "Donkergrijs werkbalkpictogram weergeven."
+   },
+   "options": {
+      "message": "Instellingen"
+   },
+   "panel_cant_sign_in": {
+      "message": "Lukt inloggen niet? Probeer AdBlock tijdelijk uit te schakelen. Om in te loggen op Pushbullet moeten cookies van derden zijn ingeschakeld. Je kunt ze na het inloggen weer uitschakelen."
+   },
+   "panel_sign_up": {
+      "message": "Registreren op Pushbullet.com →"
+   },
+   "panel_third_party_cookies": {
+      "message": "Bekijk hier hoe je deze instelling kunt wijzigen."
+   },
+   "pending": {
+      "message": "In afwachting"
+   },
+   "people": {
+      "message": "Mensen"
+   },
+   "phone": {
+      "message": "Telefoon"
+   },
+   "push_context_message": {
+      "message": "$1 om $2"
+   },
+   "pushbullet_pro_feature": {
+      "message": "Je hebt Pushbullet Pro nodig voor deze functie."
+   },
+   "pushbullet_pro_required": {
+      "message": "Pushbullet Pro vereist"
+   },
+   "recipient_placeholder": {
+      "message": "Aan"
+   },
+   "remove_link_tooltip": {
+      "message": "Link naar huidige pagina verwijderen"
+   },
+   "reply": {
+      "message": "Beantwoorden"
+   },
+   "reply_limit_reached": {
+      "message": "Je hebt de limiet van gratis berichten voor deze maand bereikt."
+   },
+   "reply_limit_upgrade": {
+      "message": "Upgrade naar Pushbullet Pro om onbeperkt berichten te verzenden."
+   },
+   "reply_limit_warning": {
+      "message": "Je hebt bijna de limiet van gratis berichten voor deze maand bereikt."
+   },
+   "retry": {
+      "message": "Opnieuw proberen"
+   },
+   "save": {
+      "message": "Opslaan"
+   },
+   "see_full_history": {
+      "message": "Volledige geschiedenis bekijken"
+   },
+   "send_failed": {
+      "message": "Verzenden mislukt"
+   },
+   "sending": {
+      "message": "Verzenden..."
+   },
+   "sign_in": {
+      "message": "Inloggen"
+   },
+   "sign_out": {
+      "message": "Uitloggen"
+   },
+   "sms": {
+      "message": "Sms"
+   },
+   "sms_disclaimer": {
+      "message": "Telefoon moet aan staan en verbonden zijn met internet om sms-berichten te verzenden."
+   },
+   "sms_recipient_placeholder": {
+      "message": "Contactpersoon of telefoonnummer"
+   },
+   "snooze": {
+      "message": "1 uur snoozen"
+   },
+   "thanks_for_installing_message": {
+      "message": "Klik hier om in te loggen"
+   },
+   "thanks_for_installing_title": {
+      "message": "Bedankt voor het installeren van Pushbullet"
+   },
+   "title_placeholder": {
+      "message": "Titel"
+   },
+   "undo": {
+      "message": "Ongedaan maken"
+   },
+   "unmute_app": {
+      "message": "Dempen van $1 opheffen"
+   },
+   "unsnooze": {
+      "message": "Snoozen opheffen"
+   },
+   "unsubscribe_from_channel": {
+      "message": "$1 ontvolgen"
+   },
+   "unsubscribed_from_channel": {
+      "message": "Je volgt $1 niet meer"
+   },
+   "updated_notif_message": {
+      "message": "Klik hier om te zien wat er is gewijzigd"
+   },
+   "updated_notif_title": {
+      "message": "Pushbullet is bijgewerkt!"
+   },
+   "url_placeholder": {
+      "message": "URL"
+   }
+}

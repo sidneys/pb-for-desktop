@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>Extension Updates</key>
+   <array>
+     <dict>
+       <key>CFBundleIdentifier</key>
+       <string>com.pushbullet.safari</string>
+       <key>Developer Identifier</key>
+       <string>EA43GFGP5M</string>
+       <key>CFBundleVersion</key>
+       <string>312</string>
+       <key>CFBundleShortVersionString</key>
+       <string>312.0</string>
+       <key>URL</key>
+       <string>https://update.pushbullet.com/extension.safariextz</string>
+     </dict>
+   </array>
+</dict>
+</plist>
