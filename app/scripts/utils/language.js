@@ -4,15 +4,13 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
 
-  /**
+/**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
@@ -20,7 +18,6 @@ const appRootPath = require('app-root-path').path;
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
@@ -30,7 +27,9 @@ const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
  * List Event Handlers
  * @param {HTMLElement} target - Target Element
  * @return {Array|undefined} - List Event Handlers
- * @global
+ * @function
+ *
+ * @public
  */
 let getEventHandlersList = function(target) {
     if (!isDebug || !window.chrome) { return; }
@@ -43,6 +42,9 @@ let getEventHandlersList = function(target) {
  * Get Prototype chain
  * @param {*} object - Variable
  * @returns {Array} - List of prototypes names
+ * @function
+ *
+ * @public
  */
 let getPrototypeList = function(object) {
     let prototypeList = [],
@@ -62,6 +64,9 @@ let getPrototypeList = function(object) {
  * Get root Prototype
  * @param {*} object - Variable
  * @returns {String} - Type
+ * @function
+ *
+ * @public
  */
 let getPrototype = function(object) {
     return getPrototypeList(object)[0];

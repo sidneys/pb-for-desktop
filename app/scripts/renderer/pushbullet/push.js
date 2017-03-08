@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const { remote } = require('electron');
@@ -20,7 +18,6 @@ const { remote } = require('electron');
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const _ = require('lodash');
@@ -30,33 +27,19 @@ const fileUrl = require('file-url');
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
-const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'managers', 'configuration-manager'));
 
-
-/**
- * @global
- * @constant
- */
-const defaultInterval = 1000;
-
-
-/**
- * @global
- */
-let pb;
 
 /**
  * Notification
  * @constant
  * @default
  */
-const notificationInterval = 3000;
+const notificationInterval = 2000;
 const maxRecentNotifications = 5;
-const soundVolume = parseFloat(settings.getConfigurationItem('soundVolume').get());
 
 /**
  * Notification Defaults
@@ -72,6 +55,14 @@ const pushDefaults = {
     icon: null
 };
 
+
+/**
+ * Configuration
+ */
+let lastNotification;
+let soundVolume;
+
+
 /**
  * Play Audio
  * @param {String} filePath - Path to WAV audio
@@ -80,24 +71,24 @@ const pushDefaults = {
  * @private
  */
 let playSoundFile = function(filePath, callback) {
-    logger.debug('push', 'playSoundFile()');
+    logger.debug('playSoundFile');
 
     let cb = callback || function() {};
-    let soundFile = fileUrl(filePath);
-    let AudioElement = new Audio(soundFile);
+    let url = fileUrl(filePath);
+    let AudioElement = new Audio(url);
 
     /**
      * @listens audio:MediaEvent#error
      */
     AudioElement.addEventListener('error', (err) => {
-        return cb(err, soundFile);
+        return cb(err, url);
     });
 
     /**
      * @listens audio:MediaEvent#ended
      */
     AudioElement.addEventListener('ended', () => {
-        return cb(null, soundFile);
+        return cb(null, url);
     });
 
     AudioElement.volume = parseFloat(soundVolume);
@@ -112,7 +103,9 @@ let playSoundFile = function(filePath, callback) {
  * @private
  */
 let getIconForPushbulletPush = function(push) {
-    logger.debug('push', 'getIconForPushbulletPush()');
+    logger.debug('getIconForPushbulletPush');
+
+    const pb = window.pb;
 
     let imageUrl;
 
@@ -139,9 +132,9 @@ let getIconForPushbulletPush = function(push) {
     }
 
     // Devices (Phone, Tablet ..)
-    let deviceImage,
-        deviceId = push['source_device_iden'],
-        deviceList = pb.api.devices.all;
+    let deviceImage;
+    let deviceId = push['source_device_iden'];
+    let deviceList = pb.api.devices.all;
 
     for (let device of deviceList) {
         if (device['iden'] === deviceId) {
@@ -173,7 +166,7 @@ class PushbulletNotification {
     }
 
     init(pushTitle, pushObject) {
-        logger.debug('push', 'init()');
+        logger.debug('init');
 
         // Attributes https://docs.pushbullet.com/#push
         let push = pushObject || pushDefaults.push;
@@ -242,19 +235,20 @@ class PushbulletNotification {
         // Trigger Notification
         let notification = new Notification(options.title, options);
 
-        // Get sound setting
-        let soundEnabled = settings.getConfigurationItem('soundEnabled').get();
-
-        if (soundEnabled === true) {
-            // Get sound file
-            let soundFile = settings.getConfigurationItem('soundFile').get();
-
-            playSoundFile(soundFile, function(err, file) {
-                if (err) {
-                    logger.error('playSoundFile', file, err);
-                }
-            });
-        }
+        // Get soundEnabled lazy
+        configurationManager.settings.get('soundEnabled').then(soundEnabled => {
+            if (soundEnabled === true) {
+                // Get soundFile lazy
+                configurationManager.settings.get('soundFile').then(soundFile => {
+                    // Show notification
+                    playSoundFile(soundFile, function(err, file) {
+                        if (err) {
+                            logger.error('playSoundFile', file, err);
+                        }
+                    });
+                });
+            }
+        });
 
         /**
          * @listens notification:PointerEvent#click´
@@ -273,10 +267,7 @@ class PushbulletNotification {
  * @private
  */
 let createPushbulletNotification = (push) => {
-    logger.debug('push', 'createPushbulletNotification()');
-
-    // DEBUG
-    // logger.debug('snoozed', isSnoozed);
+    logger.debug('createPushbulletNotification');
 
     if (Date.now() < remote.getGlobal('snoozeUntil')) {
         return;
@@ -294,14 +285,15 @@ let createPushbulletNotification = (push) => {
  * @private
  */
 let fetchRecentPushes = (limit) => {
-    logger.debug('push', 'fetchRecentPushes()');
+    logger.debug('fetchRecentPushes');
 
+    const pb = window.pb;
 
     let queueLimit = limit || 0;
 
     // Get hashmap of all pushes
-    let pushesReference = pb.api.pushes.objs,
-        pushesList = [];
+    let pushesReference = pb.api.pushes.objs;
+    let pushesList = [];
 
     // Build list of active pushes
     for (let iden in pushesReference) {
@@ -334,46 +326,47 @@ let fetchRecentPushes = (limit) => {
  * Enqueue 1 + N Pushes
  * @param {Array} pushesList - Pushbullet push objects
  * @param {Boolean} filterPushes - Hide Pushes already shown
- * @param {Function} cb - Callback
+ * @param {Function=} callback - Callback
  * @returns {*}
  * @private
  */
-let enqueuePushList = (pushesList, filterPushes, cb) => {
-    logger.debug('push', 'enqueuePushList()');
+let enqueuePushList = (pushesList, filterPushes, callback) => {
+    logger.debug('enqueuePushList');
 
-    let callback = cb || function() {};
+    let cb = callback || function() {};
     let self = this;
 
     if (pushesList.length === 0) {
-        return callback(pushesList.length);
+        return cb(pushesList.length);
     }
 
-    let lastNotification = settings.getConfigurationItem('lastNotification').get();
     let nextPushesList = pushesList;
     let notifyAfter = lastNotification || 0;
 
     // Remove pushes older than 'lastNotification' from array
     if (filterPushes) {
-        nextPushesList = pushesList.filter(function(element) {
+        nextPushesList = pushesList.filter((element) => {
             return (element.created) > notifyAfter;
         });
     }
 
-    nextPushesList.forEach(function(push, pushIndex) {
-        let notificationTimeout = setTimeout(function() {
+    nextPushesList.forEach((push, pushIndex) => {
+        let timeout = setTimeout(() => {
 
             // Show local notification
             createPushbulletNotification(push);
 
+            // Update saved lastNotification
             if (push.created > notifyAfter) {
-                // Update 'lastNotification' with timestamp from most recent push
-                settings.getConfigurationItem('lastNotification').set(push.modified);
+                lastNotification = push.modified;
+                configurationManager.getConfigurationItem('lastNotification').set(push.modified);
             }
 
-            // Callback
+            // Last push triggered
             if (nextPushesList.length === (pushIndex + 1)) {
-                callback(nextPushesList.length);
-                clearTimeout(notificationTimeout);
+                cb(nextPushesList.length);
+
+                clearTimeout(timeout);
             }
         }, (parseInt(notificationInterval) * (pushIndex + 1)), self);
     }, self);
@@ -382,48 +375,53 @@ let enqueuePushList = (pushesList, filterPushes, cb) => {
 /**
  * Enqueue 1 Push
  * @param {Object} push - Push Object
- * @param {Function=} cb - Callback
+ * @param {Function=} callback - Callback
  * @public
  */
-let enqueuePush = (push, cb) => {
-    logger.debug('push', 'enqueuePush()');
+let enqueuePush = (push, callback) => {
+    logger.debug('enqueuePush');
 
-    let callback = cb || function() {};
+    let cb = callback || function() {};
     let pushesList = [push];
 
-    enqueuePushList(pushesList, true, function(length) {
-        callback(length);
+    enqueuePushList(pushesList, true, (length) => {
+        cb(length);
     });
 };
 
 /**
  * Get all new pushes and show them (if any)
- * @param {Function=} cb - Callback
+ * @param {Function=} callback - Callback
  * @public
  */
-let enqueueRecentPushes = (cb) => {
-    logger.debug('push', 'enqueueRecentPushes()');
+let enqueueRecentPushes = (callback) => {
+    logger.debug('enqueueRecentPushes');
 
-    let callback = cb || function() {};
+    let cb = callback || function() {};
     let pushesList = fetchRecentPushes(maxRecentNotifications);
 
-    enqueuePushList(pushesList, false, function(length) {
-        callback(length);
+    enqueuePushList(pushesList, false, (length) => {
+        cb(length);
     });
 };
 
+/**
+ * Init
+ */
+let init = () => {
+    logger.debug('init');
 
-/** @listens window:#load */
+    lastNotification = configurationManager.getConfigurationItem('lastNotification').get();
+    soundVolume = parseFloat(configurationManager.getConfigurationItem('soundVolume').get());
+};
+
+/**
+ * @listens window#load
+ */
 window.addEventListener('load', () => {
-    logger.debug('push', 'window:load');
+    logger.debug('window#load');
 
-    let pollingInterval = setInterval(function() {
-        if (!window.pb || !window.pb.account) { return; }
-
-        pb = window.pb;
-
-        clearInterval(pollingInterval);
-    }, defaultInterval, this);
+    init();
 });
 
 

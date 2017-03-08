@@ -14,10 +14,6 @@ branches:
   only:
     - release
 
-env:
-  global:
-    - ARTIFACTS_DIRECTORY="build/output/"
-
 cache:
   directories:
     - "$HOME/.electron"
@@ -27,30 +23,33 @@ addons:
   apt:
     packages:
       - bsdtar
-      - icnsutils
-      - gcc-multilib
       - g++-multilib
+      - gcc-multilib
       - graphicsmagick
+      - icnsutils
+      - libicns-dev
+      - libpng-dev
+      - libpng12-0
       - rpm
       - xz-utils
 
 before_install:
-  - echo "Installing nvm"
+  - echo "🔧 Installing tools"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR=$HOME/.nvm sh
   - source $HOME/.nvm/nvm.sh
-  - nvm install 7.6.0
-  - nvm use 7.6.0
+  - nvm install 7.7.2
+  - nvm use 7.7.2
 
 install:
-  - echo "Installing dependencies"
+  - echo "📥 Installing dependencies"
   - npm install
 
 script:
-  - echo "Building artifacts"
+  - echo "📦 Building artifacts"
   - npm run-script build
 
 after_success:
-  - echo "Deploying artifacts"
+  - echo "📮 Deploying artifacts"
   - npm run-script deploy:github
 
 notifications:
@@ -60,3 +59,4 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+

@@ -4,68 +4,72 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
+const os = require('os');
 const path = require('path');
 
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const { app, BrowserWindow, Menu, session, Tray } = require('electron');
 
 /**
  * Modules
  * External
- * @global
- * @const
+ * @constant
  */
 const appRootPath = require('app-root-path').path;
 
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-// const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'managers', 'configuration-manager'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'messenger-service'));
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
 const snoozerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'snoozer-service'));
 
 
 /**
- * App
- * @global
+ * Application
  * @constant
+ * @default
  */
 const appProductName = packageJson.productName || packageJson.name;
 const appVersion = packageJson.version;
 
 /**
- * Paths
- * @global
+ * Filesystem
  * @constant
+ * @default
  */
 const appTrayIconDefault = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-default${platformHelper.templateImageExtension(platformHelper.type)}`);
 const appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
 const appTrayIconPaused = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-paused${platformHelper.templateImageExtension(platformHelper.type)}`);
 
+/**
+ * @constant
+ * @default
+ */
+const defaultTimeout = 2000;
+
 
 /**
- * @global
+ * @instance
  */
 let trayMenu = {};
 
-
 /**
  * Tray Menu Template
- * @global
+ * @function
+ *
+ * @private
  */
 let getTrayMenuTemplate = () => {
     return [
@@ -77,7 +81,7 @@ let getTrayMenuTemplate = () => {
             }
         },
         {
-            id: 'currentVersion',
+            id: 'appVersion',
             label: `Version ${appVersion}`,
             type: 'normal',
             enabled: false
@@ -86,33 +90,36 @@ let getTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
-            id: 'showOnlyInTray',
+            id: 'showInTrayOnly',
             label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
-            icon: path.join(appRootPath, 'app', 'images', `icon-show-app-window${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-show-in-tray-only${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: settings.getConfigurationItem('showOnlyInTray').get(),
+            checked: configurationManager.getConfigurationItem('showInTrayOnly').get(),
             click(menuItem) {
-                settings.getConfigurationItem('showOnlyInTray').set(menuItem.checked);
+                configurationManager.getConfigurationItem('showInTrayOnly').set(menuItem.checked);
             }
+        },
+        {
+            type: 'separator'
         },
         {
             id: 'launchOnStartup',
             label: 'Launch on Startup',
             icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: settings.getConfigurationItem('launchOnStartup').get(),
+            checked: configurationManager.getConfigurationItem('launchOnStartup').get(),
             click(menuItem) {
-                settings.getConfigurationItem('launchOnStartup').set(menuItem.checked);
+                configurationManager.getConfigurationItem('launchOnStartup').set(menuItem.checked);
             }
         },
         {
             id: 'replayOnLaunch',
-            label: 'Replay Pushes on Start',
+            label: 'Replay Pushes on Launch',
             icon: path.join(appRootPath, 'app', 'images', `icon-replay-on-launch${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: settings.getConfigurationItem('replayOnLaunch').get(),
+            checked: configurationManager.getConfigurationItem('replayOnLaunch').get(),
             click(menuItem) {
-                settings.getConfigurationItem('replayOnLaunch').set(menuItem.checked);
+                configurationManager.getConfigurationItem('replayOnLaunch').set(menuItem.checked);
             }
         },
         {
@@ -155,19 +162,85 @@ let getTrayMenuTemplate = () => {
         {
             id: 'soundEnabled',
             label: 'Play Sound Effects',
-            icon: path.join(appRootPath, 'app', 'images', `icon-play-sound-effects${platformHelper.menuItemImageExtension}`),
+            icon: path.join(appRootPath, 'app', 'images', `icon-sound-enabled${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: settings.getConfigurationItem('soundEnabled').get(),
+            checked: configurationManager.getConfigurationItem('soundEnabled').get(),
             click(menuItem) {
-                settings.getConfigurationItem('soundEnabled').set(menuItem.checked);
+                configurationManager.getConfigurationItem('soundEnabled').set(menuItem.checked);
             }
         },
         {
             id: 'soundFile',
             label: 'Open Sound File...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-sound-file${platformHelper.menuItemImageExtension}`),
             type: 'normal',
             click() {
-                settings.getConfigurationItem('soundFile').implement();
+                configurationManager.getConfigurationItem('soundFile').implement();
+            }
+        },
+        {
+            type: 'separator'
+        },
+        {
+            id: 'reconnect',
+            label: 'Reconnect...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-reconnect${platformHelper.menuItemImageExtension}`),
+            type: 'normal',
+            click() {
+                messengerService.showQuestion('Are you sure you want to reconnect to Pushbullet?',
+                    `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
+                    `All unsaved changes will be lost.`,
+                    (result) => {
+                        if (result === 0) {
+                            let timeout = setTimeout(() => {
+                                logger.log('reconnect', 'relaunching');
+
+                                app.relaunch();
+                                app.exit();
+
+                                clearTimeout(timeout);
+                            }, defaultTimeout);
+                        }
+                    });
+            }
+        },
+        {
+            id: 'logout',
+            label: 'Log out...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-logout${platformHelper.menuItemImageExtension}`),
+            type: 'normal',
+            click() {
+                messengerService.showQuestion('Are you sure you want to log out from Pushbullet?',
+                    `${appProductName} will log out from Pushbullet.${os.EOL}` +
+                    `All unsaved changes will be lost.`,
+                    (result) => {
+                        if (result === 0) {
+                            const ses = session.fromPartition('persist:app');
+
+                            ses.clearCache(() => {
+                                logger.debug('logout', 'cache cleared');
+
+                                ses.clearStorageData({
+                                    storages: [
+                                        'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache',
+                                        'websql', 'serviceworkers'
+                                    ],
+                                    quotas: ['temporary', 'persistent', 'syncable']
+                                }, () => {
+                                    logger.debug('logout', 'storage cleared');
+
+                                    let timeout = setTimeout(() => {
+                                        logger.log('logout', 'relaunching');
+
+                                        app.relaunch();
+                                        app.exit();
+
+                                        clearTimeout(timeout);
+                                    }, defaultTimeout);
+                                });
+                            });
+                        }
+                    });
             }
         },
         {
@@ -193,9 +266,11 @@ class TrayMenu extends Tray {
         this.setToolTip(appProductName);
         this.setContextMenu(Menu.buildFromTemplate(template));
 
-        /** @listens Electron.Tray#on */
+        /**
+         * @listens Electron.Tray#click
+         */
         this.on('click', () => {
-            logger.debug('tray-menu', 'Tray:click');
+            logger.debug('TrayMenu#click');
 
             if (platformHelper.isWindows) {
                 let mainWindow = BrowserWindow.getAllWindows()[0];
@@ -216,7 +291,7 @@ class TrayMenu extends Tray {
      * @param {String} state - Tray Icon Enable/Disable
      */
     setState(state) {
-        //logger.debug('tray-menu', `setState( ${state} )`);
+        logger.debug('setState', state);
 
         switch (state) {
             case 'default':
@@ -233,31 +308,22 @@ class TrayMenu extends Tray {
 }
 
 
-// /** @listens connectivityService#on */
-// connectivityService.on('online', () => {
-//     //logger.debug('tray-menu', 'connectivityService:online');
-//     if (snoozerService.isActive()) { return; }
-//     trayMenu.setState('default');
-// });
-//
-// /** @listens connectivityService#on */
-// connectivityService.on('offline', () => {
-//     //logger.debug('tray-menu', 'connectivityService:offline');
-//     if (snoozerService.isActive()) { return; }
-//     trayMenu.setState('transparent');
-// });
-
-/** @listens snoozerService#on */
+/**
+ * @listens snoozerService#snooze
+ */
 snoozerService.on('snooze', (snoozing) => {
-    logger.debug('tray-menu', 'snoozerService:snoozing', snoozing);
+    logger.debug('snoozerService#snooze', snoozing);
 
-    if (snoozing) { trayMenu.setState('paused');
+    if (snoozing) {
+        trayMenu.setState('paused');
     } else { trayMenu.setState('default'); }
 });
 
-/** @listens Electron.App#on */
+/**
+ * @listens Electron.App#ready
+ */
 app.on('ready', () => {
-    logger.debug('tray-menu', 'App:ready');
+    logger.debug('app#ready');
 
     trayMenu = new TrayMenu(getTrayMenuTemplate());
 });

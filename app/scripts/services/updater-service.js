@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const os = require('os');
@@ -13,7 +12,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const electron = require('electron');
@@ -22,7 +20,6 @@ const { app, BrowserWindow } = electron;
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
@@ -32,42 +29,42 @@ const { autoUpdater } = require('electron-updater');
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'messenger-service'));
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-const settings = require(path.join(appRootPath, 'app', 'scripts', 'configuration', 'settings'));
+const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'managers', 'configuration-manager'));
 
 
 /**
- * App
- * @global
+ * Application
  * @constant
+ * @default
  */
 const appProductName = packageJson.productName || packageJson.name;
 const appVersion = packageJson.version;
 
 /**
  * @default
- * @global
  */
 let isCheckingOrInstallingUpdates = false;
 
 
 /**
- * Singleton
+ * @instance
  * @global
  */
 global.updaterService = null;
 
 /**
  * Updater
- * @class
  * @returns autoUpdater
+ * @class
+ *
+ * @private
  */
 class Updater {
     constructor() {
@@ -77,57 +74,70 @@ class Updater {
     }
 
     init() {
-        logger.debug('updater-service', 'init()');
+        logger.debug('init');
 
         // Set Logger
         autoUpdater.logger = logger;
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#error
+         */
         autoUpdater.on('error', (error) => {
-            logger.error('updater-service', 'AutoUpdater:error', error.message);
+            logger.error('autoUpdater#error', error.message);
 
             isCheckingOrInstallingUpdates = false;
         });
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#checking-for-update
+         */
         autoUpdater.on('checking-for-update', () => {
-            logger.log('updater-service', 'AutoUpdater:checking-for-update');
+            logger.log('autoUpdater#checking-for-update');
 
             isCheckingOrInstallingUpdates = true;
         });
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#update-available
+         */
         autoUpdater.on('update-available', () => {
-            logger.log('updater-service', 'AutoUpdater:update-available');
+            logger.log('autoUpdater#update-available');
 
             isCheckingOrInstallingUpdates = true;
         });
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#update-not-available
+         */
         autoUpdater.on('update-not-available', () => {
-            logger.log('updater-service', 'AutoUpdater:update-not-available');
+            logger.log('autoUpdater#update-not-available');
 
             isCheckingOrInstallingUpdates = false;
         });
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#download-progress
+         */
         autoUpdater.on('download-progress', (ev, progress) => {
-            logger.log('updater-service', 'AutoUpdater:download-progress', JSON.stringify(progress));
+            logger.log('autoUpdater#download-progress', JSON.stringify(progress));
 
             BrowserWindow.getAllWindows()[0].setProgressBar(progress.percent / 100);
         });
 
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#progress
+         */
         autoUpdater.on('progress', (ev, progress) => {
-            logger.log('updater-service', 'AutoUpdater:progress', JSON.stringify(progress));
+            logger.log('autoUpdater#progress', JSON.stringify(progress));
 
             BrowserWindow.getAllWindows()[0].setProgressBar(progress.percent / 100);
         });
 
-
-        /** @listens AutoUpdater#on */
+        /**
+         * @listens AutoUpdater#update-downloaded
+         */
         autoUpdater.on('update-downloaded', () => {
-            logger.log('updater-service', 'AutoUpdater:update-downloaded');
+            logger.log('autoUpdater#update-downloaded');
 
             isCheckingOrInstallingUpdates = true;
 
@@ -146,7 +156,9 @@ class Updater {
                 });
         });
 
-        /** @listens Electron.BrowserWindow#on */
+        /**
+         * @listens Electron.BrowserWindow#on
+         */
         let mainWindow = BrowserWindow.getAllWindows()[0];
         if (mainWindow) {
             mainWindow.on('show', () => {
@@ -164,30 +176,53 @@ class Updater {
 
 
 /**
- * Bump version in Settings file
+ * Updates internal version to current version
+ * @function
+ *
+ * @private
  */
-let bumpVersion = () => {
-    logger.debug('updater-service', 'bumpInternalVersion()');
+let bumpInternalVersion = () => {
+    logger.debug('bumpInternalVersion');
 
-    let currentVersion = settings.getConfigurationItem('currentVersion').get();
-    let wasUpdated = Boolean(semverCompare(packageJson.version, currentVersion) === 1);
+    let internalVersion = configurationManager.getConfigurationItem('internalVersion').get();
 
+    // DEBUG
+    logger.debug('bumpInternalVersion', 'packageJson.version', packageJson.version);
+    logger.debug('bumpInternalVersion', 'internalVersion', internalVersion);
+    logger.debug('bumpInternalVersion', 'semverCompare(packageJson.version, internalVersion)', semverCompare(packageJson.version, internalVersion));
+
+    // Initialize version
+    if (!internalVersion) {
+        configurationManager.getConfigurationItem('internalVersion').set(packageJson.version);
+
+        return;
+    }
+
+    // Compare internal/current version
+    let wasUpdated = Boolean(semverCompare(packageJson.version, internalVersion) === 1);
+
+    // DEBUG
+    logger.debug('bumpInternalVersion', 'wasUpdated', wasUpdated);
+
+    // Update internal version
     if (wasUpdated) {
-        settings.getConfigurationItem('currentVersion').set(packageJson.version);
+        configurationManager.getConfigurationItem('internalVersion').set(packageJson.version);
+
+        app.focus();
         messengerService.showInfo(`Update complete`, `${appProductName} has been updated to ${appVersion}.`);
 
-        logger.log('updater-service', 'App:ready', 'wasUpdated', wasUpdated);
-        logger.log('updater-service', 'App:ready', 'packageJson.version', packageJson.version);
-        logger.log('updater-service', 'App:ready', 'currentVersion', currentVersion);
+        logger.log(`${appProductName} has been updated to ${appVersion}.`);
     }
 };
 
-
 /**
  * Init
+ * @function
+ *
+ * @private
  */
 let init = () => {
-    logger.debug('updater-service', 'init()');
+    logger.debug('init');
 
     if (isDebug) { return; }
 
@@ -196,17 +231,20 @@ let init = () => {
             global.updaterService = new Updater();
         }
     } catch (error) {
-        logger.error('updater-service', error.message);
+        logger.error(error.message);
     }
 
-    bumpVersion();
+    bumpInternalVersion();
 };
 
 /**
  * Getter
+ * @function
+ *
+ * @public
  */
-let get = () => {
-    logger.debug('updater-service', 'get()');
+let getUpdaterService = () => {
+    logger.debug('getUpdaterService');
 
     if (global.updaterService) {
         return global.updaterService;
@@ -214,9 +252,11 @@ let get = () => {
 };
 
 
-/** @listens Electron.App#on */
+/**
+ * @listens Electron.App#ready
+ */
 app.on('ready', () => {
-    logger.debug('updater-service', 'App:ready');
+    logger.debug('app#ready');
 
     init();
 });
@@ -225,4 +265,4 @@ app.on('ready', () => {
 /**
  * @exports
  */
-module.exports = get();
+module.exports = getUpdaterService();

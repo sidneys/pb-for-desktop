@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "3.9.0",
+  "version": "4.0.2",
   "description": "PushBullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -46,21 +46,23 @@
   "dependencies": {
     "app-root-path": "^2.0.1",
     "appdirectory": "^0.1.0",
-    "auto-launch": "^5.0.1",
-    "babel-cli": "^6.23.0",
+    "auto-launch": "git://github.com/sidneys/node-auto-launch.git#master",
+    "babel-cli": "^6.24.0",
     "babel-preset-electron": "^1.4.15",
     "chalk": "^1.1.3",
-    "electron-compile": "^6.1.2",
+    "electron-compile": "^6.1.3",
     "electron-compilers": "^5.5.1",
     "electron-connect": "^0.6.1",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^2.2.2",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-updater": "^1.7.1",
+    "electron-updater": "^1.10.1",
     "file-type": "^4.1.0",
     "file-url": "^2.0.2",
-    "fs-extra": "^2.0.0",
-    "is-online": "^6.1.0",
+    "fs-extra": "^2.1.2",
+    "git-branch": "^0.3.0",
+    "is-ci": "^1.0.10",
+    "is-reachable": "^2.3.2",
     "keypath": "^0.0.1",
     "lodash": "^4.17.4",
     "parse-domain": "^1.1.0",
@@ -68,9 +70,9 @@
     "semver-compare": "^1.0.0"
   },
   "devDependencies": {
-    "electron": "^1.4.15",
-    "electron-builder": "11.5.1",
-    "electron-builder-squirrel-windows": "11.5.0",
+    "electron": "^1.6.2",
+    "electron-builder": "^15.5.1",
+    "electron-builder-squirrel-windows": "^15.5.1",
     "fkill": "^4.1.0",
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
@@ -91,8 +93,8 @@
     "build": "node ./lib/build.js --",
     "localsetup": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
     "localsetup:dev": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
-    "localsetup:rebuild": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
-    "localsetup:rebuild:dev": "./node_modules/.bin/babel-node ./lib/localsetup.js -- "
+    "localsetup:build": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
+    "localsetup:build:dev": "./node_modules/.bin/babel-node ./lib/localsetup.js -- "
   },
   "build": {
     "appId": "de.sidneys.pb-for-desktop",
@@ -119,49 +121,25 @@
     },
     "win": {
       "icon": "./icons/win32/icon.ico",
+      "publish": null,
       "target": [
         "squirrel"
       ]
     },
     "linux": {
+      "category": "Utility",
+      "icon": "./icons/linux",
+      "publish": null,
       "target": [
         "AppImage",
         "deb",
         "pacman",
         "rpm"
-      ],
-      "category": "Utility"
-    },
-    "AppImage": {
-      "includeRequiredLib": true
-    },
-    "deb": {
-      "depends": [
-        "libappindicator1",
-        "libgconf-2-4",
-        "libnotify-bin",
-        "libnotify4"
       ]
     },
     "dmg": {
       "background": "./icons/darwin/background-setup.png",
       "icon": "./icons/darwin/icon-setup.icns"
-    },
-    "pacman": {
-      "depends": [
-        "libappindicator-gtk2",
-        "libappindicator-gtk3",
-        "libappindicator-sharp",
-        "libnotify"
-      ]
-    },
-    "rpm": {
-      "depends": [
-        "libappindicator1",
-        "libgconf-2-4",
-        "libnotify-bin",
-        "libnotify4"
-      ]
     },
     "squirrelWindows": {
       "iconUrl": "https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/icons/win32/icon.ico",

@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path');

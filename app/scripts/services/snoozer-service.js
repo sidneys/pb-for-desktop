@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const EventEmitter = require('events');
@@ -13,37 +12,32 @@ const path = require('path');
 /**
  * Modules
  * External
- * @global
- * @const
+ * @constant
  */
 const appRootPath = require('app-root-path').path;
 
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const notificationService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'notification-service'));
 
 
 /**
- * @global
- */
-global.snoozeUntil = 0;
-
-
-/**
- * Singleton
+ * @instance
  * @global
  */
 global.snoozerService = null;
+global.snoozeUntil = 0;
 
 /**
  * Snoozer
- * @class
  * @extends EventEmitter
+ * @class
+ *
+ * @private
  */
 class Snoozer extends EventEmitter {
     constructor() {
@@ -53,7 +47,7 @@ class Snoozer extends EventEmitter {
     }
 
     init() {
-        logger.debug('snoozer-service', 'init()');
+        logger.debug('init');
 
         this.snoozeUntil = 0;
         this.snoozeTimeout = null;
@@ -65,7 +59,7 @@ class Snoozer extends EventEmitter {
      * @fires Snoozer:disabled
      */
     snooze(menuItem, duration) {
-        logger.debug('snoozer-service', 'snooze()');
+        logger.debug('snooze');
 
         let relatedItems = menuItem.menu.items.filter((item) => { return item.id && item.id.startsWith('snooze') && item.id !== menuItem.id; });
         let itemEnabled = menuItem.checked;
@@ -105,15 +99,15 @@ class Snoozer extends EventEmitter {
 
         // Schedule to waking up
         this.snoozeTimeout = setTimeout(() => {
-            logger.debug('snoozer-service', 'setTimeout()', durationHours);
+            logger.debug('setTimeout', durationHours);
 
             // End Snooze
-            clearTimeout(this.snoozeTimeout);
             global.snoozeUntil = 0;
             menuItem.checked = false;
             notificationService.show(`Woke Up from Snooze (${durationHours} Hours)`);
-
             this.emit('snooze', false);
+
+            clearTimeout(this.snoozeTimeout);
         }, (snoozeEnd - Date.now()));
     }
 
@@ -121,17 +115,20 @@ class Snoozer extends EventEmitter {
      * Status
      * @returns {boolean}
      */
-    isActive(){
-       return global.snoozeUntil !== 0;
+    isActive() {
+        return global.snoozeUntil !== 0;
     }
 }
 
 
 /**
  * Init
+ * @function
+ *
+ * @private
  */
 let init = () => {
-    logger.debug('snoozer-service', 'init()');
+    logger.debug('init');
 
     if (!global.snoozerService) {
         global.snoozerService = new Snoozer();
@@ -140,9 +137,12 @@ let init = () => {
 
 /**
  * Getter
+ * @function
+ *
+ * @public
  */
-let get = () => {
-    logger.debug('snoozer-service', 'get()');
+let getSnoozerService = () => {
+    logger.debug('getSnoozerService');
 
     if (global.snoozerService) {
         return global.snoozerService;
@@ -156,4 +156,4 @@ init();
 /**
  * @exports
  */
-module.exports = get();
+module.exports = getSnoozerService();

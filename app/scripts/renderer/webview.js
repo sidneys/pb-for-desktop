@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -13,37 +12,39 @@ const url = require('url');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
-const { remote }  = require('electron');
+const { remote } = require('electron');
 
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
 const electronConnect = require('electron-connect');
+const isReachable = require('is-reachable');
 const parseDomain = require('parse-domain');
 
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-// const connectivityService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'connectivity-service'));
-const dom = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom'));
+const domHelper = require(path.join(appRootPath, 'app', 'scripts', 'utils', 'dom-helper'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const isLivereload = require(path.join(appRootPath, 'lib', 'is-livereload'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+
+/**
+ * @constant
+ * @default
+ */
+const defaultHostname = 'www.pushbullet.com';
 
 
 /**
  * DOM Components
- * @global
  * @constant
  */
 const body = document.querySelector('body');
@@ -60,37 +61,24 @@ const buttons = {
 /**
  * Present Spinner
  */
-let presentSpinner = function() {
-    dom.setVisibility(spinner, true, 1000);
+let presentSpinner = () => {
+    domHelper.setVisibility(spinner, true, 1000);
 };
 
 /**
  * Dismiss Spinner
  */
-let dismissSpinner = function() {
-    dom.setVisibility(spinner, false, 1000);
+let dismissSpinner = () => {
+    domHelper.setVisibility(spinner, false, 1000);
 };
 
 
-// /** @listens connectivityService#on */
-// connectivityService.on('online', () => {
-//     logger.debug('webview', 'connectivityService:online');
-//
-//     dismissSpinner();
-// });
-//
-// /** @listens connectivityService#on */
-// connectivityService.on('offline', () => {
-//     logger.debug('webview', 'connectivityService:offline');
-//
-//     presentSpinner();
-// });
-
-
-/** @listens webview:dom-ready */
+/**
+ * @listens webview#dom-ready
+ */
 webview.addEventListener('dom-ready', () => {
     // Register Platform
-    dom.addPlatformClass();
+    domHelper.addPlatformClass();
 
     // Bind Controls
     for (let i in buttons) {
@@ -107,25 +95,41 @@ webview.addEventListener('dom-ready', () => {
     }
 });
 
-/** @listens webview:did-fail-load */
+/**
+ * @listens webview#did-fail-load
+ */
 webview.addEventListener('did-fail-load', () => {
-    logger.debug('webview', 'webview:did-fail-load');
+    logger.debug('webview#did-fail-load');
 
-    // if (!connectivityService.online) {
-        presentSpinner();
-    // }
+    presentSpinner();
+    // isReachable(defaultHostname).then((reachable) => {
+    //     logger.debug('webview#did-fail-load', 'reachable', reachable);
+    //
+    //     if (reachable) {
+    //         presentSpinner();
+    //     }
+    // });
 });
 
-/** @listens webview:did-finish-load */
+/**
+ * @listens webview#did-finish-load
+ */
 webview.addEventListener('did-finish-load', () => {
-    logger.debug('webview', 'webview:did-finish-load');
+    logger.debug('webview#did-finish-load');
 
-    // if (connectivityService.online) {
-        dismissSpinner();
-    // }
+    dismissSpinner();
+    // isReachable(defaultHostname).then((reachable) => {
+    //     logger.debug('webview#did-finish-load', 'reachable', reachable);
+    //
+    //     if (reachable) {
+    //         dismissSpinner();
+    //     }
+    // });
 });
 
-/** @listens webview:new-window */
+/**
+ * @listens webview#new-window
+ */
 webview.addEventListener('new-window', (ev) => {
     let protocol = url.parse(ev.url).protocol;
 
@@ -134,7 +138,9 @@ webview.addEventListener('new-window', (ev) => {
     }
 });
 
-/** @listens webview#on */
+/**
+ * @listens webview#load-commit
+ */
 webview.addEventListener('load-commit', (ev) => {
     if (!parseDomain(ev.url)) { return; }
 
@@ -146,16 +152,16 @@ webview.addEventListener('load-commit', (ev) => {
         case 'google':
         case 'youtube':
         case 'facebook':
-            dom.setVisibility(controls, true);
+            domHelper.setVisibility(controls, true);
 
             body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
         case 'pushbullet':
             // Pushbullet 'help'
             if (subdomain.includes('help')) {
-                dom.setVisibility(controls, true);
+                domHelper.setVisibility(controls, true);
             } else {
-                dom.setVisibility(controls, false);
+                domHelper.setVisibility(controls, false);
             }
 
             // Pushbullet 'signin'
@@ -166,4 +172,3 @@ webview.addEventListener('load-commit', (ev) => {
             }
     }
 });
-

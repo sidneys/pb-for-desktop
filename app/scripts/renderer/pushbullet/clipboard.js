@@ -4,7 +4,6 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const path = require('path');
@@ -12,7 +11,6 @@ const path = require('path');
 /**
  * Modules
  * Electron
- * @global
  * @constant
  */
 const { remote } = require('electron');
@@ -21,7 +19,6 @@ const { clipboard } = remote;
 /**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
@@ -29,20 +26,19 @@ const appRootPath = require('app-root-path').path;
 /**
  * Modules
  * Internal
- * @global
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: false });
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
 
 /**
- * @global
  * @constant
+ * @default
  */
-const defaultInterval = 1000;
+const defaultInterval = 2000;
 
 /**
- * @global
+ * @instance
  */
 let pb;
 
@@ -52,7 +48,7 @@ let pb;
  * @return {Boolean} True if "pro" account
  */
 let getAccountProStatus = () => {
-    logger.debug('clipboard', 'getProStatus()');
+    logger.debug('getProStatus');
 
     return Boolean(pb.account.pro);
 };
@@ -62,7 +58,7 @@ let getAccountProStatus = () => {
  * @return {Array} Devices with model = 'pb-for-desktop'
  */
 let getDevice = () => {
-    logger.debug('clipboard', 'getDevice()');
+    logger.debug('getDevice');
 
     return pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
@@ -74,7 +70,7 @@ let getDevice = () => {
  * @param {Object} clip
  */
 let receiveClip = (clip) => {
-    logger.debug('clipboard', 'receiveClip()');
+    logger.debug('receiveClip');
 
     pb.lastClip = clipboard.readText();
 
@@ -86,7 +82,7 @@ let receiveClip = (clip) => {
  * @param {Object} clip
  */
 let publishClip = function(clip) {
-    logger.debug('clipboard', 'publishClip()');
+    logger.debug('publishClip');
 
     let data = {
         'type': 'clip',
@@ -111,18 +107,18 @@ let publishClip = function(clip) {
     }, function(result) {
         // Error
         if (!result) {
-            logger.devtools('clipboard', 'error');
+            logger.debug('error');
             return;
         }
 
         // Error: Pushbullet Pro
         if (result.error) {
-            logger.devtools('clipboard', 'error', result.error.message);
+            logger.debug('error', result.error.message);
             return;
         }
 
         // OK
-        logger.devtools('clipboard', 'published');
+        logger.debug('published');
     });
 };
 
@@ -131,7 +127,7 @@ let publishClip = function(clip) {
  * @param {Object} clip
  */
 let monitorClipboard = () => {
-    logger.debug('clipboard', 'monitorClipboard()');
+    logger.debug('monitorClipboard');
 
     let lastText = clipboard.readText();
     let lastImage = clipboard.readImage();
@@ -144,7 +140,7 @@ let monitorClipboard = () => {
         return a && b !== a;
     };
 
-    setInterval(() => {
+    let interval = setInterval(() => {
         const text = clipboard.readText();
         const image = clipboard.readImage();
 
@@ -153,7 +149,7 @@ let monitorClipboard = () => {
             publishClip(text);
 
             // DEBUG
-            logger.devtools('clipboard', 'update image', image);
+            logger.debug('update image', image);
         }
 
         if (textHasDiff(text, lastText)) {
@@ -161,7 +157,7 @@ let monitorClipboard = () => {
             publishClip(text);
 
             // DEBUG
-            logger.devtools('clipboard', 'update text', text);
+            logger.debug('update text', text);
         }
     }, defaultInterval);
 };
@@ -171,10 +167,10 @@ let monitorClipboard = () => {
  * Init
  */
 let initialize = () => {
-    logger.debug('clipboard', 'initializeClipboard()');
+    logger.debug('initializeClipboard');
 
     if (!getAccountProStatus()) {
-        logger.devtools('clipboard', '"pro" account not found');
+        logger.debug('"pro" account not found');
 
         return;
     }
@@ -190,7 +186,7 @@ let initialize = () => {
         try {
             message = JSON.parse(ev.data);
         } catch (err) {
-            logger.error('clipboard', 'addWSMessageHandler()', err);
+            logger.error('addWSMessageHandler', err);
         }
 
         let messageType = message.type;
@@ -207,17 +203,19 @@ let initialize = () => {
 };
 
 
-/** @listens window:Event#load */
+/**
+ * @listens window#load
+ */
 window.addEventListener('load', () => {
-    logger.debug('clipboard', 'window:load');
+    logger.debug('window#load');
 
-    let pollingInterval = setInterval(function() {
+    let interval = setInterval(() => {
         if (!window.pb || !window.pb.account) { return; }
 
         pb = window.pb;
 
         initialize();
 
-        clearInterval(pollingInterval);
+        clearInterval(interval);
     }, defaultInterval, this);
 });

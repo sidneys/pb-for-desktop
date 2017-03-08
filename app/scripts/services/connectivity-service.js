@@ -4,56 +4,53 @@
 /**
  * Modules
  * Node
- * @global
  * @constant
  */
 const EventEmitter = require('events');
 const path = require('path');
 
- /**
+/**
  * Modules
  * External
- * @global
  * @constant
  */
 const appRootPath = require('app-root-path').path;
 
 /**
  * Modules
- * Internal
- * @global
+ * External
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ writeToFile: true });
+const isReachable = require('is-reachable');
 
 /**
  * Modules
- * External
- * @global
+ * Internal
  * @constant
  */
-const isOnline = require('is-online');
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
 
 /**
- * @global
  * @constant
+ * @default
  */
-const defaultHostnameList = ['www.google.com'];
-const defaultTimeout = 2000;
-const defaultInterval = 5000;
+const defaultHostname = 'www.google.com';
+const defaultInterval = 2000;
 
 
 /**
- * Singleton
+ * @instance
  * @global
  */
 global.connectivityService = null;
 
 /**
  * Connectivity
- * @class
  * @extends EventEmitter
+ * @class
+ *
+ * @private
  */
 class Connectivity extends EventEmitter {
     constructor() {
@@ -70,10 +67,10 @@ class Connectivity extends EventEmitter {
      * Start Polling
      */
     init() {
-        logger.debug('connectivity-service', 'init()');
+        logger.debug('init');
 
-        setInterval(() => {
-            isOnline({ timeout: defaultTimeout, hostnames: defaultHostnameList }).then(online => {
+        let interval = setInterval(() => {
+            isReachable(defaultHostname).then(online => {
                 this.setConnection(online);
             });
         }, defaultInterval, this);
@@ -108,10 +105,13 @@ class Connectivity extends EventEmitter {
 
 /**
  * Init
+ * @function
+ *
+ * @private
  */
 let init = () => {
-    logger.debug('connectivity-service', 'init()');
-    
+    logger.debug('init');
+
     if (!global.connectivityService) {
         global.connectivityService = new Connectivity();
     }
@@ -119,9 +119,12 @@ let init = () => {
 
 /**
  * Getter
+ * @function
+ *
+ * @public
  */
-let get = () => {
-    logger.debug('connectivity-service', 'get()');
+let getConnectivityService = () => {
+    logger.debug('get');
 
     if (global.connectivityService) {
         return global.connectivityService;
@@ -135,4 +138,4 @@ init();
 /**
  * @exports
  */
-module.exports = get();
+module.exports = getConnectivityService();
