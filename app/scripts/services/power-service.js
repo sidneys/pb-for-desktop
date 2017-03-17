@@ -53,7 +53,7 @@ let reloadWindows = () => {
 /**
  * @listens Electron.App#ready
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 
     /**

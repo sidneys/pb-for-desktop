@@ -322,7 +322,7 @@ snoozerService.on('snooze', (snoozing) => {
 /**
  * @listens Electron.App#ready
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 
     trayMenu = new TrayMenu(getTrayMenuTemplate());

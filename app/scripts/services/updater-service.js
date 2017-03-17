@@ -216,28 +216,6 @@ let bumpInternalVersion = () => {
 };
 
 /**
- * Init
- * @function
- *
- * @private
- */
-let init = () => {
-    logger.debug('init');
-
-    if (isDebug) { return; }
-
-    try {
-        if (!global.updaterService) {
-            global.updaterService = new Updater();
-        }
-    } catch (error) {
-        logger.error(error.message);
-    }
-
-    bumpInternalVersion();
-};
-
-/**
  * Getter
  * @function
  *
@@ -251,11 +229,37 @@ let getUpdaterService = () => {
     }
 };
 
+/**
+ * Init
+ * @function
+ *
+ * @private
+ */
+let init = () => {
+    logger.debug('init');
+
+    // Only update non-development
+    if (isDebug) { return; }
+
+    // Only update built binary
+    if (process.defaultApp) { return; }
+
+    try {
+        if (!global.updaterService) {
+            global.updaterService = new Updater();
+        }
+    } catch (error) {
+        logger.error(error.message);
+    }
+
+    bumpInternalVersion();
+};
+
 
 /**
  * @listens Electron.App#ready
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 
     init();

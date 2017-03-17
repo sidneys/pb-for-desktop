@@ -82,6 +82,8 @@ electronSettings.configure({ atomicSaving: true, prettify: true });
  * @private
  */
 let getPrimaryWindow = () => {
+    logger.debug('getPrimaryWindow');
+
     return BrowserWindow.getAllWindows()[0];
 };
 
@@ -381,7 +383,10 @@ let configurationItems = {
              * @listens Electron.App#before-quit
              */
             app.on('before-quit', () => {
-                this.set(getPrimaryWindow().getBounds());
+                const bounds = getPrimaryWindow().getBounds();
+                if (bounds) {
+                    this.set(bounds);
+                }
             });
         },
         get(){
@@ -555,7 +560,7 @@ let cleanConfigurationItems = (callback) => {
 /**
  * @listens Electron.App#will-finish-launching
  */
-app.on('will-finish-launching', () => {
+app.once('will-finish-launching', () => {
     logger.debug('app#will-finish-launching');
 
     // Set item defaults
@@ -576,7 +581,7 @@ app.on('will-finish-launching', () => {
 /**
  * @listens Electron.App#ready
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 });
 

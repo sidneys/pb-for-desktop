@@ -198,7 +198,7 @@ app.on('activate', () => {
 /**
  * @listens Electron.App#on
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 
     createMainWindow();

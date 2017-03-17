@@ -15,12 +15,21 @@ const path = require('path');
  */
 const appRootPath = require('app-root-path');
 const electronCompile = require('electron-compile');
+const EventEmitter = require('events');
 
 
 /**
  * Set Application Root
+ * @global
  */
 appRootPath.setPath(path.join(__dirname, '..'));
+
+/**
+ * Set maximum Event listeners
+ * @global
+ * @see https://github.com/feross/webtorrent/issues/889
+ */
+EventEmitter.defaultMaxListeners = Infinity;
 
 
 /**

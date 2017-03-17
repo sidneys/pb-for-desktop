@@ -76,7 +76,7 @@ let displayDialog = function(title, message, buttonList, isError, callback) {
             message: dialogTitle,
             detail: os.EOL + dialogMessage + os.EOL
         }, (response) => {
-            logger.log('displayDialog', `title: '${title}' message: '${message}' response: '${response} (${buttonList[response]})'`);
+            logger.debug('displayDialog', `title: '${title}' message: '${message}' response: '${response} (${buttonList[response]})'`);
             cb(response);
         });
 

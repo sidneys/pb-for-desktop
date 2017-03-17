@@ -203,7 +203,7 @@ let getAppMenuTemplate = () => {
 /**
  * @listens Electron.App#ready
  */
-app.on('ready', () => {
+app.once('ready', () => {
     logger.debug('app#ready');
 
     appMenu = Menu.buildFromTemplate(getAppMenuTemplate());

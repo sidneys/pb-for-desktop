@@ -67,11 +67,11 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 ## Contents
 
 1. [Installation](#installation)
-2. [Developers](#development)
-3. [Continuous Integration](#continuous-integration)
-4. [Up Next](#up-next)
-5. [Contact](#contact)
-6. [Author](#author)
+1. [Developers](#development)
+1. [Continuous Integration](#continuous-integration)
+1. [Up Next](#up-next)
+1. [Contact](#contact)
+1. [Author](#author)
 
 
 ## <a name="installation"/></a> Installation
@@ -133,9 +133,9 @@ npm run build macos windows		# build specific platforms (macos/linux/windows)
 
 ### Build Requirements
 
-* Building for Windows requires [`wine`](https://winehq.org) and [`mono`](https://nsis.sourceforge.net/Docs/Chapter3.htm) (on macOS, Linux)
-* Building for Linux requires  [`fakeroot`](https://wiki.debian.org/FakeRoot) and [`dpkg `](https://wiki.ubuntuusers.de/dpkg/) (on macOS, Windows)
-* Only macOS can build for other platforms.
+- Building for Windows requires [`wine`](https://winehq.org) and [`mono`](https://nsis.sourceforge.net/Docs/Chapter3.htm) (on macOS, Linux)
+- Building for Linux requires  [`fakeroot`](https://wiki.debian.org/FakeRoot) and [`dpkg `](https://wiki.ubuntuusers.de/dpkg/) (on macOS, Windows)
+- Only macOS can build for other platforms.
 
 #### macOS Build Setup
 
@@ -163,13 +163,13 @@ Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and A
 ### Setup
 
 1.  [Fork](https://github.com/sidneys/pb-for-desktop/fork) the repo
-2.  Generate your GitHub [Personal Access Token](https://github.com/settings/tokens) using "repo" as scope. Copy it to the clipboard.
-3.  **macOS + Linux**
+1.  Generate your GitHub [Personal Access Token](https://github.com/settings/tokens) using "repo" as scope. Copy it to the clipboard.
+1.  **macOS + Linux**
      1. Sign in to [Travis](http://travis-ci.org/) using GitHub.
      2. Open your [Travis Profile](https://travis-ci.org/profile), click "Sync Account" and wait for the process to complete.
      3. Find this repository in the list, enable it and click "⚙" to open its settings.
      4. Create a new Environment Variable named **GITHUB_TOKEN**. Paste your Token from step 2 as *value*. 
-4.  **Windows**
+1.  **Windows**
      1. Sign in to [AppVeyor](https://ci.appveyor.com/) using GitHub.
      2. Click on ["New Project"](https://ci.appveyor.com/projects/new), select "GitHub", look up this repo in the list and click "Add".
      3. After import navigate to the *Settings* > *Environment* subsection
@@ -184,26 +184,24 @@ Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and A
    git push --tags
    ```
    The builds are started in parallel and added to the "Releases" page of the GitHub repo (in draft mode).
-
-2. Use the editing feature to publish the new app version.
-
-3. There is no step 3
+1. Use the editing feature to publish the new app version.
+1. There is no step 3
 
 
-## <a name="up-next"/></a> Up Next
+## <a name="up-next"/></a> Roadmap
 
-- [ ] SMS (Android)
-- [ ] In-App Updates (Squirrel)
 - [ ] Signed binaries
-- [ ] E2E Testing ([Spectron](https://github.com/electron/spectron))
+- [ ] End-To-End Tests (see [Spectron](https://github.com/electron/spectron))
 
 
 ## <a name="contribute"/></a> Contact ![Contributions Wanted](https://img.shields.io/badge/contributions-wanted-red.svg?style=flat-square)
 
-* [Dev Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
-* [Issues](http;//github.com/sidneys/pb-for-desktop/issues) File bugs and document issues.
+Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/blob/release/CONTRIBUTING.md) first.
+
+- [Dev Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
+- [Issues](http;//github.com/sidneys/pb-for-desktop/issues) File bugs and document issues.
 
 
 ## <a name="author"/></a> Author
 
-[sidneys](http://sidneys.github.io) 2016
+[sidneys](http://sidneys.github.io) 2017
