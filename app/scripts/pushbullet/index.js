@@ -23,7 +23,6 @@ const { remote } = require('electron');
  */
 const appRootPath = require('app-root-path').path;
 const electronEditorContextMenu = remote.require('electron-editor-context-menu');
-const isReachable = require('is-reachable');
 
 /**
  * Modules
@@ -33,9 +32,9 @@ const isReachable = require('is-reachable');
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'managers', 'configuration-manager'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-debug'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard')); // jshint ignore:line
-const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'device')); // jshint ignore:line
-const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'push')); // jshint ignore:line
+const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'pushbullet', 'clipboard')); // jshint ignore:line
+const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'pushbullet', 'device')); // jshint ignore:line
+const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'pushbullet', 'push')); // jshint ignore:line
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 /**
@@ -55,19 +54,24 @@ const defaultTimeout = 500;
 
 
 /**
- * @instance
- */
-let pb;
-let onecup;
-
-
-/**
  * User Interface tweaks
  */
-let applyInterfaceOptimizations = () => {
-    logger.debug('applyInterfaceOptimizations');
+let addUiTweaks = () => {
+    logger.debug('addUiTweaks');
 
-    let timeout = setTimeout(() => {
+    const pb = window.pb;
+    const onecup = window.onecup;
+
+    let interval = setInterval(() => {
+        if (!pb || !onecup) { return; }
+
+        // Hide wizard
+        pb.api.account['preferences']['setup_done'] = true;
+        pb.sidebar.update();
+
+        // Initial view
+        onecup['goto']('/#settings');
+
         // Header: remove shadow
         let header = document.getElementById('mobile-header') || document.getElementById('header');
         header.style.boxShadow = 'none';
@@ -83,38 +87,21 @@ let applyInterfaceOptimizations = () => {
             }
         });
 
-        clearTimeout(timeout);
-    }, defaultInterval, this);
-};
-
-/**
- * Navigation tweaks
- */
-let applyNavigationOptimizations = () => {
-    logger.debug('applyNavigationOptimizations');
-
-    let interval = setInterval(() => {
-        if (!pb) { return; }
-
-        // Hide wizard
-        pb.api.account['preferences']['setup_done'] = true;
-        pb.sidebar.update();
-
-        // Initial view
-        onecup['goto']('/#settings');
-
         clearInterval(interval);
-    }, defaultInterval, this);
+    }, defaultInterval);
 };
 
 /**
  * Proxy pb.ws
  */
-let registerErrorProxyobject = () => {
-    logger.debug('registerErrorProxyobject');
+let registerErrorProxy = () => {
+    logger.debug('registerErrorProxy');
+
+    const pb = window.pb;
 
     let interval = setInterval(() => {
         if (!pb) { return; }
+
         pb.error = new Proxy(pb.error, {
             set: function(target, name, value) {
                 target[name] = value;
@@ -122,14 +109,16 @@ let registerErrorProxyobject = () => {
         });
 
         clearInterval(interval);
-    }, defaultInterval, this);
+    }, defaultInterval);
 };
 
 /**
  * Proxy pb.api.pushes.objs
  */
-let registerPushProxyobject = () => {
-    logger.debug('registerPushProxyobject');
+let registerPushProxy = () => {
+    logger.debug('registerPushProxy');
+
+    const pb = window.pb;
 
     let interval = setInterval(() => {
         if (!pb) { return; }
@@ -168,14 +157,16 @@ let registerPushProxyobject = () => {
         });
 
         clearInterval(interval);
-    }, defaultInterval, this);
+    }, defaultInterval);
 };
 
 /**
  * Listen for Pushbullet Stream
  */
-let registerWebsocketListeners = () => {
-    logger.debug('registerWebsocketListeners');
+let addWebsocketEventHandlers = () => {
+    logger.debug('addWebsocketEventHandlers');
+
+    const pb = window.pb;
 
     let interval = setInterval(() => {
         if (!pb) { return; }
@@ -229,7 +220,7 @@ let registerWebsocketListeners = () => {
         });
 
         clearInterval(interval);
-    }, defaultInterval, this);
+    }, defaultInterval);
 };
 
 // /**
@@ -251,29 +242,22 @@ let registerWebsocketListeners = () => {
 //     };
 // };
 
-
 /**
  * Init
  */
 let init = () => {
     logger.debug('init');
 
-    pb = window.pb;
-    onecup = window.onecup;
+    registerErrorProxy();
+    registerPushProxy();
+    addWebsocketEventHandlers();
+    addUiTweaks();
 
-    isReachable(defaultHostname).then(() => {
-        applyNavigationOptimizations();
-        registerErrorProxyobject();
-        registerPushProxyobject();
-        registerWebsocketListeners();
-        //registerEventHook();
+    if (isDebug) { window.pb.DEBUG = true; }
 
-        applyInterfaceOptimizations();
-
-        if (isDebug) { pb.DEBUG = true; }
-        if (pb.error && pb.error.type) { pb.error.clear(); }
-        if (configurationManager.getConfigurationItem('replayOnLaunch').get()) { pbPush.enqueueRecentPushes(); }
-    });
+    if (configurationManager.getItem('replayOnLaunch').get()) {
+        pbPush.enqueueRecentPushes();
+    }
 };
 
 
@@ -283,7 +267,7 @@ let init = () => {
 window.addEventListener('resize', () => {
     logger.debug('window#resize');
 
-    applyInterfaceOptimizations();
+    addUiTweaks();
 });
 
 /**
@@ -316,13 +300,13 @@ window.addEventListener('contextmenu', (ev) => {
 window.addEventListener('load', () => {
     logger.debug('device', 'window#load');
 
-    let interval = setInterval(() => {
-        if (!window.pb || !window.pb.account) { return; }
-
-        init();
-
-        clearInterval(interval);
-    }, defaultInterval, this);
+    init();
 });
 
-
+/**
+ * @listens process#loaded
+ */
+const _setImmediate = setImmediate;
+process.once('loaded', function() {
+  global.setImmediate = _setImmediate;
+});

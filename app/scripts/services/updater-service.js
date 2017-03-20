@@ -184,7 +184,7 @@ class Updater {
 let bumpInternalVersion = () => {
     logger.debug('bumpInternalVersion');
 
-    let internalVersion = configurationManager.getConfigurationItem('internalVersion').get();
+    let internalVersion = configurationManager.getItem('internalVersion').get();
 
     // DEBUG
     logger.debug('bumpInternalVersion', 'packageJson.version', packageJson.version);
@@ -193,7 +193,7 @@ let bumpInternalVersion = () => {
 
     // Initialize version
     if (!internalVersion) {
-        configurationManager.getConfigurationItem('internalVersion').set(packageJson.version);
+        configurationManager.getItem('internalVersion').set(packageJson.version);
 
         return;
     }
@@ -206,7 +206,7 @@ let bumpInternalVersion = () => {
 
     // Update internal version
     if (wasUpdated) {
-        configurationManager.getConfigurationItem('internalVersion').set(packageJson.version);
+        configurationManager.getItem('internalVersion').set(packageJson.version);
 
         app.focus();
         messengerService.showInfo(`Update complete`, `${appProductName} has been updated to ${appVersion}.`);

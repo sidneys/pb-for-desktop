@@ -592,7 +592,7 @@ app.on('quit', () => {
     logger.debug('app#quit');
 
     logger.debug('getSettingsFilePath', electronSettings.getSettingsFilePath());
-    logger.debug('getSync', util.inspect(electronSettings.getSync(), { colors: true }));
+    logger.debug('getSync', util.inspect(electronSettings.getSync()));
 });
 
 
@@ -600,6 +600,7 @@ app.on('quit', () => {
  * @exports
  */
 module.exports = {
-    settings: electronSettings,
-    getConfigurationItem: getConfigurationItem
+    getConfigurationItem: getConfigurationItem,
+    getItem: getConfigurationItem,
+    settings: electronSettings
 };

@@ -73,7 +73,7 @@ class Connectivity extends EventEmitter {
             isReachable(defaultHostname).then(online => {
                 this.setConnection(online);
             });
-        }, defaultInterval, this);
+        }, defaultInterval);
     }
 
     /**

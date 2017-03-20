@@ -31,12 +31,6 @@ const defaultInterval = 2000;
 
 
 /**
- * @instance
- */
-let pb;
-
-
-/**
  * Create 'pb-for-desktop' device values
  * @return {{has_sms: boolean, icon: string, manufacturer: string, model: string, nickname: string}}
  */
@@ -58,6 +52,8 @@ let createDeviceValues = () => {
  */
 let getDevices = () => {
     logger.debug('getDevices');
+
+    const pb = window.pb;
 
     return pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
@@ -98,6 +94,8 @@ let deleteInactiveDevices = function(callback) {
     let cb = callback || function() {};
     let inactiveDevicesList = getInactiveDevices() || [];
 
+    const pb = window.pb;
+
     let devicesProcessed = 0;
     inactiveDevicesList.forEach((device) => {
         pb.api.devices.delete(device);
@@ -116,6 +114,8 @@ let deleteInactiveDevices = function(callback) {
  */
 let deleteAdditionalDevices = function(callback) {
     logger.debug('deleteAdditionalDevices');
+
+    const pb = window.pb;
 
     let cb = callback || function() {};
     let superflousDevicesList = getActiveDevices().splice(1, getActiveDevices().length) || [];
@@ -138,6 +138,8 @@ let deleteAdditionalDevices = function(callback) {
 let createDevice = () => {
     logger.debug('createDevice');
 
+    const pb = window.pb;
+
     pb.api.devices.create(createDeviceValues());
 };
 
@@ -145,22 +147,31 @@ let createDevice = () => {
 /**
  * Init
  */
-let initialize = () => {
-    logger.debug('initializeDevice');
+let init = () => {
+    logger.debug('init');
 
-    // Delete inactive devices
-    deleteInactiveDevices(() => {
-        // Delete superflous devices
-        deleteAdditionalDevices(() => {
-            let allDevicesList = getDevices();
+    const pb = window.pb;
+    const account = window.pb.account;
 
-            // Create device
-            if (allDevicesList.length === 0) {
-                createDevice();
-                window.dispatchEvent(new CustomEvent('devices_ready'));
-            }
+    let interval = setInterval(() => {
+        if (!pb || account) { return; }
+
+        // Delete inactive devices
+        deleteInactiveDevices(() => {
+            // Delete superflous devices
+            deleteAdditionalDevices(() => {
+                let allDevicesList = getDevices();
+
+                // Create device
+                if (allDevicesList.length === 0) {
+                    createDevice();
+                    window.dispatchEvent(new CustomEvent('devices_ready'));
+                }
+            });
         });
-    });
+
+        clearInterval(interval);
+    }, defaultInterval);
 };
 
 
@@ -170,13 +181,5 @@ let initialize = () => {
 window.addEventListener('load', () => {
     logger.debug('window#load');
 
-    let interval = setInterval(() => {
-        if (!window.pb || !window.pb.account) { return; }
-
-        pb = window.pb;
-
-        initialize();
-
-        clearInterval(interval);
-    }, defaultInterval, this);
+    init();
 });

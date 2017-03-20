@@ -23,7 +23,6 @@ const { remote } = require('electron');
  */
 const appRootPath = require('app-root-path').path;
 const electronConnect = require('electron-connect');
-const isReachable = require('is-reachable');
 const parseDomain = require('parse-domain');
 
 /**
@@ -102,13 +101,6 @@ webview.addEventListener('did-fail-load', () => {
     logger.debug('webview#did-fail-load');
 
     presentSpinner();
-    // isReachable(defaultHostname).then((reachable) => {
-    //     logger.debug('webview#did-fail-load', 'reachable', reachable);
-    //
-    //     if (reachable) {
-    //         presentSpinner();
-    //     }
-    // });
 });
 
 /**
@@ -118,13 +110,6 @@ webview.addEventListener('did-finish-load', () => {
     logger.debug('webview#did-finish-load');
 
     dismissSpinner();
-    // isReachable(defaultHostname).then((reachable) => {
-    //     logger.debug('webview#did-finish-load', 'reachable', reachable);
-    //
-    //     if (reachable) {
-    //         dismissSpinner();
-    //     }
-    // });
 });
 
 /**
@@ -172,3 +157,4 @@ webview.addEventListener('load-commit', (ev) => {
             }
     }
 });
+

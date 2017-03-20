@@ -334,7 +334,6 @@ let enqueuePushList = (pushesList, filterPushes, callback) => {
     logger.debug('enqueuePushList');
 
     let cb = callback || function() {};
-    let self = this;
 
     if (pushesList.length === 0) {
         return cb(pushesList.length);
@@ -359,7 +358,7 @@ let enqueuePushList = (pushesList, filterPushes, callback) => {
             // Update saved lastNotification
             if (push.created > notifyAfter) {
                 lastNotification = push.modified;
-                configurationManager.getConfigurationItem('lastNotification').set(push.modified);
+                configurationManager.getItem('lastNotification').set(push.modified);
             }
 
             // Last push triggered
@@ -368,8 +367,8 @@ let enqueuePushList = (pushesList, filterPushes, callback) => {
 
                 clearTimeout(timeout);
             }
-        }, (parseInt(notificationInterval) * (pushIndex + 1)), self);
-    }, self);
+        }, (parseInt(notificationInterval) * (pushIndex + 1)));
+    });
 };
 
 /**
@@ -411,8 +410,8 @@ let enqueueRecentPushes = (callback) => {
 let init = () => {
     logger.debug('init');
 
-    lastNotification = configurationManager.getConfigurationItem('lastNotification').get();
-    soundVolume = parseFloat(configurationManager.getConfigurationItem('soundVolume').get());
+    lastNotification = configurationManager.getItem('lastNotification').get();
+    soundVolume = parseFloat(configurationManager.getItem('soundVolume').get());
 };
 
 /**

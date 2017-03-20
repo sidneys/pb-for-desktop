@@ -32,22 +32,10 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true })
 
 
 /**
- * Reload all windows
- * @function
- *
- * @private
+ * @constant
+ * @default
  */
-let reloadWindows = () => {
-    logger.debug('reloadWindows');
-
-    const winList = BrowserWindow.getAllWindows();
-
-    winList.forEach((win) => {
-        logger.debug('reloadWindows', 'reloaded', win.getTitle());
-
-        win.reload();
-    })
-};
+const defaultTimeout = 5000;
 
 
 /**
@@ -69,6 +57,13 @@ app.once('ready', () => {
     electron.powerMonitor.on('resume', () => {
         logger.log('webview#resume');
 
-        reloadWindows();
+        let timeout = setTimeout(() => {
+            logger.log('webview#resume', 'relaunching app');
+
+            app.relaunch();
+            app.exit();
+
+            clearTimeout(timeout);
+        }, defaultTimeout);
     });
 });

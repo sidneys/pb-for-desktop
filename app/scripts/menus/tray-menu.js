@@ -53,12 +53,6 @@ const appTrayIconDefault = path.join(appRootPath, 'icons', platformHelper.type, 
 const appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
 const appTrayIconPaused = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-paused${platformHelper.templateImageExtension(platformHelper.type)}`);
 
-/**
- * @constant
- * @default
- */
-const defaultTimeout = 2000;
-
 
 /**
  * @instance
@@ -94,9 +88,9 @@ let getTrayMenuTemplate = () => {
             label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
             icon: path.join(appRootPath, 'app', 'images', `icon-show-in-tray-only${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager.getConfigurationItem('showInTrayOnly').get(),
+            checked: configurationManager.getItem('showInTrayOnly').get(),
             click(menuItem) {
-                configurationManager.getConfigurationItem('showInTrayOnly').set(menuItem.checked);
+                configurationManager.getItem('showInTrayOnly').set(menuItem.checked);
             }
         },
         {
@@ -107,9 +101,9 @@ let getTrayMenuTemplate = () => {
             label: 'Launch on Startup',
             icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager.getConfigurationItem('launchOnStartup').get(),
+            checked: configurationManager.getItem('launchOnStartup').get(),
             click(menuItem) {
-                configurationManager.getConfigurationItem('launchOnStartup').set(menuItem.checked);
+                configurationManager.getItem('launchOnStartup').set(menuItem.checked);
             }
         },
         {
@@ -117,9 +111,9 @@ let getTrayMenuTemplate = () => {
             label: 'Replay Pushes on Launch',
             icon: path.join(appRootPath, 'app', 'images', `icon-replay-on-launch${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager.getConfigurationItem('replayOnLaunch').get(),
+            checked: configurationManager.getItem('replayOnLaunch').get(),
             click(menuItem) {
-                configurationManager.getConfigurationItem('replayOnLaunch').set(menuItem.checked);
+                configurationManager.getItem('replayOnLaunch').set(menuItem.checked);
             }
         },
         {
@@ -164,9 +158,9 @@ let getTrayMenuTemplate = () => {
             label: 'Play Sound Effects',
             icon: path.join(appRootPath, 'app', 'images', `icon-sound-enabled${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager.getConfigurationItem('soundEnabled').get(),
+            checked: configurationManager.getItem('soundEnabled').get(),
             click(menuItem) {
-                configurationManager.getConfigurationItem('soundEnabled').set(menuItem.checked);
+                configurationManager.getItem('soundEnabled').set(menuItem.checked);
             }
         },
         {
@@ -175,7 +169,7 @@ let getTrayMenuTemplate = () => {
             icon: path.join(appRootPath, 'app', 'images', `icon-sound-file${platformHelper.menuItemImageExtension}`),
             type: 'normal',
             click() {
-                configurationManager.getConfigurationItem('soundFile').implement();
+                configurationManager.getItem('soundFile').implement();
             }
         },
         {
@@ -192,14 +186,10 @@ let getTrayMenuTemplate = () => {
                     `All unsaved changes will be lost.`,
                     (result) => {
                         if (result === 0) {
-                            let timeout = setTimeout(() => {
-                                logger.log('reconnect', 'relaunching');
+                            logger.log('reconnect', 'relaunching');
 
-                                app.relaunch();
-                                app.exit();
-
-                                clearTimeout(timeout);
-                            }, defaultTimeout);
+                            app.relaunch();
+                            app.exit();
                         }
                     });
             }
@@ -228,15 +218,10 @@ let getTrayMenuTemplate = () => {
                                     quotas: ['temporary', 'persistent', 'syncable']
                                 }, () => {
                                     logger.debug('logout', 'storage cleared');
+                                    logger.log('logout', 'relaunching');
 
-                                    let timeout = setTimeout(() => {
-                                        logger.log('logout', 'relaunching');
-
-                                        app.relaunch();
-                                        app.exit();
-
-                                        clearTimeout(timeout);
-                                    }, defaultTimeout);
+                                    app.relaunch();
+                                    app.exit();
                                 });
                             });
                         }

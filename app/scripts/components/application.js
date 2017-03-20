@@ -22,7 +22,6 @@ const { app } = electron;
  * @constant
  */
 const appRootPath = require('app-root-path').path;
-const electronSquirrelStartup = require('electron-squirrel-startup');
 
 /**
  * Modules
@@ -37,13 +36,6 @@ const trayMenu = require(path.join(appRootPath, 'app', 'scripts', 'menus', 'tray
 const updaterService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'updater-service')); // jshint ignore:line
 const powerService = require(path.join(appRootPath, 'app', 'scripts', 'services', 'power-service')); // jshint ignore:line
 
-
-/**
- * Auto-Update Handler
- */
-if (electronSquirrelStartup) {
-    app.quit();
-}
 
 /**
  * Disable GPU

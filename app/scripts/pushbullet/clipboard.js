@@ -37,11 +37,6 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true })
  */
 const defaultInterval = 2000;
 
-/**
- * @instance
- */
-let pb;
-
 
 /**
  * Get "pro" account status
@@ -49,6 +44,8 @@ let pb;
  */
 let getAccountProStatus = () => {
     logger.debug('getProStatus');
+
+    const pb = window.pb;
 
     return Boolean(pb.account.pro);
 };
@@ -59,6 +56,8 @@ let getAccountProStatus = () => {
  */
 let getDevice = () => {
     logger.debug('getDevice');
+
+    const pb = window.pb;
 
     return pb.api.devices.all.filter((device) => {
         return (device.model === 'pb-for-desktop');
@@ -72,6 +71,8 @@ let getDevice = () => {
 let receiveClip = (clip) => {
     logger.debug('receiveClip');
 
+    const pb = window.pb;
+
     pb.lastClip = clipboard.readText();
 
     clipboard.writeText(clip.body);
@@ -83,6 +84,8 @@ let receiveClip = (clip) => {
  */
 let publishClip = function(clip) {
     logger.debug('publishClip');
+
+    const pb = window.pb;
 
     let data = {
         'type': 'clip',
@@ -126,8 +129,8 @@ let publishClip = function(clip) {
  * Monitor clipboard content
  * @param {Object} clip
  */
-let monitorClipboard = () => {
-    logger.debug('monitorClipboard');
+let startMonitoring = () => {
+    logger.debug('startMonitoring');
 
     let lastText = clipboard.readText();
     let lastImage = clipboard.readImage();
@@ -166,40 +169,50 @@ let monitorClipboard = () => {
 /**
  * Init
  */
-let initialize = () => {
-    logger.debug('initializeClipboard');
+let init = () => {
+    logger.debug('initClipboard');
 
-    if (!getAccountProStatus()) {
-        logger.debug('"pro" account not found');
+    const pb = window.pb;
+    const account = window.pb.account;
 
-        return;
-    }
+    let interval = setInterval(() => {
+        if (!pb || account) { return; }
 
-    /**
-     * Receiver
-     * @listens window:Event#message
-     */
-    pb.ws.socket.addEventListener('message', (ev) => {
 
-        let message;
+        if (!getAccountProStatus()) {
+            logger.debug('"pro" account not found');
 
-        try {
-            message = JSON.parse(ev.data);
-        } catch (err) {
-            logger.error('addWSMessageHandler', err);
+            return;
         }
 
-        let messageType = message.type;
-        let pushObject = message.push;
+        /**
+         * Receiver
+         * @listens window:Event#message
+         */
+        pb.ws.socket.addEventListener('message', (ev) => {
 
-        if (pushObject && messageType === 'push') {
-            if (pushObject.type && pushObject.type === 'clip') {
-                receiveClip(pushObject);
+            let message;
+
+            try {
+                message = JSON.parse(ev.data);
+            } catch (err) {
+                logger.error('addWSMessageHandler', err);
             }
-        }
-    });
 
-    monitorClipboard();
+            let messageType = message.type;
+            let pushObject = message.push;
+
+            if (pushObject && messageType === 'push') {
+                if (pushObject.type && pushObject.type === 'clip') {
+                    receiveClip(pushObject);
+                }
+            }
+        });
+
+        startMonitoring();
+
+        clearInterval(interval);
+    }, defaultInterval);
 };
 
 
@@ -209,13 +222,5 @@ let initialize = () => {
 window.addEventListener('load', () => {
     logger.debug('window#load');
 
-    let interval = setInterval(() => {
-        if (!window.pb || !window.pb.account) { return; }
-
-        pb = window.pb;
-
-        initialize();
-
-        clearInterval(interval);
-    }, defaultInterval, this);
+    init();
 });
