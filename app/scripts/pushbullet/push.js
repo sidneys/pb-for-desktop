@@ -40,6 +40,7 @@ const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'm
  */
 const notificationInterval = 2000;
 const maxRecentNotifications = 5;
+const mirroredNotifications = new Map();
 
 /**
  * Notification Defaults
@@ -176,7 +177,7 @@ class PushbulletNotification {
         let body = push['body'] || push['title'] || pushDefaults.body;
         let url = pushDefaults.url;
         let icon = getIconForPushbulletPush(push) || pushDefaults.ICON;
-
+        let notificationId = push['notification_id'];
 
         switch (type) {
             // Link
@@ -233,7 +234,12 @@ class PushbulletNotification {
         };
 
         // Trigger Notification
-        let notification = new Notification(options.title, options);
+        this.nativeNotification = new Notification(options.title, options);
+
+        // If it's a mirror push, we store it to be able to dismiss the notification later
+        if (type === 'mirror') {
+            mirroredNotifications.set(notificationId, this);
+        }
 
         // Get soundEnabled lazy
         configurationManager.settings.get('soundEnabled').then(soundEnabled => {
@@ -251,12 +257,16 @@ class PushbulletNotification {
         });
 
         /**
-         * @listens notification:PointerEvent#click´
+         * @listens nativeNotification:PointerEvent#click´
          */
-        notification.addEventListener('click', () => {
+        this.nativeNotification.addEventListener('click', () => {
             if (!url) { return; }
             remote.shell.openExternal(url);
         });
+    }
+
+    cancel() {
+        this.nativeNotification.close();
     }
 }
 
@@ -414,6 +424,14 @@ let init = () => {
     soundVolume = parseFloat(configurationManager.getItem('soundVolume').get());
 };
 
+let dismiss = (notificationId) => {
+    logger.debug(`Dismissing notification ${notificationId}`);
+
+    let dismissedNotification = mirroredNotifications.get(notificationId);
+    dismissedNotification.cancel();
+    mirroredNotifications.delete(notificationId);
+};
+
 /**
  * @listens window#load
  */
@@ -431,5 +449,6 @@ module.exports = {
     create: createPushbulletNotification,
     enqueuePush: enqueuePush,
     enqueueRecentPushes: enqueueRecentPushes,
-    enqueuePushList: enqueuePush
+    enqueuePushList: enqueuePush,
+    dismiss: dismiss
 };

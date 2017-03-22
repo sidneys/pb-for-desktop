@@ -214,6 +214,9 @@ let addWebsocketEventHandlers = () => {
                 case 'clip':
                     // Handled in pbClipboard
                     break;
+                /** Dismissing */
+                case 'dismissal':
+                    pbPush.dismiss(message.push.notification_id);
             }
 
             logger.debug('pb.ws.socket:message', 'message.push.type', message.push.type);
