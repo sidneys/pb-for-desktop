@@ -1,6 +1,6 @@
 chrome.commands.onCommand.addListener(function(command) {
     utils.wrap(function() {
-        pb.devtools('Receieved command ' + command)
+        pb.log('Receieved command ' + command)
 
         if (command == 'dismiss-most-recent-notification') {
             if (Object.keys(pb.notifier.active).length > 0) {
@@ -16,19 +16,19 @@ chrome.commands.onCommand.addListener(function(command) {
                 key = sortedKeys[0]
                 var notification = pb.notifier.active[key]
 
-                pb.devtools('Dismissing ' + key + ' by keyboard shortcut')
+                pb.log('Dismissing ' + key + ' by keyboard shortcut')
 
                 pb.notifier.dismiss(key)
             }
         } else if (command == 'instant-push-current-tab') {
             if (!pb.local.user) {
-                pb.devtools('Can\'t instant push, not signed in')
+                pb.log('Can\'t instant push, not signed in')
                 return
             } else if (!pb.settings.allowInstantPush) {
-                pb.devtools('Can\'t instant push, not enabled in options')
+                pb.log('Can\'t instant push, not enabled in options')
                 return
             } else if (!pb.settings.instantPushIden) {
-                pb.devtools('Can\'t instant push, no device set in options')
+                pb.log('Can\'t instant push, no device set in options')
                 return
             }
 

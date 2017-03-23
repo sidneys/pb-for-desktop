@@ -108,9 +108,9 @@ var publishClip = function(clip) {
         'push': push
     }, function(response) {
         if (response) {
-            pb.devtools('Published clip')
+            pb.log('Published clip')
         } else {
-            pb.devtools('Failed to publish clip')
+            pb.log('Failed to publish clip')
         }
     })
 }

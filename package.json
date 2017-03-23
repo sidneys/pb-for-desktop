@@ -1,8 +1,8 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "4.3.0",
-  "description": "PushBullet desktop application for macOS, Windows and Linux",
+  "version": "5.3.1",
+  "description": "Pushbullet Desktop app for macOS, Windows and Linux.",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
   "author": {
@@ -47,53 +47,58 @@
     "app-root-path": "^2.0.1",
     "appdirectory": "^0.1.0",
     "auto-launch": "git://github.com/sidneys/node-auto-launch.git#master",
-    "babel-cli": "^6.24.0",
+    "babel-cli": "^6.24.1",
     "babel-preset-electron": "^1.4.15",
     "chalk": "^1.1.3",
-    "electron-compile": "^6.1.3",
-    "electron-compilers": "^5.6.0",
-    "electron-connect": "^0.6.1",
+    "chalkline": "0.0.5",
     "electron-editor-context-menu": "^1.1.1",
-    "electron-settings": "^2.2.4",
-    "electron-updater": "^1.11.0",
+    "electron-settings": "^3.0.14",
+    "electron-updater": "^1.11.2",
     "file-type": "^4.1.0",
     "file-url": "^2.0.2",
     "fs-extra": "^2.1.2",
-    "git-branch": "^0.3.0",
-    "hash-files": "^1.1.1",
-    "is-ci": "^1.0.10",
+    "get-youtube-id": "^1.0.0",
     "is-reachable": "^2.3.2",
     "keypath": "^0.0.1",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
+    "moment": "^2.18.1",
     "parse-domain": "^1.1.0",
+    "parse-semver": "^1.1.1",
+    "present": "^1.0.0",
     "read-chunk": "^2.0.0",
-    "semver-compare": "^1.0.0"
+    "semver-compare": "^1.0.0",
+    "simple-reload": "0.0.4",
+    "try-require": "latest"
   },
   "devDependencies": {
-    "electron": "^1.6.2",
-    "electron-builder": "^16.2.0",
+    "electron": "^1.6.6",
+    "electron-builder": "^16.8.0",
+    "electron-connect": "^0.6.1",
+    "electron-prebuilt-compile": "git://github.com/sidneys/electron-prebuilt-compile.git#deploy",
     "fkill": "^4.1.0",
+    "git-branch": "^0.3.0",
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.5.0",
-    "progress": "^1.1.8",
-    "publish-release": "^1.3.3"
+    "hash-files": "^1.1.1",
+    "is-ci": "^1.0.10",
+    "json2md": "^1.5.8",
+    "progress": "^2.0.0",
+    "publish-release": "^1.3.3",
+    "yamljs": "^0.2.9"
   },
-  "main": "./app/es6-init.js",
+  "main": "./app/scripts/main/components/application.js",
   "bin": {
     "pb-for-desktop": "./bin/cli.js"
   },
   "scripts": {
-    "deploy:github": "node ./lib/deploy-github.js -- ",
-    "start": "./node_modules/.bin/electron ./app/es6-init.js",
-    "start:dev": "./node_modules/.bin/electron ./app/es6-init.js",
-    "start:livereload": "./node_modules/.bin/gulp livereload",
-    "build": "node ./lib/build.js --",
-    "localsetup": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
-    "localsetup:dev": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
-    "localsetup:build": "./node_modules/.bin/babel-node ./lib/localsetup.js -- ",
-    "localsetup:build:dev": "./node_modules/.bin/babel-node ./lib/localsetup.js -- "
+    "build": "node ./lib/build.js",
+    "deploy": "node ./lib/deploy.js",
+    "livereload": "./node_modules/.bin/gulp livereload",
+    "localsetup": "./node_modules/.bin/babel-node ./lib/localsetup.js",
+    "releasenotes": "node ./lib/releasenotes.js",
+    "start": "./node_modules/.bin/electron ./app/scripts/main/components/application.js"
   },
   "build": {
     "appId": "de.sidneys.pb-for-desktop",
@@ -111,12 +116,12 @@
       "!website"
     ],
     "mac": {
+      "category": "public.app-category.utilities",
       "icon": "./icons/darwin/icon.icns",
       "target": [
         "dmg",
         "zip"
-      ],
-      "category": "public.app-category.utilities"
+      ]
     },
     "win": {
       "icon": "./icons/win32/icon.ico",
@@ -127,7 +132,6 @@
     "linux": {
       "category": "Utility",
       "icon": "./icons/linux",
-      "publish": null,
       "target": [
         "AppImage",
         "deb",

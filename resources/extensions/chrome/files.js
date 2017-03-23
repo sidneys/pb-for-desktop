@@ -151,7 +151,7 @@ var uploadFile = function(data, onsuccess, onfail) {
             }
 
             var runTask = function(task) {
-                pb.devtools('Uploading chunk to ' + task.url)
+                pb.log('Uploading chunk to ' + task.url)
 
                 var xhr = new XMLHttpRequest()
                 xhr.open("POST", task.url, true)

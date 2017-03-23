@@ -18,8 +18,8 @@ pb.addEventListener('signed_in', function(e) {
     pb.addEventListener('stream_message', function(e) {
         var message = e.detail
 
-        pb.devtools('Received message:')
-        pb.devtools(message)
+        pb.log('Received message:')
+        pb.log(message)
 
         if (message.type == 'nop') {
             lastNop = Date.now()
@@ -50,10 +50,10 @@ var connect = function() {
     }
 
     if (fallBackToStreaming) {
-        pb.devtools('Connecting to server via streaming')
+        pb.log('Connecting to server via streaming')
         useStreaming()
     } else {
-        pb.devtools('Connecting to server via WebSocket')
+        pb.log('Connecting to server via WebSocket')
         useWebSocket()
     }
 
@@ -63,7 +63,7 @@ var connect = function() {
 var useWebSocket = function() {
     websocket = new WebSocket(pb.websocket + '/' + pb.local.apiKey)
     websocket.onopen = function(e) {
-        pb.devtools('WebSocket onopen')
+        pb.log('WebSocket onopen')
         pb.dispatchEvent('connected')
     }
     websocket.onmessage = function(e) {
@@ -71,7 +71,7 @@ var useWebSocket = function() {
             nopWait = DEFAULT_NOP_WAIT
             onMessage(e.data)
         } catch (ex) {
-            pb.devtools('Couldn\'t parse message')
+            pb.log('Couldn\'t parse message')
         }
     }
 }
@@ -83,7 +83,7 @@ var useStreaming = function() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 3 && xhr.status == 200 && xhr.responseText.length > 0) {
             if (!connected) {
-                pb.devtools('Streaming connected')
+                pb.log('Streaming connected')
 
                 connected = true
                 nopWait = DEFAULT_NOP_WAIT
@@ -103,7 +103,7 @@ var useStreaming = function() {
             }
 
             if (messages.length > 250) {
-                pb.devtools('Too many messages in buffer, refreshing')
+                pb.log('Too many messages in buffer, refreshing')
                 connect()
             }
         } else if (xhr.readyState == 4 && xhr.status == 0) {
@@ -122,7 +122,7 @@ var onMessage = function(data) {
 
         pb.dispatchEvent('stream_message', message)
     } catch (e) {
-        pb.devtools('Couldn\'t parse message')
+        pb.log('Couldn\'t parse message')
     }
 }
 
@@ -133,7 +133,7 @@ var watchNops = function() {
 
     nopInterval = setInterval(function() {
         if (Date.now() - lastNop > nopWait && pb.browserState != 'locked') {
-            pb.devtools('Haven\'t seen a nop lately, reconnecting')
+            pb.log('Haven\'t seen a nop lately, reconnecting')
             fallBackToStreaming = !fallBackToStreaming
             nopWait = Math.min(10 * 60 * 1000, nopWait * 2)
             connect()

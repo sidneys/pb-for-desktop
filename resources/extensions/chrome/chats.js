@@ -7,7 +7,7 @@ pb.addEventListener('signed_in', function() {
 })
 
 pb.setActiveChat = function(tabId, info) {
-    pb.devtools('Opened/updated chat ' + tabId + ', other=' + info.other + ', focused=' + info.focused)
+    pb.log('Opened/updated chat ' + tabId + ', other=' + info.other + ', focused=' + info.focused)
 
     activeChats[tabId] = info
 
@@ -22,7 +22,7 @@ pb.setActiveChat = function(tabId, info) {
 
 pb.clearActiveChat = function(tabId) {
     if (activeChats[tabId]) {
-        pb.devtools('Closed chat ' + tabId)
+        pb.log('Closed chat ' + tabId)
     }
     delete activeChats[tabId]
 }

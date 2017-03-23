@@ -15,26 +15,30 @@ cache:
   - '%USERPROFILE%\.electron'
 
 init:
+  - cmd: echo 🚦 Authorizing Build
+  - ps: if ($env:OS -eq "Windows_NT" -And $env:DEPLOY_WINDOWS -eq "0") { $host.SetShouldExit(0) }
   - cmd: git config --global core.autocrlf input
 
 install:
-  - cmd: echo 🔧 Installing tools
-  - ps: Install-Product node 7.7.2
+  - cmd: echo 🔧 Setting up Environment
+  - ps: Install-Product node 7.8.0
+  - cmd: npm --global update npm
 
 before_build:
-  - cmd: echo 📥 Installing dependencies
+  - cmd: echo 📥 Installing Dependencies
   - cmd: npm install
 
 build_script:
-  - cmd: echo 📦 Building artifacts
-  - cmd: npm run-script build
+  - cmd: echo 📦 Building
+  - cmd: npm run build --metadata
 
 deploy_script:
-  - cmd: echo 📮 Deploying artifacts
-  - cmd: npm run-script deploy:github
+  - cmd: echo 📮 Deploying
+  - cmd: npm run deploy
 
 artifacts:
-  - path: build\output\win\*.exe
+  - path: build\output\*.exe
+  - path: build\output\*.yml
 
 notifications:
   - provider: Webhook

@@ -26,7 +26,7 @@ pb.addEventListener('signed_in', function(e) {
 
 var mirrorReceived = function(mirror) {
     if (pb.browserState == 'locked') {
-        pb.devtools('Computer locked, not showing mirror')
+        pb.log('Computer locked, not showing mirror')
         return
     }
 
@@ -38,8 +38,8 @@ var showMirror = function(mirror) {
         return
     }
 
-    pb.devtools('Mirroring notification for:')
-    pb.devtools(mirror)
+    pb.log('Mirroring notification for:')
+    pb.log(mirror)
 
     var options = { }
     options.type = 'basic'
@@ -48,15 +48,6 @@ var showMirror = function(mirror) {
     options.title = mirror.application_name + ': ' + (mirror.title || '')
     options.message = mirror.body || ''
     options.buttons = []
-
-    // Merge missed messages together except for those apps that do it themselves
-    if (mirror.conversation_iden && ['org.telegram.messenger', 'com.facebook.orca', 'com.google.android.talk'].indexOf(mirror.package_name) == -1) {
-        var existing = pb.notifier.active[options.key]
-        if (existing) {
-            options.message = existing.message + '\n' + options.message
-            mirror.body = options.message
-        }
-    }
 
     var sourceDevice = pb.local.devices[mirror.source_device_iden]
     if (sourceDevice) {
@@ -185,10 +176,10 @@ var muteButton = function(mirror) {
             'push': push
         }, function(response) {
             if (response) {
-                pb.devtools('Muted ' + mirror.package_name)
+                pb.log('Muted ' + mirror.package_name)
                 showUndo()
             } else {
-                pb.devtools('Failed to mute ' + mirror.package_name)
+                pb.log('Failed to mute ' + mirror.package_name)
             }
         })
     }
@@ -228,9 +219,9 @@ var muteButton = function(mirror) {
                     'push': push
                 }, function(response) {
                     if (response) {
-                        pb.devtools('Unmuted ' + mirror.package_name)
+                        pb.log('Unmuted ' + mirror.package_name)
                     } else {
-                        pb.devtools('Failed to unmute ' + mirror.package_name)
+                        pb.log('Failed to unmute ' + mirror.package_name)
                     }
                 })
             }
@@ -288,9 +279,9 @@ var dismissRemote = function(mirror, triggerKey) {
         'push': push
     }, function(response) {
         if (response) {
-            pb.devtools('Triggered remote dismissal of ' + notificationKey(mirror))
+            pb.log('Triggered remote dismissal of ' + notificationKey(mirror))
         } else {
-            pb.devtools('Failed to trigger remote dismissal of ' + notificationKey(mirror))
+            pb.log('Failed to trigger remote dismissal of ' + notificationKey(mirror))
         }
     })
 }
@@ -338,7 +329,7 @@ var getAndroidClickMapping = function() {
         return
     }
 
-    pb.devtools('Getting Android package name to url mapping')
+    pb.log('Getting Android package name to url mapping')
 
     androidClickMapping = { }
 
@@ -380,7 +371,7 @@ var getWebUrl = function(mirror) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 var openQuickReply = function(mirror) {
-    pb.devtools('Opening quick-reply for ' + notificationKey(mirror))
+    pb.log('Opening quick-reply for ' + notificationKey(mirror))
 
     var spec = {
         'url': 'quick-reply.html',
@@ -440,9 +431,9 @@ pb.sendReply = function(mirror, message) {
         'push': push
     }, function(response) {
         if (response) {
-            pb.devtools('Forwarding reply to ' + mirror.package_name)
+            pb.log('Forwarding reply to ' + mirror.package_name)
         } else {
-            pb.devtools('Failed to forward reply to ' + mirror.package_name)
+            pb.log('Failed to forward reply to ' + mirror.package_name)
         }
     })
 }

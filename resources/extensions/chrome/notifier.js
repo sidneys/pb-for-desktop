@@ -11,13 +11,13 @@ try {
 } catch (e) {
     pb.alertSound = {
         'play': function() {
-            pb.devtools('Unable to play sound')
+            pb.log('Unable to play sound')
         }
     }
 }
 
 pb.notifier.show = function(options) {
-    pb.devtools('Showing notification with key ' + options.key)
+    pb.log('Showing notification with key ' + options.key)
 
     options.allButtons = options.buttons
     options.fullMessage = options.message
@@ -33,7 +33,7 @@ pb.notifier.show = function(options) {
 
     if (pb.settings.showMirrors) {
         if (pb.isSnoozed()) {
-            pb.devtools('Not showing notification ' + options.key + ', snoozed')
+            pb.log('Not showing notification ' + options.key + ', snoozed')
             return
         }
 
@@ -158,7 +158,7 @@ var notify = function(options) {
         var createNotification = function() {
             chrome.notifications.create(options.key, spec, function() {
                 if (chrome.runtime.lastError) {
-                    pb.devtools(chrome.runtime.lastError)
+                    pb.log(chrome.runtime.lastError)
                 }
                 notificationCreated()
             })
@@ -180,7 +180,7 @@ var timeOnScreen = function(options) {
 
 pb.notifier.dismiss = function(key) {
     chrome.notifications.clear(key, function(wasCleared) {
-        pb.devtools('Dismissed ' + key)
+        pb.log('Dismissed ' + key)
         delete pb.notifier.active[key]
         pb.dispatchEvent('notifications_changed')
     })

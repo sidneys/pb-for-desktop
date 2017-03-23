@@ -102,34 +102,56 @@ npm install
 
 ### Scripts
 
-#### npm run **start**
+#### *start*
 
-Run the app with integrated Electron.
+Runs the app in development mode.
+
+Usage:
 
 ```bash
 npm run start
-npm run start:dev 					# with Debugging Tools
-npm run start:livereload 			# with Debugging Tools and Livereload
 ```
 
-#### npm run **localsetup**
+Parameters:
+
+ - `--debug` Start with development tools
+ - `--livereload` Start with live reload
+
+
+#### *localsetup*
 
 Install the app in the System app folder and start it.
 
+Usage:
+
 ```bash
 npm run localsetup
-npm run localsetup:rebuild			# Build before installation
-npm run localsetup:rebuild:dev 		# Build before installation, use Developer Tools
 ```
 
-#### npm run **build**
+Parameters:
 
-Build the app and create installers (see [requirements](#build-requirements)).
+ - `--build` Rebuild project before installation
+ - `--debug` Start with development tools
+
+
+#### *build*
+
+Builds the application and creates platform-specific installation packages (see [requirements](#build-requirements)).
+If no parameter is supplied, the current platform is built.
+
+Usage:
 
 ```bash
-npm run build					# build all available platforms
-npm run build macos windows		# build specific platforms (macos/linux/windows)
+npm run build
 ```
+
+Parameters:
+
+ - `--macos` Build & Package for macOS
+ - `--windows` Build & Package for Windows 
+ - `--linux` Build & Package for Linux 
+ - `--metadata` Generate Auto-Updater metadata
+
 
 ### Build Requirements
 

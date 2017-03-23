@@ -13,7 +13,7 @@ pb.addEventListener('signed_in', function(e) {
 pb.browserState = 'active'
 
 chrome.idle.onStateChanged.addListener(function(newState) {
-    pb.devtools('Chrome state changed to ' + newState)
+    pb.log('Chrome state changed to ' + newState)
     pb.browserState = newState
 
     if (newState == 'locked') {

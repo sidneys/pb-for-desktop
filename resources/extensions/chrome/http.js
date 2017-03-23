@@ -13,7 +13,7 @@ var onResponse = function(status, body, done) {
         try {
             done(JSON.parse(body))
         } catch (e) {
-            pb.devtools(e)
+            pb.log(e)
             done()
         }
     } else if (status === 401) {
@@ -30,7 +30,7 @@ var onResponse = function(status, body, done) {
 }
 
 pb.get = function(url, done) {
-    pb.devtools('GET ' + url)
+    pb.log('GET ' + url)
 
     var xhr = new XMLHttpRequest()
     xhr.open('GET', url, true)
@@ -55,7 +55,7 @@ pb.get = function(url, done) {
 }
 
 pb.del = function(url, done) {
-    pb.devtools('DELETE ' + url)
+    pb.log('DELETE ' + url)
 
     var xhr = new XMLHttpRequest()
     xhr.open('DELETE', url, true)
@@ -80,7 +80,7 @@ pb.del = function(url, done) {
 }
 
 pb.post = function(url, object, done) {
-    pb.devtools('POST ' + url)
+    pb.log('POST ' + url)
 
     var xhr = new XMLHttpRequest()
     xhr.open('POST', url, true)

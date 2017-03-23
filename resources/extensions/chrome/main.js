@@ -20,12 +20,12 @@ var main = function() {
     getApiKey(function(apiKey) {
         pb.local.apiKey = apiKey
 
-        pb.devtools('Signed in with API key ' + pb.local.apiKey)
+        pb.log('Signed in with API key ' + pb.local.apiKey)
 
         loadUser(function(user) {
             pb.local.user = user
 
-            pb.devtools('Bootstrapping...')
+            pb.log('Bootstrapping...')
 
             pb.dispatchEvent('signed_in')
         })

@@ -22,7 +22,7 @@ var createOrAttachDevice = function() {
     clearTimeout(retryTimeout)
 
     if (inProgress) {
-        pb.devtools('Device is already being created or attached')
+        pb.log('Device is already being created or attached')
         return
     } else {
         inProgress = true
@@ -41,8 +41,8 @@ var createOrAttachDevice = function() {
 
     if (attachTo) {
         if (!pb.local.device) {
-            pb.devtools('Attaching to existing device:')
-            pb.devtools(attachTo)
+            pb.log('Attaching to existing device:')
+            pb.log(attachTo)
         }
 
         pb.local.device = attachTo
@@ -115,7 +115,7 @@ var getDeviceValues = function() {
 }
 
 var createDevice = function(done) {
-    pb.devtools('Creating device')
+    pb.log('Creating device')
 
     var body = getDeviceValues()
     body['nickname'] = pb.browser.charAt(0).toUpperCase() + pb.browser.slice(1)
@@ -127,7 +127,7 @@ var createDevice = function(done) {
 }
 
 var updateDevice = function(deviceValues, done) {
-    pb.devtools('Updating device')
+    pb.log('Updating device')
 
     pb.post(pb.api + '/v2/devices/' + pb.local.device.iden, deviceValues, function(response) {
         done(response)

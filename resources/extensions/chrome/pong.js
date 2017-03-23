@@ -16,7 +16,7 @@ pb.addEventListener('signed_in', function(e) {
             return
         }
 
-        pb.devtools('Sending pong')
+        pb.log('Sending pong')
 
         var pong = {
             'type': 'pong',

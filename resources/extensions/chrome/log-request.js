@@ -12,7 +12,7 @@ pb.addEventListener('signed_in', function(e) {
             return
         }
 
-        pb.devtools('Log data requested')
+        pb.log('Log data requested')
 
         pb.post(pb.api + '/v2/error-report', {
             'reply_to': pb.local.user.email,

@@ -4,13 +4,13 @@ var lastReported = {}
 
 pb.track = function(event) {
     if (!chrome.runtime.getManifest().key) {
-        pb.devtools('Not reporting ' + event.name + ' from dev installation')
-        console.devtools(event)
+        pb.log('Not reporting ' + event.name + ' from dev installation')
+        console.log(event)
         return
     }
 
     if (!event || !event.name) {
-        pb.devtools('Ignoring event without name')
+        pb.log('Ignoring event without name')
         return
     }
 
@@ -35,9 +35,9 @@ pb.track = function(event) {
         if (xhr.readyState === 4) {
             try {
                 if (xhr.status === 200) {
-                    pb.devtools('Reported ' + event.name)
+                    pb.log('Reported ' + event.name)
                 } else {
-                    pb.devtools('Failed to report ' + event.name)
+                    pb.log('Failed to report ' + event.name)
                 }
             } catch (e) {
             }
@@ -64,7 +64,7 @@ var trackPer = function(time, event) {
         lastReported[key] = now
         pb.track(event)
     } else if (!chrome.runtime.getManifest().key) {
-        pb.devtools('Ignoring ' + event.name + ', last reported ' + (now - parseInt(lastReported[key])) + ' seconds ago')
+        pb.log('Ignoring ' + event.name + ', last reported ' + (now - parseInt(lastReported[key])) + ' seconds ago')
     }
 }
 

@@ -49,6 +49,6 @@
    "options_page": "options.html",
    "permissions": [ "tabs", "activeTab", "contextMenus", "cookies", "notifications", "idle", "https://*/*", "http://*/*" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "335",
+   "version": "336",
    "web_accessible_resources": [ "icon_19.png", "icon_48.png", "icon_128.png", "action_cancel.png", "action_halt.png", "action_undo.png", "action_reply.png", "action_overflow.png", "action_android.png", "action_tick.png", "action_web.png", "chip_person.png", "chip_group.png", "lock.png" ]
 }

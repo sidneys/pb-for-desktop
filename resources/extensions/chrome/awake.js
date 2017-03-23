@@ -63,9 +63,9 @@ var setAwake = function(awake) {
         'awake': awake
     }, function(response) {
         if (response) {
-            pb.devtools('Set awake state to ' + awake)
+            pb.log('Set awake state to ' + awake)
         } else {
-            pb.devtools('Failed to set awake state to ' + awake)
+            pb.log('Failed to set awake state to ' + awake)
         }
     })
 }

@@ -54,14 +54,14 @@ var needsNotifying = function(push) {
             return
         }
     } else if (push.source_device_iden && !push.target_device_iden && push.source_device_iden == pb.local.device.iden) {
-        pb.devtools('To "All devices" from this device, not notifying')
+        pb.log('To "All devices" from this device, not notifying')
         return
     } else if (push.target_device_iden && pb.local.device && push.target_device_iden != pb.local.device.iden) {
         return
     } else if (push.receiver_iden != pb.local.user.iden && !push.channel_iden && !push.client_iden) {
         return
     } else if (Date.now() - (push.created * 1000) > 48 * 60 * 60 * 1000) {
-        pb.devtools('Push created >48 hours ago, marking dismissed locally')
+        pb.log('Push created >48 hours ago, marking dismissed locally')
         push.dismissed = true
         delete push.awake_app_guids
         return
@@ -300,9 +300,9 @@ var updateNotifications = function(groups) {
                             undo.onclose = function() {
                                 pb.del(pb.api + '/v2/subscriptions/' + subscription.iden, function(response) {
                                     if (response) {
-                                        pb.devtools('Unsubscribed from ' + subscription.channel.name)
+                                        pb.log('Unsubscribed from ' + subscription.channel.name)
                                     } else {
-                                        pb.devtools('Failed to unsubscribe from ' + subscription.channel.name)
+                                        pb.log('Failed to unsubscribe from ' + subscription.channel.name)
                                     }
                                 })
                             }
@@ -327,8 +327,8 @@ var updateNotifications = function(groups) {
             }
         })
 
-        pb.devtools('Notifying for group ' + key)
-        pb.devtools(desired)
+        pb.log('Notifying for group ' + key)
+        pb.log(desired)
 
         var toThisDevice = pb.local.device && firstPush.target_device_iden == pb.local.device.iden
 
@@ -391,9 +391,9 @@ pb.markDismissed = function(push) {
         'dismissed': true
     }, function(response) {
             if (response) {
-                pb.devtools('Marked push ' + push.iden + ' dismissed')
+                pb.log('Marked push ' + push.iden + ' dismissed')
             } else {
-                pb.devtools('Failed to mark push ' + push.iden + 'dismissed, server returned ' + status)
+                pb.log('Failed to mark push ' + push.iden + 'dismissed, server returned ' + status)
             }
         }
     )

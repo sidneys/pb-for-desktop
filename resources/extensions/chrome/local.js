@@ -80,7 +80,7 @@ pb.sync = function() {
 
 var syncInternal = function(backoff, done) {
     clearTimeout(pb.syncTimeout)
-
+    
     var body = {}
     if (localStorage.cursor) {
         body.cursor = localStorage.cursor
@@ -121,7 +121,7 @@ var syncInternal = function(backoff, done) {
                 pb.syncing = false
                 pb.pendingSync = false
 
-                pb.devtools('Sync failed, scheduling retry')
+                pb.log('Sync failed, scheduling retry')
 
                 pb.syncTimeout = setTimeout(function() {
                     pb.sync(Math.min(backoff * 2, 10 * 60 * 1000))
@@ -173,7 +173,7 @@ var ingest = function(type, syncables, more) {
 
 
 pb.savePushes = function() {
-    pb.devtools('Saving pushes')
+    pb.log('Saving pushes')
     smartlyPruneLocalPushes()
     localStorage.pushes = JSON.stringify(pb.local.pushes)
 }
@@ -211,7 +211,7 @@ var smartlyPruneLocalPushes = function() {
 }
 
 var clearAndBootstrap = function() {
-    pb.devtools('Clearing local data and bootstrapping')
+    pb.log('Clearing local data and bootstrapping')
     delete localStorage['cursor']
     types.forEach(function(type) {
         pb.local[type] = {}

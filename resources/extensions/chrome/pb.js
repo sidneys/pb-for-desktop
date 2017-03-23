@@ -27,7 +27,7 @@ if (navigator.userAgent.indexOf('OPR') >= 0) {
 // ---------------------------------------------------------------------------------------------------
 
 pb.rollingLog = []
-pb.devtools = function(message) {
+pb.log = function(message) {
     try {
         var line
         if (message instanceof Object || message instanceof Array) {
@@ -36,7 +36,7 @@ pb.devtools = function(message) {
             line = new Date().toLocaleString() + ' - ' + message
         }
 
-        console.devtools(line)
+        console.log(line)
         pb.rollingLog.push(JSON.stringify(line))
 
         if (pb.rollingLog.length > 400) {
@@ -92,12 +92,12 @@ pb.dispatchEvent = function(eventName, details) {
 // ---------------------------------------------------------------------------------------------------
 
 pb.popOutPanel = function() {
-    pb.devtools('Popping out panel')
+    pb.log('Popping out panel')
 
     pb.track({
         'name': 'panel_popped_out'
     })
-
+  
     var popoutUrl = chrome.extension.getURL('panel.html')
 
     chrome.tabs.query({ url: popoutUrl }, function(tabs) {

@@ -127,9 +127,9 @@ var sendSmsDismissal = function() {
         'targets': ['stream', 'android']
     }, function(response) {
         if (response) {
-            pb.devtools('Triggered remote sms dismissal')
+            pb.log('Triggered remote sms dismissal')
         } else {
-            pb.devtools('Failed to trigger remote sms dismissal')
+            pb.log('Failed to trigger remote sms dismissal')
         }
     })
 }
@@ -241,14 +241,14 @@ pb.sendSms = function(data) {
 }
 
 pb.deleteText = function(iden) {
-    pb.devtools('delete text ' + iden)
+    pb.log('delete text ' + iden)
 
     pb.post(pb.api + '/v3/delete-text', {
         'iden': iden
     }, function(response, error) {
         if (error && error.code == 'not_found') {
             delete pb.local.texts[iden]
-            pb.devtools('Attempted to delete text that has already been deleted, clearing')
+            pb.log('Attempted to delete text that has already been deleted, clearing')
         }
     })
 }
@@ -326,6 +326,6 @@ pb.sendRefreshSms = function(device) {
         'push': push,
         'targets': ['android']
     }, function(response) {
-        pb.devtools('Sent refresh_sms to ' + device.iden)
+        pb.log('Sent refresh_sms to ' + device.iden)
     })
 }

@@ -27,30 +27,29 @@ addons:
       - gcc-multilib
       - graphicsmagick
       - icnsutils
-      - libicns-dev
-      - libpng-dev
-      - libpng12-0
       - rpm
       - xz-utils
 
 before_install:
-  - echo "🔧 Installing tools"
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR=$HOME/.nvm sh
-  - source $HOME/.nvm/nvm.sh
-  - nvm install 7.7.2
-  - nvm use 7.7.2
+  - echo "🚦 Authorizing Build"
+  - if [[ "${OSTYPE}" == "darwin"* ]] && [[ "${DEPLOY_MACOS}" == 0 ]]; then travis_terminate 0; fi
+  - if [[ "${OSTYPE}" == "linux"* ]] && [[ "${DEPLOY_LINUX}" == 0 ]]; then travis_terminate 0; fi
+  - echo "🔧 Setting up Environment"
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 7.8.0 && nvm use 7.8.0
+  - npm --global update npm
 
 install:
-  - echo "📥 Installing dependencies"
+  - echo "📥 Installing Dependencies"
   - npm install
 
 script:
-  - echo "📦 Building artifacts"
-  - npm run-script build
+  - echo "📦 Building"
+  - npm run build --metadata
 
 after_success:
-  - echo "📮 Deploying artifacts"
-  - npm run-script deploy:github
+  - echo "📮 Deploying"
+  - npm run deploy
 
 notifications:
   webhooks:
