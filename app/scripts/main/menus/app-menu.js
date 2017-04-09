@@ -7,13 +7,14 @@
  * @constant
  */
 const path = require('path');
+const url = require('url');
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, webContents } = require('electron');
 
 /**
  * Modules
@@ -45,6 +46,7 @@ const appHomepage = packageJson.homepage;
  * @instance
  */
 let appMenu = {};
+
 
 /**
  * App Menu Template
@@ -103,7 +105,7 @@ let getAppMenuTemplate = () => {
                             return 'F11';
                         }
                     })(),
-                    click: (item, focusedWindow) => {
+                    click(item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                         }
@@ -113,24 +115,30 @@ let getAppMenuTemplate = () => {
                     type: 'separator'
                 },
                 {
-                    label: 'Actual Size',
+                    label: 'Reset Zoom',
                     accelerator: 'CommandOrControl+0',
-                    click: () => {
-                        BrowserWindow.getFocusedWindow().webContents.executeJavaScript(`webFrame.setZoomLevel(0);`).then(() => {});
+                    click() {
+                        webContents.getAllWebContents().forEach((contents) => {
+                            contents.send('zoom', 'reset');
+                        });
                     }
                 },
                 {
                     label: 'Zoom In',
                     accelerator: 'CommandOrControl+Plus',
-                    click: () => {
-                        BrowserWindow.getFocusedWindow().webContents.executeJavaScript(`webFrame.setZoomLevel(webFrame.getZoomLevel() + 1);`).then(() => {});
+                    click() {
+                        webContents.getAllWebContents().forEach((contents) => {
+                            contents.send('zoom', 'in');
+                        });
                     }
                 },
                 {
                     label: 'Zoom Out',
                     accelerator: 'CommandOrControl+-',
-                    click: () => {
-                        BrowserWindow.getFocusedWindow().webContents.executeJavaScript(`webFrame.setZoomLevel(webFrame.getZoomLevel() - 1);`).then(() => {});
+                    click() {
+                        webContents.getAllWebContents().forEach((contents) => {
+                            contents.send('zoom', 'out');
+                        });
                     }
                 },
                 {
@@ -141,7 +149,7 @@ let getAppMenuTemplate = () => {
                     //visible: isDebug,
                     label: 'Reload',
                     accelerator: 'CommandOrControl+R',
-                    click: (item, focusedWindow) => {
+                    click(item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.reload();
                         }
@@ -158,7 +166,7 @@ let getAppMenuTemplate = () => {
                             return 'Ctrl+Shift+I';
                         }
                     })(),
-                    click: (item, focusedWindow) => {
+                    click(item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();
                         }
@@ -188,7 +196,7 @@ let getAppMenuTemplate = () => {
             submenu: [
                 {
                     label: 'Learn More',
-                    click: () => {
+                    click() {
                         shell.openExternal(appHomepage);
                     }
                 }
@@ -235,7 +243,7 @@ let getAppMenuTemplate = () => {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: () => {
+                    click() {
                         app.quit();
                     }
                 }

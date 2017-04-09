@@ -16,7 +16,7 @@ const util = require('util');
  * @constant
  */
 const electron = require('electron');
-const { remote } = electron;
+const { ipcRenderer, remote } = electron;
 
 /**
  * Modules
@@ -31,6 +31,7 @@ const parseDomain = require('parse-domain');
  * Internal
  * @constant
  */
+const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const domHelper = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'utils', 'dom-helper'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
@@ -42,12 +43,26 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true })
 const body = document.querySelector('body');
 const webview = document.getElementById('webview');
 const spinner = document.getElementById('spinner');
+const status = document.getElementById('spinner__text');
 const controls = document.getElementById('controls');
 const buttons = {
     home: {
         target: document.querySelector('.controls__button.home'),
         event() { webview.goBack(); }
     }
+};
+
+/**
+ * Set application badge count
+ * @param {Number} total - Number to set
+ *
+ */
+let updateBadge = (total) => {
+    logger.debug('updateBadge');
+
+    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+
+    remote.app.setBadgeCount(total);
 };
 
 /**
@@ -103,6 +118,28 @@ webview.addEventListener('did-finish-load', () => {
 });
 
 /**
+ * @listens webview#did-navigate-in-page
+ */
+webview.addEventListener('did-navigate-in-page', (ev) => {
+    logger.debug('webview#did-navigate-in-page');
+
+    let hash = url.parse(ev.url).hash;
+
+    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+
+    switch (hash) {
+        case '#devices':
+        case '#following':
+        case '#people':
+        case '#sms':
+            updateBadge(0);
+            break;
+    }
+
+    logger.debug('webview#did-navigate-in-page', 'url', ev.url);
+});
+
+/**
  * @listens webview#new-window
  */
 webview.addEventListener('new-window', (ev) => {
@@ -150,31 +187,68 @@ webview.addEventListener('load-commit', (ev) => {
                 body.style.backgroundColor = 'transparent';
             }
     }
+
+    webview.getWebContents().session.webRequest.onHeadersReceived((details, callback) => {
+        logger.debug('request', 'url:', details.url, 'statusCode:', details.statusCode);
+        callback({cancel: false });
+    });
+});
+
+/**
+ * @listens ipcRenderer#zoom
+ */
+ipcRenderer.on('zoom', (ev, level) => {
+    logger.debug('ipcRenderer#zoom', 'level:', level);
+
+    switch (level) {
+        case 'in':
+            webview.getWebContents().getZoomLevel(zoomLevel => {
+                webview.setZoomLevel(zoomLevel + 1);
+            });
+            break;
+        case 'out':
+            webview.getWebContents().getZoomLevel(zoomLevel => {
+                webview.setZoomLevel(zoomLevel - 1);
+            });
+            break;
+        case 'reset':
+            webview.getWebContents().setZoomLevel(0);
+    }
 });
 
 /**
  * @listens webview#ipc-message
  */
 webview.addEventListener('ipc-message', (ev) => {
-    logger.debug('webview#ipc-message', util.inspect(ev));
+    logger.debug('webview#ipc-message');
+    //console.dir(ev);
+
+    logger.debug('webview#ipc-message', 'channel:', ev.channel, 'args:', ev.args.join());
 
     const channel = ev.channel;
     const message = ev.args[0];
-    const parameter = ev.args[1];
-
-    logger.debug('webview#ipc-message', 'channel:', channel, 'message:', message, 'parameter:', parameter);
 
     switch (channel) {
+        case 'account':
+            switch (message) {
+                case 'login':
+                logger.info('account', 'login');
+                domHelper.setText(status, 'logged in');
+            }
         case 'network':
+            const didDisconnect = ev.args[1];
             switch (message) {
                 case 'offline':
                     logger.info('network', 'offline');
                     presentSpinner();
+                    domHelper.setText(status, 'connecting...');
                     break;
                 case 'online':
                     logger.info('network', 'online');
-                    if (Boolean(parameter)) {
-                        logger.info('network', 'reconnecting');
+                    domHelper.setText(status, 'connected');
+                    if (Boolean(didDisconnect)) {
+                        logger.info('network', 'reconnecting...');
+                        domHelper.setText(status, 'reconnecting');
                         webview.reloadIgnoringCache();
                     }
                     dismissSpinner();

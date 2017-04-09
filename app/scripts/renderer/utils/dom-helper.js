@@ -110,20 +110,25 @@ let loadStylesheet = (filePath) => {
 };
 
 /**
- * Set Text Message
+ * Set element text content
  * @param {HTMLElement} element - Element
- * @param {String=} text - Message
+ * @param {String} text - Text
+ * @param {Number=} delay - Delay
  * @function
  *
  * @public
  */
-let setText = (element, text) => {
+let setText = (element, text = '', delay = 0) => {
     if (!isHtmlElement(element)) { return; }
 
-    element.innerText = text || '';
+    let timeout = setTimeout(() => {
+        element.innerText = text;
+        clearTimeout(timeout);
+    }, delay);
 };
 
 /**
+ * Set element visibility
  * @param {HTMLElement} element - Element
  * @param {Boolean} visible - Show or hide
  * @param {Number=} delay - Delay
@@ -131,7 +136,7 @@ let setText = (element, text) => {
  *
  * @public
  */
-let setVisibility = (element, visible, delay) => {
+let setVisibility = (element, visible, delay = 0) => {
     if (!isHtmlElement(element)) { return; }
 
     let timeout = setTimeout(() => {
@@ -143,7 +148,7 @@ let setVisibility = (element, visible, delay) => {
             element.classList.remove('show');
         }
         clearTimeout(timeout);
-    }, (delay || 0));
+    }, delay);
 };
 
 

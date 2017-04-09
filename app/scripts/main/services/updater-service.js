@@ -15,7 +15,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow } = electron.remote || electron;
 
 /**
  * Modules
@@ -37,7 +37,7 @@ const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'main'
 const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-
+const notificationService = require(path.join(appRootPath, 'app', 'scripts', 'main', 'services', 'notification-service'));
 
 /**
  * Application
@@ -47,17 +47,11 @@ const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'm
 const appProductName = packageJson.productName || packageJson.name;
 const appVersion = packageJson.version;
 
-/**
- * @default
- */
-let isCheckingOrInstallingUpdates = false;
-
 
 /**
  * @instance
- * @global
  */
-global.updaterService = null;
+let updaterService;
 
 /**
  * Updater
@@ -74,6 +68,9 @@ class Updater {
     init() {
         logger.debug('init');
 
+        // Extend stateful
+        autoUpdater.isUpdating = false;
+
         // Set Logger
         autoUpdater.logger = logger;
 
@@ -83,7 +80,7 @@ class Updater {
         autoUpdater.on('error', (error) => {
             logger.error('autoUpdater#error', error.message);
 
-            isCheckingOrInstallingUpdates = false;
+            autoUpdater.isUpdating = false;
         });
 
         /**
@@ -92,7 +89,7 @@ class Updater {
         autoUpdater.on('checking-for-update', () => {
             logger.info('autoUpdater#checking-for-update');
 
-            isCheckingOrInstallingUpdates = true;
+            autoUpdater.isUpdating = true;
         });
 
         /**
@@ -101,7 +98,9 @@ class Updater {
         autoUpdater.on('update-available', (info) => {
             logger.info('autoUpdater#update-available', info);
 
-            isCheckingOrInstallingUpdates = true;
+            autoUpdater.isUpdating = true;
+
+            notificationService.show(`Update available for ${appProductName}`, { body: `Version: ${info.version}` });
         });
 
         /**
@@ -110,7 +109,7 @@ class Updater {
         autoUpdater.on('update-not-available', (info) => {
             logger.info('autoUpdater#update-not-available', info);
 
-            isCheckingOrInstallingUpdates = false;
+            autoUpdater.isUpdating = false;
         });
 
         /**
@@ -134,7 +133,9 @@ class Updater {
         autoUpdater.on('update-downloaded', (info) => {
             logger.info('autoUpdater#update-downloaded', info);
 
-            isCheckingOrInstallingUpdates = true;
+            autoUpdater.isUpdating = true;
+
+            notificationService.show(`Update ready to install for ${appProductName}`, { body: `Version: ${info.version}` });
 
             if (Boolean(info.releaseNotes)) {
                 configurationManager('releaseNotes').set(info.releaseNotes);
@@ -155,18 +156,6 @@ class Updater {
                     return true;
                 });
         });
-
-        /**
-         * @listens Electron.BrowserWindow#on
-         */
-        let mainWindow = BrowserWindow.getAllWindows()[0];
-        if (mainWindow) {
-            mainWindow.on('show', () => {
-                if (!isCheckingOrInstallingUpdates) {
-                    autoUpdater.checkForUpdates();
-                }
-            });
-        }
 
         autoUpdater.checkForUpdates();
 
@@ -207,6 +196,7 @@ let bumpInternalVersion = () => {
         configurationManager('internalVersion').set(packageJson.version);
 
         const releaseNotes = configurationManager('releaseNotes').get();
+
         if (Boolean(releaseNotes)) {
             messengerService.showInfo(`${appProductName} has been updated to ${appVersion}.`, `Release Notes:${os.EOL}${os.EOL}${releaseNotes}`);
             logger.info(`${appProductName} has been updated to ${appVersion}.`, `Release Notes:${os.EOL}${os.EOL}${releaseNotes}`);
@@ -214,22 +204,11 @@ let bumpInternalVersion = () => {
             messengerService.showInfo(`Update complete`, `${appProductName} has been updated to ${appVersion}.`);
             logger.info(`Update complete`, `${appProductName} has been updated to ${appVersion}.`);
         }
+
+        notificationService.show(`Update complete for ${appProductName}`, { body: `Version: ${appVersion}` });
     }
 };
 
-/**
- * Getter
- * @function
- *
- * @public
- */
-let getUpdaterService = () => {
-    logger.debug('getUpdaterService');
-
-    if (global.updaterService) {
-        return global.updaterService;
-    }
-};
 
 /**
  * Init
@@ -240,17 +219,26 @@ let init = () => {
     // Only update if run from within purpose-built (signed) Electron binary
     if (process.defaultApp) { return; }
 
-    try {
-        if (!global.updaterService) {
-            global.updaterService = new Updater();
-        }
-    } catch (error) {
-        logger.error(error.message);
-    }
+    updaterService = new Updater();
 
     bumpInternalVersion();
 };
 
+
+/**
+ * @listens Electron.App#browser-window-focus
+ */
+app.on('browser-window-focus', () => {
+    logger.debug('app#browser-window-focus');
+
+    if (!updaterService) { return; }
+
+    if (Boolean(updaterService.isUpdating) === false) {
+        if (updaterService.checkForUpdates) {
+            updaterService.checkForUpdates();
+        }
+    }
+});
 
 /**
  * @listens Electron.App#ready
@@ -260,9 +248,3 @@ app.once('ready', () => {
 
     init();
 });
-
-
-/**
- * @exports
- */
-module.exports = getUpdaterService();

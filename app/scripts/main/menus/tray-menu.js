@@ -125,6 +125,17 @@ let getTrayMenuTemplate = () => {
             }
         },
         {
+            id: 'showBadgeCount',
+            visible: platformHelper.isMacOS,
+            label: 'Show unread Count',
+            icon: path.join(appRootPath, 'app', 'images', `icon-show-badge-count${platformHelper.menuItemImageExtension}`),
+            type: 'checkbox',
+            checked: configurationManager('showBadgeCount').get(),
+            click(menuItem) {
+                configurationManager('showBadgeCount').set(menuItem.checked);
+            }
+        },
+        {
             type: 'separator'
         },
         {

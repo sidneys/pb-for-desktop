@@ -14,7 +14,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { ipcMain, webContents } = electron;
+const { ipcMain, webContents } = electron.remote || electron;
 
 /**
  * Modules

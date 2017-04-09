@@ -175,7 +175,7 @@ let configurationItems = {
 
             return electronSettings.get(this.keypath);
         },
-        set(valuep) {
+        set(value) {
             logger.debug(this.keypath, 'set', value);
 
             this.implement(value);
@@ -290,6 +290,26 @@ let configurationItems = {
             if (!win) { return; }
 
             win.setAlwaysOnTop(value);
+        }
+    },
+    /**
+     * Show notification badge count (macOS)
+     */
+    showBadgeCount: {
+        keypath: 'showBadgeCount',
+        default: false,
+        init() {
+            logger.debug(this.keypath, 'init');
+        },
+        get() {
+            logger.debug(this.keypath, 'get');
+
+            return electronSettings.get(this.keypath);
+        },
+        set(value) {
+            logger.debug(this.keypath, 'set');
+
+            electronSettings.set(this.keypath, value);
         }
     },
     /**
@@ -590,7 +610,7 @@ let removeLegacyItems = (callback = () => {}) => {
 
     savedSettingsList.forEach((item, itemIndex) => {
         if (!configurationItems.hasOwnProperty(item)) {
-            electronSettings.deleteSync(item);
+            electronSettings.delete(item);
             logger.debug('cleanConfiguration', 'deleted', item);
         }
 

@@ -92,10 +92,10 @@ webview {
     pointer-events: auto;
 }
 
-/* spinner__icon_app
+/* spinner__icon
    ========================================================================== */
 
-.spinner__icon_app {
+.spinner__icon {
     z-index: 13370;
     background-image: url("../images/icon.png");
     background-size: 100% 100%;
@@ -112,17 +112,17 @@ webview {
     pointer-events: auto;
 }
 
-.hide .spinner__icon_app {
+.hide .spinner__icon {
     opacity: 0;
     pointer-events: none;
 }
 
-.show .spinner__icon_app {
+.show .spinner__icon {
     opacity: 1;
     pointer-events: auto;
 }
 
-.spinner__icon_app.background {
+.spinner__icon.background {
     background: none;
     z-index: 13360 !important;
     position: absolute;
@@ -131,7 +131,7 @@ webview {
     filter: brightness(50%) blur(4px);
 }
 
-.spinner__icon_app.background img {
+.spinner__icon.background img {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -141,16 +141,16 @@ webview {
     bottom: 0;
 }
 
-.spinner__icon_app.background:after {
+.spinner__icon.background:after {
     left: 100px;
 }
 
-.spinner__icon_app.background:before {
+.spinner__icon.background:before {
     height: 200px;
     width: 200px;
 }
 
-.spinner__icon_app:after {
+.spinner__icon:after {
     background: rgba(74, 179, 103, 1.0) -webkit-linear-gradient(hsla(0, 0%, 100%, .25), hsla(0, 0%, 0%, .25));
     bottom: 0;
     content: '';
@@ -163,7 +163,7 @@ webview {
     left: 35px;
 }
 
-.spinner__icon_app:before {
+.spinner__icon:before {
     background: rgba(74, 179, 103, 1.0) -webkit-linear-gradient(hsla(0, 0%, 100%, .25), hsla(0, 0%, 0%, .25));
     border-radius: 100%;
     content: '';
@@ -175,10 +175,10 @@ webview {
     width: 75px;
 }
 
-/* spinner__icon_text
+/* spinner__logo
    ========================================================================== */
 
-#spinner__icon_text {
+#spinner__logo {
     z-index: 13380;
     background-image: url("../images/icon-text.png");
     background-size: 50% auto;
@@ -195,22 +195,22 @@ webview {
     pointer-events: auto;
 }
 
-.hide #spinner__icon_text {
+.hide #spinner__logo {
     margin: 2% 2% 25% 2%;
     opacity: 0;
     pointer-events: none;
 }
 
-.show #spinner__icon_text {
+.show #spinner__logo {
     margin: 2% 2% 2% 2%;
     opacity: 1;
     pointer-events: auto;
 }
 
-/* spinner__statustext
+/* spinner__text
    ========================================================================== */
 
-#spinner__statustext {
+#spinner__text {
     font-family: 'Helvetica', 'Arial', sans-serif;
     font-weight: 500;
     color: white;
@@ -226,85 +226,16 @@ webview {
     pointer-events: auto;
 }
 
-.hide #spinner__statustext {
+.hide #spinner__text {
     margin: 2% 2% 0% 2%;
     opacity: 0;
     pointer-events: none;
 }
 
-.show #spinner__statustext {
+.show #spinner__text {
     margin: 2% 2% 2% 2%;
     opacity: 1;
     pointer-events: auto;
-}
-
-/* ==========================================================================
-   ANIMATIONS
-   ========================================================================== */
-
-/* rotate
-   ========================================================================== */
-
-@-webkit-keyframes rotating {
-    0% {
-        transform: rotate3d(0, 1, 0, 0deg);
-    }
-    50% {
-        transform: rotate3d(0, 1, 0, 180deg);
-    }
-    100% {
-        transform: rotate3d(0, 1, 0, 360deg);
-    }
-}
-
-@-webkit-keyframes shaking {
-    0% {
-        transform: scale3d(1.0, 1.0, 1.0);
-        filter: blur(0);
-    }
-    50% {
-        transform: scale3d(0.95, 0.95, 0.95);
-        filter: blur(1px);
-    }
-    100% {
-        transform: scale3d(1.0, 1.0, 1.0);
-        filter: blur(0);
-    }
-}
-
-@-webkit-keyframes pulsating {
-    0% {
-        transform: scale3d(0.9, 0.9, 0.9);
-        filter: blur(1px);
-    }
-    30% {
-        filter: blur(0px);
-    }
-    50% {
-        transform: scale3d(1.1, 1.1, 1.1);
-    }
-    70% {
-        filter: blur(0px);
-    }
-    100% {
-        transform: scale3d(0.9, 0.9, 0.9);
-        filter: blur(1px);
-    }
-}
-
-@-webkit-keyframes gradient {
-    0% {
-        background-size: 200% 200%;
-        background-position: 50% 50%;
-    }
-    50% {
-        background-size: 100% 100%;
-        background-position: 50% 50%;
-    }
-    100% {
-        background-size: 200% 200%;
-        background-position: 50% 50%;
-    }
 }
 
 /* ==========================================================================
@@ -381,3 +312,91 @@ webview {
     overflow: hidden;
 }
 
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+/* rotate
+   ========================================================================== */
+
+@-webkit-keyframes rotating {
+    0% {
+        transform: rotate3d(0, 1, 0, 0deg);
+    }
+    50% {
+        transform: rotate3d(0, 1, 0, 180deg);
+    }
+    100% {
+        transform: rotate3d(0, 1, 0, 360deg);
+    }
+}
+
+@-webkit-keyframes shaking {
+    0% {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
+    }
+    50% {
+        transform: scale3d(0.95, 0.95, 0.95);
+        filter: blur(1px);
+    }
+    100% {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
+    }
+}
+
+@-webkit-keyframes pulsating {
+    0% {
+        transform: scale3d(0.9, 0.9, 0.9);
+        filter: blur(1px);
+    }
+    30% {
+        filter: blur(0px);
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+    70% {
+        filter: blur(0px);
+    }
+    100% {
+        transform: scale3d(0.9, 0.9, 0.9);
+        filter: blur(1px);
+    }
+}
+
+@-webkit-keyframes gradient {
+    0% {
+        background-size: 200% 200%;
+        background-position: 50% 50%;
+    }
+    50% {
+        background-size: 100% 100%;
+        background-position: 50% 50%;
+    }
+    100% {
+        background-size: 200% 200%;
+        background-position: 50% 50%;
+    }
+}
+
+@-webkit-keyframes shaking-alternative {
+    0% {
+        transform: translateX(-10px);
+        filter: blur(1px);
+    }
+    30% {
+        filter: blur(0px);
+    }
+    50% {
+        transform: translateX(15px);
+    }
+    70% {
+        filter: blur(0px);
+    }
+    100% {
+        transform: translateX(-10px);
+        filter: blur(1px);
+    }
+}

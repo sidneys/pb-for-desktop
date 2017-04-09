@@ -17,13 +17,14 @@ const util = require('util');
  */
 const electron = require('electron');
 const { remote } = electron;
-const { ipcRenderer, webFrame } = electron; // jshint ignore:line
+const { ipcRenderer } = electron;
 
 /**
  * Modules
  * External
  * @constant
  */
+const _ = require('lodash');
 const appRootPath = require('app-root-path')['path'];
 const electronEditorContextMenu = remote.require('electron-editor-context-menu');
 
@@ -57,7 +58,8 @@ const defaultTimeout = 500;
 /**
  * @default
  */
-let didDisconnectAfterConnect = false;
+let didDisconnect = false;
+
 
 /**
  * User Interface tweaks
@@ -66,17 +68,13 @@ let addInterfaceEnhancements = () => {
     logger.debug('addUiTweaks');
 
     const pb = window.pb;
-    const onecup = window.onecup;
 
     let interval = setInterval(() => {
-        if (!(pb && pb.api && pb.api.account && onecup)) { return; }
+        if (!(pb && pb.api && pb.api.account)) { return; }
 
         // Hide wizard
         pb.api.account['preferences']['setup_done'] = true;
         pb.sidebar.update();
-
-        // Initial view
-        onecup['goto']('/#settings');
 
         // Header: remove shadow
         let header = document.getElementById('mobile-header') || document.getElementById('header');
@@ -110,22 +108,69 @@ let registerErrorProxy = () => {
         if (!(pb && pb.error)) { return; }
 
         pb.error = new Proxy(pb.error, {
-            set: (target, name, value) => {
-                logger.debug('registerErrorProxy', 'set:', 'name', name, 'value', value);
-                if (name === 'title' && value) {
-                    if (target.title.includes('Network')) {
-                        didDisconnectAfterConnect = true;
+            set: (pbError, property, value) => {
+                //logger.debug('pb.error', 'set', 'property:', property, ' value:',  value);
 
-                        ipcRenderer.send('network', 'offline', didDisconnectAfterConnect);
-                        ipcRenderer.sendToHost('network', 'offline', didDisconnectAfterConnect);
+                if (property === 'title' && _.isString(value)) {
+                    if (value.includes('Network')) {
+                        didDisconnect = true;
+
+                        ipcRenderer.send('network', 'offline', didDisconnect);
+                        ipcRenderer.sendToHost('network', 'offline', didDisconnect);
                     }
                 }
 
-                target[name] = value;
-            },
-            get: function(target, name) {
-                //logger.debug('registerErrorProxy', 'get:', 'name', name);
-                return target[name];
+                pbError[property] = value;
+            }
+        });
+
+        clearInterval(interval);
+    }, defaultInterval);
+};
+
+/**
+ * Proxy pb.api.texts.objs
+ */
+let registerTextsProxy = () => {
+    logger.debug('registerTextsProxy');
+
+    /** @namespace pb.api.texts */
+    const pb = window.pb;
+
+    let interval = setInterval(() => {
+        if (!(pb && pb.api && pb.api.texts)) { return; }
+
+        pb.api.texts.objs = new Proxy(pb.api.texts.objs, {
+            set: (textsObjs, property, value) => {
+                logger.debug('pb.api.texts.objs', 'set', 'property:', property, ' value:',  value);
+
+                // Check if push object exists
+                if (property in textsObjs) { return false; }
+
+                // Check if text with iden exists
+                let exists = Boolean(pb.api.texts.all.filter((text) => {
+                    return text.iden === value.iden;
+                }).length);
+
+                if (!exists) {
+                    // Default: Show push
+                    let appIsTarget = true;
+
+                    // Check if text is targeted to specific device
+                    let currentDevicesObjs = pb.api.devices.objs;
+                    let targetDeviceIden = value.data && value.data.target_device_iden;
+                    if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
+                        if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
+                            appIsTarget = false;
+                        }
+                    }
+
+                    if (appIsTarget) {
+                        pbPush.enqueuePush(value);
+                    }
+                }
+
+                textsObjs[property] = value;
             }
         });
 
@@ -152,38 +197,42 @@ let registerPushProxy = () => {
         if (!(pb && pb.api && pb.api.pushes)) { return; }
 
         pb.api.pushes.objs = new Proxy(pb.api.pushes.objs, {
-            set: (pushesObj, iden, newPush) => {
+            set: (pushesObjs, property, value) => {
+                //logger.debug('pb.api.pushes.objs', 'set', 'property:', property, ' value:',  value);
+
                 // Check if push object exists
-                if (iden in pushesObj) { return false; }
+                if (property in pushesObjs) { return false; }
 
                 // Check if push with iden exists
-                let pushExists = Boolean(pb.api.pushes.all.filter((push) => {
-                    return push.iden === newPush.iden;
+                let exists = Boolean(pb.api.pushes.all.filter((push) => {
+                    return push.iden === value.iden;
                 }).length);
 
-                if (pushExists) { return false; }
+                if (!exists) {
+                    // Default: Show push
+                    let appIsTarget = true;
 
-                // Default: Show push
-                let appIsTarget = true;
+                    // Check if push is targeted to specific device
+                    let currentDevicesObjs = pb.api.devices.objs;
+                    let targetDeviceIden = value.target_device_iden;
+                    if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
+                        if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
+                            appIsTarget = false;
+                        }
+                    }
 
-                // Check if push is targeted to specific device
-                let currentDevicesObjs = pb.api.devices.objs;
-                let targetDeviceIden = newPush.target_device_iden;
-                if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
-                    if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
+                    // Check if push is directed
+                    let targetDirection = value.direction;
+                    if (targetDirection && targetDirection === 'outgoing') {
                         appIsTarget = false;
+                    }
+
+                    if (appIsTarget) {
+                        pbPush.enqueuePush(value);
                     }
                 }
 
-                // Check if push is directed
-                let targetDirection = newPush.direction;
-                if (targetDirection && targetDirection === 'outgoing') {
-                    appIsTarget = false;
-                }
-
-                if (appIsTarget) { pbPush.enqueuePush(newPush); }
-
-                pushesObj[iden] = newPush;
+                pushesObjs[property] = value;
             }
         });
 
@@ -198,33 +247,24 @@ let addWebsocketEventHandlers = () => {
     logger.debug('addWebsocketEventHandlers');
 
     const pb = window.pb;
-    const onecup = window.onecup;
 
     let interval = setInterval(() => {
-        if (!(pb && pb.ws && pb.ws.socket && onecup)) { return; }
-
-        /**
-         * @listens window:Event#message
-         */
-        pb.ws.socket.addEventListener('error', (ev) => {
-            logger.debug('socket#error');
-            //console.dir(ev);
-        });
+        if (!(pb && pb.ws && pb.ws.socket)) { return; }
 
         pb.ws.socket.addEventListener('message', (ev) => {
-            logger.debug('socket#message');
-            //console.dir(ev);
+            logger.debug('pb.ws.socket#message');
 
             let message;
 
             try {
                 message = JSON.parse(ev.data);
-            } catch (error) {
-                logger.error('pb.ws.socket:message', error.message);
+            } catch (err) {
+                logger.warn('pb.ws.socket#message', err.message);
                 return;
             }
 
-            logger.debug('message', util.inspect(message));
+            //logger.debug('pb.ws.socket#message', 'ev:');
+            //console.dir(ev)
 
             if (message.type !== 'push') { return; }
             // Decrypt
@@ -234,40 +274,83 @@ let addWebsocketEventHandlers = () => {
                         body: `Could not open message.${os.EOL}Click here to enter your password.`,
                         icon: appIcon
                     });
-                    notification.addEventListener('click', () => { onecup['goto']('/#settings'); });
+                    notification.addEventListener('click', () => { window.onecup['goto']('/#settings'); });
                 } else {
                     try {
                         message.push = JSON.parse(pb.e2e.decrypt(message.push.ciphertext));
                     } catch (error) {
-                        logger.error('pb.ws.socket:message', error.message);
+                        logger.warn('pb.ws.socket#message', 'error.message:', error.message);
                         return;
                     }
                 }
             }
 
             if (!(message.push && message.push.type)) { return; }
-            // Display
+
+            logger.debug('pb.ws.socket#message', 'message.push.type:', message.push.type);
+
             switch (message.push.type) {
                 /** Mirroring */
                 case 'mirror':
-                    pbPush.show(message.push);
-                    break;
-                /** Clipboard (pbClipboard) */
-                case 'clip':
+                /** SMS */
+                case 'sms_changed':
+                    pbPush.enqueuePush(message.push, true);
                     break;
                 /** Clipboard */
-                case 'sms_changed':
-                    pbPush.show(message.push);
+                case 'clip':
+                    pbClipboard.receiveClip(message.push);
                     break;
             }
-
-            logger.debug('pb.ws.socket:message', 'message.push.type', message.push.type);
         });
 
         clearInterval(interval);
     }, defaultInterval);
 };
 
+/**
+ * Login Pushbullet User
+ */
+let loginPushbulletUser = () => {
+    logger.debug('loginPushbulletUser');
+
+    const pb = window.pb;
+
+    let interval = setInterval(() => {
+        if (!(pb && pb.account && pb.account.active)) { return; }
+        logger.info('pushbullet', 'logged in');
+
+        pb.DEBUG = isDebug;
+
+        registerErrorProxy();
+        registerPushProxy();
+        registerTextsProxy();
+        addWebsocketEventHandlers();
+        addInterfaceEnhancements();
+
+        let lastNotification = configurationManager('lastNotification').get();
+        if (lastNotification) {
+            let unreadCount = (pb.api.pushes.all.concat(pb.api.texts.all)).filter((item) => {
+                return (item.created) > lastNotification;
+            }).length;
+
+            logger.debug('loginPushbulletUser', 'unreadCount:', unreadCount);
+
+            pbPush.updateBadge(unreadCount);
+        }
+
+        if (configurationManager('replayOnLaunch').get()) {
+            pbPush.enqueueRecentPushes((err, count) => {
+                logger.info('replayed pushes on after launch:', count);
+            });
+        }
+
+        ipcRenderer.send('account', 'login');
+        ipcRenderer.sendToHost('account', 'login');
+        window.onecup['goto']('/#settings');
+
+        clearInterval(interval);
+    }, defaultInterval);
+};
 
 /**
  * Init
@@ -278,34 +361,27 @@ let init = () => {
     const pb = window.pb;
 
     let interval = setInterval(() => {
-        if (!(pb && pb.account && pb.account.active) || !navigator.onLine) { return; }
+        if (!pb || !navigator.onLine) { return; }
+        logger.info('pushbullet', 'online');
 
-        window.pb.DEBUG = isDebug;
+        if (didDisconnect === true) { didDisconnect = false; }
+        ipcRenderer.send('network', 'online', didDisconnect);
+        ipcRenderer.sendToHost('network', 'online', didDisconnect);
 
-        registerErrorProxy();
-        registerPushProxy();
-        addWebsocketEventHandlers();
-        addInterfaceEnhancements();
-
-        if (configurationManager('replayOnLaunch').get()) {
-            pbPush.enqueueRecentPushes((err, count) => {
-                logger.info('replayed pushes on after launch:', count);
-            });
-        }
-
-        logger.info('logged in');
-
-        if (didDisconnectAfterConnect === true) {
-            didDisconnectAfterConnect = false;
-        }
-
-        ipcRenderer.send('network', 'online', didDisconnectAfterConnect);
-        ipcRenderer.sendToHost('network', 'online', didDisconnectAfterConnect);
+        loginPushbulletUser();
 
         clearInterval(interval);
     }, defaultInterval);
 };
 
+
+/**
+ * @listens process#loaded
+ */
+const _setImmediate = setImmediate;
+process.once('loaded', () => {
+    global.setImmediate = _setImmediate;
+});
 
 /**
  * @listens window:Event#resize
@@ -333,17 +409,16 @@ window.addEventListener('contextmenu', (ev) => {
     }, defaultTimeout);
 });
 
-
 /**
  * @listens window:Event#offline
  */
 window.addEventListener('offline', () => {
     logger.debug('window#offline');
 
-    didDisconnectAfterConnect = true;
+    didDisconnect = true;
 
-    ipcRenderer.send('network', 'offline', didDisconnectAfterConnect);
-    ipcRenderer.sendToHost('network', 'offline', didDisconnectAfterConnect);
+    ipcRenderer.send('network', 'offline', didDisconnect);
+    ipcRenderer.sendToHost('network', 'offline', didDisconnect);
 });
 
 /**
@@ -352,8 +427,8 @@ window.addEventListener('offline', () => {
 window.addEventListener('online', () => {
     logger.debug('window#online');
 
-    ipcRenderer.send('network', 'online', didDisconnectAfterConnect);
-    ipcRenderer.sendToHost('network', 'online', didDisconnectAfterConnect);
+    ipcRenderer.send('network', 'online', didDisconnect);
+    ipcRenderer.sendToHost('network', 'online', didDisconnect);
 });
 
 /**
@@ -363,12 +438,4 @@ window.addEventListener('load', () => {
     logger.debug('window#load');
 
     init();
-});
-
-/**
- * @listens process#loaded
- */
-const _setImmediate = setImmediate;
-process.once('loaded', () => {
-    global.setImmediate = _setImmediate;
 });

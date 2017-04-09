@@ -1,3 +1,24 @@
+## 5.5.1
+
+#### 🍾 Features
+
+ - Increases frequency of auto update server checks
+ - Adds persistency to icon badge count calculation (macOS) (#41)
+ - Adds notification count icon badge
+ - Adds configuration for badge counters
+ - Adds updated menu icons
+
+#### 🚨 Bugfixes
+
+ - Fixes regression of ui enhancements application (#45)
+ - Addresses `pending` item regression  (#43)
+ - Improves live updates of badge count (macOS) (#41)
+ - Fixes first-time login issue (#42)
+ - Fixes global font size control (#34)
+ - Fixes resetting of current location hash
+ - Fixes file transfer description text
+ - Fixes SMS description text
+
 ## 5.3.1
 
 #### 🍾 Features

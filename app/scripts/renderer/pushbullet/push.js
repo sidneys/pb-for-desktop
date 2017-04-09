@@ -44,20 +44,6 @@ const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'm
 const notificationInterval = 2000;
 const maxRecentNotifications = 5;
 
-/**
- * Notification Defaults
- * @constant
- * @default
- */
-const pushDefaults = {
-    push: {},
-    type: 'note',
-    title: null,
-    body: null,
-    url: null,
-    icon: null
-};
-
 
 /**
  * @instance
@@ -65,6 +51,19 @@ const pushDefaults = {
 let lastNotification;
 let soundVolume;
 
+
+/**
+ * Set application badge count
+ * @param {Number} total - Number to set
+ *
+ */
+let updateBadge = (total) => {
+    logger.debug('updateBadge');
+
+    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+
+    remote.app.setBadgeCount(total);
+};
 
 /**
  * Play Sound
@@ -177,7 +176,7 @@ let dismissPushbulletPush = (push) => {
     // direction: self
     if (push.direction === 'self') {
         if (!push.dismissed && !push.target_device_iden) {
-            logger.debug('dismissPushbulletPush', 'self', push.title);
+            logger.debug('dismissPushbulletPush', 'self', 'push.title:', push.title);
             pb.api.pushes.dismiss(push);
         }
     }
@@ -185,7 +184,7 @@ let dismissPushbulletPush = (push) => {
     // direction: incoming
     if (push.direction === 'incoming') {
         if (!push.dismissed) {
-            logger.debug('dismissPushbulletPush', 'incoming', push.title);
+            logger.debug('dismissPushbulletPush', 'incoming', 'push.title:', push.title);
             pb.api.pushes.dismiss(push);
         }
     }
@@ -236,12 +235,9 @@ let parsePush = (message) => {
  * Decorator Pushbullet Push object
  * @function
  */
-let decoratePushbulletPush = (defaultPush) => {
-    logger.debug('decoratePushbulletPush');
-
-    let push = _.defaults(defaultPush, pushDefaults);
-
-    //logger.debug('default push:', push);
+let decoratePushbulletPush = (push) => {
+    logger.debug('decoratePushbulletPush', push.type);
+    //logger.debug('decoratePushbulletPush', 'undecorated:', push);
 
     switch (push.type) {
         // Link
@@ -306,16 +302,16 @@ let decoratePushbulletPush = (defaultPush) => {
     }
 
     // Detect URLs in title
-    let detectedUrl = push.title.match(/\bhttps?:\/\/\S+/gi) || [];
+    let detectedUrl = (push.title && push.title.match(/\bhttps?:\/\/\S+/gi)) || [];
     if (!push.url && detectedUrl.length > 0) {
         push.url = detectedUrl[0];
     }
 
     // Trim
-    push.title = push.title.trim();
-    push.body = push.body.trim();
+    push.title = push.title && push.title.trim();
+    push.body = push.body && push.body.trim();
 
-    //logger.debug('decorated push:', push);
+    //logger.debug('decoratePushbulletPush', 'decorated:', push);
 
     return push;
 };
@@ -329,17 +325,7 @@ let createNotification = (push) => {
 
     push = decoratePushbulletPush(push);
 
-    /**
-     * Create HTML5 Notification
-     */
-    let notification = new Notification(push.title, {
-        title: push.title,
-        body: push.body,
-        icon: push.icon,
-        url: push.url,
-        tag: push.iden,
-        silent: true
-    });
+    let notification;
 
     /**
      * Play sound
@@ -355,9 +341,22 @@ let createNotification = (push) => {
     }
 
     /**
+     * Create HTML5 Notification
+     */
+    notification = new Notification(push.title, {
+        title: push.title,
+        body: push.body,
+        icon: push.icon,
+        url: push.url,
+        tag: push.iden,
+        silent: true
+    });
+
+
+    /**
      * @listens notification:PointerEvent#click
      */
-    notification.addEventListener('click', () => {
+    notification.onclick = () => {
         logger.debug('notification#click');
 
         // Open url
@@ -367,7 +366,28 @@ let createNotification = (push) => {
 
         // Dismiss push
         dismissPushbulletPush(push);
-    });
+    };
+
+    /**
+     * @listens notification:PointerEvent#close
+     */
+    notification.onclose = () => {
+        logger.debug('notification#close');
+    };
+
+    /**
+     * @listens notification:PointerEvent#error
+     */
+    notification.onerror = (err) => {
+        logger.error('notification#error', err);
+    };
+
+    /**
+     * @listens notification:PointerEvent#show
+     */
+    notification.onshow = () => {
+        logger.debug('notification#show');
+    };
 };
 
 /**
@@ -396,6 +416,8 @@ let shouldShowPush = (push) => {
         return false;
     }
 
+    logger.debug('shouldShowPush', true);
+
     return true;
 };
 
@@ -419,7 +441,7 @@ let showPush = (push) => {
  * @param {Number..} limit - Limit result to fixed number
  * @returns {Array|undefined} List of Pushes
  */
-let getRecentPushList = (limit) => {
+let getRecentPushesList = (limit) => {
     logger.debug('fetchRecentPushes');
 
     const pb = window.pb;
@@ -429,10 +451,10 @@ let getRecentPushList = (limit) => {
     let recentPushesList = [];
 
     // Build list of recent active pushes
-    for (let pushIden in pb.api.pushes.objs) {
-        if (pb.api.pushes.objs.hasOwnProperty(pushIden)) {
-            if (shouldShowPush(pb.api.pushes.objs[pushIden])) {
-                recentPushesList.push(pb.api.pushes.objs[pushIden]);
+    for (let iden in pb.api.pushes.objs) {
+        if (pb.api.pushes.objs.hasOwnProperty(iden)) {
+            if (shouldShowPush(pb.api.pushes.objs[iden])) {
+                recentPushesList.push(pb.api.pushes.objs[iden]);
             }
         }
     }
@@ -459,14 +481,15 @@ let getRecentPushList = (limit) => {
 /**
  * Enqueue 1 + N Pushes
  * @param {Array|Object} pushes - Pushbullet push objects
- * @param {Boolean} filter - Hide Pushes already shown
+ * @param {Boolean} ignoreDate - Ignore time of push, always show
+ * @param {Boolean} updateBadgeCount - Update badge counter
  * @param {Function=} callback - Callback
  * @returns {*}
  */
-let enqueuePush = (pushes, filter, callback = () => {}) => {
+let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback = () => {}) => {
     logger.debug('enqueuePush');
 
-    pushes = _.isArray(pushes) ? pushes : [ pushes ];
+    pushes = _.isArray(pushes) ? pushes : [pushes];
 
     if (pushes.length === 0) {
         logger.warn('enqueuePush', 'pushes list was empty');
@@ -477,13 +500,15 @@ let enqueuePush = (pushes, filter, callback = () => {}) => {
     let notifyAfter = lastNotification || 0;
 
     // Remove pushes older than 'lastNotification' from array
-    if (filter) {
+    if (Boolean(ignoreDate) === false) {
         nextPushesList = pushes.filter((element) => {
             return (element.created) > notifyAfter;
         });
     }
 
     nextPushesList.forEach((push, pushIndex) => {
+        //logger.debug('enqueuePush', 'push:', push);
+
         let timeout = setTimeout(() => {
 
             // Show local notification
@@ -491,12 +516,16 @@ let enqueuePush = (pushes, filter, callback = () => {}) => {
 
             // Update saved lastNotification
             if (push.created > notifyAfter) {
-                lastNotification = push.modified;
-                configurationManager('lastNotification').set(push.modified);
+                lastNotification = push.created;
+                configurationManager('lastNotification').set(push.created);
             }
 
             // Last push triggered
             if (nextPushesList.length === (pushIndex + 1)) {
+                if (updateBadgeCount) {
+                    updateBadge(remote.app.getBadgeCount() + nextPushesList.length);
+                }
+
                 callback(null, nextPushesList.length);
 
                 clearTimeout(timeout);
@@ -513,9 +542,9 @@ let enqueuePush = (pushes, filter, callback = () => {}) => {
 let enqueueRecentPushes = (callback = () => {}) => {
     logger.debug('enqueueRecentPushes');
 
-    let pushesList = getRecentPushList(maxRecentNotifications);
+    let pushesList = getRecentPushesList(maxRecentNotifications);
 
-    enqueuePush(pushesList, false, (err, count) => {
+    enqueuePush(pushesList, true, false, (err, count) => {
         if (err) {
             logger.error('enqueueRecentPushes', err);
             return callback(err);
@@ -552,5 +581,5 @@ window.addEventListener('load', () => {
 module.exports = {
     enqueuePush: enqueuePush,
     enqueueRecentPushes: enqueueRecentPushes,
-    show: showPush
+    updateBadge: updateBadge
 };

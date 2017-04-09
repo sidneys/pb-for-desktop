@@ -59,6 +59,8 @@ let getDevice = () => {
 let receiveClip = (clip) => {
     logger.debug('receiveClip');
 
+    if (!pb.account.pro) { return; }
+
     const pb = window.pb;
 
     pb.lastClip = clipboard.readText();
@@ -104,12 +106,12 @@ let publishClip = (clip) => {
 
         // Error: Pushbullet Pro
         if (result.error) {
-            logger.debug('error', result.error.message);
+            logger.warn('publishClip', 'result.error.message', result.error.message);
             return;
         }
 
         // OK
-        logger.debug('published');
+        logger.debug('publishClip', 'published');
     });
 };
 
@@ -139,7 +141,7 @@ let startMonitoring = () => {
             publishClip(text);
 
             // DEBUG
-            logger.debug('update image', image);
+            logger.debug('startMonitoring', 'image:', image);
         }
 
         if (textHasDiff(text, lastText)) {
@@ -147,7 +149,7 @@ let startMonitoring = () => {
             publishClip(text);
 
             // DEBUG
-            logger.debug('update text', text);
+            logger.debug('startMonitoring', 'text:', text);
         }
     }, defaultInterval);
 };
@@ -171,30 +173,6 @@ let init = () => {
             return;
         }
 
-        /**
-         * Receiver
-         * @listens window:Event#message
-         */
-        pb.ws.socket.addEventListener('message', (ev) => {
-
-            let message;
-
-            try {
-                message = JSON.parse(ev.data);
-            } catch (err) {
-                logger.error('addWSMessageHandler', err);
-            }
-
-            let messageType = message.type;
-            let pushObject = message.push;
-
-            if (pushObject && messageType === 'push') {
-                if (pushObject.type && pushObject.type === 'clip') {
-                    receiveClip(pushObject);
-                }
-            }
-        });
-
         startMonitoring();
 
         clearInterval(interval);
@@ -210,3 +188,11 @@ window.addEventListener('load', () => {
 
     init();
 });
+
+
+/**
+ * @exports
+ */
+module.exports = {
+    receiveClip: receiveClip
+};
