@@ -8,7 +8,6 @@
  */
 const os = require('os');
 const path = require('path');
-const util = require('util');
 
 /**
  * Modules
@@ -60,6 +59,20 @@ const defaultTimeout = 500;
  */
 let didDisconnect = false;
 
+
+/**
+ * Check if item push is targeted to application
+ * @param {String} targetIden - Pushbullet API element iden(tity)
+ * @returns {Boolean|void} - True if target
+ */
+let appIsTargeted = (targetIden) => {
+    const pb = window.pb;
+    const targetDeviceModel = pb.api && pb.api.devices && pb.api.devices.objs && pb.api.devices.objs[targetIden] && pb.api.devices.objs[targetIden].model;
+
+    if (targetDeviceModel === 'pb-for-desktop') {
+        return true;
+    }
+};
 
 /**
  * User Interface tweaks
@@ -144,28 +157,15 @@ let registerTextsProxy = () => {
             set: (textsObjs, property, value) => {
                 logger.debug('pb.api.texts.objs', 'set', 'property:', property, ' value:',  value);
 
-                // Check if push object exists
-                if (property in textsObjs) { return false; }
-
                 // Check if text with iden exists
                 let exists = Boolean(pb.api.texts.all.filter((text) => {
                     return text.iden === value.iden;
                 }).length);
 
                 if (!exists) {
-                    // Default: Show push
-                    let appIsTarget = true;
+                    const isTarget = value.data && value.data.hasOwnProperty('target_device_iden') ? appIsTargeted(value.data.target_device_iden) : true;
 
-                    // Check if text is targeted to specific device
-                    let currentDevicesObjs = pb.api.devices.objs;
-                    let targetDeviceIden = value.data && value.data.target_device_iden;
-                    if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
-                        if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
-                            appIsTarget = false;
-                        }
-                    }
-
-                    if (appIsTarget) {
+                    if (isTarget) {
                         pbPush.enqueuePush(value);
                     }
                 }
@@ -200,34 +200,16 @@ let registerPushProxy = () => {
             set: (pushesObjs, property, value) => {
                 //logger.debug('pb.api.pushes.objs', 'set', 'property:', property, ' value:',  value);
 
-                // Check if push object exists
-                if (property in pushesObjs) { return false; }
-
                 // Check if push with iden exists
                 let exists = Boolean(pb.api.pushes.all.filter((push) => {
                     return push.iden === value.iden;
                 }).length);
 
                 if (!exists) {
-                    // Default: Show push
-                    let appIsTarget = true;
+                    const isTarget = value.hasOwnProperty('target_device_iden') ? appIsTargeted(value.target_device_iden) : true;
+                    const isIncoming = value.hasOwnProperty('direction') ? value.direction !== 'outgoing' : true;
 
-                    // Check if push is targeted to specific device
-                    let currentDevicesObjs = pb.api.devices.objs;
-                    let targetDeviceIden = value.target_device_iden;
-                    if (targetDeviceIden && currentDevicesObjs[targetDeviceIden]) {
-                        if (currentDevicesObjs[targetDeviceIden].model && (currentDevicesObjs[targetDeviceIden].model !== 'pb-for-desktop')) {
-                            appIsTarget = false;
-                        }
-                    }
-
-                    // Check if push is directed
-                    let targetDirection = value.direction;
-                    if (targetDirection && targetDirection === 'outgoing') {
-                        appIsTarget = false;
-                    }
-
-                    if (appIsTarget) {
+                    if (isTarget && isIncoming) {
                         pbPush.enqueuePush(value);
                     }
                 }
@@ -338,7 +320,7 @@ let loginPushbulletUser = () => {
             pbPush.updateBadge(unreadCount);
         }
 
-        if (configurationManager('replayOnLaunch').get()) {
+        if (configurationManager('replayOnLaunch').get() === true) {
             pbPush.enqueueRecentPushes((err, count) => {
                 logger.info('replayed pushes on after launch:', count);
             });

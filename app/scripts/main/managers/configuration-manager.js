@@ -417,6 +417,26 @@ let configurationItems = {
         }
     },
     /**
+     * Mirrored SMS
+     */
+    smsEnabled: {
+        keypath: 'smsEnabled',
+        default: true,
+        init() {
+            logger.debug(this.keypath, 'init');
+        },
+        get() {
+            logger.debug(this.keypath, 'get');
+
+            return electronSettings.get(this.keypath);
+        },
+        set(value) {
+            logger.debug(this.keypath, 'set');
+
+            electronSettings.set(this.keypath, value);
+        }
+    },
+    /**
      * Main Window position / size
      * @readonly
      */

@@ -294,7 +294,7 @@ let decoratePushbulletPush = (push) => {
                 let text = sms.body;
                 let time = (new Date(0)).setUTCSeconds(sms.timestamp);
 
-                push.title = `New SMS | ${phonenumber}`;
+                push.title = `SMS | ${phonenumber}`;
                 push.body = `${text}${os.EOL}${moment(time).fromNow()}`;
                 push.icon = push.image_url || generateImageUrl(push);
             }
@@ -328,14 +328,13 @@ let createNotification = (push) => {
     let notification;
 
     /**
-     * Play sound
+     * Play Sound
      */
-    let soundEnabled = configurationManager('soundEnabled').get();
-    if (soundEnabled === true) {
+    if (configurationManager('soundEnabled').get() === true) {
         let soundFile = configurationManager('soundFile').get();
         playSound(soundFile, (err) => {
             if (err) {
-                logger.error('playSoundFile', err);
+                logger.error('could not play sound:', soundFile, err);
             }
         });
     }
@@ -398,25 +397,39 @@ let createNotification = (push) => {
 let shouldShowPush = (push) => {
     //logger.debug('shouldShowPush');
 
-    // Don't show if push is not active
-    if (['file', 'link', 'note'].includes(push.type) && !push.active) {
-        logger.debug('shouldShowPush', false, 'push is not active');
-        return false;
+    // Activivity
+    if (push.hasOwnProperty('active')) {
+        // Push is not active
+        if (Boolean(push.active) === false) {
+            logger.debug('shouldShowPush', false, 'push is not active');
+            return false;
+        }
     }
 
-    // Don't show if push was dismissed
-    if ((push.direction === 'self') && push.dismissed) {
-        logger.debug('shouldShowPush', false, 'push was already dismissed');
-        return false;
+    // Direction
+    if (push.direction === 'self') {
+        // Don't show if Push was dismissed
+        if (Boolean(push.dismissed) === true) {
+            logger.debug('shouldShowPush', false, 'push was dismissed already');
+            return false;
+        }
     }
 
-    // Don't show if push is empty sms
-    if ((push.type === 'sms_changed') && (push.notifications.length === 0)) {
-        logger.debug('shouldShowPush', false, 'push is empty sms');
-        return false;
+    // SMS
+    if (push.type === 'sms_changed') {
+        // Don't show if SMS is disabled
+        if (configurationManager('smsEnabled').get() === false) {
+            logger.debug('shouldShowPush', false, 'sms mirroring is not enabled');
+            return false;
+        }
+        // Don't show if SMS has no attached notifications
+        if (push.notifications.length === 0) {
+            logger.debug('shouldShowPush', false, 'sms push is empty');
+            return false;
+        }
     }
 
-    logger.debug('shouldShowPush', true);
+    logger.debug('shouldShowPush:', true, 'type:', push.type);
 
     return true;
 };

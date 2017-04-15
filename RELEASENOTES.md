@@ -1,3 +1,18 @@
+## 5.6.0
+
+#### 🍾 Features
+
+ - Adds SMS Mirroring configuration option
+ - Adds notification count icon badge
+
+#### 🚨 Bugfixes
+
+ - Fixes outgoing / pending SMS pushes (#43)
+
+#### 👷 Internals
+
+ - Upgrades dependencies
+
 ## 5.5.1
 
 #### 🍾 Features

@@ -82,6 +82,72 @@ let getTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
+            id: 'logout',
+            label: 'Log out...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-logout${platformHelper.menuItemImageExtension}`),
+            type: 'normal',
+            click() {
+                messengerService.showQuestion('Are you sure you want to log out from Pushbullet?',
+                    `${appProductName} will log out from Pushbullet.${os.EOL}` +
+                    `All unsaved changes will be lost.`,
+                    (result) => {
+                        if (result === 0) {
+                            const ses = session.fromPartition('persist:app');
+
+                            ses.clearCache(() => {
+                                logger.debug('logout', 'cache cleared');
+
+                                ses.clearStorageData({
+                                    storages: [
+                                        'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache',
+                                        'websql', 'serviceworkers'
+                                    ],
+                                    quotas: ['temporary', 'persistent', 'syncable']
+                                }, () => {
+                                    logger.debug('logout', 'storage cleared');
+                                    logger.log('logout', 'relaunching');
+
+                                    app.relaunch();
+                                    app.exit();
+                                });
+                            });
+                        }
+                    });
+            }
+        },
+        {
+            id: 'reconnect',
+            label: 'Reconnect...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-reconnect${platformHelper.menuItemImageExtension}`),
+            type: 'normal',
+            click() {
+                messengerService.showQuestion('Are you sure you want to reconnect to Pushbullet?',
+                    `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
+                    `All unsaved changes will be lost.`,
+                    (result) => {
+                        if (result === 0) {
+                            logger.log('reconnect', 'relaunching');
+
+                            app.relaunch();
+                            app.exit();
+                        }
+                    });
+            }
+        },
+        {
+            id: 'smsEnabled',
+            label: 'SMS Mirroring',
+            icon: path.join(appRootPath, 'app', 'images', `icon-sms-enabled${platformHelper.menuItemImageExtension}`),
+            type: 'checkbox',
+            checked: configurationManager('smsEnabled').get(),
+            click(menuItem) {
+                configurationManager('smsEnabled').set(menuItem.checked);
+            }
+        },
+        {
+            type: 'separator'
+        },
+        {
             id: 'launchOnStartup',
             label: 'Launch on Startup',
             icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup${platformHelper.menuItemImageExtension}`),
@@ -127,12 +193,34 @@ let getTrayMenuTemplate = () => {
         {
             id: 'showBadgeCount',
             visible: platformHelper.isMacOS,
-            label: 'Show unread Count',
+            label: 'Dock Icon Count',
             icon: path.join(appRootPath, 'app', 'images', `icon-show-badge-count${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
             checked: configurationManager('showBadgeCount').get(),
             click(menuItem) {
                 configurationManager('showBadgeCount').set(menuItem.checked);
+            }
+        },
+        {
+            type: 'separator'
+        },
+        {
+            id: 'soundEnabled',
+            label: 'Play Sound Effects',
+            icon: path.join(appRootPath, 'app', 'images', `icon-sound-enabled${platformHelper.menuItemImageExtension}`),
+            type: 'checkbox',
+            checked: configurationManager('soundEnabled').get(),
+            click(menuItem) {
+                configurationManager('soundEnabled').set(menuItem.checked);
+            }
+        },
+        {
+            id: 'soundFile',
+            label: 'Open Sound File...',
+            icon: path.join(appRootPath, 'app', 'images', `icon-sound-file${platformHelper.menuItemImageExtension}`),
+            type: 'normal',
+            click() {
+                configurationManager('soundFile').implement();
             }
         },
         {
@@ -168,84 +256,6 @@ let getTrayMenuTemplate = () => {
                     }
                 }
             ]
-        },
-        {
-            type: 'separator'
-        },
-        {
-            id: 'soundEnabled',
-            label: 'Play Sound Effects',
-            icon: path.join(appRootPath, 'app', 'images', `icon-sound-enabled${platformHelper.menuItemImageExtension}`),
-            type: 'checkbox',
-            checked: configurationManager('soundEnabled').get(),
-            click(menuItem) {
-                configurationManager('soundEnabled').set(menuItem.checked);
-            }
-        },
-        {
-            id: 'soundFile',
-            label: 'Open Sound File...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-sound-file${platformHelper.menuItemImageExtension}`),
-            type: 'normal',
-            click() {
-                configurationManager('soundFile').implement();
-            }
-        },
-        {
-            type: 'separator'
-        },
-        {
-            id: 'reconnect',
-            label: 'Reconnect...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-reconnect${platformHelper.menuItemImageExtension}`),
-            type: 'normal',
-            click() {
-                messengerService.showQuestion('Are you sure you want to reconnect to Pushbullet?',
-                    `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
-                    `All unsaved changes will be lost.`,
-                    (result) => {
-                        if (result === 0) {
-                            logger.log('reconnect', 'relaunching');
-
-                            app.relaunch();
-                            app.exit();
-                        }
-                    });
-            }
-        },
-        {
-            id: 'logout',
-            label: 'Log out...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-logout${platformHelper.menuItemImageExtension}`),
-            type: 'normal',
-            click() {
-                messengerService.showQuestion('Are you sure you want to log out from Pushbullet?',
-                    `${appProductName} will log out from Pushbullet.${os.EOL}` +
-                    `All unsaved changes will be lost.`,
-                    (result) => {
-                        if (result === 0) {
-                            const ses = session.fromPartition('persist:app');
-
-                            ses.clearCache(() => {
-                                logger.debug('logout', 'cache cleared');
-
-                                ses.clearStorageData({
-                                    storages: [
-                                        'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache',
-                                        'websql', 'serviceworkers'
-                                    ],
-                                    quotas: ['temporary', 'persistent', 'syncable']
-                                }, () => {
-                                    logger.debug('logout', 'storage cleared');
-                                    logger.log('logout', 'relaunching');
-
-                                    app.relaunch();
-                                    app.exit();
-                                });
-                            });
-                        }
-                    });
-            }
         },
         {
             type: 'separator'
