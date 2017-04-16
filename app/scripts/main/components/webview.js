@@ -6,6 +6,7 @@
  * Node
  * @constant
  */
+const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const util = require('util');
@@ -162,8 +163,9 @@ webview.addEventListener('load-commit', (ev) => {
 
     let domain = parseDomain(ev.url)['domain'] || '';
     let subdomain = parseDomain(ev.url)['subdomain'] || '';
-    let path = url.parse(ev.url).path || '';
+    let urlpath = url.parse(ev.url).path || '';
 
+    // Pre/Post signin ui amendments
     switch (domain) {
         case 'google':
         case 'youtube':
@@ -181,17 +183,21 @@ webview.addEventListener('load-commit', (ev) => {
             }
 
             // Pushbullet 'signin'
-            if (path.includes('signin')) {
+            if (urlpath.includes('signin')) {
                 body.style.backgroundColor = 'rgb(236, 240, 240)';
             } else {
                 body.style.backgroundColor = 'transparent';
             }
     }
 
+    // HTTP Status Monitor
     webview.getWebContents().session.webRequest.onHeadersReceived((details, callback) => {
         logger.debug('request', 'url:', details.url, 'statusCode:', details.statusCode);
         callback({cancel: false });
     });
+
+    // CSS Injection
+    domHelper.injectCSS(webview, path.join(appRootPath, 'app', 'styles', 'pushbullet.css'));
 });
 
 /**

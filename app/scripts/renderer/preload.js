@@ -33,6 +33,7 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+const domHelper = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'utils', 'dom-helper'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
@@ -290,6 +291,17 @@ let addWebsocketEventHandlers = () => {
 };
 
 /**
+ * @listens window:Event#resize
+ */
+// Keep Pushbullet from resetting UI on resize
+window.removeEventListener('resize');
+window.addEventListener('resize', () => {
+    logger.debug('window#resize');
+
+    addInterfaceEnhancements();
+});
+
+/**
  * Login Pushbullet User
  */
 let loginPushbulletUser = () => {
@@ -334,6 +346,7 @@ let loginPushbulletUser = () => {
     }, defaultInterval);
 };
 
+
 /**
  * Init
  */
@@ -363,15 +376,6 @@ let init = () => {
 const _setImmediate = setImmediate;
 process.once('loaded', () => {
     global.setImmediate = _setImmediate;
-});
-
-/**
- * @listens window:Event#resize
- */
-window.addEventListener('resize', () => {
-    logger.debug('window#resize');
-
-    addInterfaceEnhancements();
 });
 
 /**

@@ -1,3 +1,19 @@
+## 5.6.1
+
+#### 🥚 Features 🐇 🐇 🐇
+
+ - Adds platform-specific native system fonts
+ - Reduced webview repaints on resize
+
+#### 🥚 Bugfixes 🐰 🐰 🐰
+
+ - Improves UI responsiveness
+
+#### 🥚 Internals 🎉 🎉 🎉
+
+ - Upgrades live reload infrastructure
+ - Upgrades dependencies
+
 ## 5.6.0
 
 #### 🍾 Features

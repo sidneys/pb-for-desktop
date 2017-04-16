@@ -24,6 +24,8 @@ const { app } = electron;
 const appRootPath = require('app-root-path');
 const electronConnect = require('electron-connect');
 const gulp = require('gulp');
+const minimist = require('minimist');
+
 
 /**
  * Modules
@@ -36,7 +38,8 @@ appRootPath.setPath(path.join(__dirname));
  * Internal
  * @constant
  */
-const packageJson = require(path.join(appRootPath['path'], 'package.json'));
+const logger = require(path.join(appRootPath.path, 'lib', 'logger'))({ write: true });
+const packageJson = require(path.join(appRootPath.path, 'package.json'));
 
 
 /**
@@ -83,6 +86,14 @@ let appSources = {
  * start
  */
 gulp.task('livereload', () => {
+    let globalArgvObj;
+    let npmArgvObj;
+    try { globalArgvObj = minimist(process.argv); } catch (err) {}
+    try { npmArgvObj = minimist(JSON.parse(process.env.npm_config_argv).original); } catch (err) {}
+
+    logger.info(globalArgvObj)
+    logger.info(npmArgvObj)
+
     electronConnectServer.start();
     gulp.watch(appSources.main, ['main:restart']);
     gulp.watch(appSources.renderer, ['renderer:reload']);

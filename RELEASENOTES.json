@@ -1,4 +1,17 @@
 {
+  "5.6.1": {
+    "🥚 features 🐇🐇🐇": [
+      "Adds platform-specific native system fonts",
+      "Reduced webview repaints on resize"
+    ],
+    "🥚 bugfixes 🐰🐰🐰": [
+      "Improves UI responsiveness"
+    ],
+    "🥚 internals 🎉🎉🎉": [
+      "Upgrades live reload infrastructure",
+      "Upgrades dependencies"
+    ]
+  },
   "5.6.0": {
     "🍾 features": [
       "Adds SMS Mirroring configuration option",

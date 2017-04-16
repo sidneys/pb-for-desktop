@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "Pushbullet Desktop app for macOS, Windows and Linux.",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "electron": "^1.6.6",
-    "electron-builder": "^16.8.3",
+    "electron-builder": "^16.8.4",
     "electron-connect": "^0.6.1",
     "electron-prebuilt-compile": "git://github.com/sidneys/electron-prebuilt-compile.git#deploy",
     "fkill": "^4.1.0",
@@ -95,10 +95,10 @@
   "scripts": {
     "build": "node ./lib/build.js",
     "deploy": "node ./lib/deploy.js",
-    "livereload": "./node_modules/.bin/gulp livereload",
+    "livereload": "./node_modules/.bin/gulp",
     "localsetup": "./node_modules/.bin/babel-node ./lib/localsetup.js",
     "releasenotes": "node ./lib/releasenotes.js",
-    "start": "./node_modules/.bin/electron ./app/scripts/main/components/application.js"
+    "dev": "./node_modules/.bin/electron ./app/scripts/main/components/application.js"
   },
   "build": {
     "appId": "de.sidneys.pb-for-desktop",

@@ -151,12 +151,70 @@ let setVisibility = (element, visible, delay = 0) => {
     }, delay);
 };
 
+/**
+ * Inject CSS
+ * @param {Electron.webview} webview - Electron Webview
+ * @param {String} filepath - Stylesheet filepath
+ * @param {Callback=} callback - Callback function
+ */
+let injectCSS = (webview, filepath, callback = () => {}) => {
+    logger.debug('injectStylesheet');
+
+    fs.readFile(filepath, (err, data) => {
+        if (err) {
+            logger.error('injectStylesheet', err);
+            return callback(err);
+        }
+
+        webview.insertCSS(data.toString());
+
+        logger.debug('injectStylesheet', 'filepath:', filepath, 'data:', data.toString());
+
+        callback(null, filepath);
+    });
+};
+
+/**
+ * Extend Eventtarget
+ * Enables elem.removeEventListener('name');
+ */
+EventTarget.prototype.addEventListenerBase = EventTarget.prototype.addEventListener;
+EventTarget.prototype.addEventListener = function(type, listener) {
+   if (!this.EventList) { this.EventList = []; }
+   this.addEventListenerBase.apply(this, arguments);
+   if (!this.EventList[type]) { this.EventList[type] = []; }
+   const list = this.EventList[type];
+   for (let index = 0; index !== list.length; index++) {
+       if(list[index] === listener) { return; }
+   }
+   list.push(listener);
+};
+EventTarget.prototype.removeEventListenerBase = EventTarget.prototype.removeEventListener;
+EventTarget.prototype.removeEventListener = function(type, listener) {
+   if (!this.EventList) { this.EventList = []; }
+   if (listener instanceof Function) { this.removeEventListenerBase.apply(this, arguments); }
+   if (!this.EventList[type]) { return; }
+   let list = this.EventList[type];
+   for(let index = 0; index !== list.length;) {
+       const item = list[index];
+       if (!listener) {
+           this.removeEventListenerBase(type, item);
+           list.splice(index, 1); continue;
+       } else if(item === listener) {
+           list.splice(index, 1); break;
+       }
+       index++;
+   }
+   if (list.length == 0) { delete this.EventList[type]; }
+};
+
 
 /**
  * @exports
  */
 module.exports = {
     addPlatformClass: addPlatformClass,
+    injectCSS: injectCSS,
     isHtmlElement: isHtmlElement,
     loadScript: loadScript,
     loadStylesheet: loadStylesheet,

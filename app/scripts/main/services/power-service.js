@@ -14,7 +14,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { app } = electron.remote || electron;
+const { app } = electron || electron.remote;
 
 /**
  * Modules

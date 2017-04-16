@@ -19,6 +19,7 @@
     "node": true,
     "globals": {
         "Audio": false,
+        "EventTarget": true,
         "global": false,
         "Notification": true
     }

@@ -15,7 +15,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { app, BrowserWindow } = electron.remote || electron;
+const { app, BrowserWindow } = electron || electron.remote;
 
 /**
  * Modules
