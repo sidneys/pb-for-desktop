@@ -1,3 +1,19 @@
+## 5.7.2
+
+#### 🥚 Features
+
+ - Adds custom branded title bar (macOS)
+ - Adjusts title bar size (macOS)
+
+#### 🐇 Bugfixes
+
+ - Fixes missing icons & symbols regression
+
+#### 🐰 Internals
+
+ - Adds runtime file-based CSS injection module
+ - Upgrades cross-platform build & deployment system
+
 ## 5.6.1
 
 #### 🥚 Features 🐇 🐇 🐇

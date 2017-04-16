@@ -1,4 +1,17 @@
 {
+  "5.7.2": {
+    "🥚 features": [
+      "Adds custom branded title bar (macOS)",
+      "Adjusts title bar size (macOS)"
+    ],
+    "🐇 bugfixes": [
+      "Fixes missing icons & symbols regression"
+    ],
+    "🐰 internals": [
+      "Adds runtime file-based CSS injection module",
+      "Upgrades cross-platform build & deployment system"
+    ]
+  },
   "5.6.1": {
     "🥚 features 🐇🐇🐇": [
       "Adds platform-specific native system fonts",

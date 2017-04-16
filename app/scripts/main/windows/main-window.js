@@ -67,7 +67,7 @@ class MainWindow extends BrowserWindow {
             show: false,
             thickFrame: true,
             title: appProductName,
-            titleBarStyle: 'default',
+            titleBarStyle: platformHelper.isMacOS ? 'hidden-inset' : 'default',
             transparent: false,
             vibrancy: 'dark',
             webPreferences: {

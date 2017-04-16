@@ -191,10 +191,17 @@ webview.addEventListener('load-commit', (ev) => {
     }
 
     // HTTP Status Monitor
-    webview.getWebContents().session.webRequest.onHeadersReceived((details, callback) => {
-        logger.debug('request', 'url:', details.url, 'statusCode:', details.statusCode);
-        callback({cancel: false });
-    });
+    // webview.getWebContents().session.webRequest.onHeadersReceived((details, callback) => {
+    //     logger.debug('request', 'url:', details.url, 'statusCode:', details.statusCode);
+    //     callback({cancel: false });
+    // });
+});
+
+/**
+ * @listens webview#load-commit
+ */
+webview.addEventListener('load-commit', (ev) => {
+    logger.debug('webview#load-commit');
 
     // CSS Injection
     domHelper.injectCSS(webview, path.join(appRootPath, 'app', 'styles', 'pushbullet.css'));

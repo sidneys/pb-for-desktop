@@ -69,7 +69,10 @@
 /* html
    ========================================================================== */
 
-
-html, html * {
-    font-family: system !important;
+div:not(.pushfont-circle),
+div:not(.pushfont-hamburger),
+div:not(.pushfont-paperclip),
+div:not(.pushfont-close) {
+  font-family: system !important;
+  -webkit-font-smoothing: antialiased !important;
 }

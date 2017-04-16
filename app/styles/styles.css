@@ -4,6 +4,14 @@
    ########################################################################## */
 
 /* ==========================================================================
+   VARIABLES
+   ========================================================================== */
+
+:root {
+  --titlebar-margin: 20px;
+}
+
+/* ==========================================================================
    GLOBAL
    ========================================================================== */
 
@@ -57,6 +65,11 @@ webview {
     flex-direction: row;
     flex: 1;
     justify-content: space-between;
+}
+
+html.darwin webview {
+    padding-top: var(--titlebar-margin);
+    background: linear-gradient(to bottom, #4ab367 0,#4ab367 var(--titlebar-margin), transparent var(--titlebar-margin), transparent 100%);
 }
 
 /* ==========================================================================
@@ -315,6 +328,54 @@ webview {
     line-height: 26px;
     text-align: center;
     overflow: hidden;
+}
+
+/* ==========================================================================
+   TITLE BAR
+   ========================================================================== */
+
+/* .titlebar
+   ========================================================================== */
+
+.titlebar {
+    display: flex;
+    position: absolute;
+    z-index: 13337;
+    padding-top: var(--titlebar-margin);
+    /* background-color: rgba(255, 0, 0, 0.2); */
+}
+
+html:not(".darwin") .titlebar {
+    display: none;
+}
+
+.titlebar.left {
+    left: 64px;
+}
+
+.titlebar.right {
+    right: 0px;
+    width: 0;
+}
+
+@media all and (max-width: 550px) {
+  .titlebar {
+      height: 64px;
+      width: 100%;
+  }
+}
+
+@media all and (min-width: 551px) {
+  .titlebar {
+      height: 80px;
+      width: 32%;
+  }
+}
+
+@media all and (min-width: 1001px) {
+  .titlebar.right {
+    width: 20%;
+  }
 }
 
 /* ==========================================================================

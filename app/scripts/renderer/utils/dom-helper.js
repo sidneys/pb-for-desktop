@@ -168,7 +168,7 @@ let injectCSS = (webview, filepath, callback = () => {}) => {
 
         webview.insertCSS(data.toString());
 
-        logger.debug('injectStylesheet', 'filepath:', filepath, 'data:', data.toString());
+        logger.debug('injectStylesheet', 'filepath:', filepath);
 
         callback(null, filepath);
     });
