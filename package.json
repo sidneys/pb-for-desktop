@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "5.7.2",
+  "version": "5.8.1",
   "description": "Pushbullet Desktop app for macOS, Windows and Linux.",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -53,8 +53,8 @@
     "chalkline": "0.0.5",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^3.0.14",
-    "electron-updater": "^1.12.0",
-    "file-type": "^4.1.0",
+    "electron-updater": "^1.14.0",
+    "file-type": "^4.2.0",
     "file-url": "^2.0.2",
     "fs-extra": "^2.1.2",
     "get-youtube-id": "^1.0.0",
@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "electron": "^1.6.6",
-    "electron-builder": "^17.0.0",
+    "electron-builder": "^17.0.2",
     "electron-connect": "^0.6.1",
     "electron-prebuilt-compile": "git://github.com/sidneys/electron-prebuilt-compile.git#deploy",
     "fkill": "^4.1.0",

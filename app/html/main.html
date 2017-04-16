@@ -13,19 +13,18 @@
         <div id="spinner__text">Connecting</div>
     </div>
 
-    <div id="controls">
-        <div class="controls__button home">
+    <div id="controls-extra">
+        <div class="controls-extra__button home">
             <div class="title">Home</div>
             <i class="icon ion-home"></i>
         </div>
     </div>
 
+    <div class="titlebar top draggable"></div>
     <div class="titlebar left draggable"></div>
     <div class="titlebar right draggable"></div>
 
     <webview id="webview"
-             allowpopups="on"
-             autosize="on"
              disablewebsecurity="on"
              partition="persist:app"
              preload="../scripts/renderer/preload.js"

@@ -66,13 +66,32 @@
    GLOBAL
    ========================================================================== */
 
-/* html
+/* Use operating system font
    ========================================================================== */
 
 div:not(.pushfont-circle),
 div:not(.pushfont-hamburger),
 div:not(.pushfont-paperclip),
-div:not(.pushfont-close) {
+div:not(.pushfont-close)
+{
   font-family: system !important;
   -webkit-font-smoothing: antialiased !important;
+}
+
+/* Remove header shadow
+   ========================================================================== */
+
+#header,
+#mobile-header
+{
+    box-shadow: none !important;
+}
+
+/* Transparent background
+   ========================================================================== */
+
+html.darwin #sink,
+html.darwin #sink > div > div > div:first-child
+{
+    background-color: transparent !important;
 }

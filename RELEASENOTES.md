@@ -1,31 +1,35 @@
-## 5.7.2
+## 5.8.1
 
-#### 🥚 Features
+#### 🐰 Features
 
+ - Adds updated system tray icons (Linux)
  - Adds custom branded title bar (macOS)
- - Adjusts title bar size (macOS)
+ - Optimizes title bar size (macOS)
+ - Optimizes external url presentation
 
-#### 🐇 Bugfixes
+#### 🐰 Bugfixes
 
- - Fixes missing icons & symbols regression
+ - Fixes interface redraws on window resize
+ - Fixes missing icons symbols
 
 #### 🐰 Internals
 
- - Adds runtime file-based CSS injection module
+ - Adds system tray icon sources
+ - Adds runtime CSS injection module
  - Upgrades cross-platform build & deployment system
 
 ## 5.6.1
 
-#### 🥚 Features 🐇 🐇 🐇
+#### 🐰 Features
 
  - Adds platform-specific native system fonts
  - Reduced webview repaints on resize
 
-#### 🥚 Bugfixes 🐰 🐰 🐰
+#### 🐰 Bugfixes
 
  - Improves UI responsiveness
 
-#### 🥚 Internals 🎉 🎉 🎉
+#### 🐰 Internals
 
  - Upgrades live reload infrastructure
  - Upgrades dependencies

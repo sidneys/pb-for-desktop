@@ -45,10 +45,10 @@ const body = document.querySelector('body');
 const webview = document.getElementById('webview');
 const spinner = document.getElementById('spinner');
 const status = document.getElementById('spinner__text');
-const controls = document.getElementById('controls');
+const controlsExtra = document.getElementById('controls-extra');
 const buttons = {
     home: {
-        target: document.querySelector('.controls__button.home'),
+        target: document.querySelector('.controls-extra__button.home'),
         event() { webview.goBack(); }
     }
 };
@@ -144,13 +144,10 @@ webview.addEventListener('did-navigate-in-page', (ev) => {
  * @listens webview#new-window
  */
 webview.addEventListener('new-window', (ev) => {
-    logger.debug('webview#new-window');
+    logger.debug('webview#new-window', 'ev.url:', ev.url);
 
-    let protocol = url.parse(ev.url).protocol;
-
-    if (protocol === 'http:' || protocol === 'https:') {
-        remote.shell.openExternal(ev.url);
-    }
+    ev.preventDefault();
+    webview.loadURL(ev.url);
 });
 
 /**
@@ -170,16 +167,16 @@ webview.addEventListener('load-commit', (ev) => {
         case 'google':
         case 'youtube':
         case 'facebook':
-            domHelper.setVisibility(controls, true);
+            domHelper.setVisibility(controlsExtra, true);
 
             body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
         case 'pushbullet':
             // Pushbullet 'help'
             if (subdomain.includes('help')) {
-                domHelper.setVisibility(controls, true);
+                domHelper.setVisibility(controlsExtra, true);
             } else {
-                domHelper.setVisibility(controls, false);
+                domHelper.setVisibility(controlsExtra, false);
             }
 
             // Pushbullet 'signin'

@@ -8,7 +8,10 @@
    ========================================================================== */
 
 :root {
-  --titlebar-margin: 20px;
+  --margin-titlebar: 20px;
+  --color-titlebar: #4ab367;
+  --z-index-top: 1337;
+  --z-index-topmost: 13370;
 }
 
 /* ==========================================================================
@@ -68,8 +71,11 @@ webview {
 }
 
 html.darwin webview {
-    padding-top: var(--titlebar-margin);
-    background: linear-gradient(to bottom, #4ab367 0,#4ab367 var(--titlebar-margin), transparent var(--titlebar-margin), transparent 100%);
+    top: var(--margin-titlebar);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* ==========================================================================
@@ -80,7 +86,7 @@ html.darwin webview {
    ========================================================================== */
 
 #spinner {
-    z-index: 1337;
+    z-index: var(--z-index-topmost);
     display: flex; /* establish flex container */
     flex-direction: column; /* make main axis vertical */
     justify-content: center; /* center items vertically, in this case */
@@ -114,8 +120,7 @@ html.darwin webview {
    ========================================================================== */
 
 .spinner__icon {
-    z-index: 13370;
-    background-image: url("../images/icon.png");
+    background-image: url('../images/icon.png');
     background-size: 100% 100%;
     border-radius: 100%;
     position: relative;
@@ -142,7 +147,6 @@ html.darwin webview {
 
 .spinner__icon.background {
     background: none;
-    z-index: 13360 !important;
     position: absolute;
     height: 200px;
     width: 200px;
@@ -177,7 +181,6 @@ html.darwin webview {
     transform: rotateY(-90deg);
     transform-origin: 100% 50%;
     width: 5px;
-    z-index: -10;
     left: 35px;
 }
 
@@ -197,8 +200,7 @@ html.darwin webview {
    ========================================================================== */
 
 #spinner__logo {
-    z-index: 13380;
-    background-image: url("../images/icon-text.png");
+    background-image: url('../images/icon-text.png');
     background-size: 50% auto;
     background-position: center;
     background-repeat: no-repeat;
@@ -257,13 +259,14 @@ html.darwin webview {
 }
 
 /* ==========================================================================
-   CONTROLS
+   EXTRA CONTROLS
    ========================================================================== */
 
-/* controls__container
+/* controls-extra__container
    ========================================================================== */
 
-#controls {
+#controls-extra {
+    z-index: var(--z-index-topmost);
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -272,34 +275,34 @@ html.darwin webview {
     border: 1px solid #ced1d5;
     padding: 12px;
     font-size: 16px;
-    z-index: 100;
     cursor: pointer;
+    box-shadow: 0 0 1px 5px rgba(0, 0, 0, 0.1);
 
     transition: opacity 600ms;
     opacity: 0;
     pointer-events: none;
 }
 
-#controls.show {
+#controls-extra.show {
     opacity: 1;
     pointer-events: auto;
 }
 
-#controls:hover {
+#controls-extra:hover {
     background-color: rgba(255, 255, 255, 1.0);
 }
 
-/* controls__button
+/* controls-extra__button
    ========================================================================== */
 
-#controls .controls__button {
+#controls-extra .controls-extra__button {
     transition: 0.25s;
     cursor: pointer;
     color: inherit;
     text-decoration: underline;
 }
 
-#controls .controls__button .title {
+#controls-extra .controls-extra__button .title {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow: hidden;
     white-space: nowrap;
@@ -312,13 +315,13 @@ html.darwin webview {
     transition: all 0.25s ease-in-out;
 }
 
-#controls:hover .controls__button .title {
+#controls-extra:hover .controls-extra__button .title {
     width: 75px;
     padding-left: 10px;
     transition: all 0.25s ease-in-out;
 }
 
-#controls .controls__button .icon {
+#controls-extra .controls-extra__button .icon {
     float: right;
     color: #95a5a6;
     width: 26px;
@@ -338,28 +341,34 @@ html.darwin webview {
    ========================================================================== */
 
 .titlebar {
+    z-index: var(--z-index-top);
     display: flex;
     position: absolute;
-    z-index: 13337;
-    padding-top: var(--titlebar-margin);
-    /* background-color: rgba(255, 0, 0, 0.2); */
 }
 
-html:not(".darwin") .titlebar {
+html:not('.darwin') .titlebar {
     display: none;
 }
 
-.titlebar.left {
-    left: 64px;
+.titlebar.top {
+    background-color: var(--color-titlebar);
+    left: 0;
+    right: 0;
+    height: var(--margin-titlebar);
+}
+
+.titlebar.left, .titlebar.right {
+    padding-top: var(--margin-titlebar);
 }
 
 .titlebar.right {
-    right: 0px;
-    width: 0;
+    right: 0;
+    visibility: hidden;
 }
 
 @media all and (max-width: 550px) {
-  .titlebar {
+  .titlebar.left {
+      left: 64px;
       height: 64px;
       width: 100%;
   }
@@ -368,13 +377,30 @@ html:not(".darwin") .titlebar {
 @media all and (min-width: 551px) {
   .titlebar {
       height: 80px;
+  }
+  .titlebar.left {
+      left: 80px;
       width: 32%;
   }
 }
 
-@media all and (min-width: 1001px) {
+@media all and (min-width: 900px) {
   .titlebar.right {
-    width: 20%;
+    visibility: visible;
+    right: 80px;
+    width: 10%;
+  }
+}
+
+@media all and (min-width: 1200px) {
+  .titlebar.right {
+    width: 25%;
+  }
+}
+
+@media all and (min-width: 2000px) {
+  .titlebar.right {
+    width: 30%;
   }
 }
 

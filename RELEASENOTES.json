@@ -1,26 +1,30 @@
 {
-  "5.7.2": {
-    "🥚 features": [
+  "5.8.1": {
+    "🐰 features": [
+      "Adds updated system tray icons (Linux)",
       "Adds custom branded title bar (macOS)",
-      "Adjusts title bar size (macOS)"
+      "Optimizes title bar size (macOS)",
+      "Optimizes external url presentation"
     ],
-    "🐇 bugfixes": [
-      "Fixes missing icons & symbols regression"
+    "🐰 bugfixes": [
+      "Fixes interface redraws on window resize",
+      "Fixes missing icons symbols"
     ],
     "🐰 internals": [
-      "Adds runtime file-based CSS injection module",
+      "Adds system tray icon sources",
+      "Adds runtime CSS injection module",
       "Upgrades cross-platform build & deployment system"
     ]
   },
   "5.6.1": {
-    "🥚 features 🐇🐇🐇": [
+    "🐰 features": [
       "Adds platform-specific native system fonts",
       "Reduced webview repaints on resize"
     ],
-    "🥚 bugfixes 🐰🐰🐰": [
+    "🐰 bugfixes": [
       "Improves UI responsiveness"
     ],
-    "🥚 internals 🎉🎉🎉": [
+    "🐰 internals": [
       "Upgrades live reload infrastructure",
       "Upgrades dependencies"
     ]
