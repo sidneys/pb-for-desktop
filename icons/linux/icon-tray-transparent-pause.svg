@@ -15,9 +15,9 @@
    width="1381.1752"
    height="1379.6407"
    viewBox="0 0 1381.1752 1379.6408"
-   sodipodi:docname="icon-tray-transparent-paused.svg"
+   sodipodi:docname="icon-tray-transparent-pause.svg"
    inkscape:version="0.92.1 r15371"
-   inkscape:export-filename="/home/solarliner/Code/git/npm/electron/pb-for-desktop/icons/linux/icon-tray-transparent.png"
+   inkscape:export-filename="/home/solarliner/Code/git/npm/electron/pb-for-desktop/icons/linux/icon-tray-transparent-pause.png"
    inkscape:export-xdpi="17.813334"
    inkscape:export-ydpi="17.813334">
   <metadata
@@ -28,7 +28,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,7 +38,7 @@
        inkscape:collect="always"
        xlink:href="#Strips1_1"
        id="pattern3967"
-       patternTransform="matrix(26.198986,28.34066,-43.272063,40.002039,0,0)" />
+       patternTransform="matrix(122.50684,128.32173,-122.20544,116.66772,0,0)" />
     <pattern
        inkscape:stockid="Stripes 1:1"
        id="Strips1_1"
@@ -74,7 +74,7 @@
      fit-margin-right="64"
      fit-margin-bottom="64"
      inkscape:zoom="0.34570315"
-     inkscape:cx="595.99701"
+     inkscape:cx="104.24563"
      inkscape:cy="709.98416"
      inkscape:window-x="0"
      inkscape:window-y="0"
