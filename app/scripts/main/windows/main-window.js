@@ -7,6 +7,7 @@
  * @constant
  */
 const path = require('path');
+const url = require('url');
 
 /**
  * Modules
@@ -38,35 +39,36 @@ const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'))
  * @constant
  * @default
  */
-const appIcon = path.join(appRootPath, 'icons', platformHelper.type, 'icon' + platformHelper.iconImageExtension(platformHelper.type));
-const appProductName = packageJson.productName || packageJson.name;
-const appUrl = 'file://' + path.join(appRootPath, 'app', 'html', 'main.html');
+const windowTitle = packageJson.productName || packageJson.name;
+const windowIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${platformHelper.iconImageExtension(platformHelper.type)}`);
+const windowUrl = url.format({ protocol: 'file:', pathname: path.join(appRootPath, 'app', 'html', 'main.html') });
 
 
 /**
  * @instance
  */
-let mainWindow;
+let appWindow = {};
 
 
 /**
- * MainWindow
+ * AppWindow
  * @class
  * @extends Electron.BrowserWindow
  */
-class MainWindow extends BrowserWindow {
+class AppWindow extends BrowserWindow {
     constructor() {
         super({
             acceptFirstMouse: true,
+            autoHideMenuBar: true,
             backgroundColor: platformHelper.isMacOS ? '#0095A5A6' : '#95A5A6',
             frame: true,
             fullscreenable: true,
-            icon: appIcon,
+            icon: windowIcon,
             minHeight: 512,
             minWidth: 256,
             show: false,
             thickFrame: true,
-            title: appProductName,
+            title: windowTitle,
             titleBarStyle: platformHelper.isMacOS ? 'hidden-inset' : 'default',
             transparent: false,
             vibrancy: 'dark',
@@ -91,7 +93,7 @@ class MainWindow extends BrowserWindow {
          * @listens Electron.BrowserWindow#close
          */
         this.on('close', ev => {
-            logger.debug('MainWindow#close');
+            logger.debug('AppWindow#close');
 
             if (!app.isQuitting) {
                 ev.preventDefault();
@@ -103,35 +105,35 @@ class MainWindow extends BrowserWindow {
          * @listens Electron.BrowserWindow#show
          */
         this.on('show', () => {
-            logger.debug('MainWindow#show');
+            logger.debug('AppWindow#show');
         });
 
         /**
          * @listens Electron.BrowserWindow#hide
          */
         this.on('hide', () => {
-            logger.debug('MainWindow#hide');
+            logger.debug('AppWindow#hide');
         });
 
         /**
          * @listens Electron.BrowserWindow#move
          */
         this.on('move', () => {
-            logger.debug('MainWindow#move');
+            logger.debug('AppWindow#move');
         });
 
         /**
          * @listens Electron.BrowserWindow#resize
          */
         this.on('resize', () => {
-            logger.debug('MainWindow#resize');
+            logger.debug('AppWindow#resize');
         });
 
         /**
          * @listens Electron~WebContents#will-navigate
          */
         this.webContents.on('will-navigate', (event, url) => {
-            logger.debug('MainWindow.webContents#will-navigate');
+            logger.debug('AppWindow.webContents#will-navigate');
 
             event.preventDefault();
             if (url) {
@@ -143,10 +145,10 @@ class MainWindow extends BrowserWindow {
          * @listens Electron~WebContents#dom-ready
          */
         this.webContents.on('dom-ready', () => {
-            logger.debug('MainWindow.webContents#dom-ready');
+            logger.debug('AppWindow.webContents#dom-ready');
         });
 
-        this.loadURL(appUrl);
+        this.loadURL(windowUrl);
 
         return this;
     }
@@ -154,23 +156,14 @@ class MainWindow extends BrowserWindow {
 
 
 /**
- * Create Window
+ * Create instance
  */
-let createMainWindow = () => {
-    logger.debug('createMainWindow');
+let create = () => {
+    logger.debug('create');
 
-    if (mainWindow) { return; }
-
-    mainWindow = new MainWindow();
-};
-
-/**
- * Get Window
- */
-let getMainWindow = () => {
-    logger.debug('getMainWindow');
-
-    return mainWindow;
+    if (!(appWindow instanceof AppWindow)) {
+        appWindow = new AppWindow();
+    }
 };
 
 
@@ -180,7 +173,7 @@ let getMainWindow = () => {
 app.on('activate', () => {
     logger.debug('app#activate');
 
-    mainWindow.show();
+    appWindow.show();
 });
 
 /**
@@ -189,11 +182,11 @@ app.on('activate', () => {
 app.once('ready', () => {
     logger.debug('app#ready');
 
-    createMainWindow();
+    create();
 });
 
 
 /**
  * @exports
  */
-module.exports = getMainWindow();
+module.exports = appWindow;

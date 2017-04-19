@@ -83,12 +83,11 @@ let getPrimaryWindow = () => {
 };
 
 /**
- * Show app in menubar or taskbar only
- * @param {Boolean} showInTrayOnly - True: show dock icon, false: hide icon
- * @function
+ * Show app in menubar or task bar only
+ * @param {Boolean} enable - True: show dock icon, false: hide icon
  */
-let setShowInTrayOnly = (showInTrayOnly) => {
-    logger.debug('setShowInTrayOnly', showInTrayOnly);
+let setWindowInTrayOnly = (enable) => {
+    logger.debug('setWindowInTrayOnly');
 
     let interval = setInterval(() => {
         const win = getPrimaryWindow();
@@ -96,15 +95,15 @@ let setShowInTrayOnly = (showInTrayOnly) => {
 
         switch (platformHelper.type) {
             case 'darwin':
-                if (showInTrayOnly) {
+                if (enable) {
                     app.dock.hide();
                 } else { app.dock.show(); }
                 break;
             case 'win32':
-                win.setSkipTaskbar(showInTrayOnly);
+                win.setSkipTaskbar(enable);
                 break;
             case 'linux':
-                win.setSkipTaskbar(showInTrayOnly);
+                win.setSkipTaskbar(enable);
                 break;
         }
 
@@ -256,8 +255,8 @@ let configurationItems = {
     /**
      * Show application always on top
      */
-    showAlwaysOnTop: {
-        keypath: 'showAlwaysOnTop',
+    windowAlwaysOnTop: {
+        keypath: 'windowAlwaysOnTop',
         default: false,
         init() {
             logger.debug(this.keypath, 'init');
@@ -315,8 +314,8 @@ let configurationItems = {
     /**
      * Show application in menubar / taskbar only
      */
-    showInTrayOnly: {
-        keypath: 'showInTrayOnly',
+    windowInTrayOnly: {
+        keypath: 'windowInTrayOnly',
         default: true,
         init() {
             logger.debug(this.keypath, 'init');
@@ -337,7 +336,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value);
 
-            setShowInTrayOnly(value);
+            setWindowInTrayOnly(value);
         }
     },
     /**

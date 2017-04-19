@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PB for Desktop</title>
+    <title></title>
     <link rel="stylesheet" type="text/css" href="../styles/ionicons.css">
     <link rel="stylesheet" type="text/css" href="../styles/styles.css">
 </head>
 <body>
-    
-    <div id="spinner">
-        <div id="spinner__logo"></div>
-        <div class="spinner__icon"></div>
-        <div id="spinner__text">Connecting</div>
+
+<div id="spinner">
+    <div id="spinner__logo"></div>
+    <div class="spinner__icon"></div>
+    <div id="spinner__text">Connecting</div>
+</div>
+
+<div id="controls-extra">
+    <div class="controls-extra__button home">
+        <div class="title">Home</div>
+        <i class="icon ion-home"></i>
     </div>
+</div>
 
-    <div id="controls-extra">
-        <div class="controls-extra__button home">
-            <div class="title">Home</div>
-            <i class="icon ion-home"></i>
-        </div>
-    </div>
+<div class="titlebar top draggable"></div>
+<div class="titlebar left draggable"></div>
+<div class="titlebar right draggable"></div>
 
-    <div class="titlebar top draggable"></div>
-    <div class="titlebar left draggable"></div>
-    <div class="titlebar right draggable"></div>
+<webview id="webview"
+         disablewebsecurity="on"
+         partition="persist:app"
+         preload="../scripts/renderer/preload.js"
+         src="http://pushbullet.com">
+</webview>
 
-    <webview id="webview"
-             disablewebsecurity="on"
-             partition="persist:app"
-             preload="../scripts/renderer/preload.js"
-             src="http://pushbullet.com">
-    </webview>
-
-    <script src="../scripts/main/components/webview.js"></script>
+<script src="../scripts/main/components/webview.js"></script>
 
 </body>
 </html>

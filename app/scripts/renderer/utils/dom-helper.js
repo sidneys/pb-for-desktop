@@ -6,6 +6,7 @@
  * Node
  * @constant
  */
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -22,6 +23,7 @@ const fileUrl = require('file-url');
  * @constant
  */
 const language = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'utils', 'language'));
+const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
 
 /**
@@ -153,9 +155,9 @@ let setVisibility = (element, visible, delay = 0) => {
 
 /**
  * Inject CSS
- * @param {Electron.webview} webview - Electron Webview
+ * @param {Electron.WebViewElement} webview - Electron Webview
  * @param {String} filepath - Stylesheet filepath
- * @param {Callback=} callback - Callback function
+ * @param {Function=} callback - Callback Function
  */
 let injectCSS = (webview, filepath, callback = () => {}) => {
     logger.debug('injectStylesheet');
@@ -175,37 +177,38 @@ let injectCSS = (webview, filepath, callback = () => {}) => {
 };
 
 /**
- * Extend Eventtarget
- * Enables elem.removeEventListener('name');
+ * Adds #removeEventListener to Events
  */
 EventTarget.prototype.addEventListenerBase = EventTarget.prototype.addEventListener;
 EventTarget.prototype.addEventListener = function(type, listener) {
-   if (!this.EventList) { this.EventList = []; }
-   this.addEventListenerBase.apply(this, arguments);
-   if (!this.EventList[type]) { this.EventList[type] = []; }
-   const list = this.EventList[type];
-   for (let index = 0; index !== list.length; index++) {
-       if(list[index] === listener) { return; }
-   }
-   list.push(listener);
+    if (!this.EventList) { this.EventList = []; }
+    this.addEventListenerBase.apply(this, arguments);
+    if (!this.EventList[type]) { this.EventList[type] = []; }
+    const list = this.EventList[type];
+    for (let index = 0; index !== list.length; index++) {
+        if (list[index] === listener) { return; }
+    }
+    list.push(listener);
 };
 EventTarget.prototype.removeEventListenerBase = EventTarget.prototype.removeEventListener;
 EventTarget.prototype.removeEventListener = function(type, listener) {
-   if (!this.EventList) { this.EventList = []; }
-   if (listener instanceof Function) { this.removeEventListenerBase.apply(this, arguments); }
-   if (!this.EventList[type]) { return; }
-   let list = this.EventList[type];
-   for(let index = 0; index !== list.length;) {
-       const item = list[index];
-       if (!listener) {
-           this.removeEventListenerBase(type, item);
-           list.splice(index, 1); continue;
-       } else if(item === listener) {
-           list.splice(index, 1); break;
-       }
-       index++;
-   }
-   if (list.length == 0) { delete this.EventList[type]; }
+    if (!this.EventList) { this.EventList = []; }
+    if (listener instanceof Function) { this.removeEventListenerBase.apply(this, arguments); }
+    if (!this.EventList[type]) { return; }
+    let list = this.EventList[type];
+    for (let index = 0; index !== list.length;) {
+        const item = list[index];
+        if (!listener) {
+            this.removeEventListenerBase(type, item);
+            list.splice(index, 1);
+            continue;
+        } else if (item === listener) {
+            list.splice(index, 1);
+            break;
+        }
+        index++;
+    }
+    if (list.length === 0) { delete this.EventList[type]; }
 };
 
 

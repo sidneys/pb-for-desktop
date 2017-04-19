@@ -171,23 +171,23 @@ let getTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
-            id: 'showAlwaysOnTop',
+            id: 'windowAlwaysOnTop',
             label: 'Always on Top',
             icon: path.join(appRootPath, 'app', 'images', `icon-show-always-on-top${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager('showAlwaysOnTop').get(),
+            checked: configurationManager('windowAlwaysOnTop').get(),
             click(menuItem) {
-                configurationManager('showAlwaysOnTop').set(menuItem.checked);
+                configurationManager('windowAlwaysOnTop').set(menuItem.checked);
             }
         },
         {
-            id: 'showInTrayOnly',
+            id: 'windowInTrayOnly',
             label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
             icon: path.join(appRootPath, 'app', 'images', `icon-show-in-tray-only${platformHelper.menuItemImageExtension}`),
             type: 'checkbox',
-            checked: configurationManager('showInTrayOnly').get(),
+            checked: configurationManager('windowInTrayOnly').get(),
             click(menuItem) {
-                configurationManager('showInTrayOnly').set(menuItem.checked);
+                configurationManager('windowInTrayOnly').set(menuItem.checked);
             }
         },
         {

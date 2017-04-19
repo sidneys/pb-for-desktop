@@ -1,3 +1,15 @@
+## 5.9.1
+
+#### 🚨 Bugfixes
+
+ - Addresses legacy configuration descriptors
+
+#### 👷 Internals
+
+ - Upgrades Electron to v1.6.7
+ - Upgrades `utils`
+ - Upgrades dependencies
+
 ## 5.8.1
 
 #### 🐰 Features

@@ -1,4 +1,14 @@
 {
+  "5.9.1": {
+    "🚨 bugfixes": [
+      "Addresses legacy configuration descriptors"
+    ],
+    "👷 internals": [
+      "Upgrades Electron to v1.6.7",
+      "Upgrades `utils`",
+      "Upgrades dependencies"
+    ]
+  },
   "5.8.1": {
     "🐰 features": [
       "Adds updated system tray icons (Linux)",

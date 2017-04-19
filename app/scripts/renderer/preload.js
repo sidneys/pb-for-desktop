@@ -89,7 +89,7 @@ let addInterfaceEnhancements = () => {
         // Close Setup Wizard
         pb.api.account['preferences']['setup_done'] = true;
         pb.sidebar.update();
-        
+
         // Go to Settings
         window.onecup['goto']('/#settings');
 
@@ -110,7 +110,7 @@ let registerErrorProxy = () => {
 
         pb.error = new Proxy(pb.error, {
             set: (pbError, property, value) => {
-                //logger.debug('pb.error', 'set', 'property:', property, ' value:',  value);
+                //logger.debug('pb.error', 'set()', 'property:', property, 'value:', value);
 
                 if (property === 'title' && _.isString(value)) {
                     if (value.includes('Network')) {
@@ -143,7 +143,7 @@ let registerTextsProxy = () => {
 
         pb.api.texts.objs = new Proxy(pb.api.texts.objs, {
             set: (textsObjs, property, value) => {
-                logger.debug('pb.api.texts.objs', 'set', 'property:', property, ' value:',  value);
+                logger.debug('pb.api.texts.objs', 'set()', 'property:', property, 'value:', value);
 
                 // Check if text with iden exists
                 let exists = Boolean(pb.api.texts.all.filter((text) => {
@@ -186,7 +186,7 @@ let registerPushProxy = () => {
 
         pb.api.pushes.objs = new Proxy(pb.api.pushes.objs, {
             set: (pushesObjs, property, value) => {
-                //logger.debug('pb.api.pushes.objs', 'set', 'property:', property, ' value:',  value);
+                //logger.debug('pb.api.pushes.objs', 'set()', 'property:', property, 'value:', value);
 
                 // Check if push with iden exists
                 let exists = Boolean(pb.api.pushes.all.filter((push) => {
@@ -403,3 +403,4 @@ window.addEventListener('load', () => {
 
     init();
 });
+
