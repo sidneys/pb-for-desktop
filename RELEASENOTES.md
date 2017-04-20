@@ -1,3 +1,13 @@
+## 5.9.2
+
+#### 🍾 Features
+
+ - Updates System Tray icons (Linux) (#47)
+
+#### 👷 Internals
+
+ - Upgrades dependencies
+
 ## 5.9.1
 
 #### 🚨 Bugfixes

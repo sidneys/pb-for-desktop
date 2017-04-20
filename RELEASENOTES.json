@@ -1,4 +1,12 @@
 {
+  "5.9.2": {
+    "🍾 features": [
+      "Updates System Tray icons (Linux) (#47)"
+    ],
+    "👷 internals": [
+      "Upgrades dependencies"
+    ]
+  },
   "5.9.1": {
     "🚨 bugfixes": [
       "Addresses legacy configuration descriptors"
