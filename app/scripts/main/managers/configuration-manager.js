@@ -299,6 +299,8 @@ let configurationItems = {
         default: false,
         init() {
             logger.debug(this.keypath, 'init');
+
+            this.implement(this.get());
         },
         get() {
             logger.debug(this.keypath, 'get');
@@ -308,7 +310,15 @@ let configurationItems = {
         set(value) {
             logger.debug(this.keypath, 'set');
 
+            this.implement(value);
             electronSettings.set(this.keypath, value);
+        },
+        implement(value) {
+            logger.debug(this.keypath, 'implement', value);
+
+            if (Boolean(value) === false) {
+                app.setBadgeCount(0);
+            }
         }
     },
     /**

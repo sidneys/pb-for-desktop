@@ -31,7 +31,7 @@ const parseDomain = require('parse-domain');
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const domHelper = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'utils', 'dom-helper'));
+const domHelper = require(path.join(appRootPath, 'lib', 'dom-helper'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
 

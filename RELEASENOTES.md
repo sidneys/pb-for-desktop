@@ -1,3 +1,15 @@
+## 5.9.4
+
+#### 🚨 Bugfixes
+
+ - Addresses reset of badge counter (macOS)
+
+#### 👷 Internals
+
+ - Upgrades Electron to v1.7.1
+ - Upgrades dependencies
+ - Consolidates `utils`
+
 ## 5.9.2
 
 #### 🍾 Features

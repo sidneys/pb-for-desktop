@@ -33,7 +33,7 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const domHelper = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'utils', 'dom-helper'));
+const domHelper = require(path.join(appRootPath, 'lib', 'dom-helper'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
