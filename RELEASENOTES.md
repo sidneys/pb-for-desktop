@@ -1,3 +1,10 @@
+## 5.9.6
+
+#### 👷 Internals
+
+ - Upgrades Electron to v1.7.2
+ - Upgrades dependencies
+
 ## 5.9.4
 
 #### 🚨 Bugfixes

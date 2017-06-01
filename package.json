@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "5.9.4",
+  "version": "5.9.6",
   "description": "Pushbullet Desktop app for macOS, Windows and Linux.",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -53,7 +53,7 @@
     "chalkline": "0.0.5",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^3.0.14",
-    "electron-updater": "^1.15.0",
+    "electron-updater": "^1.16.0",
     "file-type": "^4.3.0",
     "file-url": "^2.0.2",
     "fs-extra": "^3.0.1",
@@ -72,13 +72,13 @@
     "try-require": "latest"
   },
   "devDependencies": {
-    "electron": "^1.7.1",
-    "electron-builder": "^17.8.0",
+    "electron": "^1.7.2",
+    "electron-builder": "^18.3.5",
     "electron-connect": "^0.6.1",
     "electron-prebuilt-compile": "^1.7.1",
-    "fkill": "^4.1.0",
-    "git-branch": "^0.3.0",
-    "glob": "^7.1.1",
+    "fkill": "^5.0.0",
+    "git-branch": "^1.0.0",
+    "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.5.0",
     "hash-files": "^1.1.1",
@@ -150,7 +150,6 @@
       "installerHeaderIcon": "./icons/win32/icon.ico",
       "installerIcon": "./icons/win32/icon-setup.ico",
       "installerSidebar": "./icons/win32/background-setup.bmp",
-      "menuCategory": "Pushbullet",
       "oneClick": false,
       "runAfterFinish": false
     }

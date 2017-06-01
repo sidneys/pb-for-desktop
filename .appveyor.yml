@@ -5,7 +5,7 @@ platform:
 
 branches:
   only:
-  - release
+  - master
 
 version: '{build}-{branch}'
 

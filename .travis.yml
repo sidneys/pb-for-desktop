@@ -12,7 +12,7 @@ language: c
 
 branches:
   only:
-    - release
+    - master
 
 cache:
   directories:

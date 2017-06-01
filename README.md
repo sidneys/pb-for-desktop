@@ -3,18 +3,18 @@
 <p align="center">
   <b>PB for Desktop</b> is a <b>lightweight</b> open-source <b>Desktop app</b> for <b><a href="https://pushbullet.com/">PushBullet</a></b>.<br>
   Receive native push notifications on macOS, Windows and Linux.</b><br><br>
-  <img height="200px" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/resources/graphics/icon.png"/><br><br>
+  <img height="200px" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/graphics/icon.png"/><br><br>
   <i>Not affiliated with PushBullet Incorporated.</i><br><br>
 </p>
 
 
 ------
 
-![Screenshot: Pushbullet for Desktop (macOS)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/resources/screenshots/screenshot-macos.png)
+![Screenshot: Pushbullet for Desktop (macOS)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-macos.png)
 
-![Screenshot: Pushbullet for Desktop (Windows)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/resources/screenshots/screenshot-win32.png)
+![Screenshot: Pushbullet for Desktop (Windows)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-win32.png)
 
-![Screenshot: Pushbullet for Desktop (Linux)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/release/resources/screenshots/screenshot-linux.png)
+![Screenshot: Pushbullet for Desktop (Linux)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-linux.png)
 
 ------
 
@@ -78,7 +78,7 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 
 ### Standard Installation
 
-Download the latest version of PB for Desktop on the [Releases](https://github.com/sidneys/pb-for-desktop/releases) page.
+Download the latest version of PB for Desktop on the [Releases](https://github.com/sidneys/pb-for-desktop/masters) page.
 
 ### Installation as Commandline Tool
 
@@ -179,7 +179,7 @@ sudo apt-get install wine mono fakeroot dpkg
 > Turnkey **build-in-the-cloud** integration.
 
 The CI deployment is managed by a custom layer of node scripts and Electron-optimized configuration templates.
-Completed Installation packages are deployed to [GitHub Releases](https://github.com/sidneys/pb-for-desktop/releases). Builds for all platforms and architectures take about 5 minutes.
+Completed Installation packages are deployed to [GitHub Releases](https://github.com/sidneys/pb-for-desktop/masters). Builds for all platforms and architectures take about 5 minutes.
 Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and AppVeyor](https://ci.appveyor.com/) and running [electron-packager](https://github.com/electron-userland/electron-packager) under the hood.
 
 ### Setup
@@ -218,7 +218,7 @@ Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and A
 
 ## <a name="contribute"/></a> Contact ![Contributions Wanted](https://img.shields.io/badge/contributions-wanted-red.svg?style=flat-square)
 
-Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/blob/release/CONTRIBUTING.md) first.
+Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/blob/master/CONTRIBUTING.md) first.
 
 - [Dev Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
 - [Issues](http;//github.com/sidneys/pb-for-desktop/issues) File bugs and document issues.

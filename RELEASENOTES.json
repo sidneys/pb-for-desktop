@@ -1,4 +1,10 @@
 {
+  "5.9.6": {
+    "👷 internals": [
+      "Upgrades Electron to v1.7.2",
+      "Upgrades dependencies"
+    ]
+  },
   "5.9.4": {
     "🚨 bugfixes": [
       "Addresses reset of badge counter (macOS)"

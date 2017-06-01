@@ -9,7 +9,7 @@
 
 :root {
   --margin-titlebar: 20px;
-  --color-titlebar: #4ab367;
+  --color-green: #4ab367;
   --z-index-top: 1337;
   --z-index-topmost: 13370;
 }
@@ -68,6 +68,7 @@ webview {
     flex-direction: row;
     flex: 1;
     justify-content: space-between;
+    background-color: var(--color-green);
 }
 
 html.darwin webview {
@@ -351,7 +352,7 @@ html:not('.darwin') .titlebar {
 }
 
 .titlebar.top {
-    background-color: var(--color-titlebar);
+    background-color: var(--color-green);
     left: 0;
     right: 0;
     height: var(--margin-titlebar);
