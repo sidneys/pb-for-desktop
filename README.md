@@ -78,7 +78,7 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 
 ### Standard Installation
 
-Download the latest version of PB for Desktop on the [Releases](https://github.com/sidneys/pb-for-desktop/masters) page.
+Download the latest version of PB for Desktop on the [Releases](https://github.com/sidneys/pb-for-desktop/releases) page.
 
 ### Installation as Commandline Tool
 
