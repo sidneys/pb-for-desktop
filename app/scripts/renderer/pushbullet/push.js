@@ -14,7 +14,8 @@ const path = require('path');
  * Electron
  * @constant
  */
-const { remote } = require('electron');
+const electron = require('electron');
+const { remote } = electron;
 
 /**
  * Modules
@@ -33,7 +34,22 @@ const getYouTubeID = require('get-youtube-id');
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
+const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'sms'));
+
+/** @namespace Audio */
+/** @namespace pb.api.accounts */
+/** @namespace pb.api.grants */
+/** @namespace pb.api.pushes */
+/** @namespace pb.api.pushes.dismiss */
+/** @namespace pb.sms */
+/** @namespace push.application_name */
+/** @namespace push.dismissed */
+/** @namespace push.file_name */
+/** @namespace push.file_url */
+/** @namespace push.image_url */
+/** @namespace push.notifications */
 
 
 /**
@@ -46,11 +62,60 @@ const maxRecentNotifications = 5;
 
 
 /**
+ * Retrieve PushbulletLastNotificationTimestamp
+ * @return {Number} - timestamp
+ */
+let retrievePushbulletLastNotificationTimestamp = () => configurationManager('pushbulletLastNotificationTimestamp').get();
+
+/**
+ * Store PushbulletLastNotificationTimestamp
+ * @param {Number} timestamp - Timestamp
+ * @return {void}
+ */
+let storePushbulletLastNotificationTimestamp = (timestamp) => configurationManager('pushbulletLastNotificationTimestamp').set(timestamp);
+
+/**
+ * Retrieve ShowAppBadgeCount
+ * @return {Boolean} - Show
+ */
+let retrieveAppShowBadgeCount = () => configurationManager('appShowBadgeCount').get();
+
+/**
+ * Retrieve PushbulletHideNotificationBody
+ * @return {Boolean} - Hide
+ */
+let retrievePushbulletHideNotificationBody = () => configurationManager('pushbulletHideNotificationBody').get();
+
+/**
+ * Retrieve PushbulletSoundEnabled
+ * @return {Boolean} - Enabled
+ */
+let retrievePushbulletSoundEnabled = () => configurationManager('pushbulletSoundEnabled').get();
+
+/**
+ * Retrieve PushbulletSmsEnabled
+ * @return {Boolean} - Enabled
+ */
+let retrievePushbulletSmsEnabled = () => configurationManager('pushbulletSmsEnabled').get();
+
+/**
+ * Retrieve PushbulletSoundFile
+ * @return {String} - Path
+ */
+let retrievePushbulletSoundFile = () => configurationManager('pushbulletSoundFile').get();
+
+/**
+ * Retrieve AppSoundVolume
+ * @return {Number} - Volume
+ */
+let retrievePushbulletSoundVolume = () => configurationManager('pushbulletSoundVolume').get();
+
+
+/**
  * @instance
  */
-let lastNotification;
-let soundVolume;
-
+let lastNotificationTimestamp;
+let appSoundVolume;
 
 /**
  * Set application badge count
@@ -60,7 +125,7 @@ let soundVolume;
 let updateBadge = (total) => {
     logger.debug('updateBadge');
 
-    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+    if (Boolean(retrieveAppShowBadgeCount()) === false) { return; }
 
     remote.app.setBadgeCount(total);
 };
@@ -77,7 +142,7 @@ let playSound = (file, callback = () => {}) => {
     let url = fileUrl(file);
     let AudioElement = new Audio(url);
 
-    AudioElement.volume = parseFloat(soundVolume);
+    AudioElement.volume = appSoundVolume;
 
     /**
      * @listens audio:MediaEvent#error
@@ -90,7 +155,7 @@ let playSound = (file, callback = () => {}) => {
      * @listens audio:MediaEvent#ended
      */
     AudioElement.addEventListener('ended', () => {
-        return callback(null, url);
+        callback(null, url);
     });
 
     AudioElement.play();
@@ -100,7 +165,6 @@ let playSound = (file, callback = () => {}) => {
  * Find images for Pushbullet push
  * @param {Object} push - Push Object
  * @returns {String} Image URI
- *
  */
 let generateImageUrl = (push) => {
     logger.debug('generateImageUrl');
@@ -232,8 +296,9 @@ let parsePush = (message) => {
 };
 
 /**
- * Decorator Pushbullet Push object
- * @function
+ * Decorate Push objects
+ * @param {Object} push - Push Object
+ * @returns {Object} - Push Object
  */
 let decoratePushbulletPush = (push) => {
     logger.debug('decoratePushbulletPush', push.type);
@@ -317,45 +382,68 @@ let decoratePushbulletPush = (push) => {
 };
 
 /**
- * Create HTML5 Notification using Pushbullet push object
- * @function
+ * Create Notification from Push Objects
+ * @param {Object} push - Push Object
  */
 let createNotification = (push) => {
     logger.debug('createNotification');
 
+    /**
+     * Decorate Push object
+     */
     push = decoratePushbulletPush(push);
 
-    let notification;
+    /**
+     * Read Settings
+     */
 
     /**
-     * Play Sound
+     * Create Options
      */
-    if (configurationManager('soundEnabled').get() === true) {
-        let soundFile = configurationManager('soundFile').get();
-        playSound(soundFile, (err) => {
-            if (err) {
-                logger.error('could not play sound:', soundFile, err);
-            }
+    const options = {
+        body: push.body,
+        icon: push.icon,
+        tag: push.iden,
+        url: push.url,
+        title: push.title
+    };
+
+    /**
+     * Body
+     */
+    const hideNotificationBody = retrievePushbulletHideNotificationBody();
+    if (hideNotificationBody) {
+        options.body = null;
+    }
+
+    /**
+     * Body
+     */
+    if (push.type === 'sms_changed') {
+        options.hasReply = true;
+        options.replyPlaceholder = 'Your SMS Reply';
+    }
+
+    /**
+     * Sound
+     */
+    const soundEnabled = retrievePushbulletSoundEnabled();
+    if (soundEnabled) {
+        const soundFile = retrievePushbulletSoundFile();
+        playSound(soundFile, (error) => {
+            if (error) { logger.error(error); }
         });
     }
 
     /**
-     * Create HTML5 Notification
+     * Create
      */
-    notification = new Notification(push.title, {
-        title: push.title,
-        body: push.body,
-        icon: push.icon,
-        url: push.url,
-        tag: push.iden,
-        silent: true
-    });
-
+    const notification = notificationProvider.create(options);
 
     /**
      * @listens notification:PointerEvent#click
      */
-    notification.onclick = () => {
+    notification.on('click', () => {
         logger.debug('notification#click');
 
         // Open url
@@ -365,28 +453,47 @@ let createNotification = (push) => {
 
         // Dismiss push
         dismissPushbulletPush(push);
-    };
+    });
 
     /**
      * @listens notification:PointerEvent#close
      */
-    notification.onclose = () => {
+    notification.on('close', () => {
         logger.debug('notification#close');
-    };
+    });
+
+    /**
+     * @listens notification:PointerEvent#reply
+     */
+    notification.on('reply', (event, reply) => {
+        logger.debug('notification#reply');
+
+        pbSms.sendReply(reply, (error) => {
+            if (error) {
+                return logger.error(error);
+            }
+
+            logger.info('sms reply sent', reply);
+        });
+    });
 
     /**
      * @listens notification:PointerEvent#error
+     * @param {Error} error - Error
      */
-    notification.onerror = (err) => {
-        logger.error('notification#error', err);
-    };
+    notification.on('error', (error) => {
+        logger.error('notification#error', error);
+    });
 
     /**
      * @listens notification:PointerEvent#show
      */
-    notification.onshow = () => {
-        logger.debug('notification#show');
-    };
+    notification.on('show', (event) => {
+        logger.debug('notification#show', event);
+    });
+
+    // Show
+    notification.show();
 };
 
 /**
@@ -397,7 +504,7 @@ let createNotification = (push) => {
 let shouldShowPush = (push) => {
     //logger.debug('shouldShowPush');
 
-    // Activivity
+    // Activity
     if (push.hasOwnProperty('active')) {
         // Push is not active
         if (Boolean(push.active) === false) {
@@ -418,7 +525,8 @@ let shouldShowPush = (push) => {
     // SMS
     if (push.type === 'sms_changed') {
         // Don't show if SMS is disabled
-        if (configurationManager('smsEnabled').get() === false) {
+        const pushbulletSmsEnabled = retrievePushbulletSmsEnabled();
+        if (!pushbulletSmsEnabled) {
             logger.debug('shouldShowPush', false, 'sms mirroring is not enabled');
             return false;
         }
@@ -442,7 +550,7 @@ let showPush = (push) => {
     //logger.debug('showPush');
 
     // Test if in snooze mode
-    let isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'));
+    const isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'));
 
     if (!isSnoozing && shouldShowPush(push)) {
         createNotification(push);
@@ -451,15 +559,13 @@ let showPush = (push) => {
 
 /**
  * Get all Pushbullet Pushes sorted by recency (ascending)
- * @param {Number..} limit - Limit result to fixed number
+ * @param {Number=} queueLimit - Limit result to fixed number
  * @returns {Array|undefined} List of Pushes
  */
-let getRecentPushesList = (limit) => {
+let getRecentPushesList = (queueLimit = 0) => {
     logger.debug('fetchRecentPushes');
 
     const pb = window.pb;
-
-    const queueLimit = limit || 0;
 
     let recentPushesList = [];
 
@@ -474,8 +580,8 @@ let getRecentPushesList = (limit) => {
 
     // Sort recent pushes by date created
     recentPushesList.sort((pushA, pushB) => {
-        let dateA = pushA.created;
-        let dateB = pushB.created;
+        const dateA = pushA.created;
+        const dateB = pushB.created;
 
         if (dateA < dateB) {
             return -1;
@@ -510,7 +616,7 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
     }
 
     let nextPushesList = pushes;
-    let notifyAfter = lastNotification || 0;
+    let notifyAfter = lastNotificationTimestamp || 0;
 
     // Remove pushes older than 'lastNotification' from array
     if (Boolean(ignoreDate) === false) {
@@ -529,8 +635,8 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
 
             // Update saved lastNotification
             if (push.created > notifyAfter) {
-                lastNotification = push.created;
-                configurationManager('lastNotification').set(push.created);
+                lastNotificationTimestamp = push.created;
+                storePushbulletLastNotificationTimestamp(push.created);
             }
 
             // Last push triggered
@@ -555,7 +661,7 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
 let enqueueRecentPushes = (callback = () => {}) => {
     logger.debug('enqueueRecentPushes');
 
-    let pushesList = getRecentPushesList(maxRecentNotifications);
+    const pushesList = getRecentPushesList(maxRecentNotifications);
 
     enqueuePush(pushesList, true, false, (err, count) => {
         if (err) {
@@ -573,8 +679,8 @@ let enqueueRecentPushes = (callback = () => {}) => {
 let init = () => {
     logger.debug('init');
 
-    lastNotification = configurationManager('lastNotification').get();
-    soundVolume = parseFloat(configurationManager('soundVolume').get());
+    lastNotificationTimestamp = retrievePushbulletLastNotificationTimestamp();
+    appSoundVolume = retrievePushbulletSoundVolume();
 };
 
 

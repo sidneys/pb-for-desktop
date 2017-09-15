@@ -32,14 +32,16 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
  * Internal
  * @constant
  */
-const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const domHelper = require(path.join(appRootPath, 'lib', 'dom-helper'));
-const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const domHelper = require(path.join(appRootPath, 'lib', 'dom-manager'));
+const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard')); // jshint ignore:line
-const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'device')); // jshint ignore:line
-const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'push')); // jshint ignore:line
+const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+/* eslint-disable no-unused-vars */
+const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard'));
+const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'device'));
+const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'push'));
+/* eslint-enable */
 
 /**
  * Application
@@ -59,6 +61,24 @@ const defaultTimeout = 500;
  * @default
  */
 let didDisconnect = false;
+
+
+/** @namespace pb.api.devices */
+/** @namespace pb.e2e.decrypt */
+/** @namespace item.created */
+
+
+/**
+ * Retrieve PushbulletLastNotificationTimestamp
+ * @return {Number} - timestamp
+ */
+let retrievePushbulletLastNotificationTimestamp = () => configurationManager('pushbulletLastNotificationTimestamp').get();
+
+/**
+ * Retrieve PushbulletRepeatRecentNotifications
+ * @return {Boolean}
+ */
+let retrievePushbulletRepeatRecentNotifications = () => configurationManager('pushbulletRepeatRecentNotifications').get();
 
 
 /**
@@ -296,10 +316,10 @@ let loginPushbulletUser = () => {
         registerTextsProxy();
         addWebsocketEventHandlers();
 
-        let lastNotification = configurationManager('lastNotification').get();
-        if (lastNotification) {
+        const lastNotificationTimestamp = retrievePushbulletLastNotificationTimestamp();
+        if (lastNotificationTimestamp) {
             let unreadCount = (pb.api.pushes.all.concat(pb.api.texts.all)).filter((item) => {
-                return (item.created) > lastNotification;
+                return (item.created) > lastNotificationTimestamp;
             }).length;
 
             logger.debug('loginPushbulletUser', 'unreadCount:', unreadCount);
@@ -307,7 +327,7 @@ let loginPushbulletUser = () => {
             pbPush.updateBadge(unreadCount);
         }
 
-        if (configurationManager('replayOnLaunch').get() === true) {
+        if (retrievePushbulletRepeatRecentNotifications()) {
             pbPush.enqueueRecentPushes((err, count) => {
                 logger.info('replayed pushes on after launch:', count);
             });

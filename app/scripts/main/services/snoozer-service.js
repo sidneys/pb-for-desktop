@@ -6,8 +6,14 @@
  * Node
  * @constant
  */
-const EventEmitter = require('events');
 const path = require('path');
+
+/**
+ * Modules
+ * Electron
+ * @constant
+ */
+const { app, ipcMain } = require('electron');
 
 /**
  * Modules
@@ -22,43 +28,77 @@ const appRootPath = require('app-root-path')['path'];
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const notificationService = require(path.join(appRootPath, 'app', 'scripts', 'main', 'services', 'notification-service'));
+const notificationProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 
 
 /**
- * @instance
- * @global
+ * @class SnoozerService
+ * @property {Number} snoozeUntil
+ * @namespace Electron
  */
-global.snoozerService = null;
-global.snoozeUntil = 0;
-
-/**
- * Snoozer
- * @extends EventEmitter
- * @class
- */
-class Snoozer extends EventEmitter {
+class SnoozerService {
     constructor() {
-        super();
-
-        this.init();
-    }
-
-    init() {
-        logger.debug('init');
-
-        global.snoozeUntil = 0;
+        this.snoozeUntil = 0;
     }
 
     /**
-     * Commence snoozing
-     * @fires Snoozer:enabled
-     * @fires Snoozer:disabled
+     * @param {Boolean} snoozing - Snooze state
+     * @fires Snoozer#EventEmitter:snooze
+     * @private
+     */
+    onSnooze(snoozing) {
+        logger.debug('onSnooze');
+
+        ipcMain.emit('snooze', snoozing);
+    }
+
+    /**
+     * Schedule snooze
+     * @param {Electron.MenuItem} menuItem - Menu item
+     * @param {Number} duration - Snooze duration in minutes
+     * @private
+     */
+    scheduleSnooze(menuItem, duration) {
+        let durationMs = parseInt(duration * (60 * 1000));
+        let durationHours = parseInt(duration / 60);
+
+        // Calculate Timestamp
+        let snoozeEnd = (Date.now() + durationMs);
+        this.snoozeUntil = snoozeEnd;
+
+        const notification = notificationProvider.create({ title: 'Snooze started', subtitle: `Snooze mode will end in ${durationHours} ${durationHours > 1 ? 'hours' : 'hour'}.` });
+        notification.show();
+
+        this.onSnooze(true);
+
+        // Schedule to waking up
+        let timeout = setTimeout(() => {
+            logger.debug('setTimeout', durationHours);
+
+            // End Snooze
+            this.snoozeUntil = 0;
+            menuItem.checked = false;
+
+            const notification = notificationProvider.create({ title: 'Snooze ended', subtitle: `Snooze mode ended after ${durationHours} ${durationHours > 1 ? 'hours' : 'hour'}.` });
+
+            notification.show();
+
+            this.onSnooze(false);
+
+            clearTimeout(timeout);
+        }, (snoozeEnd - Date.now()));
+    }
+
+    /**
+     * Start snooze
+     * @param {Electron.MenuItem} menuItem - Menu item
+     * @param {Number} duration - Snooze duration in minutes
+     * @public
      */
     snooze(menuItem, duration) {
         logger.debug('snooze');
 
-        let relatedItems = menuItem.menu.items.filter((item) => { return item.id && item.id.startsWith('snooze') && item.id !== menuItem.id; });
+        let relatedItems = menuItem['menu'].items.filter((item) => item.id && item.id.startsWith('snooze') && item.id !== menuItem['id']);
         let itemEnabled = menuItem.checked;
 
         // Reset related menu items
@@ -67,85 +107,55 @@ class Snoozer extends EventEmitter {
         });
 
         // Abort Snooze
-        if ((global.snoozeUntil !== 0)) {
-            global.snoozeUntil = 0;
-            notificationService.show('Aborting Snooze');
+        if (this.snoozeUntil !== 0) {
+            this.snoozeUntil = 0;
 
-            this.emit('snooze', false);
+            const notification = notificationProvider.create({ title: 'Snooze ended', subtitle: 'Snooze mode aborted.' });
+            notification.show();
+
+            this.onSnooze(false);
         }
 
         // Init Snooze
-        if ((global.snoozeUntil === 0) && itemEnabled) {
+        if ((this.snoozeUntil === 0) && itemEnabled) {
             this.scheduleSnooze(menuItem, duration);
         }
     }
 
-    scheduleSnooze(menuItem, duration) {
-        let durationMs = parseInt(duration * (60 * 1000));
-        let durationHours = parseInt(duration / 60);
-
-        // Calculate Timestamp
-        let snoozeEnd = (Date.now() + durationMs);
-        global.snoozeUntil = snoozeEnd;
-        notificationService.show(`Entered Snooze (${durationHours} Hours)`);
-
-        this.emit('snooze', true);
-
-        // Schedule to waking up
-        let timeout = setTimeout(() => {
-            logger.debug('setTimeout', durationHours);
-
-            // End Snooze
-            global.snoozeUntil = 0;
-            menuItem.checked = false;
-            notificationService.show(`Woke Up from Snooze (${durationHours} Hours)`);
-            this.emit('snooze', false);
-
-            clearTimeout(timeout);
-        }, (snoozeEnd - Date.now()));
-    }
-
     /**
      * Status
-     * @returns {boolean}
+     * @returns {Boolean}
+     * @public
      */
     isActive() {
-        return global.snoozeUntil !== 0;
+        return this.snoozeUntil !== 0;
     }
 }
 
 
 /**
  * Init
- * @function
  */
 let init = () => {
     logger.debug('init');
 
+    // Ensure single instance
     if (!global.snoozerService) {
-        global.snoozerService = new Snoozer();
+        global.snoozerService = new SnoozerService();
     }
 };
 
 /**
- * Getter
- * @function
- *
- * @public
+ * @listens Electron.App#Event:ready
  */
-let getSnoozerService = () => {
-    logger.debug('getSnoozerService');
+app.once('ready', () => {
+    logger.debug('app#ready');
 
-    if (global.snoozerService) {
-        return global.snoozerService;
-    }
-};
-
-
-init();
+    init();
+});
 
 
 /**
  * @exports
  */
-module.exports = getSnoozerService();
+module.exports = global.snoozerService;

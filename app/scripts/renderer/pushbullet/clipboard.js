@@ -38,6 +38,9 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true })
 const defaultInterval = 2000;
 
 
+/** @namespace pb.e2e.encrypt */
+
+
 /**
  * Get 'pb-for-desktop' device
  * @return {Array} Devices with model = 'pb-for-desktop'
@@ -54,14 +57,14 @@ let getDevice = () => {
 
 /**
  * Receive clipboard content
- * @param {Object} clip
+ * @param {Object} clip - Clipboard content
  */
 let receiveClip = (clip) => {
     logger.debug('receiveClip');
 
-    if (!pb.account.pro) { return; }
-
     const pb = window.pb;
+
+    if (!pb.account.pro) { return; }
 
     pb.lastClip = clipboard.readText();
 
@@ -70,7 +73,7 @@ let receiveClip = (clip) => {
 
 /**
  * Publish clipboard content
- * @param {Object} clip
+ * @param {Object} clip - Clipboard content
  */
 let publishClip = (clip) => {
     logger.debug('publishClip');

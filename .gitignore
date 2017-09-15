@@ -1,4 +1,4 @@
-# BASELINE
+## BASELINE
 # macOS
 .DS_Store
 
@@ -10,7 +10,7 @@ logs
 temp
 tmp
 
-# Caches
+# Cache
 .cache
 cache
 .sass-cache
@@ -22,10 +22,13 @@ cache
 # VSCode
 .vscode
 
-# Compiled
-build
-
-# Dependencies
+# nodeJS
 node_modules
 jspm_packages
 bower_components
+
+# Compiled
+build
+
+# Generated documentation
+RELEASENOTES.md

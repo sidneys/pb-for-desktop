@@ -30,9 +30,16 @@ const parseDomain = require('parse-domain');
  * Internal
  * @constant
  */
-const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const domHelper = require(path.join(appRootPath, 'lib', 'dom-helper'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const domHelper = require(path.join(appRootPath, 'lib', 'dom-manager'));
+const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+
+
+/**
+ * Retrieve ShowAppBadgeCount
+ * @return {Boolean} - Show
+ */
+let retrieveAppShowBadgeCount = () => configurationManager('appShowBadgeCount').get();
 
 
 /**
@@ -59,7 +66,7 @@ const buttons = {
 let updateBadge = (total) => {
     logger.debug('updateBadge');
 
-    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+    if (!retrieveAppShowBadgeCount()) { return; }
 
     remote.app.setBadgeCount(total);
 };
@@ -124,7 +131,7 @@ webview.addEventListener('did-navigate-in-page', (ev) => {
 
     let hash = url.parse(ev.url).hash;
 
-    if (Boolean(configurationManager('showBadgeCount').get()) === false) { return; }
+    if (!retrieveAppShowBadgeCount()) { return; }
 
     switch (hash) {
         case '#devices':

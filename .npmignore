@@ -1,4 +1,4 @@
-# BASELINE
+## BASELINE
 # macOS
 .DS_Store
 
@@ -13,18 +13,25 @@ tmp
 # Cache
 .cache
 cache
-.sass-cache/
+.sass-cache
 
 # JetBrains
-.idea/
+.idea
 *.sln.iml
+
+# VSCode
+.vscode
+
+# nodeJS
+node_modules
+jspm_packages
+bower_components
 
 # Compiled
 build
 
-# Node
-node_modules
-jspm_packages
+# Generated documentation
+RELEASENOTES.md
 
 
 ## NPM
@@ -41,7 +48,3 @@ coverage
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
-
-
-# ELECTRON-CLOUD-DEPLOY CACHES
-electron-cloud-deploy-cache

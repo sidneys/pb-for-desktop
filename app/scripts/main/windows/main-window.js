@@ -30,32 +30,32 @@ const appRootPath = require('app-root-path')['path'];
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const packageJson = require(path.join(appRootPath, 'package.json'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
+
+/**
+ * Filesystem
+ * @constant
+ * @default
+ */
+const windowHtml = path.join(appRootPath, 'app', 'html', 'main.html');
 
 /**
  * Application
  * @constant
  * @default
  */
-const windowTitle = packageJson.productName || packageJson.name;
-const windowIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${platformHelper.iconImageExtension(platformHelper.type)}`);
-const windowUrl = url.format({ protocol: 'file:', pathname: path.join(appRootPath, 'app', 'html', 'main.html') });
+const windowTitle = global.manifest.productName;
+const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml });
 
 
 /**
- * @instance
- */
-let appWindow = {};
-
-
-/**
- * AppWindow
+ * Main Window
  * @class
  * @extends Electron.BrowserWindow
+ * @namespace Electron
  */
-class AppWindow extends BrowserWindow {
+class MainWindow extends BrowserWindow {
     constructor() {
         super({
             acceptFirstMouse: true,
@@ -63,9 +63,8 @@ class AppWindow extends BrowserWindow {
             backgroundColor: platformHelper.isMacOS ? '#0095A5A6' : '#95A5A6',
             frame: true,
             fullscreenable: true,
-            icon: windowIcon,
-            minHeight: 512,
-            minWidth: 256,
+            minHeight: 256,
+            minWidth: 128,
             show: false,
             thickFrame: true,
             title: windowTitle,
@@ -78,7 +77,7 @@ class AppWindow extends BrowserWindow {
                 experimentalFeatures: true,
                 nodeIntegration: true,
                 webaudio: true,
-                webgl: false,
+                webgl: true,
                 webSecurity: false
             }
         });
@@ -86,71 +85,38 @@ class AppWindow extends BrowserWindow {
         this.init();
     }
 
+    /**
+     * Init
+     */
     init() {
         logger.debug('init');
 
         /**
-         * @listens Electron.BrowserWindow#close
+         * @listens MainWindow#close
          */
-        this.on('close', ev => {
+        this.on('close', (event) => {
             logger.debug('AppWindow#close');
 
-            if (!app.isQuitting) {
-                ev.preventDefault();
+            if (global.state.isQuitting === false) {
+                event.preventDefault();
                 this.hide();
             }
         });
 
         /**
-         * @listens Electron.BrowserWindow#show
-         */
-        this.on('show', () => {
-            logger.debug('AppWindow#show');
-        });
-
-        /**
-         * @listens Electron.BrowserWindow#hide
-         */
-        this.on('hide', () => {
-            logger.debug('AppWindow#hide');
-        });
-
-        /**
-         * @listens Electron.BrowserWindow#move
-         */
-        this.on('move', () => {
-            logger.debug('AppWindow#move');
-        });
-
-        /**
-         * @listens Electron.BrowserWindow#resize
-         */
-        this.on('resize', () => {
-            logger.debug('AppWindow#resize');
-        });
-
-        /**
-         * @listens Electron~WebContents#will-navigate
+         * @listens MainWindow#will-navigate
          */
         this.webContents.on('will-navigate', (event, url) => {
             logger.debug('AppWindow.webContents#will-navigate');
 
-            event.preventDefault();
             if (url) {
+                event.preventDefault();
                 shell.openExternal(url);
             }
         });
 
-        /**
-         * @listens Electron~WebContents#dom-ready
-         */
-        this.webContents.on('dom-ready', () => {
-            logger.debug('AppWindow.webContents#dom-ready');
-        });
 
         this.loadURL(windowUrl);
-
-        return this;
     }
 }
 
@@ -161,8 +127,8 @@ class AppWindow extends BrowserWindow {
 let create = () => {
     logger.debug('create');
 
-    if (!(appWindow instanceof AppWindow)) {
-        appWindow = new AppWindow();
+    if (!global.mainWindow) {
+        global.mainWindow = new MainWindow();
     }
 };
 
@@ -173,7 +139,7 @@ let create = () => {
 app.on('activate', () => {
     logger.debug('app#activate');
 
-    appWindow.show();
+    global.mainWindow.show();
 });
 
 /**
@@ -189,4 +155,4 @@ app.once('ready', () => {
 /**
  * @exports
  */
-module.exports = appWindow;
+module.exports = global.mainWindow;

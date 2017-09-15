@@ -4,8 +4,9 @@ matrix:
       osx_image: xcode8.2
       sudo: required
     - os: linux
-      dist: trusty
       sudo: required
+      dist: trusty
+      group: edge
       compiler: clang
 
 language: c
@@ -16,8 +17,8 @@ branches:
 
 cache:
   directories:
-    - "$HOME/.electron"
     - "./node_modules"
+    - "${HOME}/.yarn-cache"
 
 addons:
   apt:
@@ -36,12 +37,14 @@ before_install:
   - if [[ "${OSTYPE}" == "linux"* ]] && [[ "${DEPLOY_LINUX}" == 0 ]]; then travis_terminate 0; fi
   - echo "🔧 Setting up Environment"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 7.8.0 && nvm use 7.8.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 8.5.0 && nvm use 8.5.0
   - npm --global update npm
+  - npm --global install yarn
 
 install:
   - echo "📥 Installing Dependencies"
   - npm install
+  - yarn install
 
 script:
   - echo "📦 Building"

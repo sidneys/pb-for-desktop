@@ -22,12 +22,14 @@ const appRootPath = require('app-root-path')['path'];
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
-
 /**
  * @constant
  * @default
  */
 const defaultInterval = 2000;
+
+
+/** @namespace window.dispatchEvent */
 
 
 /**

@@ -7,14 +7,13 @@
  * @constant
  */
 const path = require('path');
-const url = require('url');
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const { app, BrowserWindow, Menu, shell, webContents } = require('electron');
+const { app, Menu, shell, webContents } = require('electron');
 
 /**
  * Modules
@@ -22,15 +21,15 @@ const { app, BrowserWindow, Menu, shell, webContents } = require('electron');
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+const Appdirectory = require('appdirectory');
 
 /**
  * Modules
  * Internal
  * @constant
  */
-//const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
+const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: false });
-const packageJson = require(path.join(appRootPath, 'package.json'));
 
 
 /**
@@ -38,19 +37,23 @@ const packageJson = require(path.join(appRootPath, 'package.json'));
  * @constant
  * @default
  */
-const appProductName = packageJson.productName || packageJson.name;
-const appHomepage = packageJson.homepage;
-
+const appName = global.manifest.name;
+const appProductName = global.manifest.productName;
+const appHomepage = global.manifest.homepage;
 
 /**
- * @instance
+ * Filesystem
+ * @constant
+ * @default
  */
-let appMenu = {};
+const appLogDirectory = (new Appdirectory(appName)).userLogs();
+const appLogFile = path.join(appLogDirectory, `${appName}.log`);
 
 
 /**
  * App Menu Template
  * @function
+ * @returns {Electron.MenuItemConstructorOptions[]}
  */
 let getAppMenuTemplate = () => {
     let template = [
@@ -142,11 +145,10 @@ let getAppMenuTemplate = () => {
                     }
                 },
                 {
-                    //visible: isDebug,
+                    visible: isDebug,
                     type: 'separator'
                 },
                 {
-                    //visible: isDebug,
                     label: 'Reload',
                     accelerator: 'CommandOrControl+R',
                     click(item, focusedWindow) {
@@ -156,15 +158,9 @@ let getAppMenuTemplate = () => {
                     }
                 },
                 {
-                    //visible: isDebug,
                     label: 'Toggle Developer Tools',
                     accelerator: (() => {
-                        if (process.platform === 'darwin') {
-                            return 'Alt+Command+I';
-                        }
-                        else {
-                            return 'Ctrl+Shift+I';
-                        }
+                        return process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I';
                     })(),
                     click(item, focusedWindow) {
                         if (focusedWindow) {
@@ -216,6 +212,22 @@ let getAppMenuTemplate = () => {
                     type: 'separator'
                 },
                 {
+                    label: `Open Logs...`,
+                    click() {
+                        shell.openItem(appLogFile);
+                    }
+                },
+                {
+                    label: `Restart in Debugging Mode...`,
+                    click() {
+                        app.relaunch({ args: process.argv.slice(1).concat(['--debug']) });
+                        app.quit();
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
                     label: 'Services',
                     role: 'services',
                     submenu: []
@@ -256,17 +268,30 @@ let getAppMenuTemplate = () => {
 
 
 /**
- * @listens Electron.App#ready
+ * Init
+ */
+let init = () => {
+    logger.debug('init');
+
+    // Ensure single instance
+    if (!global.appMenu) {
+        global.appMenu = Menu.buildFromTemplate(getAppMenuTemplate());
+        Menu.setApplicationMenu(global.appMenu);
+    }
+};
+
+
+/**
+ * @listens Electron.App#Event:ready
  */
 app.on('ready', () => {
     logger.debug('app#ready');
 
-    appMenu = Menu.buildFromTemplate(getAppMenuTemplate());
-    Menu.setApplicationMenu(appMenu);
+    init();
 });
 
 
 /**
  * @exports
  */
-module.exports = appMenu;
+module.exports = global.appMenu;

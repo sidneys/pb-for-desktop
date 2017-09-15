@@ -22,7 +22,10 @@ const { app, webContents } = electron || electron.remote;
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+/* eslint-disable no-unused-vars */
+const filesize = require('filesize');
 const tryRequire = require('try-require');
+/* eslint-enable */
 
 /**
  * Modules
@@ -49,9 +52,8 @@ let init = () => {
 
     let timeout = setTimeout(() => {
         webContents.getAllWebContents().forEach((contents) => {
-
             /**
-             * Developer Tools
+             * Open Developer Tools
              */
             if (isDebug) {
                 logger.info('opening developer tools:', `"${contents.getURL()}"`);
@@ -60,13 +62,21 @@ let init = () => {
             }
 
             /**
-             * Live Reload
+             * Start Live Reload
              */
             if (isLivereload) {
                 logger.info('starting live reload:', `"${contents.getURL()}"`);
 
-                tryRequire('electron-connect').client.create();
+                tryRequire('electron-connect')['client'].create();
             }
+
+            /**
+             * Show Caches
+             */
+            contents.session.getCacheSize((size) => {
+                logger.debug('webContents', 'id', contents.id, 'url', contents.getURL());
+                logger.debug('webContents', 'cache', filesize(size));
+            });
         });
         clearTimeout(timeout);
     }, defaultTimeout);
@@ -74,7 +84,7 @@ let init = () => {
 
 
 /**
- * @listens Electron.App#ready
+ * @listens Electron.App#Event:ready
  */
 app.once('ready', () => {
     logger.debug('app#ready');

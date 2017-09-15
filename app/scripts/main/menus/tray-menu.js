@@ -14,7 +14,7 @@ const path = require('path');
  * Electron
  * @constant
  */
-const { app, BrowserWindow, ipcMain, Menu, session, Tray } = require('electron');
+const { app, ipcMain, Menu, Tray, webContents } = require('electron');
 
 /**
  * Modules
@@ -30,10 +30,8 @@ const appRootPath = require('app-root-path')['path'];
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const messengerService = require(path.join(appRootPath, 'app', 'scripts', 'main', 'services', 'messenger-service'));
-const packageJson = require(path.join(appRootPath, 'package.json'));
+const messengerProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'messenger-provider'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
-const snoozerService = require(path.join(appRootPath, 'app', 'scripts', 'main', 'services', 'snoozer-service'));
 
 
 /**
@@ -41,40 +39,71 @@ const snoozerService = require(path.join(appRootPath, 'app', 'scripts', 'main', 
  * @constant
  * @default
  */
-const appProductName = packageJson.productName || packageJson.name;
-const appVersion = packageJson.version;
+const appCurrentVersion = global.manifest.version;
+const appProductName = global.manifest.productName;
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appTrayIconOpaque = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-opaque${platformHelper.templateImageExtension(platformHelper.type)}`);
-const appTrayIconTransparent = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
-const appTrayIconTransparentPause = path.join(appRootPath, 'icons', platformHelper.type, `icon-tray-transparent-pause${platformHelper.templateImageExtension(platformHelper.type)}`);
+const appSoundDirectory = global.filesystem.directories.sounds;
+
+/**
+ * Tray icons
+ * @constant
+ */
+const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-default${platformHelper.templateImageExtension(platformHelper.type)}`);
+const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
+const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-transparent-pause${platformHelper.templateImageExtension(platformHelper.type)}`);
+
+/**
+ * Tray images
+ * @constant
+ */
+const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformHelper.menuItemImageExtension}`);
 
 
 /**
- * @instance
+ * Get mainWindow
+ * @returns {Electron.BrowserWindow}
  */
-let trayMenu = {};
+let getMainWindow = () => global.mainWindow;
+
+/**
+ * Get snoozerService
+ * @returns {Electron.BrowserWindow}
+ */
+let getSnoozerService = () => global.snoozerService;
+
 
 /**
  * Tray Menu Template
- * @function
+ * @returns {Electron.MenuItemConstructorOptions[]}
  */
-let getTrayMenuTemplate = () => {
+let createTrayMenuTemplate = () => {
     return [
         {
-            id: 'productName',
+            id: 'appProductName',
             label: `Show ${appProductName}`,
             click() {
-                BrowserWindow.getAllWindows()[0].show();
+                global.mainWindow.show();
             }
         },
         {
-            id: 'appVersion',
-            label: `Version ${appVersion}`,
+            id: 'appCurrentVersion',
+            label: `v${appCurrentVersion}`,
             type: 'normal',
             enabled: false
         },
@@ -82,34 +111,47 @@ let getTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
-            id: 'logout',
-            label: 'Log out...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-logout${platformHelper.menuItemImageExtension}`),
+            id: 'reset',
+            label: 'Reset Configuration...',
+            icon: trayMenuItemImageReset,
             type: 'normal',
             click() {
-                messengerService.showQuestion('Are you sure you want to log out from Pushbullet?',
-                    `${appProductName} will log out from Pushbullet.${os.EOL}` +
-                    `All unsaved changes will be lost.`,
+                messengerProvider.showQuestion('Are you sure you want to reset?',
+                    `${appProductName} will reset to its initial state.${os.EOL}Unsaved changes will be lost.`,
                     (result) => {
                         if (result === 0) {
-                            const ses = session.fromPartition('persist:app');
+                            configurationManager('appLaunchOnStartup').set(configurationManager('appLaunchOnStartup').default);
+                            configurationManager('appShowBadgeCount').set(configurationManager('appShowBadgeCount').default);
+                            configurationManager('appTrayOnly').set(configurationManager('appTrayOnly').default);
+                            configurationManager('pushbulletLastNotificationTimestamp').set(configurationManager('pushbulletLastNotificationTimestamp').default);
+                            configurationManager('pushbulletRepeatRecentNotifications').set(configurationManager('pushbulletRepeatRecentNotifications').default);
+                            configurationManager('pushbulletSmsEnabled').set(configurationManager('pushbulletSmsEnabled').default);
+                            configurationManager('pushbulletSoundEnabled').set(configurationManager('pushbulletSoundEnabled').default);
+                            configurationManager('pushbulletSoundFile').set(configurationManager('pushbulletSoundFile').default);
+                            configurationManager('pushbulletSoundVolume').set(configurationManager('pushbulletSoundVolume').default);
+                            configurationManager('windowBounds').set(configurationManager('windowBounds').default);
+                            configurationManager('windowTopmost').set(configurationManager('windowTopmost').default);
+                            configurationManager('windowVisible').set(configurationManager('windowVisible').default);
 
-                            ses.clearCache(() => {
-                                logger.debug('logout', 'cache cleared');
+                            const sessionList = webContents.getAllWebContents().map((contents) => {
+                                return contents.session.clearCache ? contents.session : void 0;
+                            });
 
-                                ses.clearStorageData({
-                                    storages: [
-                                        'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache',
-                                        'websql', 'serviceworkers'
-                                    ],
-                                    quotas: ['temporary', 'persistent', 'syncable']
-                                }, () => {
-                                    logger.debug('logout', 'storage cleared');
-                                    logger.log('logout', 'relaunching');
+                            sessionList.forEach((session, sessionIndex) => {
+                                if (!session.clearCache) { return; }
+                                session.clearCache(() => {
+                                    session.clearStorageData({
+                                        storages: ['appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql'],
+                                        quotas: ['persistent', 'syncable', 'temporary']
+                                    }, () => {
+                                        logger.info('logout', 'cleared cache and storage');
+                                    });
+                                });
 
+                                if (sessionIndex === sessionList.length - 1) {
                                     app.relaunch();
                                     app.exit();
-                                });
+                                }
                             });
                         }
                     });
@@ -118,10 +160,10 @@ let getTrayMenuTemplate = () => {
         {
             id: 'reconnect',
             label: 'Reconnect...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-reconnect${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageReconnect,
             type: 'normal',
             click() {
-                messengerService.showQuestion('Are you sure you want to reconnect to Pushbullet?',
+                messengerProvider.showQuestion('Are you sure you want to reconnect to Pushbullet?',
                     `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
                     `All unsaved changes will be lost.`,
                     (result) => {
@@ -135,92 +177,112 @@ let getTrayMenuTemplate = () => {
             }
         },
         {
-            id: 'smsEnabled',
-            label: 'SMS Mirroring',
-            icon: path.join(appRootPath, 'app', 'images', `icon-sms-enabled${platformHelper.menuItemImageExtension}`),
+            type: 'separator'
+        },
+        {
+            id: 'pushbulletHideNotificationBody',
+            label: 'Hide Notification Body Text',
+            icon: trayMenuItemImagePushbulletHideNotificationBody,
             type: 'checkbox',
-            checked: configurationManager('smsEnabled').get(),
+            checked: configurationManager('pushbulletHideNotificationBody').get(),
             click(menuItem) {
-                configurationManager('smsEnabled').set(menuItem.checked);
+                configurationManager('pushbulletHideNotificationBody').set(menuItem.checked);
+            }
+        },
+        {
+            id: 'pushbulletSmsEnabled',
+            label: 'Mirror SMS Messages',
+            icon: trayMenuItemImagePushbulletSmsEnabled,
+            type: 'checkbox',
+            checked: configurationManager('pushbulletSmsEnabled').get(),
+            click(menuItem) {
+                configurationManager('pushbulletSmsEnabled').set(menuItem.checked);
             }
         },
         {
             type: 'separator'
         },
         {
-            id: 'launchOnStartup',
+            id: 'appLaunchOnStartup',
             label: 'Launch on Startup',
-            icon: path.join(appRootPath, 'app', 'images', `icon-launch-on-startup${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageAppLaunchOnStartup,
             type: 'checkbox',
-            checked: configurationManager('launchOnStartup').get(),
+            checked: configurationManager('appLaunchOnStartup').get(),
             click(menuItem) {
-                configurationManager('launchOnStartup').set(menuItem.checked);
+                configurationManager('appLaunchOnStartup').set(menuItem.checked);
             }
         },
         {
-            id: 'replayOnLaunch',
+            id: 'pushbulletRepeatRecentNotifications',
             label: 'Replay Pushes on Launch',
-            icon: path.join(appRootPath, 'app', 'images', `icon-replay-on-launch${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImagePushbulletRepeatRecentNotifications,
             type: 'checkbox',
-            checked: configurationManager('replayOnLaunch').get(),
+            checked: configurationManager('pushbulletRepeatRecentNotifications').get(),
             click(menuItem) {
-                configurationManager('replayOnLaunch').set(menuItem.checked);
+                configurationManager('pushbulletRepeatRecentNotifications').set(menuItem.checked);
             }
         },
         {
             type: 'separator'
         },
         {
-            id: 'windowAlwaysOnTop',
+            id: 'windowTopmost',
             label: 'Always on Top',
-            icon: path.join(appRootPath, 'app', 'images', `icon-show-always-on-top${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageWindowTopmost,
             type: 'checkbox',
-            checked: configurationManager('windowAlwaysOnTop').get(),
+            checked: configurationManager('windowTopmost').get(),
             click(menuItem) {
-                configurationManager('windowAlwaysOnTop').set(menuItem.checked);
+                configurationManager('windowTopmost').set(menuItem.checked);
             }
         },
         {
-            id: 'windowInTrayOnly',
+            id: 'appTrayOnly',
             label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
-            icon: path.join(appRootPath, 'app', 'images', `icon-show-in-tray-only${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageAppTrayOnly,
             type: 'checkbox',
-            checked: configurationManager('windowInTrayOnly').get(),
+            checked: configurationManager('appTrayOnly').get(),
             click(menuItem) {
-                configurationManager('windowInTrayOnly').set(menuItem.checked);
+                configurationManager('appTrayOnly').set(menuItem.checked);
             }
         },
         {
-            id: 'showBadgeCount',
+            id: 'appShowBadgeCount',
             visible: platformHelper.isMacOS,
             label: 'Dock Icon Count',
-            icon: path.join(appRootPath, 'app', 'images', `icon-show-badge-count${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageAppShowBadgeCount,
             type: 'checkbox',
-            checked: configurationManager('showBadgeCount').get(),
+            checked: configurationManager('appShowBadgeCount').get(),
             click(menuItem) {
-                configurationManager('showBadgeCount').set(menuItem.checked);
+                configurationManager('appShowBadgeCount').set(menuItem.checked);
             }
         },
         {
             type: 'separator'
         },
         {
-            id: 'soundEnabled',
+            id: 'pushbulletSoundEnabled',
             label: 'Play Sound Effects',
-            icon: path.join(appRootPath, 'app', 'images', `icon-sound-enabled${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImagePushbulletSoundEnabled,
             type: 'checkbox',
-            checked: configurationManager('soundEnabled').get(),
+            checked: configurationManager('pushbulletSoundEnabled').get(),
             click(menuItem) {
-                configurationManager('soundEnabled').set(menuItem.checked);
+                configurationManager('pushbulletSoundEnabled').set(menuItem.checked);
             }
         },
         {
-            id: 'soundFile',
+            id: 'pushbulletSoundFile',
             label: 'Open Sound File...',
-            icon: path.join(appRootPath, 'app', 'images', `icon-sound-file${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImagePushbulletSoundFile,
             type: 'normal',
             click() {
-                configurationManager('soundFile').implement();
+                messengerProvider.openFile('Change Sound', 'audio', appSoundDirectory, (error, soundFile) => {
+                    if (error) {
+                        logger.error('pushbulletSoundFile', 'messengerProvider.openFile', error);
+                        return;
+                    }
+
+                    configurationManager('pushbulletSoundFile').set(soundFile);
+                });
             }
         },
         {
@@ -229,14 +291,14 @@ let getTrayMenuTemplate = () => {
         {
             id: 'Snooze',
             label: 'Snooze',
-            icon: path.join(appRootPath, 'app', 'images', `icon-snooze${platformHelper.menuItemImageExtension}`),
+            icon: trayMenuItemImageSnooze,
             submenu: [
                 {
                     label: 'Snooze for 1 Hour',
                     id: 'snooze-60',
                     type: 'checkbox',
                     click(menuItem) {
-                        snoozerService.snooze(menuItem, 60);
+                        getSnoozerService().snooze(menuItem, 1);
                     }
                 },
                 {
@@ -244,7 +306,7 @@ let getTrayMenuTemplate = () => {
                     id: 'snooze-240',
                     type: 'checkbox',
                     click(menuItem) {
-                        snoozerService.snooze(menuItem, 240);
+                        getSnoozerService().snooze(menuItem, 240);
                     }
                 },
                 {
@@ -252,7 +314,7 @@ let getTrayMenuTemplate = () => {
                     id: 'snooze-480',
                     type: 'checkbox',
                     click(menuItem) {
-                        snoozerService.snooze(menuItem, 480);
+                        getSnoozerService().snooze(menuItem, 480);
                     }
                 }
             ]
@@ -269,16 +331,34 @@ let getTrayMenuTemplate = () => {
     ];
 };
 
+
 /**
- * @class
- * @extends Electron.Tray
+ * @class TrayMenu
+ * @property {Electron.MenuItemConstructorOptions[]} template - Template
+ * @property {Electron.Menu} menu - Menu
+ * @property {String} imageName - Icon name
+ * @extends EventEmitter
  */
 class TrayMenu extends Tray {
+    /**
+     * @param {Electron.MenuItemConstructorOptions[]} template - Menu template
+     * @constructs
+     */
     constructor(template) {
-        super(appTrayIconOpaque);
+        super(trayIconDefault);
 
+        this.template = template;
+        this.menu = Menu.buildFromTemplate(this.template);
+
+        this.init();
+    }
+
+    /**
+     * Init
+     */
+    init() {
         this.setToolTip(appProductName);
-        this.setContextMenu(Menu.buildFromTemplate(template));
+        this.setContextMenu(this.menu);
 
         /**
          * @listens Electron.Tray#click
@@ -287,8 +367,7 @@ class TrayMenu extends Tray {
             logger.debug('TrayMenu#click');
 
             if (platformHelper.isWindows) {
-                let mainWindow = BrowserWindow.getAllWindows()[0];
-
+                const mainWindow = getMainWindow();
                 if (!mainWindow) { return; }
 
                 if (mainWindow.isVisible()) {
@@ -298,28 +377,63 @@ class TrayMenu extends Tray {
                 }
             }
         });
+
+        /**
+         * @listens ipcMain#networkState
+         */
+        ipcMain.on('network', (event, networkState) => {
+            logger.debug('ipcMain#network');
+
+            switch (networkState) {
+                case 'offline':
+                    this.setImageName('transparent');
+                    break;
+                case 'online':
+                    this.setImageName('default');
+                    break;
+            }
+        });
+
+        /**
+         * @listens ipcMain#snooze
+         */
+        ipcMain.on('snooze', (event, snoozeState) => {
+            logger.debug('ipcMain#snooze');
+
+            switch (snoozeState) {
+                case true:
+                    this.setImageName('transparent-pause');
+                    break;
+                case false:
+                    this.setImageName('default');
+                    break;
+            }
+        });
+
+        // Initial image
+        this.setImageName('transparent');
     }
 
     /**
-     * Set Tray Icon State
-     * @param {String} state - Tray Icon Enable/Disable
+     * Set image name
+     * @param {String} imageName - 'default', 'transparent', 'transparent-pause'
      */
-    setState(state) {
-        logger.debug('setState', 'this.state:', this.state, 'state:', state);
+    setImageName(imageName) {
+        logger.debug('setImageName');
 
-        if (this.state === state) { return; }
+        if (this.imageName === imageName) { return; }
 
-        this.state = state;
+        this.imageName = imageName;
 
-        switch (this.state) {
+        switch (this.imageName) {
             case 'transparent':
-                this.setImage(appTrayIconTransparent);
+                this.setImage(trayIconTransparent);
                 break;
             case 'transparent-pause':
-                this.setImage(appTrayIconTransparentPause);
+                this.setImage(trayIconTransparentPause);
                 break;
-            case 'opaque':
-                this.setImage(appTrayIconOpaque);
+            case 'default':
+                this.setImage(trayIconDefault);
                 break;
         }
     }
@@ -327,49 +441,29 @@ class TrayMenu extends Tray {
 
 
 /**
- * @listens ipcMain#networkState
+ * Init
  */
-ipcMain.on('network', (ev, networkState) => {
-    logger.debug('ipcMain#network', 'networkState', networkState);
+let init = () => {
+    logger.debug('init');
 
-    switch (networkState) {
-        case 'offline':
-            trayMenu.setState('transparent');
-            break;
-        case 'online':
-            trayMenu.setState('opaque');
-            break;
+    // Ensure single instance
+    if (!global.trayMenu) {
+        global.trayMenu = new TrayMenu(createTrayMenuTemplate());
     }
-});
+};
+
 
 /**
- * @listens snoozerService#snoozeState
- */
-snoozerService.on('snooze', (snoozeState) => {
-    logger.debug('snoozerService#snooze', 'snoozeState', snoozeState);
-
-    switch (snoozeState) {
-        case true:
-            trayMenu.setState('transparent-pause');
-            break;
-        case false:
-            trayMenu.setState('opaque');
-            break;
-    }
-});
-
-/**
- * @listens Electron.App#ready
+ * @listens Electron.App#Event:ready
  */
 app.once('ready', () => {
     logger.debug('app#ready');
 
-    trayMenu = new TrayMenu(getTrayMenuTemplate());
-    trayMenu.setState('transparent');
+    init();
 });
 
 
 /**
  * @exports
  */
-module.exports = trayMenu;
+module.exports = global.trayMenu;

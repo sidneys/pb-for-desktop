@@ -36,6 +36,8 @@ appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
  * Internal
  * @constant
  */
+/* eslint-disable no-unused-vars */
+const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'));
 const logger = require(path.join(appRootPath.path, 'lib', 'logger'))({ write: true });
 const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'app-menu')); // jshint ignore:line
 const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window')); // jshint ignore:line
@@ -44,13 +46,8 @@ const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', '
 const updaterService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'updater-service')); // jshint ignore:line
 const powerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'power-service')); // jshint ignore:line
 const debugService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'debug-service')); // jshint ignore:line
-//const globalIpcService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'global-ipc-service')); // jshint ignore:line
-
-
-/**
- * Disable GPU
- */
-app.disableHardwareAcceleration();
+const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service')); // jshint ignore:line
+/* eslint-enable */
 
 
 /**
@@ -59,7 +56,7 @@ app.disableHardwareAcceleration();
 app.on('before-quit', () => {
     logger.debug('app#before-quit');
 
-    app.isQuitting = true;
+    global.state.isQuitting = true;
 });
 
 /**
