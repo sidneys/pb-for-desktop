@@ -24,7 +24,6 @@ const { Notification } = electron;
  */
 const _ = require('lodash');
 const appRootPath = require('app-root-path')['path'];
-const electronWindowsNotifications = require('electron-windows-notifications');
 
 /**
  * Modules
@@ -56,7 +55,7 @@ const defaultOptions = {
 /**
  * Create
  * @param {Object|String|Number} options - Notification Options
- * @returns {Electron.Notification|ToastNotification} - Native Notification
+ * @return {Electron.Notification|ToastNotification} - Native Notification
  */
 let create = (options) => {
     logger.debug('create');
@@ -72,18 +71,7 @@ let create = (options) => {
 
     let notification;
 
-    if (platformHelper.isMacOS || platformHelper.isLinux) {
-        notification = new Notification(notificationOptions);
-    } else if (platformHelper.isWindows) {
-        notification = new electronWindowsNotifications.ToastNotification({
-            appId: appName,
-            template: new electronWindowsNotifications.Template({
-                templateText: `<text id="1">${notificationOptions.title}${os.EOL}${notificationOptions.body}</text>`,
-                templateImage: `<image id="1" src="${notificationOptions.icon}"/>`,
-                templateActions: `<actions><action content="check" arguments="check" /></actions>`
-            }).getXML()
-        });
-    }
+    notification = new Notification(notificationOptions);
 
     return notification;
 };

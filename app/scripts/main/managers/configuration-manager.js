@@ -51,7 +51,7 @@ const appCurrentVersion = global.manifest.version;
  * Modules
  * Configuration
  */
-let autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } });
+const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } });
 /** @namespace electronSettings.delete */
 /** @namespace electronSettings.file */
 /** @namespace electronSettings.get */
@@ -278,13 +278,13 @@ let configurationItems = {
             let interval = setInterval(() => {
                 const mainWindow = getMainWindow();
                 if (!mainWindow) { return; }
+                if (!mainWindow.getBounds()) { return; }
 
-                // Auto-Persist
-                mainWindow.on('close', () => {
-                    const bounds = mainWindow.getBounds();
-                    if (bounds) { this.set(bounds); }
-                });
+                // Observe future changes
+                mainWindow.on('move', event => this.set(event.sender.getBounds()));
+                mainWindow.on('resize', event => this.set(event.sender.getBounds()));
 
+                // Apply saved value
                 this.implement(this.get());
 
                 clearInterval(interval);
@@ -364,10 +364,11 @@ let configurationItems = {
                 const mainWindow = getMainWindow();
                 if (!mainWindow) { return; }
 
-                // Auto-Persist
-                mainWindow.on('show', () => { this.set(true); });
-                mainWindow.on('hide', () => { this.set(false); });
+                // Observe future changes
+                mainWindow.on('show', event => this.set(event.sender.isVisible()));
+                mainWindow.on('hide', event => this.set(event.sender.isVisible()));
 
+                // Apply saved value
                 this.implement(this.get());
 
                 clearInterval(interval);
@@ -393,11 +394,7 @@ let configurationItems = {
             const mainWindow = getMainWindow();
             if (!mainWindow) { return; }
 
-            if (value) {
-                mainWindow.show();
-            } else {
-                mainWindow.hide();
-            }
+            value === true ? mainWindow.show() : mainWindow.hide();
         }
     },
     /**

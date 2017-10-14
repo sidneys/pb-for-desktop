@@ -2,34 +2,41 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="../styles/ionicons.css">
     <link rel="stylesheet" type="text/css" href="../styles/styles.css">
 </head>
 <body>
 
+<!-- spinner -->
 <div id="spinner">
     <div id="spinner__logo"></div>
     <div class="spinner__icon"></div>
     <div id="spinner__text">Connecting</div>
 </div>
+<!-- /spinner -->
 
-<div id="controls-extra">
-    <div class="controls-extra__button home">
+<!-- supplemental-menu -->
+<div id="supplemental-menu">
+    <div class="supplemental-menu__button home">
         <div class="title">Home</div>
-        <i class="icon ion-home"></i>
+        <div class="icon"></div>
     </div>
 </div>
+<!-- /supplemental-menu -->
 
+<!-- titlebar -->
 <div class="titlebar top draggable"></div>
 <div class="titlebar left draggable"></div>
 <div class="titlebar right draggable"></div>
+<!-- titlebar -->
 
+<!-- webview -->
 <webview id="webview"
-         disablewebsecurity="on"
-         partition="persist:app"
-         preload="../scripts/renderer/webviews/pushbullet-webview.js"
-         src="http://pushbullet.com">
+        disablewebsecurity="true"
+        partition="persist:app"
+        preload="../scripts/renderer/webviews/pushbullet-webview.js"
+        src="http://pushbullet.com">
 </webview>
+<!-- webview-->
 
 <script src="../scripts/renderer/main.js"></script>
 

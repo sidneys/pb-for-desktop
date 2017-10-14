@@ -26,7 +26,6 @@ install:
 
 before_build:
   - cmd: echo 📥 Installing Dependencies
-  - cmd: npm install
   - cmd: yarn install
 
 build_script:
@@ -34,7 +33,7 @@ build_script:
   - cmd: npm run build --metadata
 
 deploy_script:
-  - cmd: echo 📮 Deploying
+  - cmd: echo 📮 Deploying to GitHub
   - cmd: npm run deploy
 
 artifacts:

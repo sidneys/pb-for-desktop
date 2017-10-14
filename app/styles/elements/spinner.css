@@ -1,0 +1,199 @@
+/* ==========================================================================
+   SPINNER
+   ========================================================================== */
+
+/* #spinner
+   ========================================================================== */
+
+#spinner
+{
+    z-index: var(--z-index-front);
+    display: flex; /* establish flex container */
+    flex-direction: column; /* make main axis vertical */
+    justify-content: center; /* center items vertically, in this case */
+    align-items: center; /* center items horizontally, in this case */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: scale3d(1.5, 1.5, 1.5);
+
+    animation: var(--animation-gradient);
+    background: radial-gradient(circle farthest-corner at 50% 50%, var(--color-accent-light), var(--color-accent-dark));
+
+    transition: opacity 2000ms ease 500ms;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#spinner.hide
+{
+    opacity: 0;
+    pointer-events: none;
+}
+
+#spinner.show
+{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* .spinner__icon
+   ========================================================================== */
+
+.spinner__icon
+{
+    background-image: url('../images/logo.png');
+    background-size: 100% 100%;
+    border-radius: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    height: 75px;
+    width: 75px;
+
+    animation: rotating 1500ms linear infinite;
+
+    transition: opacity 500ms ease-out 0ms;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hide .spinner__icon
+{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.show .spinner__icon
+{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.spinner__icon.background
+{
+    background: none;
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    filter: brightness(50%) blur(4px);
+}
+
+.spinner__icon.background img
+{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.spinner__icon.background:after
+{
+    left: 100px;
+}
+
+.spinner__icon.background:before
+{
+    height: 200px;
+    width: 200px;
+}
+
+.spinner__icon:after
+{
+    background-color: var(--color-accent);
+    background-image: linear-gradient(to bottom, var(--color-white-translucent-25) 0%, var(--color-black-translucent-25) 100%);
+    bottom: 0;
+    content: '';
+    position: absolute;
+    top: 0;
+    transform: rotateY(-90deg);
+    transform-origin: 100% 50%;
+    width: 5px;
+    left: 35px;
+}
+
+.spinner__icon:before
+{
+    background-color: var(--color-accent);
+    background-image: linear-gradient(to bottom, var(--color-white-translucent-25) 0%, var(--color-black-translucent-25) 100%);
+    border-radius: 100%;
+    content: '';
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translateZ(-5px);
+    height: 75px;
+    width: 75px;
+}
+
+/* #spinner__logo
+   ========================================================================== */
+
+#spinner__logo
+{
+    background-image: url('../images/logo-text.png');
+    background-size: 50% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 320px;
+    height: 60px;
+    margin-bottom: 1rem;
+
+    animation: var(--animation-pulsating);
+
+    transition: opacity 500ms ease-out 0ms, margin 500ms ease-out 0ms;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hide #spinner__logo
+{
+    margin: 2% 2% 25% 2%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.show #spinner__logo
+{
+    margin: 2% 2% 2% 2%;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* #spinner__text
+   ========================================================================== */
+
+#spinner__text
+{
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-weight: 500;
+    color: var(--color-white);
+    text-align: center;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    margin-top: 2rem;
+
+    animation: var(--animation-shaking);
+
+    transition: opacity 500ms ease-out 0ms, margin 2000ms ease-out 0ms;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hide #spinner__text
+{
+    margin: 2% 2% 0 2%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.show #spinner__text
+{
+    margin: 2% 2% 2% 2%;
+    opacity: 1;
+    pointer-events: auto;
+}

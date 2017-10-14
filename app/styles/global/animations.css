@@ -1,0 +1,149 @@
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+/* gradient
+   ========================================================================== */
+
+:root
+{
+    --animation-gradient: gradient 2000ms ease-in-out infinite;
+}
+
+@keyframes gradient
+{
+    0%
+    {
+        background-size: 200% 200%;
+        background-position: 50% 50%;
+    }
+    50%
+    {
+        background-size: 100% 100%;
+        background-position: 50% 50%;
+    }
+    100%
+    {
+        background-size: 200% 200%;
+        background-position: 50% 50%;
+    }
+}
+
+/* pulsating
+   ========================================================================== */
+
+:root
+{
+    --animation-pulsating: pulsating 2000ms ease infinite;
+}
+
+@keyframes pulsating
+{
+    0%
+    {
+        transform: scale3d(0.9, 0.9, 0.9);
+        filter: blur(1px);
+    }
+    30%
+    {
+        filter: blur(0px);
+    }
+    50%
+    {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+    70%
+    {
+        filter: blur(0px);
+    }
+    100%
+    {
+        transform: scale3d(0.9, 0.9, 0.9);
+        filter: blur(1px);
+    }
+}
+
+/* rotating
+   ========================================================================== */
+
+:root
+{
+    --animation-rotating: rotating 1500ms linear infinite;
+}
+
+@keyframes rotating
+{
+    0%
+    {
+        transform: rotate3d(0, 1, 0, 0deg);
+    }
+    50%
+    {
+        transform: rotate3d(0, 1, 0, 180deg);
+    }
+    100%
+    {
+        transform: rotate3d(0, 1, 0, 360deg);
+    }
+}
+
+/* shaking
+   ========================================================================== */
+
+:root
+{
+    --animation-shaking: shaking 2000ms ease-in-out infinite;
+}
+
+@keyframes shaking
+{
+    0%
+    {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
+    }
+    50%
+    {
+        transform: scale3d(0.95, 0.95, 0.95);
+        filter: blur(1px);
+    }
+    100%
+    {
+        transform: scale3d(1.0, 1.0, 1.0);
+        filter: blur(0);
+    }
+}
+
+/* shaking-alternative
+   ========================================================================== */
+
+:root
+{
+    --animation-shaking-alternative: shaking-alternative 2000ms ease-in-out infinite;
+}
+
+@keyframes shaking-alternative
+{
+    0%
+    {
+        transform: translateX(-10px);
+        filter: blur(1px);
+    }
+    30%
+    {
+        filter: blur(0px);
+    }
+    50%
+    {
+        transform: translateX(15px);
+    }
+    70%
+    {
+        filter: blur(0px);
+    }
+    100%
+    {
+        transform: translateX(-10px);
+        filter: blur(1px);
+    }
+}

@@ -1,5 +1,33 @@
 {
-    "6.0.6": {
+    "6.1.1": {
+        "🍾 features": [
+            "Adds improved `webview` user interface controls",
+            "Updated sound file support: `.m4a`, `.mp3`, `.mp4`, `.ogg`, `.wav`"
+        ],
+        "🚨 fixes": [
+            "Addresses high resource usage (#67)",
+            "Addresses window size & visibility persistence (#58)",
+            "Adds enforcement of a single application instance (#63)"
+        ],
+        "📒 documentation": [
+            "Augments readme.md",
+            "Extends JSDoc coverage"
+        ],
+        "👷 internals": [
+            "`Electron v1.7.9`",
+            "Upgrades `node_modules`",
+            "Upgrades `services`",
+            "Upgrades `lib`"
+        ]
+    },
+    "6.0.8": {
+        "👷 internals": [
+            "Upgrades Electron to v1.7.8",
+            "Upgrades `node_modules`",
+            "Upgrades `lib`"
+        ]
+    },
+    "6.0.7": {
         "🍾 features": [
             "Adds interactive notifications for messages (macOS)",
             "Adds notification body text hiding"

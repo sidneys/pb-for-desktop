@@ -1,0 +1,88 @@
+/* ==========================================================================
+   CONTROLS-EXTRA
+   ========================================================================== */
+
+/* #supplemental-menu
+   ========================================================================== */
+
+#supplemental-menu
+{
+    z-index: var(--z-index-front);
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    border-radius: 100px;
+    background-color: var(--color-white-translucent-90);
+    border: 1px solid var(--color-grey);
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 1px 5px var(--color-black-translucent-10);
+
+    transition: opacity 600ms;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#supplemental-menu.show
+{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#supplemental-menu:hover
+{
+    background-color: rgba(255, 255, 255, 1.0);
+}
+
+/* #supplemental-menu__button
+   ========================================================================== */
+
+#supplemental-menu .supplemental-menu__button
+{
+    transition: 0.25s;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: underline;
+}
+
+#supplemental-menu .supplemental-menu__button .title
+{
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    white-space: nowrap;
+    float: left;
+    color: #95a5a6;
+    height: 26px;
+    line-height: 26px;
+    width: 0;
+    padding-left: 0;
+    transition: all 0.25s ease-in-out;
+}
+
+#supplemental-menu:hover .supplemental-menu__button .title
+{
+    width: 75px;
+    padding-left: 10px;
+    transition: all 0.25s ease-in-out;
+}
+
+#supplemental-menu .supplemental-menu__button .icon
+{
+    float: right;
+    color: #95a5a6;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 28px;
+    line-height: 26px;
+    text-align: center;
+    overflow: hidden;
+    background-position: inherit;
+    background-repeat: no-repeat;
+}
+
+#supplemental-menu .supplemental-menu__button.home .icon
+{
+    background-image: url("../../images/icon-home.svg");
+}

@@ -50,8 +50,7 @@ const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml });
 
 
 /**
- * Main Window
- * @class
+ * @class MainWindow
  * @extends Electron.BrowserWindow
  * @namespace Electron
  */
@@ -60,26 +59,33 @@ class MainWindow extends BrowserWindow {
         super({
             acceptFirstMouse: true,
             autoHideMenuBar: true,
-            backgroundColor: platformHelper.isMacOS ? '#0095A5A6' : '#95A5A6',
+            backgroundColor: platformHelper.isMacOS ? void 0 : '#95A5A6',
             frame: true,
-            fullscreenable: true,
+            hasShadow: platformHelper.isMacOS ? true : void 0,
+            height: void 0,
             minHeight: 256,
             minWidth: 128,
+            partition: 'persist:app',
             show: false,
-            thickFrame: true,
+            thickFrame: platformHelper.isWindows ? true : void 0,
             title: windowTitle,
-            titleBarStyle: platformHelper.isMacOS ? 'hidden-inset' : 'default',
+            titleBarStyle: platformHelper.isMacOS ? 'hiddenInset' : void 0,
             transparent: false,
-            vibrancy: 'dark',
+            vibrancy: platformHelper.isMacOS ? 'ultra-dark' : void 0,
             webPreferences: {
-                allowDisplayingInsecureContent: true,
                 allowRunningInsecureContent: true,
+                backgroundThrottling: true,
+                experimentalCanvasFeatures: true,
                 experimentalFeatures: true,
                 nodeIntegration: true,
+                scrollBounce: platformHelper.isMacOS ? true : void 0,
                 webaudio: true,
-                webgl: true,
+                webgl: false,
                 webSecurity: false
-            }
+            },
+            width: void 0,
+            x: void 0,
+            y: void 0
         });
 
         this.init();

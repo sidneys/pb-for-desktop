@@ -1,7 +1,7 @@
 matrix:
   include:
     - os: osx
-      osx_image: xcode8.2
+      osx_image: xcode9.0
       sudo: required
     - os: linux
       sudo: required
@@ -43,7 +43,6 @@ before_install:
 
 install:
   - echo "📥 Installing Dependencies"
-  - npm install
   - yarn install
 
 script:
@@ -51,14 +50,13 @@ script:
   - npm run build --metadata
 
 after_success:
-  - echo "📮 Deploying"
+  - echo "📮 Deploying to Github"
   - npm run deploy
 
 notifications:
   webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/24d905038aa07dda37df
-    on_success: change
     on_failure: always
     on_start: never
-
+    on_success: change
+    urls:
+      - https://webhooks.gitter.im/e/24d905038aa07dda37df

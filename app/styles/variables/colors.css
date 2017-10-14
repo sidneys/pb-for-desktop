@@ -1,0 +1,16 @@
+/* ==========================================================================
+   COLORS
+   ========================================================================== */
+
+:root
+{
+    --color-accent: rgb(74, 179, 103);
+    --color-accent-light: rgb(93, 187, 118);
+    --color-accent-dark: rgb(30, 62, 8);
+    --color-grey: rgb(206, 209, 213);
+    --color-black-translucent-10: rgba(0, 0, 0, 0.10);
+    --color-black-translucent-25: rgba(0, 0, 0, 0.25);
+    --color-white: rgb(255, 255, 255);
+    --color-white-translucent-25: rgba(255, 255, 255, 0.25);
+    --color-white-translucent-90: rgba(255, 255, 255, 0.9);
+}

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   TITLEBAR
+   ========================================================================== */
+
+/* ==========================================================================
+   .titlebar
+   ========================================================================== */
+
+.titlebar
+{
+    z-index: var(--z-index-default);
+    position: absolute;
+}
+
+html.darwin .titlebar
+{
+    display: flex;
+}
+
+html.win32 .titlebar,
+html.linux .titlebar
+{
+    display: none;
+}
+
+.titlebar.top
+{
+    background-color: var(--color-accent);
+    left: 0;
+    right: 0;
+    height: var(--margin-titlebar);
+}
+
+.titlebar.left, .titlebar.right
+{
+    padding-top: var(--margin-titlebar);
+}
+
+.titlebar.right
+{
+    right: 0;
+    visibility: hidden;
+}
+
+.titlebar.draggable
+{
+    -webkit-app-region: drag;
+}
+
+@media all and (max-width: 550px)
+{
+    .titlebar.left
+    {
+        left: 64px;
+        height: 64px;
+        width: 100%;
+    }
+}
+
+@media all and (min-width: 551px)
+{
+    .titlebar
+    {
+        height: 80px;
+    }
+
+    .titlebar.left
+    {
+        left: 80px;
+        width: 32%;
+    }
+}
+
+@media all and (min-width: 900px)
+{
+    .titlebar.right
+    {
+        visibility: visible;
+        right: 80px;
+        width: 10%;
+    }
+}
+
+@media all and (min-width: 1200px)
+{
+    .titlebar.right
+    {
+        width: 25%;
+    }
+}
+
+@media all and (min-width: 2000px)
+{
+    .titlebar.right
+    {
+        width: 30%;
+    }
+}

@@ -24,9 +24,13 @@ Uses the macOS [Notification Center](https://en.wikipedia.org/wiki/Notification_
 
 > **Cross-Platform**
 
-Tested on macOS (10.11, 10.12), Windows 10 (Anniversary Update) and Debian Linux (Ubuntu 16.04, elementary OS 0.4)
+Tested on:
 
-> **Unobstrusive**
+- macOS: 10.11, 10.12, 10.13
+- Windows 10: 1607, 1703, 1709
+- Linux: Ubuntu 16.04/17.04, elementaryOS 0.4, Linuxmint 18
+
+> **Unobtrusive**
 
 Small resource footprint - runs as a macOS Menu Bar app or a Windows System Tray app.
 
@@ -43,17 +47,22 @@ Channel-specific  (e.g. [IFTTT](https://ifttt.com/), [Zapier](https://zapier.com
 
 Preview thumbnails for pushes containing images.
 
-> **Custom Sound Effects**
+> **Custom Notification Sound Effect**
 
-Use the default Pushbullet sound or one of your choice.
+Use the default Pushbullet notification sound effect or one of your choice.
+Supports `.m4a`, `.mp3`, `.mp4`, `.ogg` and `.wav`.
 
 > **Dedicated Push Target**
 
 Use the *PB for Desktop* PushBullet device to only send pushes to your desktop.
 
+> **Inline Notification SMS Message Reply**
+
+Reply to SMS messages directly within native Desktop notifications (macOS).
+
 > **Mirroring**
 
-Mirror Android notifications (Android only).
+Mirror Android notifications (Android).
 
 > **SMS** [![Feature Status: Beta](https://img.shields.io/badge/feature-alpha-blue.svg?style=flat-square)]()
 
@@ -76,9 +85,9 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 
 ## <a name="installation"/></a> Installation
 
-### Standard Installation
+### Normal Installation
 
-Download the latest version of PB for Desktop on the [Releases](https://github.com/sidneys/pb-for-desktop/releases) page.
+Grab the latest version here: [Download Pushbullet for Desktop](https://sidneys.github.io/pb-for-desktop/#download)
 
 ### Installation as Commandline Tool
 
@@ -227,3 +236,5 @@ Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/
 ## <a name="author"/></a> Author
 
 [sidneys](http://sidneys.github.io) 2017
+
+

@@ -15,7 +15,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { app } = electron;
+const { app, BrowserWindow } = electron;
 
 /**
  * Modules
@@ -30,6 +30,14 @@ const appRootPath = require('app-root-path');
  */
 EventEmitter.defaultMaxListeners = Infinity;
 appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
+
+
+/**
+ * App
+ * Configuration
+ */
+app.disableHardwareAcceleration();
+
 
 /**
  * Modules
@@ -65,3 +73,27 @@ app.on('before-quit', () => {
 app.once('ready', () => {
     logger.debug('app#ready');
 });
+
+/**
+ * Ensure single instance
+ */
+const isSecondInstance = app.makeSingleInstance(() => {
+    logger.debug('isSecondInstance', 'primary instance');
+
+    logger.warn('Multiple application instances detected', app.getPath('exe'));
+    logger.warn('Multiple application instances detected', 'Restoring primary application instance');
+
+    BrowserWindow.getAllWindows().forEach((browserWindow) => {
+        browserWindow.restore();
+        app.focus();
+    });
+});
+
+if (isSecondInstance) {
+    logger.debug('isSecondInstance', 'secondary instance');
+
+    logger.warn('Multiple application instances detected', app.getPath('exe'));
+    logger.warn('Multiple application instances detected', 'Shutting down secondary application instances');
+
+    process.exit(0);
+}

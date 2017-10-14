@@ -31,8 +31,15 @@ const parseDomain = require('parse-domain');
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const domHelper = require(path.join(appRootPath, 'lib', 'dom-manager'));
+const domManager = require(path.join(appRootPath, 'lib', 'dom-manager'));
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+
+
+/**
+ * Filesystem
+ * @constant
+ */
+const stylesheetFilepath = path.join(appRootPath, 'app', 'styles', 'injected', 'pushbullet-web.css');
 
 
 /**
@@ -47,15 +54,68 @@ let retrieveAppShowBadgeCount = () => configurationManager('appShowBadgeCount').
  * @constant
  */
 const body = document.querySelector('body');
-const webview = document.getElementById('webview');
-const spinner = document.getElementById('spinner');
-const statustext = document.getElementById('spinner__text');
-const controlsExtra = document.getElementById('controls-extra');
+const webviewViewElement = document.querySelector('#webview');
+const spinnerViewElement = document.querySelector('#spinner');
+const spinnerTextElement = document.querySelector('#spinner__text');
+const supplementalMenuElement = document.querySelector('#supplemental-menu');
 const buttons = {
     home: {
-        target: document.querySelector('.controls-extra__button.home'),
-        event() { webview.goBack(); }
+        element: document.querySelector('.supplemental-menu__button.home'),
+        action: () => {
+            webviewViewElement.goBack();
+        }
     }
+};
+
+/**
+ * Register navigation
+ */
+let didRegisterNavigation = false;
+let registerNavigation = () => {
+    logger.debug('registerNavigation');
+
+    if (didRegisterNavigation) { return; }
+
+    Object.keys(buttons).forEach((title) => {
+        buttons[title].element.addEventListener('click', () => {
+            logger.debug('button', 'click', title);
+            buttons[title].action(buttons[title].element);
+        });
+    });
+
+    didRegisterNavigation = true;
+};
+
+/**
+ * Offline handler
+ */
+let onOffline = () => {
+    logger.debug('onOffline');
+
+    // Show Spinner
+    domManager.show(spinnerViewElement);
+};
+
+/**
+ * Online handler
+ */
+let onOnline = () => {
+    logger.debug('onOnline');
+
+    // Bind Controls
+    registerNavigation();
+
+    // Hide Spinner
+    domManager.hide(spinnerViewElement);
+};
+
+/**
+ * Login handler
+ */
+let onLogin = () => {
+    logger.debug('onLogin');
+
+    domManager.setText(spinnerTextElement, 'logged in');
 };
 
 /**
@@ -71,65 +131,44 @@ let updateBadge = (total) => {
     remote.app.setBadgeCount(total);
 };
 
-/**
- * Present Spinner
- */
-let presentSpinner = () => {
-    logger.debug('presentSpinner');
-
-    domHelper.setVisibility(spinner, true, 1000);
-};
 
 /**
- * Dismiss Spinner
+ * @listens ipcRenderer#zoom
  */
-let dismissSpinner = () => {
-    logger.debug('dismissSpinner');
+ipcRenderer.on('zoom', (event, direction) => {
+    logger.debug('ipcRenderer#zoom', 'direction', direction);
 
-    domHelper.setVisibility(spinner, false, 1000);
-};
+    const webContents = remote.getCurrentWebContents();
 
-
-/**
- * @listens webview#dom-ready
- */
-webview.addEventListener('dom-ready', () => {
-    logger.debug('webview#dom-ready');
-
-    // Register Platform
-    domHelper.addPlatformClass();
-
-    // Bind Controls
-    for (let i in buttons) {
-        buttons[i].target.addEventListener('click', buttons[i].event);
+    switch (direction) {
+        case 'in':
+            webContents.getZoomLevel(level => webContents.setZoomLevel(level + 1));
+            break;
+        case 'out':
+            webContents.getZoomLevel(level => webContents.setZoomLevel(level - 1));
+            break;
+        case 'reset':
+            webContents.setZoomLevel(0);
     }
 });
 
-/**
- * @listens webview#did-fail-load
- */
-webview.addEventListener('did-fail-load', () => {
-    logger.debug('webview#did-fail-load');
 
-    presentSpinner();
+/**
+ * @listens webviewViewElement#did-fail-load
+ */
+webviewViewElement.addEventListener('did-fail-load', () => {
+    logger.debug('webviewViewElement#did-fail-load');
+
+    onOffline();
 });
 
 /**
- * @listens webview#did-finish-load
+ * @listens webviewViewElement#did-navigate-in-page
  */
-webview.addEventListener('did-finish-load', () => {
-    logger.debug('webview#did-finish-load');
+webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
+    logger.debug('webviewViewElement#did-navigate-in-page');
 
-    //dismissSpinner();
-});
-
-/**
- * @listens webview#did-navigate-in-page
- */
-webview.addEventListener('did-navigate-in-page', (ev) => {
-    logger.debug('webview#did-navigate-in-page');
-
-    let hash = url.parse(ev.url).hash;
+    let hash = url.parse(event.url).hash;
 
     if (!retrieveAppShowBadgeCount()) { return; }
 
@@ -142,57 +181,68 @@ webview.addEventListener('did-navigate-in-page', (ev) => {
             break;
     }
 
-    logger.debug('webview#did-navigate-in-page', 'url', ev.url);
+    logger.debug('webviewViewElement#did-navigate-in-page', 'url', event.url);
 });
 
 /**
- * @listens webview#new-window
+ * @listens webviewViewElement#dom-ready
  */
-webview.addEventListener('new-window', (ev) => {
-    logger.debug('webview#new-window');
+webviewViewElement.addEventListener('dom-ready', () => {
+    logger.debug('webviewViewElement#dom-ready');
 
-    ev.preventDefault();
+    domManager.injectCSS(webviewViewElement, stylesheetFilepath);
+});
 
-    let domain = parseDomain(ev.url)['domain'] || '';
+/** @namespace event.args */
+/** @namespace event.channel */
 
-    if (domain === 'pushbullet') {
-        // Internal Link
-        logger.info('webview#new-window', 'opening internal url:', ev.url);
-        webview.loadURL(ev.url);
-    } else {
-        // External Link
-        logger.info('webview#new-window', 'opening external url:', ev.url);
-        remote.shell.openExternal(ev.url);
+/**
+ * @listens webviewViewElement#ipc-message
+ */
+webviewViewElement.addEventListener('ipc-message', (event) => {
+    logger.debug('playerViewElement#ipc-message', 'channel', event.channel, 'args', event.args.join());
+
+    // Network
+    if (event.channel.startsWith('network')) {
+        if (event.args[0] === 'online') { onOnline(); }
+        if (event.args[0] === 'offline') { onOffline(); }
+    }
+
+    // Account
+    if (event.channel.startsWith('account')) {
+        if (event.args[0] === 'login') { onLogin(); }
     }
 });
 
 /**
- * @listens webview#load-commit
+ * @listens webviewViewElement#load-commit
  */
-webview.addEventListener('load-commit', (ev) => {
-    logger.debug('webview#load-commit');
+webviewViewElement.addEventListener('load-commit', (event) => {
+    logger.debug('webviewViewElement#load-commit');
 
-    if (!parseDomain(ev.url)) { return; }
+    domManager.injectCSS(webviewViewElement, stylesheetFilepath);
 
-    let domain = parseDomain(ev.url)['domain'] || '';
-    let subdomain = parseDomain(ev.url)['subdomain'] || '';
-    let urlpath = url.parse(ev.url).path || '';
+    if (!parseDomain(event.url)) { return; }
 
-    // Pre/Post signin ui amendments
+    let domain = parseDomain(event.url)['domain'] || '';
+    let subdomain = parseDomain(event.url)['subdomain'] || '';
+    let urlpath = url.parse(event.url).path || '';
+
+    // User did not sign in
     switch (domain) {
         case 'google':
         case 'youtube':
         case 'facebook':
-            domHelper.setVisibility(controlsExtra, true);
+            domManager.setVisibility(supplementalMenuElement, true);
 
             body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
         case 'pushbullet':
             // Pushbullet 'help'
             if (subdomain.includes('help')) {
-                domHelper.setVisibility(controlsExtra, true);
+                domManager.setVisibility(supplementalMenuElement, true);
             } else {
-                domHelper.setVisibility(controlsExtra, false);
+                domManager.setVisibility(supplementalMenuElement, false);
             }
 
             // Pushbullet 'signin'
@@ -202,85 +252,36 @@ webview.addEventListener('load-commit', (ev) => {
                 body.style.backgroundColor = 'transparent';
             }
     }
-
-    // HTTP Status Monitor
-    // webview.getWebContents().session.webRequest.onHeadersReceived((details, callback) => {
-    //     logger.debug('request', 'url:', details.url, 'statusCode:', details.statusCode);
-    //     callback({cancel: false });
-    // });
 });
 
 /**
- * CSS Injection
- * @listens webview#load-commit
+ * @listens webviewViewElement#new-window
  */
-webview.addEventListener('load-commit', () => {
-    logger.debug('webview#load-commit');
+webviewViewElement.addEventListener('new-window', (event) => {
+    logger.debug('webviewViewElement#new-window');
 
-    domHelper.injectCSS(webview, path.join(appRootPath, 'app', 'styles', 'pushbullet.css'));
-});
+    event.preventDefault();
 
-/**
- * @listens ipcRenderer#zoom
- */
-ipcRenderer.on('zoom', (ev, level) => {
-    logger.debug('ipcRenderer#zoom', 'level:', level);
+    let domain = parseDomain(event.url)['domain'] || '';
 
-    switch (level) {
-        case 'in':
-            webview.getWebContents().getZoomLevel(zoomLevel => {
-                webview.setZoomLevel(zoomLevel + 1);
-            });
-            break;
-        case 'out':
-            webview.getWebContents().getZoomLevel(zoomLevel => {
-                webview.setZoomLevel(zoomLevel - 1);
-            });
-            break;
-        case 'reset':
-            webview.getWebContents().setZoomLevel(0);
+    if (domain === 'pushbullet') {
+        // Internal Link
+        logger.info('webviewViewElement#new-window', 'opening internal url:', event.url);
+        webviewViewElement.loadURL(event.url);
+    } else {
+        // External Link
+        logger.info('webviewViewElement#new-window', 'opening external url:', event.url);
+        remote.shell.openExternal(event.url);
     }
 });
 
+
 /**
- * @listens webview#ipc-message
+ * @listens window#Event:load
  */
-webview.addEventListener('ipc-message', (ev) => {
-    logger.debug('webview#ipc-message');
-    //console.dir(ev);
+window.addEventListener('load', () => {
+    logger.debug('window#load');
 
-    logger.debug('webview#ipc-message', 'channel:', ev.channel, 'args:', ev.args.join());
-
-    const channel = ev.channel;
-    const message = ev.args[0];
-
-    switch (channel) {
-        case 'account':
-            switch (message) {
-                case 'login':
-                    logger.info('account', 'login');
-                    domHelper.setText(statustext, 'logged in');
-                    break;
-            }
-            break;
-        case 'network':
-            const didDisconnect = ev.args[1];
-            switch (message) {
-                case 'offline':
-                    logger.info('network', 'offline');
-                    presentSpinner();
-                    domHelper.setText(statustext, 'connecting...');
-                    break;
-                case 'online':
-                    logger.info('network', 'online');
-                    domHelper.setText(statustext, 'connected');
-                    if (Boolean(didDisconnect)) {
-                        logger.info('network', 'reconnecting...');
-                        domHelper.setText(statustext, 'reconnecting');
-                        webview.reloadIgnoringCache();
-                    }
-                    dismissSpinner();
-                    break;
-            }
-    }
+    // Add Platform CSS
+    domManager.addPlatformClass();
 });

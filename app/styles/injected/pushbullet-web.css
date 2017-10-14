@@ -1,0 +1,92 @@
+/* ==========================================================================
+   PUSHBULLET.COM
+   ========================================================================== */
+/* ==========================================================================
+   COLORS
+   ========================================================================== */
+
+:root
+{
+    --color-accent: rgb(74, 179, 103);
+    --color-accent-light: rgb(93, 187, 118);
+}
+
+/* ==========================================================================
+   SCROLLBAR
+   ========================================================================== */
+
+/* -webkit-scrollbar
+   ========================================================================== */
+
+::-webkit-scrollbar
+{
+    width: 0.5rem !important;
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-corner
+{
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background: var(--color-accent-light) !important;
+    border-radius: none !important;
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+    background: var(--color-accent) !important;
+}
+
+::-webkit-scrollbar-thumb:active
+{
+    background: var(--color-accent) !important;
+}
+
+/* ==========================================================================
+   ELEMENTS
+   ========================================================================== */
+
+/* #header
+   ========================================================================== */
+
+body
+{
+    overflow: hidden !important;
+}
+/* #header
+   ========================================================================== */
+
+#header,
+#mobile-header
+{
+    box-shadow: none !important;
+}
+
+/* #sink
+   ========================================================================== */
+
+html.darwin #sink,
+html.darwin #sink > div > div > div:nth-child(1)
+{
+    background-color: transparent !important;
+}
+
+html.darwin #mainbar
+{
+    transform: translateX(-1px); !important;
+}
+
+/* :not(.pushfont-*)
+   ========================================================================== */
+
+div:not(.pushfont-circle),
+div:not(.pushfont-hamburger),
+div:not(.pushfont-paperclip),
+div:not(.pushfont-close)
+{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  -webkit-font-smoothing: antialiased !important;
+}

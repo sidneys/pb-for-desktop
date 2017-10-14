@@ -33,7 +33,7 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const domHelper = require(path.join(appRootPath, 'lib', 'dom-manager'));
+const domManager = require(path.join(appRootPath, 'lib', 'dom-manager'));
 const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
@@ -63,10 +63,15 @@ const defaultTimeout = 500;
 let didDisconnect = false;
 
 
-/** @namespace pb.api.devices */
-/** @namespace pb.e2e.decrypt */
 /** @namespace item.created */
-
+/** @namespace newPush.target_device_iden */
+/** @namespace pb.api.devices */
+/** @namespace pb.api.pushes */
+/** @namespace pb.e2e */
+/** @namespace pb.e2e.decrypt */
+/** @namespace push.iden */
+/** @namespace window.onecup */
+/** @namespace window.pb */
 
 /**
  * Retrieve PushbulletLastNotificationTimestamp
@@ -192,13 +197,6 @@ let registerTextsProxy = () => {
 let registerPushProxy = () => {
     logger.debug('registerPushProxy');
 
-
-    /** @namespace pb.api.pushes */
-    /** @namespace pb.e2e */
-    /** @namespace window.onecup */
-    /** @namespace window.pb */
-    /** @namespace push.iden */
-    /** @namespace newPush.target_device_iden */
     const pb = window.pb;
 
     let interval = setInterval(() => {
@@ -206,7 +204,6 @@ let registerPushProxy = () => {
 
         pb.api.pushes.objs = new Proxy(pb.api.pushes.objs, {
             set: (pushesObjs, property, value) => {
-                //logger.debug('pb.api.pushes.objs', 'set()', 'property:', property, 'value:', value);
 
                 // Check if push with iden exists
                 let exists = Boolean(pb.api.pushes.all.filter((push) => {
@@ -253,11 +250,11 @@ let addWebsocketEventHandlers = () => {
                 return;
             }
 
-            //logger.debug('pb.ws.socket#message', 'ev:');
-            //console.dir(ev)
-
             if (message.type !== 'push') { return; }
-            // Decrypt
+
+            /**
+             * Decryption
+             */
             if (message.push.encrypted) {
                 if (!pb.e2e.enabled) {
                     let notification = new Notification(`End-to-End Encryption`, {
@@ -419,7 +416,7 @@ window.addEventListener('online', () => {
 window.addEventListener('load', () => {
     logger.debug('window#load');
 
-    domHelper.addPlatformClass();
+    domManager.addPlatformClass();
 
     init();
 });

@@ -33,7 +33,7 @@ const { autoUpdater } = require('electron-updater');
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const messengerProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'messenger-provider'));
+const dialogProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'dialog-provider'));
 const notificationProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
@@ -49,7 +49,7 @@ const appCurrentVersion = global.manifest.version;
 
 /**
  * Get mainWindow
- * @returns {Electron.BrowserWindow}
+ * @return {Electron.BrowserWindow}
  */
 let getMainWindow = () => global.mainWindow;
 
@@ -91,15 +91,14 @@ class UpdaterService {
      * @constructs
      */
     constructor() {
-        this.autoUpdater = autoUpdater;
-        this.isUpdating = false;
-
         // Do not run with debug Electron application
         if (process.defaultApp) { return; }
 
         // Do not run on Linux
         if (platformHelper.isLinux) { return; }
 
+        this.autoUpdater = autoUpdater;
+        this.isUpdating = false;
 
         this.init();
     }
@@ -151,10 +150,8 @@ class UpdaterService {
 
             this.isUpdating = true;
 
-            notificationProvider.create({
-                body: `Version: ${info.version}`,
-                title: `Update available for ${appProductName}`
-            });
+            const notification = notificationProvider.create({ title: `Update available for ${appProductName}`, subtitle: info.version });
+            notification.show();
         });
 
         /**
@@ -195,10 +192,8 @@ class UpdaterService {
 
             this.isUpdating = true;
 
-            notificationProvider.create({
-                body: `Version: ${info.version}`,
-                title: `Application update ready to install for ${appProductName}`
-            });
+            const notification = notificationProvider.create({ title: `Update ready to install for ${appProductName}`, subtitle: info.version });
+            notification.show();
 
             if (Boolean(info.releaseNotes)) {
                 const releaseNotesPlaintext = removeMarkdown(info.releaseNotes);
@@ -208,13 +203,13 @@ class UpdaterService {
                 storeAppChangelog(releaseNotesPlaintext);
             }
 
-            messengerProvider.showQuestion(
+            dialogProvider.question(
                 `Update successfully installed`,
                 `${appProductName} has been updated successfully.${os.EOL}${os.EOL}` +
                 `To apply the changes and complete the updating process, the app needs to be restarted.${os.EOL}${os.EOL}` +
                 `Restart now?`, (response) => {
                     if (response === 0) {
-                        BrowserWindow.getAllWindows().forEach((window) => window.destroy());
+                        BrowserWindow.getAllWindows().forEach((browserWindow) => browserWindow.destroy());
                         this.autoUpdater.quitAndInstall();
                     }
                     if (response === 1) { return true; }
@@ -249,17 +244,15 @@ class UpdaterService {
             const changelog = removeMarkdown(retrieveAppChangelog());
 
             if (Boolean(changelog)) {
-                messengerProvider.showInfo(`${appProductName} has been updated to ${appCurrentVersion}.`, `Release Notes:${os.EOL}${os.EOL}${changelog}`);
+                dialogProvider.info(`${appProductName} has been updated to ${appCurrentVersion}.`, `Release Notes:${os.EOL}${os.EOL}${changelog}`);
                 logger.info(`${appProductName} has been updated to ${appCurrentVersion}.`, `Release Notes:${os.EOL}${os.EOL}${changelog}`);
             } else {
-                messengerProvider.showInfo(`Update complete`, `${appProductName} has been updated to ${appCurrentVersion}.`);
+                dialogProvider.info(`Update complete`, `${appProductName} has been updated to ${appCurrentVersion}.`);
                 logger.info(`Update complete`, `${appProductName} has been updated to ${appCurrentVersion}.`);
             }
 
-            notificationProvider.create({
-                body: `Version: ${appCurrentVersion}`,
-                title: `Update complete for ${appProductName}`
-            });
+            const notification = notificationProvider.create({ title: `Update installed for ${appProductName}`, subtitle: appCurrentVersion });
+            notification.show();
         }
 
     }
@@ -286,6 +279,8 @@ app.on('browser-window-focus', () => {
     logger.debug('app#browser-window-focus');
 
     if (!global.updaterService) { init(); }
+
+    if (!global.updaterService.autoUpdater) { return; }
 
     if (Boolean(global.updaterService.isUpdating) === false) {
         if (global.updaterService.autoUpdater.checkForUpdates) {

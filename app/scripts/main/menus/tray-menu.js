@@ -30,7 +30,7 @@ const appRootPath = require('app-root-path')['path'];
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const messengerProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'messenger-provider'));
+const dialogProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'dialog-provider'));
 const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 
@@ -116,7 +116,7 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageReset,
             type: 'normal',
             click() {
-                messengerProvider.showQuestion('Are you sure you want to reset?',
+                dialogProvider.question('Are you sure you want to reset?',
                     `${appProductName} will reset to its initial state.${os.EOL}Unsaved changes will be lost.`,
                     (result) => {
                         if (result === 0) {
@@ -163,7 +163,7 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageReconnect,
             type: 'normal',
             click() {
-                messengerProvider.showQuestion('Are you sure you want to reconnect to Pushbullet?',
+                dialogProvider.question('Are you sure you want to reconnect to Pushbullet?',
                     `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
                     `All unsaved changes will be lost.`,
                     (result) => {
@@ -275,9 +275,9 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImagePushbulletSoundFile,
             type: 'normal',
             click() {
-                messengerProvider.openFile('Change Sound', 'audio', appSoundDirectory, (error, soundFile) => {
+                dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', ['m4a', 'mp3', 'mp4', 'wav', 'ogg'], appSoundDirectory, (error, soundFile) => {
                     if (error) {
-                        logger.error('pushbulletSoundFile', 'messengerProvider.openFile', error);
+                        logger.error('pushbulletSoundFile', 'dialogProvider.file', error);
                         return;
                     }
 

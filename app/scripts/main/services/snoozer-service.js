@@ -80,7 +80,6 @@ class SnoozerService {
             menuItem.checked = false;
 
             const notification = notificationProvider.create({ title: 'Snooze ended', subtitle: `Snooze mode ended after ${durationHours} ${durationHours > 1 ? 'hours' : 'hour'}.` });
-
             notification.show();
 
             this.onSnooze(false);
