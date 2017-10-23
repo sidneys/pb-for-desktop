@@ -6,7 +6,6 @@
  * Node
  * @constant
  */
-const os = require('os');
 const path = require('path');
 
 /**
@@ -31,15 +30,7 @@ const appRootPath = require('app-root-path')['path'];
  * @constant
  */
 const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
-
-/**
- * Application
- * @constant
- * @default
- */
-const appName = global.manifest.name;
 
 /**
  * Notification defaults
@@ -55,7 +46,7 @@ const defaultOptions = {
 /**
  * Create
  * @param {Object|String|Number} options - Notification Options
- * @return {Electron.Notification|ToastNotification} - Native Notification
+ * @return {Notification} - Native Notification
  */
 let create = (options) => {
     logger.debug('create');

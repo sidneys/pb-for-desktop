@@ -72,14 +72,14 @@ const appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', '
  * @default
  */
 const defaultInterval = 1000;
-const defaultDebounce = 300;
+const defaultDebounce = 1000;
 
 
 /**
- * Get mainWindow
- * @returns {Electron.BrowserWindow}
+ * Get primary BrowserWindow
+ * @returns {BrowserWindow}
  */
-let getMainWindow = () => global.mainWindow;
+let getPrimaryWindow = () => global.mainWindow;
 
 /**
  * Show app in menubar or task bar only
@@ -89,8 +89,10 @@ let setAppTrayOnly = (trayOnly) => {
     logger.debug('setAppTrayOnly');
 
     let interval = setInterval(() => {
-        const mainWindow = getMainWindow();
-        if (!mainWindow) { return; }
+        const primaryWindow = getPrimaryWindow();
+        if (!primaryWindow) { return; }
+        if (!primaryWindow.getBounds()) { return; }
+
 
         switch (platformHelper.type) {
             case 'darwin':
@@ -99,10 +101,10 @@ let setAppTrayOnly = (trayOnly) => {
                 } else { app.dock.show(); }
                 break;
             case 'win32':
-                mainWindow.setSkipTaskbar(trayOnly);
+                primaryWindow.setSkipTaskbar(trayOnly);
                 break;
             case 'linux':
-                mainWindow.setSkipTaskbar(trayOnly);
+                primaryWindow.setSkipTaskbar(trayOnly);
                 break;
         }
 
@@ -276,13 +278,13 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const mainWindow = getMainWindow();
-                if (!mainWindow) { return; }
-                if (!mainWindow.getBounds()) { return; }
+                const primaryWindow = getPrimaryWindow();
+                if (!primaryWindow) { return; }
+                if (!primaryWindow.getBounds()) { return; }
 
                 // Observe future changes
-                mainWindow.on('move', event => this.set(event.sender.getBounds()));
-                mainWindow.on('resize', event => this.set(event.sender.getBounds()));
+                primaryWindow.on('move', event => this.set(event.sender.getBounds()));
+                primaryWindow.on('resize', event => this.set(event.sender.getBounds()));
 
                 // Apply saved value
                 this.implement(this.get());
@@ -296,7 +298,7 @@ let configurationItems = {
             return electronSettings.get(this.keypath);
         },
         set(value) {
-            logger.debug(this.keypath, 'set', util.inspect(value));
+            logger.debug(this.keypath, 'set', value);
 
             let debounced = _.debounce(() => {
                 electronSettings.set(this.keypath, value);
@@ -304,12 +306,13 @@ let configurationItems = {
             debounced();
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', util.inspect(value));
+            logger.debug(this.keypath, 'implement', value);
 
-            const mainWindow = getMainWindow();
-            if (!mainWindow) { return; }
+            const primaryWindow = getPrimaryWindow();
+            if (!primaryWindow) { return; }
+            if (!primaryWindow.getBounds()) { return; }
 
-            mainWindow.setBounds(value);
+            primaryWindow.setBounds(value);
         }
     },
     /**
@@ -323,8 +326,9 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const mainWindow = getMainWindow();
-                if (!mainWindow) { return; }
+                const primaryWindow = getPrimaryWindow();
+                if (!primaryWindow) { return; }
+                if (!primaryWindow.getBounds()) { return; }
 
                 this.implement(this.get());
 
@@ -361,12 +365,13 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const mainWindow = getMainWindow();
-                if (!mainWindow) { return; }
+                const primaryWindow = getPrimaryWindow();
+                if (!primaryWindow) { return; }
+                if (!primaryWindow.getBounds()) { return; }
 
                 // Observe future changes
-                mainWindow.on('show', event => this.set(event.sender.isVisible()));
-                mainWindow.on('hide', event => this.set(event.sender.isVisible()));
+                primaryWindow.on('hide', () => this.set(false));
+                primaryWindow.on('show', () => this.set(true));
 
                 // Apply saved value
                 this.implement(this.get());
@@ -391,10 +396,11 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value);
 
-            const mainWindow = getMainWindow();
-            if (!mainWindow) { return; }
+            const primaryWindow = getPrimaryWindow();
+            if (!primaryWindow) { return; }
+            if (!primaryWindow.getBounds()) { return; }
 
-            value === true ? mainWindow.show() : mainWindow.hide();
+            value === true ? primaryWindow.show() : primaryWindow.hide();
         }
     },
     /**

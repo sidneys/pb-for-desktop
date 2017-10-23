@@ -78,8 +78,8 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 1. [Installation](#installation)
 1. [Developers](#development)
 1. [Continuous Integration](#continuous-integration)
-1. [Up Next](#up-next)
-1. [Contact](#contact)
+1. [Roadmap](#roadmap)
+1. [Contribute](#contribute)
 1. [Author](#author)
 
 
@@ -219,18 +219,23 @@ Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and A
 1. There is no step 3
 
 
-## <a name="up-next"/></a> Roadmap
+## <a name="roadmap"/></a> Roadmap
 
 - [ ] Signed binaries
 - [ ] End-To-End Tests (see [Spectron](https://github.com/electron/spectron))
 
 
-## <a name="contribute"/></a> Contact ![Contributions Wanted](https://img.shields.io/badge/contributions-wanted-red.svg?style=flat-square)
+## <a name="contribute"/></a> Contribute ![Contributions Wanted](https://img.shields.io/badge/contributions-wanted-red.svg?style=flat-square)
 
 Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/blob/master/CONTRIBUTING.md) first.
 
 - [Dev Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
 - [Issues](http;//github.com/sidneys/pb-for-desktop/issues) File bugs and document issues.
+
+
+## <a name="license"/></a> License
+
+MIT
 
 
 ## <a name="author"/></a> Author

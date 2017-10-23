@@ -66,7 +66,7 @@ class MainWindow extends BrowserWindow {
             minHeight: 256,
             minWidth: 128,
             partition: 'persist:app',
-            show: false,
+            show: true,
             thickFrame: platformHelper.isWindows ? true : void 0,
             title: windowTitle,
             titleBarStyle: platformHelper.isMacOS ? 'hiddenInset' : void 0,

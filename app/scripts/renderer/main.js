@@ -202,15 +202,21 @@ webviewViewElement.addEventListener('dom-ready', () => {
 webviewViewElement.addEventListener('ipc-message', (event) => {
     logger.debug('playerViewElement#ipc-message', 'channel', event.channel, 'args', event.args.join());
 
-    // Network
-    if (event.channel.startsWith('network')) {
-        if (event.args[0] === 'online') { onOnline(); }
-        if (event.args[0] === 'offline') { onOffline(); }
-    }
+    switch (event.channel) {
+        // Online
+        case 'online':
+            const isOnline = event.args[0];
 
-    // Account
-    if (event.channel.startsWith('account')) {
-        if (event.args[0] === 'login') { onLogin(); }
+            isOnline === true ? onOnline() : onOffline();
+
+            break;
+        // Login
+        case 'login':
+            const isLogin = event.args[0];
+
+            isLogin === true ? onLogin() : void 0;
+
+            break;
     }
 });
 

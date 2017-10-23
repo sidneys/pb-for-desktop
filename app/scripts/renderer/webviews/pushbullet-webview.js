@@ -57,11 +57,6 @@ const appIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${plat
 const defaultInterval = 500;
 const defaultTimeout = 500;
 
-/**
- * @default
- */
-let didDisconnect = false;
-
 
 /** @namespace item.created */
 /** @namespace newPush.target_device_iden */
@@ -139,10 +134,10 @@ let registerErrorProxy = () => {
 
                 if (property === 'title' && _.isString(value)) {
                     if (value.includes('Network')) {
-                        didDisconnect = true;
+                        const isOnline = false;
 
-                        ipcRenderer.send('network', 'offline', didDisconnect);
-                        ipcRenderer.sendToHost('network', 'offline', didDisconnect);
+                        ipcRenderer.send('online', isOnline);
+                        ipcRenderer.sendToHost('online', isOnline);
                     }
                 }
 
@@ -330,8 +325,10 @@ let loginPushbulletUser = () => {
             });
         }
 
-        ipcRenderer.send('account', 'login');
-        ipcRenderer.sendToHost('account', 'login');
+        const isLogin = true;
+
+        ipcRenderer.send('login', isLogin);
+        ipcRenderer.sendToHost('login', isLogin);
 
         addInterfaceEnhancements();
 
@@ -352,9 +349,10 @@ let init = () => {
         if (!pb || !navigator.onLine) { return; }
         logger.info('pushbullet', 'online');
 
-        if (didDisconnect === true) { didDisconnect = false; }
-        ipcRenderer.send('network', 'online', didDisconnect);
-        ipcRenderer.sendToHost('network', 'online', didDisconnect);
+        const isOnline = true;
+
+        ipcRenderer.send('online', isOnline);
+        ipcRenderer.sendToHost('online', isOnline);
 
         loginPushbulletUser();
 
@@ -394,10 +392,10 @@ window.addEventListener('contextmenu', (ev) => {
 window.addEventListener('offline', () => {
     logger.debug('window#offline');
 
-    didDisconnect = true;
+    const isOnline = false;
 
-    ipcRenderer.send('network', 'offline', didDisconnect);
-    ipcRenderer.sendToHost('network', 'offline', didDisconnect);
+    ipcRenderer.send('online', isOnline);
+    ipcRenderer.sendToHost('online', isOnline);
 });
 
 /**
@@ -406,8 +404,10 @@ window.addEventListener('offline', () => {
 window.addEventListener('online', () => {
     logger.debug('window#online');
 
-    ipcRenderer.send('network', 'online', didDisconnect);
-    ipcRenderer.sendToHost('network', 'online', didDisconnect);
+    const isOnline = true;
+
+    ipcRenderer.send('online', isOnline);
+    ipcRenderer.sendToHost('online', isOnline);
 });
 
 /**

@@ -1,5 +1,21 @@
 {
-    "6.1.1": {
+    "6.2.0": {
+        "💎 improved": [
+            "Augments start-up & background resource usage (#67)",
+            "Simplified network reachability detection & on-/offline handling"
+        ],
+        "🚨 fixed": [
+            "Fixes snooze wake-up scheduler",
+            "Fixes static snooze tray item display state",
+            "Fixes markdown release note formatting"
+        ],
+        "👷 internals": [
+            "Upgrades `node_modules`",
+            "Upgrades `services`",
+            "Upgrades `lib`"
+        ]
+    },
+    "6.1.7": {
         "🍾 features": [
             "Adds improved `webview` user interface controls",
             "Updated sound file support: `.m4a`, `.mp3`, `.mp4`, `.ogg`, `.wav`"

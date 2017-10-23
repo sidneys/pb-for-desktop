@@ -7,36 +7,36 @@
 
 #spinner
 {
-    z-index: var(--z-index-front);
-    display: flex; /* establish flex container */
-    flex-direction: column; /* make main axis vertical */
-    justify-content: center; /* center items vertically, in this case */
-    align-items: center; /* center items horizontally, in this case */
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transform: scale3d(1.5, 1.5, 1.5);
-
+    align-items: center;
     animation: var(--animation-gradient);
     background: radial-gradient(circle farthest-corner at 50% 50%, var(--color-accent-light), var(--color-accent-dark));
-
-    transition: opacity 2000ms ease 500ms;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 0;
     opacity: 1;
     pointer-events: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transform: scale3d(1.5, 1.5, 1.5);
+    transition: all 2400ms var(--timing-function-ease-in-out-quad);
+    z-index: var(--z-index-front);
 }
 
 #spinner.hide
 {
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
 }
 
 #spinner.show
 {
     opacity: 1;
     pointer-events: auto;
+    visibility: visible;
 }
 
 /* .spinner__icon
@@ -44,19 +44,17 @@
 
 .spinner__icon
 {
-    background-image: url('../images/logo.png');
+    animation: rotating 1500ms linear infinite;
+    background-image: url("../../images/logo.png");
     background-size: 100% 100%;
     border-radius: 100%;
-    position: relative;
-    transform-style: preserve-3d;
     height: 75px;
-    width: 75px;
-
-    animation: rotating 1500ms linear infinite;
-
-    transition: opacity 500ms ease-out 0ms;
     opacity: 1;
     pointer-events: auto;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 600ms var(--timing-function-ease-in-out-quad);
+    width: 75px;
 }
 
 .hide .spinner__icon
@@ -74,21 +72,21 @@
 .spinner__icon.background
 {
     background: none;
-    position: absolute;
-    height: 200px;
-    width: 200px;
     filter: brightness(50%) blur(4px);
+    height: 200px;
+    position: absolute;
+    width: 200px;
 }
 
 .spinner__icon.background img
 {
-    width: 100%;
+    bottom: 0;
     height: 100%;
-    position: absolute;
     left: 0;
+    position: absolute;
     right: 0;
     top: 0;
-    bottom: 0;
+    width: 100%;
 }
 
 .spinner__icon.background:after
@@ -108,12 +106,12 @@
     background-image: linear-gradient(to bottom, var(--color-white-translucent-25) 0%, var(--color-black-translucent-25) 100%);
     bottom: 0;
     content: '';
+    left: 35px;
     position: absolute;
     top: 0;
-    transform: rotateY(-90deg);
     transform-origin: 100% 50%;
+    transform: rotateY(-90deg);
     width: 5px;
-    left: 35px;
 }
 
 .spinner__icon:before
@@ -122,11 +120,11 @@
     background-image: linear-gradient(to bottom, var(--color-white-translucent-25) 0%, var(--color-black-translucent-25) 100%);
     border-radius: 100%;
     content: '';
+    height: 75px;
     left: 0;
     position: absolute;
     top: 0;
     transform: translateZ(-5px);
-    height: 75px;
     width: 75px;
 }
 
@@ -135,19 +133,17 @@
 
 #spinner__logo
 {
-    background-image: url('../images/logo-text.png');
-    background-size: 50% auto;
+    animation: var(--animation-pulsating);
+    background-image: url("../../images/logo-text.png");
     background-position: center;
     background-repeat: no-repeat;
-    width: 320px;
+    background-size: 50% auto;
     height: 60px;
     margin-bottom: 1rem;
-
-    animation: var(--animation-pulsating);
-
-    transition: opacity 500ms ease-out 0ms, margin 500ms ease-out 0ms;
     opacity: 1;
     pointer-events: auto;
+    transition: opacity 600ms var(--timing-function-ease-in-out-quad), margin 600ms var(--timing-function-ease-in-out-quad);
+    width: 320px;
 }
 
 .hide #spinner__logo
@@ -169,19 +165,18 @@
 
 #spinner__text
 {
-    font-family: 'Helvetica', 'Arial', sans-serif;
-    font-weight: 500;
-    color: var(--color-white);
-    text-align: center;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    margin-top: 2rem;
-
     animation: var(--animation-shaking);
-
-    transition: opacity 500ms ease-out 0ms, margin 2000ms ease-out 0ms;
+    color: var(--color-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 2rem;
     opacity: 1;
     pointer-events: auto;
+    text-align: center;
+    text-transform: uppercase;
+    transition: opacity 600ms var(--timing-function-ease-in-out-quad), margin 2400ms var(--timing-function-ease-in-out-quad);
+    -webkit-font-smoothing: antialiased;
 }
 
 .hide #spinner__text

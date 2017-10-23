@@ -2,22 +2,23 @@
    VARIABLES
    ========================================================================== */
 
-@import url('./variables/colors.css');
-@import url('./variables/sizes.css');
-@import url('./variables/z-indices.css');
+@import url("./variables/colors.css");
+@import url("./variables/sizes.css");
+@import url('./variables/timing-functions.css');
+@import url("./variables/z-indices.css");
 
 /* ==========================================================================
    GLOBAL
    ========================================================================== */
 
-@import url('./global/animations.css');
+@import url("./global/animations.css");
 
 /* ==========================================================================
    ELEMENTS
    ========================================================================== */
 
-@import url('./elements/supplemental-menu.css');
-@import url('./elements/spinner.css');
-@import url('./elements/titlebar.css');
-@import url('./elements/views.css');
-@import url('./elements/window.css');
+@import url("./elements/supplemental-menu.css");
+@import url("./elements/spinner.css");
+@import url("./elements/titlebar.css");
+@import url("./elements/views.css");
+@import url("./elements/window.css");

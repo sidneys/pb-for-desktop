@@ -294,27 +294,27 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageSnooze,
             submenu: [
                 {
-                    label: 'Snooze for 1 Hour',
+                    label: '1 hour snooze',
                     id: 'snooze-60',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().snooze(menuItem, 1);
+                        getSnoozerService().startSnooze(60, menuItem);
                     }
                 },
                 {
-                    label: 'Snooze for 4 Hours',
+                    label: '4 hour snooze',
                     id: 'snooze-240',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().snooze(menuItem, 240);
+                        getSnoozerService().startSnooze(240, menuItem);
                     }
                 },
                 {
-                    label: 'Snooze for 8 Hours',
+                    label: '8 hour snooze',
                     id: 'snooze-480',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().snooze(menuItem, 480);
+                        getSnoozerService().startSnooze(480, menuItem);
                     }
                 }
             ]
@@ -379,28 +379,28 @@ class TrayMenu extends Tray {
         });
 
         /**
-         * @listens ipcMain#networkState
+         * @listens ipcMain
          */
-        ipcMain.on('network', (event, networkState) => {
-            logger.debug('ipcMain#network');
+        ipcMain.on('online', (event, isOnline) => {
+            logger.debug('ipcMain#online', 'isOnline', isOnline);
 
-            switch (networkState) {
-                case 'offline':
-                    this.setImageName('transparent');
-                    break;
-                case 'online':
+            switch (isOnline) {
+                case true:
                     this.setImageName('default');
+                    break;
+                case false:
+                    this.setImageName('transparent');
                     break;
             }
         });
 
         /**
-         * @listens ipcMain#snooze
+         * @listens ipcMain:
          */
-        ipcMain.on('snooze', (event, snoozeState) => {
-            logger.debug('ipcMain#snooze');
+        ipcMain.on('snooze', (event, isSnoozing) => {
+            logger.debug('ipcMain#snooze', 'isSnoozing', isSnoozing);
 
-            switch (snoozeState) {
+            switch (isSnoozing) {
                 case true:
                     this.setImageName('transparent-pause');
                     break;

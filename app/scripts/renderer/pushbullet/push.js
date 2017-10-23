@@ -16,6 +16,7 @@ const path = require('path');
  */
 const electron = require('electron');
 const { remote } = electron;
+// const { nativeImage } = electron;
 
 /**
  * Modules
@@ -158,7 +159,9 @@ let playSound = (file, callback = () => {}) => {
         callback(null, url);
     });
 
-    AudioElement.play();
+    AudioElement.play().then(() => {
+        logger.debug('playSound', 'complete');
+    });
 };
 
 /**
@@ -171,60 +174,78 @@ let generateImageUrl = (push) => {
 
     const pb = window.pb;
 
-    const accountIdShort = push['receiver_iden'];
+    let iconUrl;
 
-    let imageUrl;
-    let accountImage;
+    /**
+     * Account icon
+     */
+    let iconAccount;
+    const accountIdShort = push['receiver_iden'];
 
     for (let account of pb.api.accounts.all) {
         if (account['iden'].startsWith(accountIdShort)) {
-            accountImage = account['image_url'];
+            iconAccount = account['image_url'];
         }
     }
 
-    // Channels (IFTTT, Zapier ..)
+    /**
+     * Channel icon
+     */
+    let iconChannel;
     const channelId = push['client_iden'];
-    let channelImage;
 
     for (let channel of pb.api.grants.all) {
         if (channel['client']['iden'] === channelId) {
-            channelImage = channel['client']['image_url'];
+            iconChannel = channel['client']['image_url'];
         }
     }
 
-    // Devices (Phone, Tablet ..)
+    /**
+     * Device icon
+     */
+    let iconDevice;
     const deviceId = push['source_device_iden'];
-    let deviceImage;
 
     for (let device of pb.api.devices.all) {
         if (device['iden'] === deviceId) {
-            deviceImage = `http://www.pushbullet.com/img/deviceicons/${device.icon}.png`;
+            iconDevice = `http://www.pushbullet.com/img/deviceicons/${device.icon}.png`;
         }
     }
 
-    // SMS
+    /**
+     * SMS icon
+     */
     if (push['type'] === 'sms_changed') {
-        deviceImage = 'http://www.pushbullet.com/img/deviceicons/phone.png';
+        iconDevice = 'http://www.pushbullet.com/img/deviceicons/phone.png';
     }
 
-    // Mirroring
-    let dataUrl;
+    /**
+     * Mirror icon
+     */
+    let iconMirror;
+
     if (push['type'] === 'mirror') {
-        dataUrl = `data:image/jpeg;base64,${push.icon}`;
+        iconMirror = `data:image/jpeg;base64,${push.icon}`;
     }
 
-    // Special web sites
-    let websiteImage;
+    /**
+     * Website icon
+     */
+    let iconWebsite;
+
     if (push['type'] === 'link') {
+        // YouTube
         if (getYouTubeID(push['url'])) {
-            websiteImage = `https://img.youtube.com/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
+            iconWebsite = `https://img.youtube.com/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
+        } else {
+            iconWebsite = `https://icons.better-idea.org/icon?size=128&url=${push['url']}`;
         }
     }
 
     // Fallback
-    imageUrl = websiteImage || dataUrl || channelImage || deviceImage || accountImage;
+    iconUrl = iconWebsite || iconMirror || iconChannel || iconDevice || iconAccount;
 
-    return imageUrl;
+    return iconUrl;
 };
 
 /**
@@ -265,6 +286,7 @@ let parsePush = (message) => {
 
     // default
     let body = message;
+    let subtitle = message;
     let title = message;
 
     // characters for tag detection
@@ -282,15 +304,16 @@ let parsePush = (message) => {
 
         /** title */
         if (titleList.length > 1) {
-            // multiple titles: uppercase first title
-            titleList[0] = titleList[0].toUpperCase();
-            // multiple titles: concat
+            subtitle = _.startCase(_.toLower(titleList[0]));
+
+            titleList.shift();
             title = titleList.join(` | `);
         }
     }
 
     return {
         body: body,
+        subtitle: subtitle,
         title: title
     };
 };
@@ -316,8 +339,10 @@ let decoratePushbulletPush = (push) => {
 
             if (!push.body && push.title) {
                 let parsed = parsePush(push.title);
-                push.title = parsed.title;
+
                 push.body = parsed.body;
+                push.subtitle = parsed.subtitle;
+                push.title = parsed.title;
             }
 
             break;
@@ -403,9 +428,10 @@ let createNotification = (push) => {
     const options = {
         body: push.body,
         icon: push.icon,
+        subtitle: push.subtitle,
         tag: push.iden,
-        url: push.url,
-        title: push.title
+        title: push.title,
+        url: push.url
     };
 
     /**
@@ -413,7 +439,7 @@ let createNotification = (push) => {
      */
     const hideNotificationBody = retrievePushbulletHideNotificationBody();
     if (hideNotificationBody) {
-        options.body = null;
+        options.body = void 0;
     }
 
     /**
@@ -649,7 +675,7 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
 
                 clearTimeout(timeout);
             }
-        }, (parseInt(notificationInterval) * (pushIndex + 1)));
+        }, (Math.round(notificationInterval) * (pushIndex + 1)));
     });
 };
 

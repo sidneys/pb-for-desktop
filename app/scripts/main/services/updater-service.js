@@ -83,7 +83,7 @@ let storeAppLastVersion = (version) => configurationManager('appLastVersion').se
 
 /**
  * @class UpdaterService
- * @property {Electron.autoUpdater} autoUpdater - Auto updater instance
+ * @property {AppUpdater} autoUpdater - Auto updater instance
  * @property {Boolean} isUpdating - App is currently updating
  */
 class UpdaterService {
