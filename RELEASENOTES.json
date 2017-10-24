@@ -1,4 +1,15 @@
 {
+    "6.2.6": {
+        "🍾 features": [
+            "Adds package repositories for `Debian`, `elementary OS`, `Enterprise Linux`, `Fedora`, `openSUSE`, `LinuxMint`, `Ubuntu` (Linux) (#56)"
+        ],
+        "📒 documentation": [
+            "Adds new section: `Installation via Linux package manager`"
+        ],
+        "👷 internals": [
+            "Upgrades `node_modules`"
+        ]
+    },
     "6.2.0": {
         "💎 improved": [
             "Augments start-up & background resource usage (#67)",

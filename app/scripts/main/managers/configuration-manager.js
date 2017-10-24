@@ -666,8 +666,8 @@ app.on('quit', () => {
     // Prettify
     electronSettings.setAll(electronSettings.getAll(), { prettify: true });
 
-    logger.info('settings', electronSettings.getAll());
-    logger.info('file', electronSettings.file());
+    logger.debug('settings', electronSettings.getAll());
+    logger.debug('file', electronSettings.file());
 });
 
 /**

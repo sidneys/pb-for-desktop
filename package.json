@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "6.2.0",
+  "version": "6.2.6",
   "description": "Pushbullet Desktop app for macOS, Windows and Linux.",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -49,12 +49,12 @@
     "auto-launch": "git://github.com/sidneys/node-auto-launch.git#master",
     "babel-cli": "^6.26.0",
     "babel-preset-electron": "^1.4.15",
-    "chalk": "^2.2.0",
+    "chalk": "^2.3.0",
     "chalkline": "0.0.5",
     "clean-css": "^4.1.9",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^3.1.3",
-    "electron-updater": "^2.13.0",
+    "electron-updater": "^2.15.0",
     "file-url": "^2.0.2",
     "filesize": "^3.5.11",
     "fs-extra": "^4.0.2",
@@ -75,7 +75,7 @@
   "devDependencies": {
     "docdash": "^0.4.0",
     "electron": "1.7.9",
-    "electron-builder": "^19.37.2",
+    "electron-builder": "19.37.2",
     "electron-connect": "^0.6.2",
     "electron-prebuilt-compile": "1.7.9",
     "eslint": "^4.9.0",
@@ -92,11 +92,6 @@
     "progress": "^2.0.0",
     "publish-release": "^1.3.3",
     "yamljs": "^0.3.0"
-  },
-  "optionalDependencies": {
-    "7zip-bin-mac": "^1.0.1",
-    "7zip-bin-win": "^2.1.1",
-    "7zip-bin-linux": "^1.1.0"
   },
   "main": "./app/scripts/main/components/application.js",
   "bin": {

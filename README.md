@@ -85,17 +85,29 @@ Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with
 
 ## <a name="installation"/></a> Installation
 
-### Normal Installation
+### Manual  Installation
 
 Grab the latest version here: [Download Pushbullet for Desktop](https://sidneys.github.io/pb-for-desktop/#download)
 
-### Installation as Commandline Tool
+### Installation via nodejs
 
 ```bash
-npm install --global pb-for-desktop		# Installs the node CLI module
-pb-for-desktop							# Runs it
+npm install --global pb-for-desktop
 ```
 
+### Installation via package manager (Linux)
+
+*Debian-based (via apt)*
+```bash
+curl -s https://packagecloud.io/install/repositories/sidneys/pb-for-desktop/script.deb.sh | sudo bash		# Adds package repository
+sudo apt-get install pb-for-desktop		# Installs it
+```
+
+*Redhat-based (via yum)*
+```bash
+curl -s https://packagecloud.io/install/repositories/sidneys/pb-for-desktop/script.rpm.sh | sudo bash		# Adds package repository
+sudo yum install pb-for-desktop			# Installs it
+```
 
 ## <a name="developers"/></a> Developers
 
