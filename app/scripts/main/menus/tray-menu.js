@@ -22,6 +22,8 @@ const { app, ipcMain, Menu, Tray, webContents } = require('electron');
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 
 /**
  * Modules
@@ -29,9 +31,7 @@ const appRootPath = require('app-root-path')['path'];
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const dialogProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'dialog-provider'));
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 
 
 /**
@@ -53,26 +53,26 @@ const appSoundDirectory = global.filesystem.directories.sounds;
  * Tray icons
  * @constant
  */
-const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-default${platformHelper.templateImageExtension(platformHelper.type)}`);
-const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-transparent${platformHelper.templateImageExtension(platformHelper.type)}`);
-const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformHelper.type}-tray-icon-transparent-pause${platformHelper.templateImageExtension(platformHelper.type)}`);
+const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-default${platformTools.templateImageExtension(platformTools.type)}`);
+const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent${platformTools.templateImageExtension(platformTools.type)}`);
+const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent-pause${platformTools.templateImageExtension(platformTools.type)}`);
 
 /**
  * Tray images
  * @constant
  */
-const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformHelper.menuItemImageExtension}`);
-const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformHelper.menuItemImageExtension}`);
+const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`);
 
 
 /**
@@ -237,7 +237,7 @@ let createTrayMenuTemplate = () => {
         },
         {
             id: 'appTrayOnly',
-            label: platformHelper.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
+            label: platformTools.isMacOS ? 'Hide Dock Icon' : 'Minimize to Tray',
             icon: trayMenuItemImageAppTrayOnly,
             type: 'checkbox',
             checked: configurationManager('appTrayOnly').get(),
@@ -247,7 +247,7 @@ let createTrayMenuTemplate = () => {
         },
         {
             id: 'appShowBadgeCount',
-            visible: platformHelper.isMacOS,
+            visible: platformTools.isMacOS,
             label: 'Dock Icon Count',
             icon: trayMenuItemImageAppShowBadgeCount,
             type: 'checkbox',
@@ -357,7 +357,8 @@ class TrayMenu extends Tray {
      * Init
      */
     init() {
-        this.setToolTip(appProductName);
+        logger.debug('init');
+
         this.setContextMenu(this.menu);
 
         /**
@@ -366,15 +367,16 @@ class TrayMenu extends Tray {
         this.on('click', () => {
             logger.debug('TrayMenu#click');
 
-            if (platformHelper.isWindows) {
-                const mainWindow = getMainWindow();
-                if (!mainWindow) { return; }
+            if (platformTools.isMacOS) { return; }
 
-                if (mainWindow.isVisible()) {
-                    mainWindow.hide();
-                } else {
-                    mainWindow.show();
-                }
+            const mainWindow = getMainWindow();
+            if (!mainWindow) { return; }
+
+            if (mainWindow.isVisible()) {
+                mainWindow.hide();
+            } else {
+                mainWindow.show();
+                app.focus();
             }
         });
 

@@ -3,24 +3,10 @@
 
 /**
  * Modules
- * Node
- * @constant
- */
-const path = require('path');
-
-/**
- * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const logger = require('@sidneys/logger')({ write: true });
 
 /**
  * @constant
@@ -176,7 +162,7 @@ let init = () => {
 
 
 /**
- * @listens window#load
+ * @listens window:UIEvent#load
  */
 window.addEventListener('load', () => {
     logger.debug('window#load');

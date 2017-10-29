@@ -24,6 +24,7 @@ const { app } = electron;
 const appRootPath = require('app-root-path');
 const electronConnect = require('electron-connect');
 const gulp = require('gulp');
+const logger = require('@sidneys/logger')({ write: true });
 const minimist = require('minimist');
 
 
@@ -38,7 +39,6 @@ appRootPath.setPath(path.join(__dirname));
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath.path, 'lib', 'logger'))({ write: true });
 const packageJson = require(path.join(appRootPath.path, 'package.json'));
 
 

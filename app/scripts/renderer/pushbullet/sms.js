@@ -14,14 +14,7 @@ const path = require('path');
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-
+const logger = require('@sidneys/logger')({ write: true });
 
 /** @namespace onecup.refresh */
 /** @namespace pb.api.accounts */

@@ -20,16 +20,9 @@ const { app, Menu, shell, webContents } = require('electron');
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
 const Appdirectory = require('appdirectory');
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: false });
+const isDebug = require('@sidneys/is-env')('debug');
+const logger = require('@sidneys/logger')({ write: false });
 
 
 /**

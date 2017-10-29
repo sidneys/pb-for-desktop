@@ -16,7 +16,6 @@ const path = require('path');
  */
 const electron = require('electron');
 const { remote } = electron;
-// const { nativeImage } = electron;
 
 /**
  * Modules
@@ -26,7 +25,14 @@ const { remote } = electron;
 const _ = require('lodash');
 const appRootPath = require('app-root-path')['path'];
 const fileUrl = require('file-url');
+const fileType = require('file-type');
+const logger = require('@sidneys/logger')({ write: true });
+const isDebug = require('@sidneys/is-env')('debug');
+const ICO = require('icojs');
+const imageDownloader = require('image-downloader');
+const jimp = require('jimp');
 const moment = require('moment');
+const opn = require('opn');
 const getYouTubeID = require('get-youtube-id');
 
 /**
@@ -34,10 +40,17 @@ const getYouTubeID = require('get-youtube-id');
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'sms'));
+
+/**
+ * Application
+ * @constant
+ * @default
+ */
+const appName = remote.getGlobal('manifest').name;
+const appTemporaryDirectory = isDebug ? appRootPath : os.tmpdir();
 
 /** @namespace Audio */
 /** @namespace pb.api.accounts */
@@ -54,12 +67,14 @@ const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'push
 
 
 /**
- * Notification
+ * Notifications
  * @constant
  * @default
  */
 const notificationInterval = 2000;
 const maxRecentNotifications = 5;
+const faviconImageSize = 120;
+const notificationImageSize = 88;
 
 
 /**
@@ -148,19 +163,14 @@ let playSound = (file, callback = () => {}) => {
     /**
      * @listens audio:MediaEvent#error
      */
-    AudioElement.addEventListener('error', (err) => {
-        return callback(err);
-    });
-
-    /**
-     * @listens audio:MediaEvent#ended
-     */
-    AudioElement.addEventListener('ended', () => {
-        callback(null, url);
+    AudioElement.addEventListener('error', (error) => {
+        logger.error('playSound', error);
+        callback(error);
     });
 
     AudioElement.play().then(() => {
-        logger.debug('playSound', 'complete');
+        logger.debug('playSound', url);
+        callback(null);
     });
 };
 
@@ -236,9 +246,9 @@ let generateImageUrl = (push) => {
     if (push['type'] === 'link') {
         // YouTube
         if (getYouTubeID(push['url'])) {
-            iconWebsite = `https://img.youtube.com/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
+            iconWebsite = `http://img.youtube.com/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
         } else {
-            iconWebsite = `https://icons.better-idea.org/icon?size=128&url=${push['url']}`;
+            iconWebsite = `http://icons.better-idea.org/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`;
         }
     }
 
@@ -407,11 +417,95 @@ let decoratePushbulletPush = (push) => {
 };
 
 /**
+ * Show Notification
+ * @param {Object} notificationOptions - NotificationConfiguration
+ * @param {Object} pushObject - Pushbullet Push
+ */
+let showNotification = (notificationOptions, pushObject) => {
+    /**
+     * Show Notification
+     */
+    const notification = notificationProvider.create(notificationOptions);
+    /**
+     * @listens notification:PointerEvent#click
+     */
+    notification.on('click', () => {
+        logger.debug('notification#click');
+
+        if (notificationOptions.url) {
+            opn(notificationOptions.url, { wait: false });
+        }
+
+        // Dismiss push
+        dismissPushbulletPush(pushObject);
+    });
+
+    /**
+     * @listens notification:PointerEvent#close
+     */
+    notification.on('close', () => logger.debug('notification#close'));
+
+    /**
+     * @listens notification:PointerEvent#reply
+     */
+    notification.on('reply', (event, reply) => {
+        logger.debug('notification#reply');
+
+        pbSms.sendReply(reply, (error) => {
+            if (error) {
+                logger.error('notification#reply', error);
+            }
+        });
+    });
+
+    /**
+     * @listens notification:PointerEvent#error
+     */
+    notification.on('error', (error) => logger.error('notification#error', error));
+
+    /**
+     * @listens notification:PointerEvent#show
+     */
+    notification.on('show', (event) => logger.debug('notification#show', event));
+
+    // Show
+    notification.show();
+};
+
+/**
+ * Write & resize image
+ * @param {Buffer|*} source - Source image
+ * @param {String} target - Target file
+ * @param {Function=} callback - Callback
+ */
+let writeResizeImage = (source, target, callback = () => {}) => {
+    logger.debug('writeResizeImage');
+
+    jimp.read(source, (error, result) => {
+        if (error) {
+            logger.error('writeResizeImage', 'jimp.read', error);
+            callback(error);
+            return;
+        }
+
+        result.resize(notificationImageSize, jimp.AUTO).write(target, (error) => {
+            if (error) {
+                logger.error('writeResizeImage', 'result.resize', error);
+                callback(error);
+                return;
+            }
+
+            callback(null, target);
+        });
+    });
+};
+
+/**
  * Create Notification from Push Objects
  * @param {Object} push - Push Object
  */
-let createNotification = (push) => {
-    logger.debug('createNotification');
+let convertPushToNotification = (push) => {
+    logger.debug('convertPushToNotification');
 
     /**
      * Decorate Push object
@@ -419,13 +513,9 @@ let createNotification = (push) => {
     push = decoratePushbulletPush(push);
 
     /**
-     * Read Settings
-     */
-
-    /**
      * Create Options
      */
-    const options = {
+    const notificationOptions = {
         body: push.body,
         icon: push.icon,
         subtitle: push.subtitle,
@@ -439,87 +529,74 @@ let createNotification = (push) => {
      */
     const hideNotificationBody = retrievePushbulletHideNotificationBody();
     if (hideNotificationBody) {
-        options.body = void 0;
+        notificationOptions.body = void 0;
     }
 
     /**
      * Body
      */
     if (push.type === 'sms_changed') {
-        options.hasReply = true;
-        options.replyPlaceholder = 'Your SMS Reply';
+        notificationOptions.hasReply = true;
+        notificationOptions.replyPlaceholder = 'Your SMS Reply';
     }
 
     /**
-     * Sound
+     * Fetch Favicon
      */
-    const soundEnabled = retrievePushbulletSoundEnabled();
-    if (soundEnabled) {
-        const soundFile = retrievePushbulletSoundFile();
-        playSound(soundFile, (error) => {
-            if (error) { logger.error(error); }
-        });
-    }
+    const imageUrl = push.icon;
+    const imageFilepath = path.join(appTemporaryDirectory, `${appName}.push.icon.png`);
 
-    /**
-     * Create
-     */
-    const notification = notificationProvider.create(options);
+    imageDownloader.image({ url: imageUrl, dest: imageFilepath })
+        .then(({ image }) => {
+            const imageBuffer = image;
+            const imageType = fileType(imageBuffer);
+            const isIco = ICO.isICO(imageBuffer);
+            const isPng = imageType.mime === 'image/png';
+            const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg';
 
-    /**
-     * @listens notification:PointerEvent#click
-     */
-    notification.on('click', () => {
-        logger.debug('notification#click');
+            logger.debug('convertPushToNotification', 'imageUrl', imageUrl);
+            logger.debug('convertPushToNotification', 'imageType', imageType);
 
-        // Open url
-        if (push.url) {
-            remote.shell.openExternal(push.url, { activate: false }, () => {});
-        }
+            /**
+             * .PNG
+             */
+            if (isPng || isJpeg) {
+                writeResizeImage(imageBuffer, imageFilepath, (error, target) => {
+                    if (error) { return; }
 
-        // Dismiss push
-        dismissPushbulletPush(push);
-    });
+                    if (retrievePushbulletSoundEnabled()) {
+                        playSound(retrievePushbulletSoundFile());
+                    }
+                    notificationOptions.icon = target;
+                    showNotification(notificationOptions, push);
+                });
 
-    /**
-     * @listens notification:PointerEvent#close
-     */
-    notification.on('close', () => {
-        logger.debug('notification#close');
-    });
-
-    /**
-     * @listens notification:PointerEvent#reply
-     */
-    notification.on('reply', (event, reply) => {
-        logger.debug('notification#reply');
-
-        pbSms.sendReply(reply, (error) => {
-            if (error) {
-                return logger.error(error);
+                return;
             }
 
-            logger.info('sms reply sent', reply);
+            /**
+             * .ICO -> .PNG
+             */
+            if (isIco) {
+                ICO.parse(imageBuffer, 'image/png').then(imageList => {
+                    const imageMaximum = imageList[imageList.length - 1];
+                    // noinspection JSCheckFunctionSignatures
+                    writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepath, (error, target) => {
+                        if (error) { return; }
+
+                        if (retrievePushbulletSoundEnabled()) {
+                            playSound(retrievePushbulletSoundFile());
+                        }
+                        notificationOptions.icon = target;
+                        showNotification(notificationOptions, push);
+                    });
+                });
+            }
+
+        })
+        .catch((error) => {
+            logger.error('convertPushToNotification', error);
         });
-    });
-
-    /**
-     * @listens notification:PointerEvent#error
-     * @param {Error} error - Error
-     */
-    notification.on('error', (error) => {
-        logger.error('notification#error', error);
-    });
-
-    /**
-     * @listens notification:PointerEvent#show
-     */
-    notification.on('show', (event) => {
-        logger.debug('notification#show', event);
-    });
-
-    // Show
-    notification.show();
 };
 
 /**
@@ -534,7 +611,7 @@ let shouldShowPush = (push) => {
     if (push.hasOwnProperty('active')) {
         // Push is not active
         if (Boolean(push.active) === false) {
-            logger.debug('shouldShowPush', false, 'push is not active');
+            // logger.debug('shouldShowPush', false, 'push is not active');
             return false;
         }
     }
@@ -543,7 +620,7 @@ let shouldShowPush = (push) => {
     if (push.direction === 'self') {
         // Don't show if Push was dismissed
         if (Boolean(push.dismissed) === true) {
-            logger.debug('shouldShowPush', false, 'push was dismissed already');
+            // logger.debug('shouldShowPush', false, 'push was dismissed already');
             return false;
         }
     }
@@ -553,17 +630,17 @@ let shouldShowPush = (push) => {
         // Don't show if SMS is disabled
         const pushbulletSmsEnabled = retrievePushbulletSmsEnabled();
         if (!pushbulletSmsEnabled) {
-            logger.debug('shouldShowPush', false, 'sms mirroring is not enabled');
+            // logger.debug('shouldShowPush', false, 'sms mirroring is not enabled');
             return false;
         }
         // Don't show if SMS has no attached notifications
         if (push.notifications.length === 0) {
-            logger.debug('shouldShowPush', false, 'sms push is empty');
+            // logger.debug('shouldShowPush', false, 'sms push is empty');
             return false;
         }
     }
 
-    logger.debug('shouldShowPush:', true, 'type:', push.type);
+    // logger.debug('shouldShowPush:', true, 'type:', push.type);
 
     return true;
 };
@@ -579,7 +656,7 @@ let showPush = (push) => {
     const isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'));
 
     if (!isSnoozing && shouldShowPush(push)) {
-        createNotification(push);
+        convertPushToNotification(push);
     }
 };
 
@@ -629,7 +706,6 @@ let getRecentPushesList = (queueLimit = 0) => {
  * @param {Boolean} ignoreDate - Ignore time of push, always show
  * @param {Boolean} updateBadgeCount - Update badge counter
  * @param {Function=} callback - Callback
- * @returns {*}
  */
 let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback = () => {}) => {
     logger.debug('enqueuePush');
@@ -638,7 +714,8 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
 
     if (pushes.length === 0) {
         logger.warn('enqueuePush', 'pushes list was empty');
-        return callback(null, 0);
+        callback(null, 0);
+        return;
     }
 
     let nextPushesList = pushes;
@@ -689,10 +766,11 @@ let enqueueRecentPushes = (callback = () => {}) => {
 
     const pushesList = getRecentPushesList(maxRecentNotifications);
 
-    enqueuePush(pushesList, true, false, (err, count) => {
-        if (err) {
-            logger.error('enqueueRecentPushes', err);
-            return callback(err);
+    enqueuePush(pushesList, true, false, (error, count) => {
+        if (error) {
+            logger.error('enqueueRecentPushes', error);
+            callback(error);
+            return;
         }
 
         callback(null, count);
@@ -711,7 +789,7 @@ let init = () => {
 
 
 /**
- * @listens window#load
+ * @listens window:UIEvent#load
  */
 window.addEventListener('load', () => {
     logger.debug('window#load');

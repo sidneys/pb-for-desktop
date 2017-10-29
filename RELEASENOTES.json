@@ -1,10 +1,35 @@
 {
+    "6.3.1": {
+        "🍾 features": [
+            "Rich Notifications: Automatic Fetch & display of Favicons for all received URL pushes",
+            "YouTube Thumbnails: Pushed YouTube URLs include thumbnail of the linked video"
+        ],
+        "💎 improved": [
+            "Show & focus the main window on tray menu click (Windows, Linux) (#57)"
+        ],
+        "👷 internals": [
+            "Exposed internal tooling as atomic modules within development namespace (`@sidneys`)",
+            "Upgrades `node_modules`"
+        ]
+    },
+    "6.2.7": {
+        "🚨 fixed": [
+            "Fixes rendering of release notes after update completion"
+        ],
+        "💎 improved": [
+            "Changed application configuration file to reflect application name",
+            "Added `.json` extension to application configuration file"
+        ],
+        "👷 internals": [
+            "Upgrades `node_modules`"
+        ]
+    },
     "6.2.6": {
         "🍾 features": [
             "Adds package repositories for `Debian`, `elementary OS`, `Enterprise Linux`, `Fedora`, `openSUSE`, `LinuxMint`, `Ubuntu` (Linux) (#56)"
         ],
         "📒 documentation": [
-            "Adds new section: `Installation via Linux package manager`"
+            "Adds `README.md` section: `Installation via Linux package manager`"
         ],
         "👷 internals": [
             "Upgrades `node_modules`"

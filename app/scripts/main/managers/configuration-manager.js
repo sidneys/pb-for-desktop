@@ -8,7 +8,6 @@
  */
 const fs = require('fs-extra');
 const path = require('path');
-const util = require('util');
 
 /**
  * Modules
@@ -35,8 +34,8 @@ const electronSettings = require('electron-settings');
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 
 
 /**
@@ -48,24 +47,20 @@ const appName = global.manifest.name;
 const appCurrentVersion = global.manifest.version;
 
 /**
- * Modules
- * Configuration
- */
-const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } });
-/** @namespace electronSettings.delete */
-/** @namespace electronSettings.file */
-/** @namespace electronSettings.get */
-/** @namespace electronSettings.getAll */
-/** @namespace electronSettings.set */
-/** @namespace electronSettings.setAll */
-
-/**
  * Filesystem
  * @constant
  * @default
  */
 const appLogDirectory = (new Appdirectory(appName)).userLogs();
+const appSettingsFilepath = path.join(path.dirname(electronSettings.file()), `${appName}.json`);
 const appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked');
+
+/**
+ * Modules
+ * Configuration
+ */
+const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } });
+electronSettings.setPath(appSettingsFilepath);
 
 /**
  * @constant
@@ -94,7 +89,7 @@ let setAppTrayOnly = (trayOnly) => {
         if (!primaryWindow.getBounds()) { return; }
 
 
-        switch (platformHelper.type) {
+        switch (platformTools.type) {
             case 'darwin':
                 if (trayOnly) {
                     app.dock.hide();
@@ -112,9 +107,17 @@ let setAppTrayOnly = (trayOnly) => {
     }, defaultInterval);
 };
 
+/** @namespace electronSettings.delete */
+/** @namespace electronSettings.deleteAll */
+/** @namespace electronSettings.file */
+/** @namespace electronSettings.get */
+/** @namespace electronSettings.getAll */
+/** @namespace electronSettings.set */
+/** @namespace electronSettings.setAll */
+/** @namespace electronSettings.setPath */
+
 /**
  * Configuration Items
- * @namespace
  */
 let configurationItems = {
     /**

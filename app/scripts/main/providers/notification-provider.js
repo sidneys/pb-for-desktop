@@ -3,13 +3,6 @@
 
 /**
  * Modules
- * Node
- * @constant
- */
-const path = require('path');
-
-/**
- * Modules
  * Electron
  * @constant
  */
@@ -22,14 +15,7 @@ const { Notification } = electron;
  * @constant
  */
 const _ = require('lodash');
-const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const logger = require('@sidneys/logger')({ write: true });
 
 
 /**

@@ -23,15 +23,8 @@ const { app, BrowserWindow, dialog } = electron || electron.remote;
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 
 
 /**
@@ -54,6 +47,8 @@ const appProductName = global.manifest.productName;
  */
 let showMessage = (title = appProductName, message = title, buttonList = ['OK'], type = 'info', callback = () => {}) => {
     logger.debug('showMessage');
+
+    logger.debug('showMessage', 'title', title, 'message', message, 'buttonList', buttonList, 'type', type);
 
     dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
         type: type,
@@ -145,7 +140,7 @@ let file = (dialogTitle = appProductName, extensionList = ['*'], initialFolder =
 let error = (message, callback = () => {}) => {
     logger.debug('error');
 
-    if (platformHelper.isMacOS) {
+    if (platformTools.isMacOS) {
         app.dock.bounce('critical');
     }
 
@@ -187,6 +182,8 @@ let info = (title, message, callback = () => {}) => {
  * @public
  */
 let question = (title, message, callback = () => {}) => {
+    logger.debug('question');
+
     app.focus();
 
     showMessage(title, message, ['Yes', 'No'], 'question', callback);

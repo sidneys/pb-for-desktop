@@ -23,6 +23,7 @@ const { ipcRenderer, remote } = electron;
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+const logger = require('@sidneys/logger')({ write: true });
 const parseDomain = require('parse-domain');
 
 /**
@@ -30,8 +31,7 @@ const parseDomain = require('parse-domain');
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const domManager = require(path.join(appRootPath, 'lib', 'dom-manager'));
+const domTools = require('@sidneys/dom-tools');
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 
 
@@ -93,7 +93,7 @@ let onOffline = () => {
     logger.debug('onOffline');
 
     // Show Spinner
-    domManager.show(spinnerViewElement);
+    domTools.show(spinnerViewElement);
 };
 
 /**
@@ -106,7 +106,7 @@ let onOnline = () => {
     registerNavigation();
 
     // Hide Spinner
-    domManager.hide(spinnerViewElement);
+    domTools.hide(spinnerViewElement);
 };
 
 /**
@@ -115,7 +115,7 @@ let onOnline = () => {
 let onLogin = () => {
     logger.debug('onLogin');
 
-    domManager.setText(spinnerTextElement, 'logged in');
+    domTools.setText(spinnerTextElement, 'logged in');
 };
 
 /**
@@ -190,7 +190,7 @@ webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
 webviewViewElement.addEventListener('dom-ready', () => {
     logger.debug('webviewViewElement#dom-ready');
 
-    domManager.injectCSS(webviewViewElement, stylesheetFilepath);
+    domTools.injectCSS(webviewViewElement, stylesheetFilepath);
 });
 
 /** @namespace event.args */
@@ -226,7 +226,7 @@ webviewViewElement.addEventListener('ipc-message', (event) => {
 webviewViewElement.addEventListener('load-commit', (event) => {
     logger.debug('webviewViewElement#load-commit');
 
-    domManager.injectCSS(webviewViewElement, stylesheetFilepath);
+    domTools.injectCSS(webviewViewElement, stylesheetFilepath);
 
     if (!parseDomain(event.url)) { return; }
 
@@ -239,16 +239,16 @@ webviewViewElement.addEventListener('load-commit', (event) => {
         case 'google':
         case 'youtube':
         case 'facebook':
-            domManager.setVisibility(supplementalMenuElement, true);
+            domTools.setVisibility(supplementalMenuElement, true);
 
             body.style.backgroundColor = 'rgb(236, 240, 240)';
             break;
         case 'pushbullet':
             // Pushbullet 'help'
             if (subdomain.includes('help')) {
-                domManager.setVisibility(supplementalMenuElement, true);
+                domTools.setVisibility(supplementalMenuElement, true);
             } else {
-                domManager.setVisibility(supplementalMenuElement, false);
+                domTools.setVisibility(supplementalMenuElement, false);
             }
 
             // Pushbullet 'signin'
@@ -289,5 +289,5 @@ window.addEventListener('load', () => {
     logger.debug('window#load');
 
     // Add Platform CSS
-    domManager.addPlatformClass();
+    domTools.addPlatformClass();
 });

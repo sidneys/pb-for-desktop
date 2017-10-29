@@ -21,13 +21,13 @@ const { app, ipcMain } = require('electron');
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+const logger = require('@sidneys/logger')({ write: true });
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const notificationProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 
 

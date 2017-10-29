@@ -25,6 +25,8 @@ const { app, BrowserWindow } = electron;
 const appRootPath = require('app-root-path')['path'];
 const removeMarkdown = require('remove-markdown');
 const semverCompare = require('semver-compare');
+const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 const { autoUpdater } = require('electron-updater');
 
 /**
@@ -32,10 +34,8 @@ const { autoUpdater } = require('electron-updater');
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 const dialogProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'dialog-provider'));
 const notificationProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 
 /**
@@ -95,7 +95,7 @@ class UpdaterService {
         if (process.defaultApp) { return; }
 
         // Do not run on Linux
-        if (platformHelper.isLinux) { return; }
+        if (platformTools.isLinux) { return; }
 
         this.autoUpdater = autoUpdater;
         this.isUpdating = false;
@@ -174,7 +174,7 @@ class UpdaterService {
             /**
              * Show update progress (Windows)
              */
-            if (platformHelper.isWindows) {
+            if (platformTools.isWindows) {
                 const mainWindow = getMainWindow();
                 if (!mainWindow) { return; }
 
@@ -186,19 +186,17 @@ class UpdaterService {
          * @listens Electron.AutoUpdater#update-downloaded
          */
         this.autoUpdater.on('update-downloaded', (info) => {
-            logger.debug('UpdaterService#update-downloaded', info);
-
-            logger.info('application update', 'download', 'complete');
+            logger.info('UpdaterService#update-downloaded', info);
 
             this.isUpdating = true;
 
             const notification = notificationProvider.create({ title: `Update ready to install for ${appProductName}`, subtitle: info.version });
             notification.show();
 
-            if (Boolean(info.releaseNotes)) {
+            if (!!info.releaseNotes) {
                 const releaseNotesPlaintext = removeMarkdown(info.releaseNotes);
 
-                logger.info('application update', 'release notes', releaseNotesPlaintext);
+                logger.info('UpdaterService#update-downloaded', 'releaseNotesPlaintext', releaseNotesPlaintext);
 
                 storeAppChangelog(releaseNotesPlaintext);
             }
@@ -223,6 +221,7 @@ class UpdaterService {
 
     /**
      * Bump last app version
+     * @static
      */
     bumpAppLastVersion() {
         const appLastVersion = retrieveAppLastVersion();
@@ -241,14 +240,14 @@ class UpdaterService {
         if (wasUpdated) {
             storeAppLastVersion(appCurrentVersion);
 
-            const changelog = removeMarkdown(retrieveAppChangelog());
+            const changelogPlaintext = retrieveAppChangelog();
 
-            if (Boolean(changelog)) {
-                dialogProvider.info(`${appProductName} has been updated to ${appCurrentVersion}.`, `Release Notes:${os.EOL}${os.EOL}${changelog}`);
-                logger.info(`${appProductName} has been updated to ${appCurrentVersion}.`, `Release Notes:${os.EOL}${os.EOL}${changelog}`);
+            logger.debug('bumpAppLastVersion', 'changelogPlaintext', changelogPlaintext);
+
+            if (!!changelogPlaintext) {
+                dialogProvider.info(`${appProductName} has been updated to ${appCurrentVersion}`, changelogPlaintext);
             } else {
-                dialogProvider.info(`Update complete`, `${appProductName} has been updated to ${appCurrentVersion}.`);
-                logger.info(`Update complete`, `${appProductName} has been updated to ${appCurrentVersion}.`);
+                dialogProvider.info(`${appProductName} has been updated to ${appCurrentVersion}`, `Update completed successfully.`);
             }
 
             const notification = notificationProvider.create({ title: `Update installed for ${appProductName}`, subtitle: appCurrentVersion });

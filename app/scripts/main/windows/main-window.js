@@ -23,14 +23,8 @@ const { app, BrowserWindow, shell } = electron;
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 
 
 /**
@@ -59,26 +53,26 @@ class MainWindow extends BrowserWindow {
         super({
             acceptFirstMouse: true,
             autoHideMenuBar: true,
-            backgroundColor: platformHelper.isMacOS ? void 0 : '#95A5A6',
+            backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
             frame: true,
-            hasShadow: platformHelper.isMacOS ? true : void 0,
+            hasShadow: platformTools.isMacOS ? true : void 0,
             height: void 0,
             minHeight: 256,
             minWidth: 128,
             partition: 'persist:app',
             show: true,
-            thickFrame: platformHelper.isWindows ? true : void 0,
+            thickFrame: platformTools.isWindows ? true : void 0,
             title: windowTitle,
-            titleBarStyle: platformHelper.isMacOS ? 'hiddenInset' : void 0,
-            transparent: false,
-            vibrancy: platformHelper.isMacOS ? 'ultra-dark' : void 0,
+            titleBarStyle: platformTools.isMacOS ? 'hiddenInset' : void 0,
+            transparent: platformTools.isMacOS ? true : false,
+            vibrancy: platformTools.isMacOS ? 'ultra-dark' : void 0,
             webPreferences: {
                 allowRunningInsecureContent: true,
                 backgroundThrottling: true,
                 experimentalCanvasFeatures: true,
                 experimentalFeatures: true,
                 nodeIntegration: true,
-                scrollBounce: platformHelper.isMacOS ? true : void 0,
+                scrollBounce: platformTools.isMacOS ? true : void 0,
                 webaudio: true,
                 webgl: false,
                 webSecurity: false

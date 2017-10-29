@@ -3,13 +3,6 @@
 
 /**
  * Modules
- * Node
- * @constant
- */
-const path = require('path');
-
-/**
- * Modules
  * Electron
  * @constant
  */
@@ -21,20 +14,13 @@ const { app, webContents } = electron || electron.remote;
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
+const isDebug = require('@sidneys/is-env')('debug');
+const isLivereload = require('@sidneys/is-env')('livereload');
+const logger = require('@sidneys/logger')({ write: true });
 /* eslint-disable no-unused-vars */
 const filesize = require('filesize');
 const tryRequire = require('try-require');
 /* eslint-enable */
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
-const isLivereload = require(path.join(appRootPath, 'lib', 'is-env'))('livereload');
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
 
 
 /**
@@ -42,7 +28,6 @@ const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true })
  * @default
  */
 const defaultTimeout = 5000;
-
 
 /**
  * Init
@@ -58,7 +43,7 @@ let init = () => {
             if (isDebug) {
                 logger.info('opening developer tools:', `"${contents.getURL()}"`);
 
-                contents.openDevTools({ mode: 'undocked' });
+                contents.openDevTools();
             }
 
             /**

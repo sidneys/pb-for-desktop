@@ -3,13 +3,6 @@
 
 /**
  * Modules
- * Node
- * @constant
- */
-const path = require('path');
-
-/**
- * Modules
  * Electron
  * @constant
  */
@@ -21,14 +14,7 @@ const { app } = electron || electron.remote;
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-
-/**
- * Modules
- * Internal
- * @constant
- */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
+const logger = require('@sidneys/logger')({ write: true });
 
 
 /**
@@ -48,22 +34,22 @@ let init = () => {
      * @listens Electron.powerMonitor#suspend
      */
     electron.powerMonitor.on('suspend', () => {
-        logger.log('webview#suspend');
+        logger.log('electron.powerMonitor#suspend');
     });
 
     /**
      * @listens Electron.powerMonitor#resume
      */
     electron.powerMonitor.on('resume', () => {
-        logger.log('webview#resume');
+        logger.log('electron.powerMonitor#resume');
 
         let timeout = setTimeout(() => {
-            logger.log('webview#resume', 'relaunching app');
+            logger.log('electron.powerMonitor#resume', 'relaunching app');
+
+            clearTimeout(timeout);
 
             app.relaunch();
             app.exit();
-
-            clearTimeout(timeout);
         }, defaultTimeout);
     });
 };

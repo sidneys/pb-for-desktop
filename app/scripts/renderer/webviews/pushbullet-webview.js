@@ -32,10 +32,10 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
  * Internal
  * @constant
  */
-const logger = require(path.join(appRootPath, 'lib', 'logger'))({ write: true });
-const domManager = require(path.join(appRootPath, 'lib', 'dom-manager'));
-const isDebug = require(path.join(appRootPath, 'lib', 'is-env'))('debug');
-const platformHelper = require(path.join(appRootPath, 'lib', 'platform-helper'));
+const logger = require('@sidneys/logger')({ write: true });
+const domTools = require('@sidneys/dom-tools');
+const isDebug = require('@sidneys/is-env')('debug');
+const platformTools = require('@sidneys/platform-tools');
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 /* eslint-disable no-unused-vars */
 const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard'));
@@ -48,7 +48,7 @@ const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pus
  * @constant
  * @default
  */
-const appIcon = path.join(appRootPath, 'icons', platformHelper.type, `icon${platformHelper.iconImageExtension(platformHelper.type)}`);
+const appIcon = path.join(appRootPath, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`);
 
 /**
  * @constant
@@ -416,7 +416,7 @@ window.addEventListener('online', () => {
 window.addEventListener('load', () => {
     logger.debug('window#load');
 
-    domManager.addPlatformClass();
+    domTools.addPlatformClass();
 
     init();
 });
