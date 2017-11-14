@@ -122,11 +122,12 @@ class MainWindow extends BrowserWindow {
 
 
 /**
- * Create instance
+ * Init
  */
-let create = () => {
-    logger.debug('create');
+let init = () => {
+    logger.debug('init');
 
+    // Ensure single instance
     if (!global.mainWindow) {
         global.mainWindow = new MainWindow();
     }
@@ -148,7 +149,7 @@ app.on('activate', () => {
 app.once('ready', () => {
     logger.debug('app#ready');
 
-    create();
+    init();
 });
 
 

@@ -34,17 +34,17 @@ let init = () => {
      * @listens Electron.powerMonitor#suspend
      */
     electron.powerMonitor.on('suspend', () => {
-        logger.log('electron.powerMonitor#suspend');
+        logger.debug('electron.powerMonitor#suspend');
     });
 
     /**
      * @listens Electron.powerMonitor#resume
      */
     electron.powerMonitor.on('resume', () => {
-        logger.log('electron.powerMonitor#resume');
+        logger.debug('electron.powerMonitor#resume');
 
         let timeout = setTimeout(() => {
-            logger.log('electron.powerMonitor#resume', 'relaunching app');
+            logger.debug('electron.powerMonitor#resume', 'relaunching app');
 
             clearTimeout(timeout);
 

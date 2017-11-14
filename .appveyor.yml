@@ -20,7 +20,7 @@ init:
 
 install:
   - cmd: echo 🔧 Setting up Node
-  - ps: Install-Product node 8
+  - ps: Install-Product node 9
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 
@@ -38,7 +38,6 @@ deploy_script:
 
 artifacts:
   - path: build\output\*.exe
-  - path: build\output\*.yml
 
 notifications:
   - provider: Webhook

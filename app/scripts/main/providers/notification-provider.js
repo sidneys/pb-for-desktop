@@ -32,7 +32,7 @@ const defaultOptions = {
 /**
  * Create
  * @param {Object|String|Number} options - Notification Options
- * @return {Notification} - Native Notification
+ * @return {Electron.Notification} - Notification
  */
 let create = (options) => {
     logger.debug('create');
@@ -46,11 +46,7 @@ let create = (options) => {
 
     const notificationOptions = _.defaultsDeep(options, defaultOptions);
 
-    let notification;
-
-    notification = new Notification(notificationOptions);
-
-    return notification;
+    return new Notification(notificationOptions);
 };
 
 

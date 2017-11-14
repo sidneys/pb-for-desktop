@@ -419,31 +419,39 @@ let decoratePushbulletPush = (push) => {
 /**
  * Show Notification
  * @param {Object} notificationOptions - NotificationConfiguration
- * @param {Object} pushObject - Pushbullet Push
+ * @param {Object=} pushObject - Pushbullet Push
  */
 let showNotification = (notificationOptions, pushObject) => {
+    logger.debug('showNotification');
+
     /**
-     * Show Notification
+     * Create
      */
     const notification = notificationProvider.create(notificationOptions);
+
     /**
      * @listens notification:PointerEvent#click
      */
     notification.on('click', () => {
         logger.debug('notification#click');
 
+        // Open url
         if (notificationOptions.url) {
             opn(notificationOptions.url, { wait: false });
         }
 
-        // Dismiss push
-        dismissPushbulletPush(pushObject);
+        // Dismiss within API
+        if (pushObject) {
+            dismissPushbulletPush(pushObject);
+        }
     });
 
     /**
      * @listens notification:PointerEvent#close
      */
-    notification.on('close', () => logger.debug('notification#close'));
+    notification.on('close', () => {
+        logger.debug('notification#close');
+    });
 
     /**
      * @listens notification:PointerEvent#reply
@@ -461,14 +469,20 @@ let showNotification = (notificationOptions, pushObject) => {
     /**
      * @listens notification:PointerEvent#error
      */
-    notification.on('error', (error) => logger.error('notification#error', error));
+    notification.on('error', (error) => {
+        logger.error('notification#error', error);
+    });
 
     /**
      * @listens notification:PointerEvent#show
      */
-    notification.on('show', (event) => logger.debug('notification#show', event));
+    notification.on('show', (event) => {
+        logger.debug('notification#show', event);
+    });
 
-    // Show
+    /**
+     * Show
+     */
     notification.show();
 };
 

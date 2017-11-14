@@ -35,6 +35,7 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
 const logger = require('@sidneys/logger')({ write: true });
 const domTools = require('@sidneys/dom-tools');
 const isDebug = require('@sidneys/is-env')('debug');
+const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 const platformTools = require('@sidneys/platform-tools');
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 /* eslint-disable no-unused-vars */
@@ -49,6 +50,7 @@ const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pus
  * @default
  */
 const appIcon = path.join(appRootPath, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`);
+const appName = remote.getGlobal('manifest').name;
 
 /**
  * @constant
@@ -252,11 +254,29 @@ let addWebsocketEventHandlers = () => {
              */
             if (message.push.encrypted) {
                 if (!pb.e2e.enabled) {
-                    let notification = new Notification(`End-to-End Encryption`, {
-                        body: `Could not open message.${os.EOL}Click here to enter your password.`,
-                        icon: appIcon
+                    const notificationOptions = {
+                        body: `Could not decrypt message.${os.EOL}Click here to enter your password.`,
+                        icon: appIcon,
+                        subtitle: 'End-to-End Encryption',
+                        title: appName
+                    };
+
+                    /**
+                     * Create
+                     */
+                    const notification = notificationProvider.create(notificationOptions);
+
+                    /**
+                     * @listens notification:PointerEvent#click
+                     */
+                    notification.addEventListener('click', () => {
+                        window.onecup['goto']('/#settings');
                     });
-                    notification.addEventListener('click', () => { window.onecup['goto']('/#settings'); });
+
+                    /**
+                     * Show
+                     */
+                    notification.show();
                 } else {
                     try {
                         message.push = JSON.parse(pb.e2e.decrypt(message.push.ciphertext));

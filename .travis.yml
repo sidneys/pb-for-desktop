@@ -1,8 +1,5 @@
 matrix:
   include:
-    - os: osx
-      osx_image: xcode9.1
-      sudo: required
     - os: linux
       sudo: required
       dist: trusty
@@ -33,15 +30,11 @@ addons:
 
 before_install:
   - echo "🚦 Authorizing Build"
-  - if [[ "${OSTYPE}" == "darwin"* ]] && [[ "${DEPLOY_MACOS}" == 0 ]]; then travis_terminate 0; fi
-  - if [[ "${OSTYPE}" == "linux"* ]] && [[ "${DEPLOY_LINUX}" == 0 ]]; then travis_terminate 0; fi
   - echo "🔧 Setting up Node"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 8.5.0 && nvm use 8.5.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 9.1.0 && nvm use 9.1.0
   - npm --global update npm
   - npm --global install yarn
-  - echo "🔧 Setting up RubyGems"
-  - gem install package_cloud
 
 install:
   - echo "📥 Installing Dependencies"
@@ -54,9 +47,6 @@ script:
 after_success:
   - echo "📮 Deploying to Github"
   - npm run deploy
-  - echo "📮 Deploying to PackageCloud"
-  - cat .deblist | while read LINUX_DISTRIBUTION_SLUG; do package_cloud push "${TRAVIS_REPO_SLUG}/${LINUX_DISTRIBUTION_SLUG}" ./build/output/*.deb; done
-  - cat .rpmlist | while read LINUX_DISTRIBUTION_SLUG; do package_cloud push "${TRAVIS_REPO_SLUG}/${LINUX_DISTRIBUTION_SLUG}" ./build/output/*.rpm; done
 
 notifications:
   webhooks:
