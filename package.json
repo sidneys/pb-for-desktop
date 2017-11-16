@@ -1,7 +1,7 @@
 {
   "name": "pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "6.5.0",
+  "version": "6.5.1",
   "description": "PB for Desktop is a Pushbullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -72,6 +72,7 @@
     "fs-extra": "^4.0.2",
     "get-youtube-id": "^1.0.0",
     "icojs": "^0.8.1",
+    "image-data-uri": "^1.0.1",
     "image-downloader": "^3.3.0",
     "is-reachable": "^2.3.3",
     "jimp": "^0.2.28",

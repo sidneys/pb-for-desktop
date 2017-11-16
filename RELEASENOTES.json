@@ -1,4 +1,16 @@
 {
+  "6.5.1": {
+    "🍾 features": [
+      "Adds preference: application auto updates"
+    ],
+    "🚨 fixed": [
+      "Fixes Notification Mirroring (#70)"
+    ],
+    "👷 internals": [
+      "Upgrades `node_modules`",
+      "Upgrades `services`"
+    ]
+  },
   "6.5.0": {
     "💎 improved": [
       "Various stability and performance improvements"

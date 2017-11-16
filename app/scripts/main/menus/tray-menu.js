@@ -61,6 +61,7 @@ const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${plat
  * Tray images
  * @constant
  */
+const trayMenuItemImageAppAutoUpdate = path.join(appRootPath, 'app', 'images', `tray-item-appAutoUpdate${platformTools.menuItemImageExtension}`);
 const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`);
 const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`);
 const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`);
@@ -106,6 +107,19 @@ let createTrayMenuTemplate = () => {
             label: `v${appCurrentVersion}`,
             type: 'normal',
             enabled: false
+        },
+        {
+            type: 'separator'
+        },
+        {
+            id: 'appAutoUpdate',
+            label: 'Automatic App Updates',
+            icon: trayMenuItemImageAppAutoUpdate,
+            type: 'checkbox',
+            checked: configurationManager('appAutoUpdate').get(),
+            click(menuItem) {
+                configurationManager('appAutoUpdate').set(menuItem.checked);
+            }
         },
         {
             type: 'separator'
@@ -342,9 +356,11 @@ let createTrayMenuTemplate = () => {
 class TrayMenu extends Tray {
     /**
      * @param {Electron.MenuItemConstructorOptions[]} template - Menu template
-     * @constructs
+     * @constructor
      */
     constructor(template) {
+        logger.debug('constructor');
+
         super(trayIconDefault);
 
         this.template = template;

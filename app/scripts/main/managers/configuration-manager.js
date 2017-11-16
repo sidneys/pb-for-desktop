@@ -121,7 +121,27 @@ let setAppTrayOnly = (trayOnly) => {
  */
 let configurationItems = {
     /**
-     * Application changelog
+     * appAutoUpdate
+     */
+    appAutoUpdate: {
+        keypath: 'appAutoUpdate',
+        default: false,
+        init() {
+            logger.debug(this.keypath, 'init');
+        },
+        get() {
+            logger.debug(this.keypath, 'get');
+
+            return electronSettings.get(this.keypath);
+        },
+        set(value) {
+            logger.debug(this.keypath, 'set');
+
+            electronSettings.set(this.keypath, value);
+        }
+    },
+    /**
+     * appChangelog
      */
     appChangelog: {
         keypath: 'appChangelog',
@@ -141,7 +161,7 @@ let configurationItems = {
         }
     },
     /**
-     * Application's last version update
+     * appLastVersion
      */
     appLastVersion: {
         keypath: 'appLastVersion',
@@ -161,7 +181,7 @@ let configurationItems = {
         }
     },
     /**
-     * Launch on startup
+     * appLaunchOnStartup
      */
     appLaunchOnStartup: {
         keypath: 'appLaunchOnStartup',
@@ -193,7 +213,7 @@ let configurationItems = {
         }
     },
     /**
-     * Application log file
+     * appLogFile
      */
     appLogFile: {
         keypath: 'appLogFile',
@@ -213,7 +233,7 @@ let configurationItems = {
         }
     },
     /**
-     * Show notification badge count (macOS)
+     * appShowBadgeCount
      */
     appShowBadgeCount: {
         keypath: 'appShowBadgeCount',
@@ -243,7 +263,7 @@ let configurationItems = {
         }
     },
     /**
-     * Show application in menubar / taskbar only
+     * appTrayOnly
      */
     appTrayOnly: {
         keypath: 'appTrayOnly',
@@ -271,7 +291,7 @@ let configurationItems = {
         }
     },
     /**
-     * Window bounds
+     * windowBounds
      */
     windowBounds: {
         keypath: 'windowBounds',
@@ -319,7 +339,7 @@ let configurationItems = {
         }
     },
     /**
-     * Window always on top
+     * windowTopmost
      */
     windowTopmost: {
         keypath: 'windowTopmost',
@@ -358,7 +378,7 @@ let configurationItems = {
         }
     },
     /**
-     * Window visibility
+     * windowVisible
      */
     windowVisible: {
         keypath: 'windowVisible',
@@ -407,7 +427,7 @@ let configurationItems = {
         }
     },
     /**
-     * Hide notification message body
+     * pushbulletHideNotificationBody
      */
     pushbulletHideNotificationBody: {
         keypath: 'pushbulletHideNotificationBody',
@@ -427,7 +447,7 @@ let configurationItems = {
         }
     },
     /**
-     * Last notification timestamp
+     * pushbulletLastNotificationTimestamp
      */
     pushbulletLastNotificationTimestamp: {
         keypath: 'pushbulletLastNotificationTimestamp',
@@ -447,7 +467,7 @@ let configurationItems = {
         }
     },
     /**
-     * Repeat recent pushes on launch
+     * pushbulletRepeatRecentNotifications
      */
     pushbulletRepeatRecentNotifications: {
         keypath: 'pushbulletRepeatRecentNotifications',
@@ -467,7 +487,7 @@ let configurationItems = {
         }
     },
     /**
-     * Notification sound on / off
+     * pushbulletSoundEnabled
      */
     pushbulletSoundEnabled: {
         keypath: 'pushbulletSoundEnabled',
@@ -486,9 +506,8 @@ let configurationItems = {
             electronSettings.set(this.keypath, value);
         }
     },
-    /** @namespace fs.existsSync */
     /**
-     * Notification sound file
+     * pushbulletSoundFile
      */
     pushbulletSoundFile: {
         keypath: 'pushbulletSoundFile',
@@ -511,7 +530,7 @@ let configurationItems = {
         }
     },
     /**
-     * Notification sound volume
+     * pushbulletSoundVolume
      */
     pushbulletSoundVolume: {
         keypath: 'pushbulletSoundVolume',
@@ -531,7 +550,7 @@ let configurationItems = {
         }
     },
     /**
-     * Mirrored SMS
+     * pushbulletSmsEnabled
      */
     pushbulletSmsEnabled: {
         keypath: 'pushbulletSmsEnabled',

@@ -6,7 +6,7 @@
  * Node
  * @constant
  */
-const EventEmitter = require('events');
+const events = require('events');
 const path = require('path');
 
 /**
@@ -24,21 +24,18 @@ const { app, BrowserWindow } = electron;
  */
 const appRootPath = require('app-root-path');
 const logger = require('@sidneys/logger')({ write: true });
+const platformTools = require('@sidneys/platform-tools');
 
 /**
  * Modules
  * Configuration
  */
-EventEmitter.defaultMaxListeners = Infinity;
-appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
-
-
-/**
- * App
- * Configuration
- */
 app.disableHardwareAcceleration();
-
+appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
+events.EventEmitter.defaultMaxListeners = Infinity;
+if (platformTools.isLinux) {
+    process.env.XDG_CURRENT_DESKTOP = 'Unity';
+}
 
 /**
  * Modules

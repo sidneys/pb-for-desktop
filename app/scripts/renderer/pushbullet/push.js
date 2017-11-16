@@ -8,6 +8,7 @@
  */
 const os = require('os');
 const path = require('path');
+const url = require('url');
 
 /**
  * Modules
@@ -15,7 +16,7 @@ const path = require('path');
  * @constant
  */
 const electron = require('electron');
-const { remote } = electron;
+const { nativeImage, remote } = electron;
 
 /**
  * Modules
@@ -27,6 +28,7 @@ const appRootPath = require('app-root-path')['path'];
 const fileUrl = require('file-url');
 const fileType = require('file-type');
 const logger = require('@sidneys/logger')({ write: true });
+const imageDataURI = require('image-data-uri');
 const isDebug = require('@sidneys/is-env')('debug');
 const ICO = require('icojs');
 const imageDownloader = require('image-downloader');
@@ -558,8 +560,29 @@ let convertPushToNotification = (push) => {
      * Fetch Favicon
      */
     const imageUrl = push.icon;
+    const imageProtocol = url.parse(imageUrl).protocol;
     const imageFilepath = path.join(appTemporaryDirectory, `${appName}.push.icon.png`);
 
+    /**
+     * Image: Data URI
+     */
+    if (imageProtocol === 'data:') {
+        writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepath, (error, target) => {
+            if (error) { return; }
+
+            if (retrievePushbulletSoundEnabled()) {
+                playSound(retrievePushbulletSoundFile());
+            }
+            notificationOptions.icon = target;
+            showNotification(notificationOptions, push);
+        });
+
+        return;
+    } 
+
+    /**
+     * Image: URL
+     */
     imageDownloader.image({ url: imageUrl, dest: imageFilepath })
         .then(({ image }) => {
             const imageBuffer = image;
@@ -594,7 +617,6 @@ let convertPushToNotification = (push) => {
             if (isIco) {
                 ICO.parse(imageBuffer, 'image/png').then(imageList => {
                     const imageMaximum = imageList[imageList.length - 1];
-                    // noinspection JSCheckFunctionSignatures
                     writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepath, (error, target) => {
                         if (error) { return; }
 

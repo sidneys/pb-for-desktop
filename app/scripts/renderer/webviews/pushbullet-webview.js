@@ -269,7 +269,9 @@ let addWebsocketEventHandlers = () => {
                     /**
                      * @listens notification:PointerEvent#click
                      */
-                    notification.addEventListener('click', () => {
+                    notification.on('click', () => {
+                        logger.debug('notification#click');
+
                         window.onecup['goto']('/#settings');
                     });
 
