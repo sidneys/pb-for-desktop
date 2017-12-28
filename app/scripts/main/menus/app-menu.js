@@ -24,6 +24,13 @@ const Appdirectory = require('appdirectory');
 const isDebug = require('@sidneys/is-env')('debug');
 const logger = require('@sidneys/logger')({ write: false });
 
+/**
+ * Modules
+ * Internal
+ * @constant
+ */
+const platformTools = require('@sidneys/platform-tools');
+
 
 /**
  * Application
@@ -193,7 +200,7 @@ let getAppMenuTemplate = () => {
         }
     ];
 
-    if (process.platform === 'darwin') {
+    if (platformTools.isMacOS) {
         template.unshift({
             label: appProductName,
             submenu: [

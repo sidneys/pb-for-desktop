@@ -29,6 +29,7 @@ const packageJson = require(path.join(appRootPath['path'], 'package.json'));
  * @constant
  */
 global.manifest = {
+    appId: packageJson.appId || `com.${packageJson.author}.${packageJson.name}`,
     homepage: packageJson.homepage,
     name: packageJson.name,
     productName: packageJson.productName || packageJson.name,

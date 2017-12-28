@@ -25,17 +25,18 @@ const { nativeImage, remote } = electron;
  */
 const _ = require('lodash');
 const appRootPath = require('app-root-path')['path'];
-const fileUrl = require('file-url');
 const fileType = require('file-type');
-const logger = require('@sidneys/logger')({ write: true });
-const imageDataURI = require('image-data-uri');
-const isDebug = require('@sidneys/is-env')('debug');
+const fileUrl = require('file-url');
+const getYouTubeID = require('get-youtube-id');
 const ICO = require('icojs');
+const imageDataURI = require('image-data-uri');
 const imageDownloader = require('image-downloader');
+const isDebug = require('@sidneys/is-env')('debug');
 const jimp = require('jimp');
+const logger = require('@sidneys/logger')({ write: true });
 const moment = require('moment');
 const opn = require('opn');
-const getYouTubeID = require('get-youtube-id');
+const semver = require('semver');
 
 /**
  * Modules
@@ -45,6 +46,8 @@ const getYouTubeID = require('get-youtube-id');
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'sms'));
+const platformTools = require('@sidneys/platform-tools');
+
 
 /**
  * Application
@@ -53,6 +56,7 @@ const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'push
  */
 const appName = remote.getGlobal('manifest').name;
 const appTemporaryDirectory = isDebug ? appRootPath : os.tmpdir();
+
 
 /** @namespace Audio */
 /** @namespace pb.api.accounts */
@@ -549,9 +553,15 @@ let convertPushToNotification = (push) => {
     }
 
     /**
-     * Body
+     * Reply
      */
     if (push.type === 'sms_changed') {
+        /**
+         * Disables notification actions on Electron pre-1.8.0 on macOS High Sierra
+         * Reference: {@link https://github.com/electron/electron/pull/10709}
+         */
+        if (platformTools.isMacOS && (Number(os.release().split('.')[0]) >= 17) && semver.satisfies(process.versions.electron, '<1.8.0')) { return; }
+
         notificationOptions.hasReply = true;
         notificationOptions.replyPlaceholder = 'Your SMS Reply';
     }
@@ -559,12 +569,26 @@ let convertPushToNotification = (push) => {
     /**
      * Fetch Favicon
      */
-    const imageUrl = push.icon;
+    const imageUrl = push.icon || '';
     const imageProtocol = url.parse(imageUrl).protocol;
     const imageFilepath = path.join(appTemporaryDirectory, `${appName}.push.icon.png`);
 
     /**
-     * Image: Data URI
+     * Image: None
+     */
+    if (!imageProtocol) {
+        if (retrievePushbulletSoundEnabled()) {
+            playSound(retrievePushbulletSoundFile());
+        }
+
+        notificationOptions.icon = target;
+        showNotification(notificationOptions, push);
+
+        return;
+    }
+
+    /**
+     * Image: From DataURI
      */
     if (imageProtocol === 'data:') {
         writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepath, (error, target) => {
@@ -573,15 +597,16 @@ let convertPushToNotification = (push) => {
             if (retrievePushbulletSoundEnabled()) {
                 playSound(retrievePushbulletSoundFile());
             }
+
             notificationOptions.icon = target;
             showNotification(notificationOptions, push);
         });
 
         return;
-    } 
+    }
 
     /**
-     * Image: URL
+     * Image: From URI
      */
     imageDownloader.image({ url: imageUrl, dest: imageFilepath })
         .then(({ image }) => {
@@ -604,6 +629,7 @@ let convertPushToNotification = (push) => {
                     if (retrievePushbulletSoundEnabled()) {
                         playSound(retrievePushbulletSoundFile());
                     }
+
                     notificationOptions.icon = target;
                     showNotification(notificationOptions, push);
                 });

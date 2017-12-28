@@ -3,6 +3,13 @@
 
 /**
  * Modules
+ * Node
+ * @constant
+ */
+const path = require('path');
+
+/**
+ * Modules
  * Electron
  * @constant
  */
@@ -14,7 +21,15 @@ const { clipboard } = remote;
  * External
  * @constant
  */
+const appRootPath = require('app-root-path')['path'];
 const logger = require('@sidneys/logger')({ write: true });
+
+/**
+ * Modules
+ * Internal
+ * @constant
+ */
+const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 
 
 /**
@@ -26,6 +41,13 @@ const defaultInterval = 2000;
 
 /** @namespace pb.account.pro  */
 /** @namespace pb.e2e.encrypt */
+
+
+/**
+ * Retrieve PushbulletClipboardEnabled
+ * @return {Boolean} - Enabled
+ */
+let retrievePushbulletClipboardEnabled = () => configurationManager('pushbulletClipboardEnabled').get();
 
 
 /**
@@ -51,6 +73,7 @@ let receiveClip = (clip) => {
 
     const pb = window.pb;
 
+    if (!retrievePushbulletClipboardEnabled()) { return; }
     if (!pb.account.pro) { return; }
 
     pb.lastClip = clipboard.readText();
@@ -123,6 +146,9 @@ let startMonitoring = () => {
     };
 
     setInterval(() => {
+        if (!retrievePushbulletClipboardEnabled()) { return; }
+        if (!pb.account.pro) { return; }
+
         const text = clipboard.readText();
         const image = clipboard.readImage();
 
@@ -155,13 +181,6 @@ let init = () => {
 
     let interval = setInterval(() => {
         if (!(pb && pb.account)) { return; }
-
-        if (!pb.account.pro) {
-            logger.info('No pro account found');
-
-            clearInterval(interval);
-            return;
-        }
 
         startMonitoring();
 

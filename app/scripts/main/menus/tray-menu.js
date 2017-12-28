@@ -67,6 +67,7 @@ const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images
 const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`);
 const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`);
 const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`);
+const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`);
 const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`);
 const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`);
 const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformTools.menuItemImageExtension}`);
@@ -204,8 +205,18 @@ let createTrayMenuTemplate = () => {
             }
         },
         {
+            id: 'pushbulletClipboardEnabled',
+            label: 'Universal Clipboard',
+            icon: trayMenuItemImagePushbulletClipboardEnabled,
+            type: 'checkbox',
+            checked: configurationManager('pushbulletClipboardEnabled').get(),
+            click(menuItem) {
+                configurationManager('pushbulletClipboardEnabled').set(menuItem.checked);
+            }
+        },
+        {
             id: 'pushbulletSmsEnabled',
-            label: 'Mirror SMS Messages',
+            label: 'SMS Mirroring',
             icon: trayMenuItemImagePushbulletSmsEnabled,
             type: 'checkbox',
             checked: configurationManager('pushbulletSmsEnabled').get(),

@@ -50,7 +50,7 @@ let showMessage = (title = appProductName, message = title, buttonList = ['OK'],
 
     logger.debug('showMessage', 'title', title, 'message', message, 'buttonList', buttonList, 'type', type);
 
-    dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+    dialog.showMessageBox({
         type: type,
         title: title,
         message: title,

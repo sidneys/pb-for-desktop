@@ -1,4 +1,27 @@
 {
+  "6.7.7": {
+    "🍾 features": [
+      "Adds automatic favicon downloads for IFTTT notifications (https://ifttt.com/pushbullet)",
+      "Adds preference: `Universal Clipboard`"
+    ],
+    "💎 improvements": [
+      "Improves Pushbullet Pro account validation for `Universal Clipboard`",
+      "Various stability and performance improvements"
+    ],
+    "🚨 fixes": [
+      "Fixes notification not showing on Windows 10 Fall Creators Update (https://github.com/electron/electron/issues/10864) (Windows)",
+      "Fixes notification actions on macOS (https://github.com/electron/electron/pull/10709) (macOS)"
+    ],
+    "📒 documentation": [
+      "Removes `README.md` section: `Installation via Linux package manager`"
+    ],
+    "👷 internals": [
+      "Upgrades `electron` to `v1.7.10`",
+      "Upgrades `node_modules`",
+      "Upgrades `services`",
+      "Upgrades `lib`"
+    ]
+  },
   "6.5.1": {
     "🍾 features": [
       "Adds preference: application auto updates"
@@ -12,7 +35,7 @@
     ]
   },
   "6.5.0": {
-    "💎 improved": [
+    "💎 improvements": [
       "Various stability and performance improvements"
     ],
     "🚨 fixed": [
@@ -30,7 +53,7 @@
       "YouTube Thumbnails: Pushed YouTube URLs include thumbnail of the linked video",
       "Adds `.snap` package (Linux) (#64)"
     ],
-    "💎 improved": [
+    "💎 improvements": [
       "Show & focus the main window on tray menu click (Windows, Linux) (#57)"
     ],
     "👷 internals": [
@@ -42,7 +65,7 @@
     "🚨 fixed": [
       "Fixes rendering of release notes after update completion"
     ],
-    "💎 improved": [
+    "💎 improvements": [
       "Changed application configuration file to reflect application name",
       "Added `.json` extension to application configuration file"
     ],
@@ -62,7 +85,7 @@
     ]
   },
   "6.2.0": {
-    "💎 improved": [
+    "💎 improvements": [
       "Augments start-up & background resource usage (#67)",
       "Simplified network reachability detection & on-/offline handling"
     ],

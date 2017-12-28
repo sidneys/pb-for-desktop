@@ -550,6 +550,26 @@ let configurationItems = {
         }
     },
     /**
+     * pushbulletClipboardEnabled
+     */
+    pushbulletClipboardEnabled: {
+        keypath: 'pushbulletClipboardEnabled',
+        default: false,
+        init() {
+            logger.debug(this.keypath, 'init');
+        },
+        get() {
+            logger.debug(this.keypath, 'get');
+
+            return electronSettings.get(this.keypath);
+        },
+        set(value) {
+            logger.debug(this.keypath, 'set');
+
+            electronSettings.set(this.keypath, value);
+        }
+    },
+    /**
      * pushbulletSmsEnabled
      */
     pushbulletSmsEnabled: {

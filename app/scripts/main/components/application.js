@@ -30,8 +30,23 @@ const platformTools = require('@sidneys/platform-tools');
  * Modules
  * Configuration
  */
-app.disableHardwareAcceleration();
 appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
+
+/**
+ * Modules
+ * Internal
+ * @constant
+ */
+/* eslint-disable no-unused-vars */
+const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'));
+/* eslint-enable */
+
+/**
+ * Modules
+ * Configuration
+ */
+app.disableHardwareAcceleration();
+app.setAppUserModelId(global.manifest.appId);
 events.EventEmitter.defaultMaxListeners = Infinity;
 if (platformTools.isLinux) {
     process.env.XDG_CURRENT_DESKTOP = 'Unity';
@@ -43,7 +58,6 @@ if (platformTools.isLinux) {
  * @constant
  */
 /* eslint-disable no-unused-vars */
-const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'));
 const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'app-menu'));
 const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window'));
 const configurationManager = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
