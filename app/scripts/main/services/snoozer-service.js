@@ -54,6 +54,21 @@ class SnoozerService {
     }
 
     /**
+     * Snooze until indefinitely
+     *
+     * @private
+     */
+    infinitySnooze() {
+        logger.debug('infinitySnooze');
+
+        this.snoozeUntil = Infinity;
+        this.onSnooze(true);
+
+        const notification = notificationProvider.create({ title: 'Snooze started', subtitle: `Snoozing indefinitely.` });
+        notification.show();
+    }
+
+    /**
      * Schedule snooze
      * @param {Number} duration - Snooze duration in minutes
      * @param {Electron.MenuItem} menuItem - Menu item
@@ -62,6 +77,11 @@ class SnoozerService {
      */
     scheduleSnooze(duration, menuItem) {
         logger.debug('scheduleSnooze');
+
+        if (duration === Infinity) {
+            this.infinitySnooze();
+            return;
+        }
 
         let durationMs = Math.round(duration * (60 * 1000));
         let durationHours = Math.round(duration / 60);
@@ -102,15 +122,13 @@ class SnoozerService {
     startSnooze(duration, menuItem) {
         logger.debug('startSnooze');
 
-        let snoozeMenuItemList = menuItem['menu'].items.filter((item) => item.id && item.id.startsWith('snooze') && item.id !== menuItem['id']);
+        let menuItemList = menuItem['menu'].items.filter((item) => item.id && item.id.startsWith('snooze') && item.id !== menuItem['id']);
         let isEnabled = menuItem.checked;
 
-        // Reset related menu items
-        snoozeMenuItemList.forEach((item) => {
-            item.checked = false;
-        });
+        // Disable related menuItems
+        menuItemList.forEach(item => item.checked = false);
 
-        // Abort Snooze
+        // Exit from all Snooze
         if (this.snoozeUntil !== 0) {
             this.snoozeUntil = 0;
 

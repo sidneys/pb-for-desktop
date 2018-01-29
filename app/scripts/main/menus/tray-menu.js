@@ -341,6 +341,14 @@ let createTrayMenuTemplate = () => {
                     click(menuItem) {
                         getSnoozerService().startSnooze(480, menuItem);
                     }
+                },
+                {
+                    label: 'Indefinite snooze',
+                    id: 'snooze-infinity',
+                    type: 'checkbox',
+                    click(menuItem) {
+                        getSnoozerService().startSnooze(Infinity, menuItem);
+                    }
                 }
             ]
         },

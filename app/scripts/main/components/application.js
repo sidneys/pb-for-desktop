@@ -46,8 +46,14 @@ const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main',
  * Configuration
  */
 app.disableHardwareAcceleration();
-app.setAppUserModelId(global.manifest.appId);
 events.EventEmitter.defaultMaxListeners = Infinity;
+
+// Hotfix for skipped notifications (Windows) (https://github.com/electron/electron/issues/11340)
+if (platformTools.isWindows) {
+    app.setAppUserModelId(global.manifest.appId);
+}
+
+// Hotfix for invisible tray icon (Linux)
 if (platformTools.isLinux) {
     process.env.XDG_CURRENT_DESKTOP = 'Unity';
 }

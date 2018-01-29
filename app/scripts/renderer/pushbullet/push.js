@@ -37,6 +37,7 @@ const logger = require('@sidneys/logger')({ write: true });
 const moment = require('moment');
 const opn = require('opn');
 const semver = require('semver');
+const shortid = require('shortid');
 
 /**
  * Modules
@@ -55,7 +56,7 @@ const platformTools = require('@sidneys/platform-tools');
  * @default
  */
 const appName = remote.getGlobal('manifest').name;
-const appTemporaryDirectory = isDebug ? appRootPath : os.tmpdir();
+const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPath : os.tmpdir();
 
 
 /** @namespace Audio */
@@ -71,6 +72,14 @@ const appTemporaryDirectory = isDebug ? appRootPath : os.tmpdir();
 /** @namespace push.image_url */
 /** @namespace push.notifications */
 
+
+/**
+ * Urls
+ * @constant
+ */
+const besticonUrl = 'besticon-demo.herokuapp.com';
+const pushbulletUrl = 'www.pushbullet.com';
+const youtubeUrl = 'img.youtube.com';
 
 /**
  * Notifications
@@ -224,7 +233,7 @@ let generateImageUrl = (push) => {
 
     for (let device of pb.api.devices.all) {
         if (device['iden'] === deviceId) {
-            iconDevice = `http://www.pushbullet.com/img/deviceicons/${device.icon}.png`;
+            iconDevice = `http://${pushbulletUrl}/img/deviceicons/${device.icon}.png`;
         }
     }
 
@@ -232,7 +241,7 @@ let generateImageUrl = (push) => {
      * SMS icon
      */
     if (push['type'] === 'sms_changed') {
-        iconDevice = 'http://www.pushbullet.com/img/deviceicons/phone.png';
+        iconDevice = `http://${pushbulletUrl}/img/deviceicons/phone.png`;
     }
 
     /**
@@ -252,9 +261,9 @@ let generateImageUrl = (push) => {
     if (push['type'] === 'link') {
         // YouTube
         if (getYouTubeID(push['url'])) {
-            iconWebsite = `http://img.youtube.com/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
+            iconWebsite = `http://${youtubeUrl}/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
         } else {
-            iconWebsite = `http://icons.better-idea.org/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`;
+            iconWebsite = `https://${besticonUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`;
         }
     }
 
@@ -552,12 +561,20 @@ let convertPushToNotification = (push) => {
         notificationOptions.body = void 0;
     }
 
+   /**
+    * Disables icons on Electron pre-1.8.0 on Windows
+    * Reference: {@link https://github.com/electron/electron/issues/9935}
+    */
+    if (platformTools.isWindows && semver.satisfies(process.versions.electron, '<1.8.0')) {
+        notificationOptions.icon = void 0;
+    }
+
     /**
      * Reply
      */
     if (push.type === 'sms_changed') {
         /**
-         * Disables notification actions on Electron pre-1.8.0 on macOS High Sierra
+         * Disables actions on Electron pre-1.8.0 on macOS High Sierra
          * Reference: {@link https://github.com/electron/electron/pull/10709}
          */
         if (platformTools.isMacOS && (Number(os.release().split('.')[0]) >= 17) && semver.satisfies(process.versions.electron, '<1.8.0')) { return; }
@@ -569,9 +586,9 @@ let convertPushToNotification = (push) => {
     /**
      * Fetch Favicon
      */
-    const imageUrl = push.icon || '';
+    const imageUrl = notificationOptions.icon || '';
     const imageProtocol = url.parse(imageUrl).protocol;
-    const imageFilepath = path.join(appTemporaryDirectory, `${appName}.push.icon.png`);
+    const imageFilepathTemporary = path.join(appTemporaryDirectory, `${appName}.push.${shortid.generate()}.png`);
 
     /**
      * Image: None
@@ -581,7 +598,6 @@ let convertPushToNotification = (push) => {
             playSound(retrievePushbulletSoundFile());
         }
 
-        notificationOptions.icon = target;
         showNotification(notificationOptions, push);
 
         return;
@@ -591,14 +607,14 @@ let convertPushToNotification = (push) => {
      * Image: From DataURI
      */
     if (imageProtocol === 'data:') {
-        writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepath, (error, target) => {
+        writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepathTemporary, (error, imageFilepathConverted) => {
             if (error) { return; }
 
             if (retrievePushbulletSoundEnabled()) {
                 playSound(retrievePushbulletSoundFile());
             }
 
-            notificationOptions.icon = target;
+            notificationOptions.icon = imageFilepathConverted;
             showNotification(notificationOptions, push);
         });
 
@@ -608,29 +624,29 @@ let convertPushToNotification = (push) => {
     /**
      * Image: From URI
      */
-    imageDownloader.image({ url: imageUrl, dest: imageFilepath })
-        .then(({ image }) => {
-            const imageBuffer = image;
+    imageDownloader.image({ url: imageUrl, dest: imageFilepathTemporary })
+        .then((result) => {
+            const imageFilepathDownloaded = result.filename;
+            const imageBuffer = result.image;
             const imageType = fileType(imageBuffer);
             const isIco = ICO.isICO(imageBuffer);
             const isPng = imageType.mime === 'image/png';
             const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg';
 
-            logger.debug('convertPushToNotification', 'imageUrl', imageUrl);
-            logger.debug('convertPushToNotification', 'imageType', imageType);
+            logger.debug('convertPushToNotification', 'imageDownloader', 'imageUrl:', imageUrl, 'imageFilepathDownloaded:', imageFilepathDownloaded, 'imageType:', imageType);
 
             /**
              * .PNG
              */
             if (isPng || isJpeg) {
-                writeResizeImage(imageBuffer, imageFilepath, (error, target) => {
+                writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
                     if (error) { return; }
 
                     if (retrievePushbulletSoundEnabled()) {
                         playSound(retrievePushbulletSoundFile());
                     }
 
-                    notificationOptions.icon = target;
+                    notificationOptions.icon = imageFilepathConverted;
                     showNotification(notificationOptions, push);
                 });
 
@@ -643,13 +659,14 @@ let convertPushToNotification = (push) => {
             if (isIco) {
                 ICO.parse(imageBuffer, 'image/png').then(imageList => {
                     const imageMaximum = imageList[imageList.length - 1];
-                    writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepath, (error, target) => {
+                    writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
                         if (error) { return; }
 
                         if (retrievePushbulletSoundEnabled()) {
                             playSound(retrievePushbulletSoundFile());
                         }
-                        notificationOptions.icon = target;
+
+                        notificationOptions.icon = imageFilepathConverted;
                         showNotification(notificationOptions, push);
                     });
                 });

@@ -559,7 +559,7 @@ let configurationItems = {
             logger.debug(this.keypath, 'init');
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            // logger.debug(this.keypath, 'get');
 
             return electronSettings.get(this.keypath);
         },

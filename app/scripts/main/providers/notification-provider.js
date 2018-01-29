@@ -7,7 +7,7 @@
  * @constant
  */
 const electron = require('electron');
-const { Notification } = electron;
+const { nativeImage, Notification } = electron;
 
 /**
  * Modules
@@ -37,11 +37,16 @@ const defaultOptions = {
 let create = (options) => {
     logger.debug('create');
 
-    // Support Strings / Numbers
+    // Accept simple strings as payload
     if (!_.isPlainObject(options)) {
         options = {
             title: options
         };
+    }
+
+    // Convert icon string filepath to Electron nativeImage
+    if (options.icon && _.isString(options.icon)) {
+        options.icon = nativeImage.createFromPath(options.icon);
     }
 
     const notificationOptions = _.defaultsDeep(options, defaultOptions);
