@@ -1,4 +1,25 @@
 {
+  "6.9.0": {
+    "🍾 features": [
+      "Accessibility: Adds application-level keyboard navigation",
+      "Accessibility: Adds keyboard-based browsing, drill-down and selection of push messages"
+    ],
+    "💎 improvements": [
+      "Various stability and performance improvements",
+      "Re-enables notification replying on macOS (macOS)"
+    ],
+    "🚨 fixes": [
+      "Fixes upstream issue of missing Tray icons on recent Ubuntu releases (17.10+/Gnome) (Linux) (#79)",
+      "Amends workarounds for several legacy upstream Electron releases and related issues"
+    ],
+    "📒 documentation": [
+      "Updated screenshots to reflect current user interface"
+    ],
+    "👷 internals": [
+      "Upgrades `electron` to `v1.8.4`",
+      "Upgrades `node_modules`"
+    ]
+  },
   "6.8.1": {
     "🍾 features": [
       "Adds `Indefinite Snooze` mode to pause all notifications – until disabled manually"

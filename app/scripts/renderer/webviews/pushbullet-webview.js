@@ -97,6 +97,59 @@ let appIsTargeted = (targetIden) => {
     }
 };
 
+
+/**
+ * Adds application  UI keyboard navigation
+ */
+let injectAppKeyboardNavigation = () => {
+    logger.debug('injectAppKeyboardNavigation');
+
+    // Get current button elements
+    let buttonElementList = document.querySelectorAll('.pointer');
+
+    // Add interaction
+    buttonElementList.forEach((element) => {
+        element.setAttribute('tabindex', 0);
+        element.onkeyup = (event) => {
+            logger.debug('injectAppKeyboardNavigation', 'element.onkeyup');
+
+            // Require Enter or Space key
+            if ([13, 32].includes(event.keyCode)) {
+                element.click();
+            }
+    	}
+    })
+}
+
+/**
+ * Adds push message keyboard navigation & text selection
+ */
+let injectMessageKeyboardNavigation = () => {
+    logger.debug('injectMessageKeyboardNavigation');
+
+    // Get current message elements
+    let pushElementList = document.querySelectorAll('.pushwrap .text-part > div');
+
+    // Add interaction
+    pushElementList.forEach((element) => {
+        element.style.userSelect = 'all';
+        element.setAttribute('tabindex', 0);
+
+        // Ignore elements with no textual content
+        if (!Boolean(element.textContent.trim())) { return; }
+
+        element.onfocus = (event) => {
+            logger.debug('injectAppKeyboardNavigation', 'element.onfocus.onkeyup');
+
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+    	}
+    })
+}
+
 /**
  * User Interface tweaks
  */
@@ -389,6 +442,17 @@ let init = () => {
 const _setImmediate = setImmediate;
 process.once('loaded', () => {
     global.setImmediate = _setImmediate;
+});
+
+/**
+ * @listens ipcRenderer#did-navigate-in-page
+ */
+ipcRenderer.on('did-navigate-in-page', (event) => {
+    logger.debug('ipcRenderer#did-navigate-in-page');
+
+    // Inject interface improvements
+    injectAppKeyboardNavigation();
+    injectMessageKeyboardNavigation();
 });
 
 /**

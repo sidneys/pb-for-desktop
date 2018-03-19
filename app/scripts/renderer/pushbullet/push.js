@@ -561,24 +561,10 @@ let convertPushToNotification = (push) => {
         notificationOptions.body = void 0;
     }
 
-   /**
-    * Disables icons on Electron pre-1.8.0 on Windows
-    * Reference: {@link https://github.com/electron/electron/issues/9935}
-    */
-    if (platformTools.isWindows && semver.satisfies(process.versions.electron, '<1.8.0')) {
-        notificationOptions.icon = void 0;
-    }
-
     /**
      * Reply
      */
     if (push.type === 'sms_changed') {
-        /**
-         * Disables actions on Electron pre-1.8.0 on macOS High Sierra
-         * Reference: {@link https://github.com/electron/electron/pull/10709}
-         */
-        if (platformTools.isMacOS && (Number(os.release().split('.')[0]) >= 17) && semver.satisfies(process.versions.electron, '<1.8.0')) { return; }
-
         notificationOptions.hasReply = true;
         notificationOptions.replyPlaceholder = 'Your SMS Reply';
     }

@@ -53,11 +53,6 @@ if (platformTools.isWindows) {
     app.setAppUserModelId(global.manifest.appId);
 }
 
-// Hotfix for invisible tray icon (Linux)
-if (platformTools.isLinux) {
-    process.env.XDG_CURRENT_DESKTOP = 'Unity';
-}
-
 /**
  * Modules
  * Internal

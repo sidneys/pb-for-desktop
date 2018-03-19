@@ -168,6 +168,9 @@ webviewViewElement.addEventListener('did-fail-load', () => {
 webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
     logger.debug('webviewViewElement#did-navigate-in-page');
 
+    // Forward event to webview for detecting navigation
+    webviewViewElement.send('did-navigate-in-page', event);
+
     let hash = url.parse(event.url).hash;
 
     if (!retrieveAppShowBadgeCount()) { return; }
