@@ -1,4 +1,4 @@
-os: Visual Studio 2015
+os: Visual Studio 2017
 
 platform:
   - x64
@@ -20,7 +20,7 @@ init:
 
 install:
   - cmd: echo 🔧 Setting up Node
-  - ps: Install-Product node 9
+  - ps: Install-Product node 9.8.0
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 

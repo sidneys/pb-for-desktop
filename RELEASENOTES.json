@@ -1,4 +1,17 @@
 {
+  "6.9.1": {
+    "🍾 features": [
+      "Integrates `PB for Desktop's` dedicated favicon provider backend, powered by [Heroku](https://pb-for-desktop-besticon.herokuapp.com)"
+    ],
+    "💎 improvements": [
+      "Reduces latency between notification rendering and playback of notification sound effects",
+      "Improves error-handling of favicon content-delivery backend",
+      "Various stability and performance improvements"
+    ],
+    "👷 internals": [
+      "Upgrades `node_modules`"
+    ]
+  },
   "6.9.0": {
     "🍾 features": [
       "Accessibility: Adds application-level keyboard navigation",

@@ -77,7 +77,7 @@ const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPath : os
  * Urls
  * @constant
  */
-const besticonUrl = 'besticon-demo.herokuapp.com';
+const besticonEndpointUrl = 'pb-for-desktop-besticon.herokuapp.com';
 const pushbulletUrl = 'www.pushbullet.com';
 const youtubeUrl = 'img.youtube.com';
 
@@ -263,7 +263,7 @@ let generateImageUrl = (push) => {
         if (getYouTubeID(push['url'])) {
             iconWebsite = `http://${youtubeUrl}/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`;
         } else {
-            iconWebsite = `https://${besticonUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`;
+            iconWebsite = `https://${besticonEndpointUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`;
         }
     }
 
@@ -436,11 +436,11 @@ let decoratePushbulletPush = (push) => {
  * @param {Object} notificationOptions - NotificationConfiguration
  * @param {Object=} pushObject - Pushbullet Push
  */
-let showNotification = (notificationOptions, pushObject) => {
-    logger.debug('showNotification');
+let renderNotification = (notificationOptions, pushObject) => {
+    logger.debug('renderNotification');
 
     /**
-     * Create
+     * Create notification
      */
     const notification = notificationProvider.create(notificationOptions);
 
@@ -495,10 +495,19 @@ let showNotification = (notificationOptions, pushObject) => {
         logger.debug('notification#show', event);
     });
 
+
     /**
-     * Show
+     * Show notification
      */
     notification.show();
+
+
+    /**
+     * Play sound
+     */
+    if (retrievePushbulletSoundEnabled()) {
+        playSound(retrievePushbulletSoundFile());
+    }
 };
 
 /**
@@ -580,11 +589,7 @@ let convertPushToNotification = (push) => {
      * Image: None
      */
     if (!imageProtocol) {
-        if (retrievePushbulletSoundEnabled()) {
-            playSound(retrievePushbulletSoundFile());
-        }
-
-        showNotification(notificationOptions, push);
+        renderNotification(notificationOptions, push);
 
         return;
     }
@@ -596,12 +601,8 @@ let convertPushToNotification = (push) => {
         writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepathTemporary, (error, imageFilepathConverted) => {
             if (error) { return; }
 
-            if (retrievePushbulletSoundEnabled()) {
-                playSound(retrievePushbulletSoundFile());
-            }
-
             notificationOptions.icon = imageFilepathConverted;
-            showNotification(notificationOptions, push);
+            renderNotification(notificationOptions, push);
         });
 
         return;
@@ -628,12 +629,8 @@ let convertPushToNotification = (push) => {
                 writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
                     if (error) { return; }
 
-                    if (retrievePushbulletSoundEnabled()) {
-                        playSound(retrievePushbulletSoundFile());
-                    }
-
                     notificationOptions.icon = imageFilepathConverted;
-                    showNotification(notificationOptions, push);
+                    renderNotification(notificationOptions, push);
                 });
 
                 return;
@@ -648,19 +645,20 @@ let convertPushToNotification = (push) => {
                     writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
                         if (error) { return; }
 
-                        if (retrievePushbulletSoundEnabled()) {
-                            playSound(retrievePushbulletSoundFile());
-                        }
-
                         notificationOptions.icon = imageFilepathConverted;
-                        showNotification(notificationOptions, push);
+                        renderNotification(notificationOptions, push);
                     });
                 });
             }
 
         })
+        /**
+         * Image Downloader failed: Fallback to AppIcon
+         */
         .catch((error) => {
-            logger.error('convertPushToNotification', error);
+            logger.warn('convertPushToNotification', 'imageDownloader', error);
+
+            renderNotification(notificationOptions, push);
         });
 };
 
