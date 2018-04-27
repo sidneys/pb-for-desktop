@@ -16,7 +16,7 @@ const url = require('url');
  * @constant
  */
 const electron = require('electron');
-const { nativeImage, remote } = electron;
+const { remote } = electron;
 
 /**
  * Modules
@@ -25,18 +25,18 @@ const { nativeImage, remote } = electron;
  */
 const _ = require('lodash');
 const appRootPath = require('app-root-path')['path'];
+const dataUriToBuffer = require('data-uri-to-buffer');
 const fileType = require('file-type');
 const fileUrl = require('file-url');
 const getYouTubeID = require('get-youtube-id');
 const ICO = require('icojs');
-const imageDataURI = require('image-data-uri');
 const imageDownloader = require('image-downloader');
 const isDebug = require('@sidneys/is-env')('debug');
 const jimp = require('jimp');
 const logger = require('@sidneys/logger')({ write: true });
 const moment = require('moment');
+const notificationProvider = remote.require('@sidneys/electron-notification-provider');
 const opn = require('opn');
-const semver = require('semver');
 const shortid = require('shortid');
 
 /**
@@ -45,9 +45,7 @@ const shortid = require('shortid');
  * @constant
  */
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
 const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'sms'));
-const platformTools = require('@sidneys/platform-tools');
 
 
 /**
@@ -101,7 +99,7 @@ let retrievePushbulletLastNotificationTimestamp = () => configurationManager('pu
 /**
  * Store PushbulletLastNotificationTimestamp
  * @param {Number} timestamp - Timestamp
- * @return {void}
+ * @return {undefined}
  */
 let storePushbulletLastNotificationTimestamp = (timestamp) => configurationManager('pushbulletLastNotificationTimestamp').set(timestamp);
 
@@ -156,7 +154,9 @@ let appSoundVolume;
 let updateBadge = (total) => {
     logger.debug('updateBadge');
 
-    if (Boolean(retrieveAppShowBadgeCount()) === false) { return; }
+    if (Boolean(retrieveAppShowBadgeCount()) === false) {
+        return;
+    }
 
     remote.app.setBadgeCount(total);
 };
@@ -325,7 +325,9 @@ let parsePush = (message) => {
     if (titleList.length > 0) {
         /** body */
         // remove all tags
-        tagList.forEach((tag) => { body = body.replace(tag, ''); });
+        tagList.forEach((tag) => {
+            body = body.replace(tag, '');
+        });
 
         /** title */
         if (titleList.length > 1) {
@@ -512,7 +514,7 @@ let renderNotification = (notificationOptions, pushObject) => {
 
 /**
  * Write & resize image
- * @param {Buffer|*} source - Source image
+ * @param {ArrayBuffer|Array|*} source - Source image
  * @param {String} target - Target file
  * @param {Function=} callback - Callback
  */
@@ -535,6 +537,8 @@ let writeResizeImage = (source, target, callback = () => {}) => {
 
             callback(null, target);
         });
+    }).then((result) => {
+        logger.debug('writeResizeImage', 'result', result);
     });
 };
 
@@ -598,8 +602,10 @@ let convertPushToNotification = (push) => {
      * Image: From DataURI
      */
     if (imageProtocol === 'data:') {
-        writeResizeImage(imageDataURI.decode(imageUrl).dataBuffer, imageFilepathTemporary, (error, imageFilepathConverted) => {
-            if (error) { return; }
+        writeResizeImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, (error, imageFilepathConverted) => {
+            if (error) {
+                return;
+            }
 
             notificationOptions.icon = imageFilepathConverted;
             renderNotification(notificationOptions, push);
@@ -627,7 +633,9 @@ let convertPushToNotification = (push) => {
              */
             if (isPng || isJpeg) {
                 writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
-                    if (error) { return; }
+                    if (error) {
+                        return;
+                    }
 
                     notificationOptions.icon = imageFilepathConverted;
                     renderNotification(notificationOptions, push);
@@ -643,7 +651,9 @@ let convertPushToNotification = (push) => {
                 ICO.parse(imageBuffer, 'image/png').then(imageList => {
                     const imageMaximum = imageList[imageList.length - 1];
                     writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
-                        if (error) { return; }
+                        if (error) {
+                            return;
+                        }
 
                         notificationOptions.icon = imageFilepathConverted;
                         renderNotification(notificationOptions, push);

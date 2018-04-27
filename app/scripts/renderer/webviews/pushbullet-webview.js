@@ -35,7 +35,7 @@ const electronEditorContextMenu = remote.require('electron-editor-context-menu')
 const logger = require('@sidneys/logger')({ write: true });
 const domTools = require('@sidneys/dom-tools');
 const isDebug = require('@sidneys/is-env')('debug');
-const notificationProvider = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
+const notificationProvider = remote.require('@sidneys/electron-notification-provider');
 const platformTools = require('@sidneys/platform-tools');
 const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 /* eslint-disable no-unused-vars */

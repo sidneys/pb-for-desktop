@@ -1,4 +1,23 @@
 {
+  "7.0.0": {
+    "🍾 features": [
+      "Adds `.pkg` [Installer](https://en.wikipedia.org/wiki/Installer_(macOS)) package (macOS)"
+    ],
+    "💎 improvements": [
+      "Various stability and performance improvements"
+    ],
+    "🚨 fixes": [
+      "Adressed third-party library module security vulnerability ([CVE-2018-3728](https://nvd.nist.gov/vuln/detail/CVE-2018-3728))"
+    ],
+    "👷 internals": [
+      "Externalizes services & providers",
+      "Upgrades `node` to `v10.0.0`",
+      "Upgrades `electron` to `v1.8.6`",
+      "Upgrades `node_modules`",
+      "Upgrades `services`",
+      "Upgrades `lib`"
+    ]
+  },
   "6.9.1": {
     "🍾 features": [
       "Integrates `PB for Desktop's` dedicated favicon provider backend, powered by [Heroku](https://pb-for-desktop-besticon.herokuapp.com)"

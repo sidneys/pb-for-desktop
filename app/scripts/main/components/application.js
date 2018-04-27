@@ -25,6 +25,11 @@ const { app, BrowserWindow } = electron;
 const appRootPath = require('app-root-path');
 const logger = require('@sidneys/logger')({ write: true });
 const platformTools = require('@sidneys/platform-tools');
+/* eslint-disable no-unused-vars */
+const debugService = require('@sidneys/electron-debug-service');
+const updaterService = require('@sidneys/electron-updater-service');
+const powerService = require('@sidneys/electron-power-service');
+/* eslint-enable */
 
 /**
  * Modules
@@ -63,9 +68,6 @@ const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'm
 const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window'));
 const configurationManager = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
 const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'tray-menu'));
-const updaterService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'updater-service'));
-const powerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'power-service'));
-const debugService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'debug-service'));
 const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service'));
 /* eslint-enable */
 

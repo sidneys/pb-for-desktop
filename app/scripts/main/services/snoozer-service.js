@@ -3,13 +3,6 @@
 
 /**
  * Modules
- * Node
- * @constant
- */
-const path = require('path');
-
-/**
- * Modules
  * Electron
  * @constant
  */
@@ -20,16 +13,15 @@ const { app, ipcMain } = require('electron');
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
 const logger = require('@sidneys/logger')({ write: true });
+const notificationProvider = require('@sidneys/electron-notification-provider');
+
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const notificationProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'notification-provider'));
-
 
 /**
  * @class SnoozerService
@@ -142,15 +134,6 @@ class SnoozerService {
         if ((this.snoozeUntil === 0) && isEnabled) {
             this.scheduleSnooze(duration, menuItem);
         }
-    }
-
-    /**
-     * Status
-     * @returns {Boolean}
-     * @public
-     */
-    isActive() {
-        return this.snoozeUntil !== 0;
     }
 }
 

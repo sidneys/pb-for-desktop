@@ -22,6 +22,7 @@ const { app, ipcMain, Menu, Tray, webContents } = require('electron');
  * @constant
  */
 const appRootPath = require('app-root-path')['path'];
+const dialogProvider = require('@sidneys/electron-dialog-provider');
 const logger = require('@sidneys/logger')({ write: true });
 const platformTools = require('@sidneys/platform-tools');
 
@@ -31,7 +32,6 @@ const platformTools = require('@sidneys/platform-tools');
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const dialogProvider = require(path.join(appRootPath, 'app', 'scripts', 'main', 'providers', 'dialog-provider'));
 
 
 /**

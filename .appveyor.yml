@@ -20,7 +20,7 @@ init:
 
 install:
   - cmd: echo 🔧 Setting up Node
-  - ps: Install-Product node 9.8.0
+  - ps: Install-Product node 10.0.0
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 
