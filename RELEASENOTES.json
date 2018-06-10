@@ -1,4 +1,16 @@
 {
+  "7.2.0": {
+    "🍾 features": [
+      "Adds [Tesla Motors](https://www.youtube.com/watch?v=isZ3fSbE_pg) notification sounds"
+    ],
+    "💎 improvements": [
+      "Various stability and performance improvements"
+    ],
+    "👷 internals": [
+      "Upgrades `electron` to `v2.0.2`",
+      "Upgrades `node_modules`"
+    ]
+  },
   "7.0.0": {
     "🍾 features": [
       "Adds `.pkg` [Installer](https://en.wikipedia.org/wiki/Installer_(macOS)) package (macOS)"
