@@ -5,47 +5,29 @@
     "node": true
   },
   "globals": {
-    "Audio": false,
-    "global": false,
-    "getEventListeners": false
   },
   "rules": {
-    "no-bitwise": "off",
     "camelcase": "off",
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "comma-style": [
+      "error",
+      "last"
+    ],
     "curly": "error",
+    "dot-notation": "off",
+    "eol-last": "error",
     "eqeqeq": "error",
-    "wrap-iife": "off",
     "indent": [
       "error",
       4,
       {
+        "MemberExpression": "off",
         "SwitchCase": 1
       }
     ],
-    "no-use-before-define": [
-      "error",
-      {
-        "functions": false
-      }
-    ],
-    "no-caller": "error",
-    "quotes": [
-      "error",
-      "single",
-      {
-        "allowTemplateLiterals": true
-      }
-    ],
-    "no-undef": "error",
-    "no-unused-vars": "error",
-    "strict": [
-      "error",
-      "global"
-    ],
-    "dot-notation": "off",
-    "no-with": "error",
-    "no-mixed-spaces-and-tabs": "error",
-    "no-multi-str": "error",
     "key-spacing": [
       "error",
       {
@@ -53,16 +35,46 @@
         "afterColon": true
       }
     ],
+    "keyword-spacing": [
+      "error",
+      {}
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-bitwise": "off",
+    "no-caller": "error",
+    "no-mixed-spaces-and-tabs": "error",
+    "no-multi-str": "error",
+    "no-trailing-spaces": "error",
+    "no-undef": "error",
+    "no-unused-vars": "error",
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false
+      }
+    ],
+    "no-with": "error",
     "object-curly-spacing": [
       "error",
       "always"
     ],
-    "space-unary-ops": [
+    "quotes": [
       "error",
+      "single",
       {
-        "words": false,
-        "nonwords": false
+        "allowTemplateLiterals": true
       }
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "space-before-blocks": [
+      "error",
+      "always"
     ],
     "space-before-function-paren": [
       "error",
@@ -75,28 +87,13 @@
       "error",
       "never"
     ],
-    "comma-dangle": [
-      "error",
-      "never"
-    ],
-    "no-trailing-spaces": "error",
-    "comma-style": [
-      "error",
-      "last"
-    ],
-    "eol-last": "error",
     "space-infix-ops": "error",
-    "keyword-spacing": [
+    "space-unary-ops": [
       "error",
-      {}
-    ],
-    "space-before-blocks": [
-      "error",
-      "always"
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
+      {
+        "words": false,
+        "nonwords": false
+      }
     ],
     "valid-jsdoc": [
       "warn",
@@ -104,6 +101,7 @@
         "requireReturn": false,
         "requireReturnDescription": false
       }
-    ]
+    ],
+    "wrap-iife": "off"
   }
 }

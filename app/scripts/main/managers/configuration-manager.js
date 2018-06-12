@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,36 +6,36 @@
  * Node
  * @constant
  */
-const fs = require('fs-extra');
-const path = require('path');
+const fs = require('fs-extra')
+const path = require('path')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const electron = require('electron');
-const { remote, BrowserWindow } = electron;
-const app = electron.app ? electron.app : remote.app;
+const electron = require('electron')
+const { remote, BrowserWindow } = electron
+const app = electron.app ? electron.app : remote.app
 
 /**
  * Modules
  * External
  * @constant
  */
-const _ = require('lodash');
-const appRootPath = require('app-root-path')['path'];
-const Appdirectory = require('appdirectory');
-const AutoLaunch = require('auto-launch');
-const electronSettings = require('electron-settings');
+const _ = require('lodash')
+const appRootPath = require('app-root-path')['path']
+const Appdirectory = require('appdirectory')
+const AutoLaunch = require('auto-launch')
+const electronSettings = require('electron-settings')
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const logger = require('@sidneys/logger')({ write: true });
-const platformTools = require('@sidneys/platform-tools');
+const logger = require('@sidneys/logger')({ write: true })
+const platformTools = require('@sidneys/platform-tools')
 
 
 /**
@@ -43,69 +43,69 @@ const platformTools = require('@sidneys/platform-tools');
  * @constant
  * @default
  */
-const appName = global.manifest.name;
-const appCurrentVersion = global.manifest.version;
+const appName = global.manifest.name
+const appCurrentVersion = global.manifest.version
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appLogDirectory = (new Appdirectory(appName)).userLogs();
-const appSettingsFilepath = path.join(path.dirname(electronSettings.file()), `${appName}.json`);
-const appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked');
+const appLogDirectory = (new Appdirectory(appName)).userLogs()
+const appSettingsFilepath = path.join(path.dirname(electronSettings.file()), `${appName}.json`)
+const appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked')
 
 /**
  * Modules
  * Configuration
  */
-const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } });
-electronSettings.setPath(appSettingsFilepath);
+const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } })
+electronSettings.setPath(appSettingsFilepath)
 
 /**
  * @constant
  * @default
  */
-const defaultInterval = 1000;
-const defaultDebounce = 1000;
+const defaultInterval = 1000
+const defaultDebounce = 1000
 
 
 /**
  * Get primary BrowserWindow
  * @returns {BrowserWindow}
  */
-let getPrimaryWindow = () => global.mainWindow;
+let getPrimaryWindow = () => global.mainWindow
 
 /**
  * Show app in menubar or task bar only
  * @param {Boolean} trayOnly - True: show dock icon, false: hide icon
  */
 let setAppTrayOnly = (trayOnly) => {
-    logger.debug('setAppTrayOnly');
+    logger.debug('setAppTrayOnly')
 
     let interval = setInterval(() => {
-        const primaryWindow = getPrimaryWindow();
-        if (!primaryWindow) { return; }
-        if (!primaryWindow.getBounds()) { return; }
+        const primaryWindow = getPrimaryWindow()
+        if (!primaryWindow) { return }
+        if (!primaryWindow.getBounds()) { return }
 
 
         switch (platformTools.type) {
             case 'darwin':
                 if (trayOnly) {
-                    app.dock.hide();
-                } else { app.dock.show(); }
-                break;
+                    app.dock.hide()
+                } else { app.dock.show() }
+                break
             case 'win32':
-                primaryWindow.setSkipTaskbar(trayOnly);
-                break;
+                primaryWindow.setSkipTaskbar(trayOnly)
+                break
             case 'linux':
-                primaryWindow.setSkipTaskbar(trayOnly);
-                break;
+                primaryWindow.setSkipTaskbar(trayOnly)
+                break
         }
 
-        clearInterval(interval);
-    }, defaultInterval);
-};
+        clearInterval(interval)
+    }, defaultInterval)
+}
 
 /** @namespace electronSettings.delete */
 /** @namespace electronSettings.deleteAll */
@@ -127,17 +127,17 @@ let configurationItems = {
         keypath: 'appAutoUpdate',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -147,17 +147,17 @@ let configurationItems = {
         keypath: 'appChangelog',
         default: '',
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -167,17 +167,17 @@ let configurationItems = {
         keypath: 'appLastVersion',
         default: appCurrentVersion,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -187,28 +187,28 @@ let configurationItems = {
         keypath: 'appLaunchOnStartup',
         default: true,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
-            this.implement(this.get());
+            this.implement(this.get())
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set', value);
+            logger.debug(this.keypath, 'set', value)
 
-            this.implement(value);
-            electronSettings.set(this.keypath, value);
+            this.implement(value)
+            electronSettings.set(this.keypath, value)
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
             if (value) {
-                autoLauncher.enable();
+                autoLauncher.enable()
             } else {
-                autoLauncher.disable();
+                autoLauncher.disable()
             }
         }
     },
@@ -219,17 +219,17 @@ let configurationItems = {
         keypath: 'appLogFile',
         default: path.join(appLogDirectory, appName + '.log'),
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -239,26 +239,26 @@ let configurationItems = {
         keypath: 'appShowBadgeCount',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
-            this.implement(this.get());
+            this.implement(this.get())
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            this.implement(value);
-            electronSettings.set(this.keypath, value);
+            this.implement(value)
+            electronSettings.set(this.keypath, value)
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
             if (Boolean(value) === false) {
-                app.setBadgeCount(0);
+                app.setBadgeCount(0)
             }
         }
     },
@@ -269,25 +269,25 @@ let configurationItems = {
         keypath: 'appTrayOnly',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
-            this.implement(this.get());
+            this.implement(this.get())
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            this.implement(value);
-            electronSettings.set(this.keypath, value);
+            this.implement(value)
+            electronSettings.set(this.keypath, value)
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
-            setAppTrayOnly(value);
+            setAppTrayOnly(value)
         }
     },
     /**
@@ -297,45 +297,45 @@ let configurationItems = {
         keypath: 'windowBounds',
         default: { x: 256, y: 256, width: 320, height: 640 },
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow();
-                if (!primaryWindow) { return; }
-                if (!primaryWindow.getBounds()) { return; }
+                const primaryWindow = getPrimaryWindow()
+                if (!primaryWindow) { return }
+                if (!primaryWindow.getBounds()) { return }
 
                 // Observe future changes
-                primaryWindow.on('move', event => this.set(event.sender.getBounds()));
-                primaryWindow.on('resize', event => this.set(event.sender.getBounds()));
+                primaryWindow.on('move', event => this.set(event.sender.getBounds()))
+                primaryWindow.on('resize', event => this.set(event.sender.getBounds()))
 
                 // Apply saved value
-                this.implement(this.get());
+                this.implement(this.get())
 
-                clearInterval(interval);
-            }, defaultInterval);
+                clearInterval(interval)
+            }, defaultInterval)
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set', value);
+            logger.debug(this.keypath, 'set', value)
 
             let debounced = _.debounce(() => {
-                electronSettings.set(this.keypath, value);
-            }, defaultDebounce);
-            debounced();
+                electronSettings.set(this.keypath, value)
+            }, defaultDebounce)
+            debounced()
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
-            const primaryWindow = getPrimaryWindow();
-            if (!primaryWindow) { return; }
-            if (!primaryWindow.getBounds()) { return; }
+            const primaryWindow = getPrimaryWindow()
+            if (!primaryWindow) { return }
+            if (!primaryWindow.getBounds()) { return }
 
-            primaryWindow.setBounds(value);
+            primaryWindow.setBounds(value)
         }
     },
     /**
@@ -345,36 +345,36 @@ let configurationItems = {
         keypath: 'windowTopmost',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow();
-                if (!primaryWindow) { return; }
-                if (!primaryWindow.getBounds()) { return; }
+                const primaryWindow = getPrimaryWindow()
+                if (!primaryWindow) { return }
+                if (!primaryWindow.getBounds()) { return }
 
-                this.implement(this.get());
+                this.implement(this.get())
 
-                clearInterval(interval);
-            }, defaultInterval);
+                clearInterval(interval)
+            }, defaultInterval)
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set', value);
+            logger.debug(this.keypath, 'set', value)
 
-            this.implement(value);
-            electronSettings.set(this.keypath, value);
+            this.implement(value)
+            electronSettings.set(this.keypath, value)
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
             BrowserWindow.getAllWindows().forEach((browserWindow) => {
-                browserWindow.setAlwaysOnTop(value);
-            });
+                browserWindow.setAlwaysOnTop(value)
+            })
         }
     },
     /**
@@ -384,46 +384,46 @@ let configurationItems = {
         keypath: 'windowVisible',
         default: true,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow();
-                if (!primaryWindow) { return; }
-                if (!primaryWindow.getBounds()) { return; }
+                const primaryWindow = getPrimaryWindow()
+                if (!primaryWindow) { return }
+                if (!primaryWindow.getBounds()) { return }
 
                 // Observe future changes
-                primaryWindow.on('hide', () => this.set(false));
-                primaryWindow.on('show', () => this.set(true));
+                primaryWindow.on('hide', () => this.set(false))
+                primaryWindow.on('show', () => this.set(true))
 
                 // Apply saved value
-                this.implement(this.get());
+                this.implement(this.get())
 
-                clearInterval(interval);
-            }, defaultInterval);
+                clearInterval(interval)
+            }, defaultInterval)
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set', value);
+            logger.debug(this.keypath, 'set', value)
 
             let debounced = _.debounce(() => {
-                electronSettings.set(this.keypath, value);
-            }, defaultDebounce);
+                electronSettings.set(this.keypath, value)
+            }, defaultDebounce)
 
-            debounced();
+            debounced()
         },
         implement(value) {
-            logger.debug(this.keypath, 'implement', value);
+            logger.debug(this.keypath, 'implement', value)
 
-            const primaryWindow = getPrimaryWindow();
-            if (!primaryWindow) { return; }
-            if (!primaryWindow.getBounds()) { return; }
+            const primaryWindow = getPrimaryWindow()
+            if (!primaryWindow) { return }
+            if (!primaryWindow.getBounds()) { return }
 
-            value === true ? primaryWindow.show() : primaryWindow.hide();
+            value === true ? primaryWindow.show() : primaryWindow.hide()
         }
     },
     /**
@@ -433,17 +433,17 @@ let configurationItems = {
         keypath: 'pushbulletHideNotificationBody',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -453,17 +453,17 @@ let configurationItems = {
         keypath: 'pushbulletLastNotificationTimestamp',
         default: Math.floor(Date.now() / 1000) - 86400,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -473,17 +473,17 @@ let configurationItems = {
         keypath: 'pushbulletRepeatRecentNotifications',
         default: true,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -493,17 +493,17 @@ let configurationItems = {
         keypath: 'pushbulletSoundEnabled',
         default: true,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -513,20 +513,20 @@ let configurationItems = {
         keypath: 'pushbulletSoundFile',
         default: path.join(appSoundDirectory, 'default.wav'),
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
 
             if (!fs.existsSync(this.get())) {
-                this.set(this.default);
+                this.set(this.default)
             }
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
-            electronSettings.set(this.keypath, value);
+            logger.debug(this.keypath, 'set')
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -536,17 +536,17 @@ let configurationItems = {
         keypath: 'pushbulletSoundVolume',
         default: 0.5,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return parseFloat(electronSettings.get(this.keypath));
+            return parseFloat(electronSettings.get(this.keypath))
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, parseFloat(value));
+            electronSettings.set(this.keypath, parseFloat(value))
         }
     },
     /**
@@ -556,17 +556,17 @@ let configurationItems = {
         keypath: 'pushbulletClipboardEnabled',
         default: false,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
             // logger.debug(this.keypath, 'get');
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     },
     /**
@@ -576,20 +576,20 @@ let configurationItems = {
         keypath: 'pushbulletSmsEnabled',
         default: true,
         init() {
-            logger.debug(this.keypath, 'init');
+            logger.debug(this.keypath, 'init')
         },
         get() {
-            logger.debug(this.keypath, 'get');
+            logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath);
+            return electronSettings.get(this.keypath)
         },
         set(value) {
-            logger.debug(this.keypath, 'set');
+            logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value);
+            electronSettings.set(this.keypath, value)
         }
     }
-};
+}
 
 /**
  * Access single item
@@ -600,39 +600,39 @@ let getItem = (playlistItemId) => {
     //logger.debug('getConfigurationItem', playlistItemId);
 
     if (configurationItems.hasOwnProperty(playlistItemId)) {
-        return configurationItems[playlistItemId];
+        return configurationItems[playlistItemId]
     }
-};
+}
 
 /**
  * Get defaults of all items
  * @returns {Object}
  */
 let getConfigurationDefaults = () => {
-    logger.debug('getConfigurationDefaults');
+    logger.debug('getConfigurationDefaults')
 
-    let defaults = {};
+    let defaults = {}
     for (let item of Object.keys(configurationItems)) {
-        defaults[item] = getItem(item).default;
+        defaults[item] = getItem(item).default
     }
 
-    return defaults;
-};
+    return defaults
+}
 
 /**
  * Set defaults of all items
  * @param {function(*)} callback - Callback
  */
 let setConfigurationDefaults = (callback = () => {}) => {
-    logger.debug('setConfigurationDefaults');
+    logger.debug('setConfigurationDefaults')
 
-    let configuration = electronSettings.getAll();
-    let configurationDefaults = getConfigurationDefaults();
+    let configuration = electronSettings.getAll()
+    let configurationDefaults = getConfigurationDefaults()
 
-    electronSettings.setAll(_.defaultsDeep(configuration, configurationDefaults));
+    electronSettings.setAll(_.defaultsDeep(configuration, configurationDefaults))
 
-    callback();
-};
+    callback()
+}
 
 /**
  * Initialize all items – calling their init() method
@@ -640,20 +640,20 @@ let setConfigurationDefaults = (callback = () => {}) => {
  * @function
  */
 let initializeItems = (callback = () => {}) => {
-    logger.debug('initConfigurationItems');
+    logger.debug('initConfigurationItems')
 
-    let configurationItemList = Object.keys(configurationItems);
+    let configurationItemList = Object.keys(configurationItems)
 
     configurationItemList.forEach((item, itemIndex) => {
-        getItem(item).init();
+        getItem(item).init()
 
         // Last item
         if (configurationItemList.length === (itemIndex + 1)) {
-            logger.debug('initConfigurationItems', 'complete');
-            callback();
+            logger.debug('initConfigurationItems', 'complete')
+            callback()
         }
-    });
-};
+    })
+}
 
 /**
  * Remove unknown items
@@ -661,31 +661,31 @@ let initializeItems = (callback = () => {}) => {
  * @function
  */
 let removeLegacyItems = (callback = () => {}) => {
-    logger.debug('cleanConfiguration');
+    logger.debug('cleanConfiguration')
 
-    let savedSettings = electronSettings.getAll();
-    let savedSettingsList = Object.keys(savedSettings);
+    let savedSettings = electronSettings.getAll()
+    let savedSettingsList = Object.keys(savedSettings)
 
     savedSettingsList.forEach((item, itemIndex) => {
         if (!configurationItems.hasOwnProperty(item)) {
-            electronSettings.delete(item);
-            logger.debug('cleanConfiguration', 'deleted', item);
+            electronSettings.delete(item)
+            logger.debug('cleanConfiguration', 'deleted', item)
         }
 
         // Last item
         if (savedSettingsList.length === (itemIndex + 1)) {
-            logger.debug('cleanConfiguration', 'complete');
-            callback();
+            logger.debug('cleanConfiguration', 'complete')
+            callback()
         }
-    });
-};
+    })
+}
 
 
 /**
  * @listens Electron.App#Event:ready
  */
 app.once('ready', () => {
-    logger.debug('app#ready');
+    logger.debug('app#ready')
 
     // Remove item unknown
     setConfigurationDefaults(() => {
@@ -693,26 +693,26 @@ app.once('ready', () => {
         initializeItems(() => {
             // Set Defaults
             removeLegacyItems(() => {
-                logger.debug('app#will-finish-launching', 'complete');
-            });
-        });
-    });
-});
+                logger.debug('app#will-finish-launching', 'complete')
+            })
+        })
+    })
+})
 
 /**
  * @listens Electron.App#before-quit
  */
 app.on('quit', () => {
-    logger.debug('app#quit');
+    logger.debug('app#quit')
 
     // Prettify
-    electronSettings.setAll(electronSettings.getAll(), { prettify: true });
+    electronSettings.setAll(electronSettings.getAll(), { prettify: true })
 
-    logger.debug('settings', electronSettings.getAll());
-    logger.debug('file', electronSettings.file());
-});
+    logger.debug('settings', electronSettings.getAll())
+    logger.debug('file', electronSettings.file())
+})
 
 /**
  * @exports
  */
-module.exports = getItem;
+module.exports = getItem

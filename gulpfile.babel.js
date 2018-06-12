@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,40 +6,39 @@
  * Node
  * @constant
  */
-const path = require('path');
+const path = require('path')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const electron = require('electron');
-const { app } = electron;
+const electron = require('electron')
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path');
-const electronConnect = require('electron-connect');
-const gulp = require('gulp');
-const logger = require('@sidneys/logger')({ write: true });
-const minimist = require('minimist');
+const appRootPath = require('app-root-path')
+const electronConnect = require('electron-connect')
+const gulp = require('gulp')
+const logger = require('@sidneys/logger')({ write: true })
+const minimist = require('minimist')
 
 
 /**
  * Modules
  * Configuration
  */
-appRootPath.setPath(path.join(__dirname));
+appRootPath.setPath(path.join(__dirname))
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const packageJson = require(path.join(appRootPath.path, 'package.json'));
+const packageJson = require(path.join(appRootPath.path, 'package.json'))
 
 
 /**
@@ -47,7 +46,7 @@ const packageJson = require(path.join(appRootPath.path, 'package.json'));
  * @constant
  * @default
  */
-const applicationPath = path.join(appRootPath['path'], packageJson.main);
+const applicationPath = path.join(appRootPath['path'], packageJson.main)
 
 /**
  * Electron Connect Server
@@ -60,7 +59,7 @@ const electronConnectServer = electronConnect.server.create({
     electron: electron,
     path: applicationPath,
     useGlobalElectron: false
-});
+})
 
 /**
  * Electron Connect Server
@@ -78,7 +77,7 @@ let appSources = {
     renderer: [
         path.join(appRootPath['path'], 'app', 'scripts', 'renderer', '**', '*.*')
     ]
-};
+}
 
 
 /**
@@ -86,37 +85,37 @@ let appSources = {
  * start
  */
 gulp.task('livereload', () => {
-    let globalArgvObj;
-    let npmArgvObj;
-    try { globalArgvObj = minimist(process.argv); } catch (err) {}
-    try { npmArgvObj = minimist(JSON.parse(process.env.npm_config_argv).original); } catch (err) {}
+    let globalArgvObj
+    let npmArgvObj
+    try { globalArgvObj = minimist(process.argv) } catch (err) {}
+    try { npmArgvObj = minimist(JSON.parse(process.env.npm_config_argv).original) } catch (err) {}
 
     logger.info(globalArgvObj)
     logger.info(npmArgvObj)
 
-    electronConnectServer.start();
-    gulp.watch(appSources.main, ['main:restart']);
-    gulp.watch(appSources.renderer, ['renderer:reload']);
-});
+    electronConnectServer.start()
+    gulp.watch(appSources.main, ['main:restart'])
+    gulp.watch(appSources.renderer, ['renderer:reload'])
+})
 
 /**
  * Main Process
  * restart
  */
 gulp.task('main:restart', (callback) => {
-    electronConnectServer.restart();
-    callback();
-});
+    electronConnectServer.restart()
+    callback()
+})
 
 /**
  * Renderer Process
  * restart
  */
 gulp.task('renderer:reload', (callback) => {
-    electronConnectServer.reload();
-    callback();
-});
+    electronConnectServer.reload()
+    callback()
+})
 
 
-gulp.task('default', ['livereload']);
+gulp.task('default', ['livereload'])
 

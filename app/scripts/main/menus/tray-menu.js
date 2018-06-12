@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,32 +6,32 @@
  * Node
  * @constant
  */
-const os = require('os');
-const path = require('path');
+const os = require('os')
+const path = require('path')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const { app, ipcMain, Menu, Tray, webContents } = require('electron');
+const { app, ipcMain, Menu, Tray, webContents } = require('electron')
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-const dialogProvider = require('@sidneys/electron-dialog-provider');
-const logger = require('@sidneys/logger')({ write: true });
-const platformTools = require('@sidneys/platform-tools');
+const appRootPath = require('app-root-path')['path']
+const dialogProvider = require('@sidneys/electron-dialog-provider')
+const logger = require('@sidneys/logger')({ write: true })
+const platformTools = require('@sidneys/platform-tools')
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
+const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
 
 
 /**
@@ -39,55 +39,55 @@ const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'm
  * @constant
  * @default
  */
-const appCurrentVersion = global.manifest.version;
-const appProductName = global.manifest.productName;
+const appCurrentVersion = global.manifest.version
+const appProductName = global.manifest.productName
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appSoundDirectory = global.filesystem.directories.sounds;
+const appSoundDirectory = global.filesystem.directories.sounds
 
 /**
  * Tray icons
  * @constant
  */
-const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-default${platformTools.templateImageExtension(platformTools.type)}`);
-const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent${platformTools.templateImageExtension(platformTools.type)}`);
-const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent-pause${platformTools.templateImageExtension(platformTools.type)}`);
+const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-default${platformTools.templateImageExtension(platformTools.type)}`)
+const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent${platformTools.templateImageExtension(platformTools.type)}`)
+const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent-pause${platformTools.templateImageExtension(platformTools.type)}`)
 
 /**
  * Tray images
  * @constant
  */
-const trayMenuItemImageAppAutoUpdate = path.join(appRootPath, 'app', 'images', `tray-item-appAutoUpdate${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`);
-const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`);
-const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`);
+const trayMenuItemImageAppAutoUpdate = path.join(appRootPath, 'app', 'images', `tray-item-appAutoUpdate${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`)
 
 
 /**
  * Get mainWindow
  * @returns {Electron.BrowserWindow}
  */
-let getMainWindow = () => global.mainWindow;
+let getMainWindow = () => global.mainWindow
 
 /**
  * Get snoozerService
  * @returns {Electron.BrowserWindow}
  */
-let getSnoozerService = () => global.snoozerService;
+let getSnoozerService = () => global.snoozerService
 
 
 /**
@@ -100,7 +100,7 @@ let createTrayMenuTemplate = () => {
             id: 'appProductName',
             label: `Show ${appProductName}`,
             click() {
-                global.mainWindow.show();
+                global.mainWindow.show()
             }
         },
         {
@@ -119,7 +119,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('appAutoUpdate').get(),
             click(menuItem) {
-                configurationManager('appAutoUpdate').set(menuItem.checked);
+                configurationManager('appAutoUpdate').set(menuItem.checked)
             }
         },
         {
@@ -135,41 +135,41 @@ let createTrayMenuTemplate = () => {
                     `${appProductName} will reset to its initial state.${os.EOL}Unsaved changes will be lost.`,
                     (result) => {
                         if (result === 0) {
-                            configurationManager('appLaunchOnStartup').set(configurationManager('appLaunchOnStartup').default);
-                            configurationManager('appShowBadgeCount').set(configurationManager('appShowBadgeCount').default);
-                            configurationManager('appTrayOnly').set(configurationManager('appTrayOnly').default);
-                            configurationManager('pushbulletLastNotificationTimestamp').set(configurationManager('pushbulletLastNotificationTimestamp').default);
-                            configurationManager('pushbulletRepeatRecentNotifications').set(configurationManager('pushbulletRepeatRecentNotifications').default);
-                            configurationManager('pushbulletSmsEnabled').set(configurationManager('pushbulletSmsEnabled').default);
-                            configurationManager('pushbulletSoundEnabled').set(configurationManager('pushbulletSoundEnabled').default);
-                            configurationManager('pushbulletSoundFile').set(configurationManager('pushbulletSoundFile').default);
-                            configurationManager('pushbulletSoundVolume').set(configurationManager('pushbulletSoundVolume').default);
-                            configurationManager('windowBounds').set(configurationManager('windowBounds').default);
-                            configurationManager('windowTopmost').set(configurationManager('windowTopmost').default);
-                            configurationManager('windowVisible').set(configurationManager('windowVisible').default);
+                            configurationManager('appLaunchOnStartup').set(configurationManager('appLaunchOnStartup').default)
+                            configurationManager('appShowBadgeCount').set(configurationManager('appShowBadgeCount').default)
+                            configurationManager('appTrayOnly').set(configurationManager('appTrayOnly').default)
+                            configurationManager('pushbulletLastNotificationTimestamp').set(configurationManager('pushbulletLastNotificationTimestamp').default)
+                            configurationManager('pushbulletRepeatRecentNotifications').set(configurationManager('pushbulletRepeatRecentNotifications').default)
+                            configurationManager('pushbulletSmsEnabled').set(configurationManager('pushbulletSmsEnabled').default)
+                            configurationManager('pushbulletSoundEnabled').set(configurationManager('pushbulletSoundEnabled').default)
+                            configurationManager('pushbulletSoundFile').set(configurationManager('pushbulletSoundFile').default)
+                            configurationManager('pushbulletSoundVolume').set(configurationManager('pushbulletSoundVolume').default)
+                            configurationManager('windowBounds').set(configurationManager('windowBounds').default)
+                            configurationManager('windowTopmost').set(configurationManager('windowTopmost').default)
+                            configurationManager('windowVisible').set(configurationManager('windowVisible').default)
 
                             const sessionList = webContents.getAllWebContents().map((contents) => {
-                                return contents.session.clearCache ? contents.session : void 0;
-                            });
+                                return contents.session.clearCache ? contents.session : void 0
+                            })
 
                             sessionList.forEach((session, sessionIndex) => {
-                                if (!session.clearCache) { return; }
+                                if (!session.clearCache) { return }
                                 session.clearCache(() => {
                                     session.clearStorageData({
                                         storages: ['appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql'],
                                         quotas: ['persistent', 'syncable', 'temporary']
                                     }, () => {
-                                        logger.info('logout', 'cleared cache and storage');
-                                    });
-                                });
+                                        logger.info('logout', 'cleared cache and storage')
+                                    })
+                                })
 
                                 if (sessionIndex === sessionList.length - 1) {
-                                    app.relaunch();
-                                    app.exit();
+                                    app.relaunch()
+                                    app.exit()
                                 }
-                            });
+                            })
                         }
-                    });
+                    })
             }
         },
         {
@@ -183,12 +183,12 @@ let createTrayMenuTemplate = () => {
                     `All unsaved changes will be lost.`,
                     (result) => {
                         if (result === 0) {
-                            logger.log('reconnect', 'relaunching');
+                            logger.log('reconnect', 'relaunching')
 
-                            app.relaunch();
-                            app.exit();
+                            app.relaunch()
+                            app.exit()
                         }
-                    });
+                    })
             }
         },
         {
@@ -201,7 +201,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('pushbulletHideNotificationBody').get(),
             click(menuItem) {
-                configurationManager('pushbulletHideNotificationBody').set(menuItem.checked);
+                configurationManager('pushbulletHideNotificationBody').set(menuItem.checked)
             }
         },
         {
@@ -211,7 +211,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('pushbulletClipboardEnabled').get(),
             click(menuItem) {
-                configurationManager('pushbulletClipboardEnabled').set(menuItem.checked);
+                configurationManager('pushbulletClipboardEnabled').set(menuItem.checked)
             }
         },
         {
@@ -221,7 +221,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('pushbulletSmsEnabled').get(),
             click(menuItem) {
-                configurationManager('pushbulletSmsEnabled').set(menuItem.checked);
+                configurationManager('pushbulletSmsEnabled').set(menuItem.checked)
             }
         },
         {
@@ -234,7 +234,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('appLaunchOnStartup').get(),
             click(menuItem) {
-                configurationManager('appLaunchOnStartup').set(menuItem.checked);
+                configurationManager('appLaunchOnStartup').set(menuItem.checked)
             }
         },
         {
@@ -244,7 +244,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('pushbulletRepeatRecentNotifications').get(),
             click(menuItem) {
-                configurationManager('pushbulletRepeatRecentNotifications').set(menuItem.checked);
+                configurationManager('pushbulletRepeatRecentNotifications').set(menuItem.checked)
             }
         },
         {
@@ -257,7 +257,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('windowTopmost').get(),
             click(menuItem) {
-                configurationManager('windowTopmost').set(menuItem.checked);
+                configurationManager('windowTopmost').set(menuItem.checked)
             }
         },
         {
@@ -267,7 +267,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('appTrayOnly').get(),
             click(menuItem) {
-                configurationManager('appTrayOnly').set(menuItem.checked);
+                configurationManager('appTrayOnly').set(menuItem.checked)
             }
         },
         {
@@ -278,7 +278,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('appShowBadgeCount').get(),
             click(menuItem) {
-                configurationManager('appShowBadgeCount').set(menuItem.checked);
+                configurationManager('appShowBadgeCount').set(menuItem.checked)
             }
         },
         {
@@ -291,7 +291,7 @@ let createTrayMenuTemplate = () => {
             type: 'checkbox',
             checked: configurationManager('pushbulletSoundEnabled').get(),
             click(menuItem) {
-                configurationManager('pushbulletSoundEnabled').set(menuItem.checked);
+                configurationManager('pushbulletSoundEnabled').set(menuItem.checked)
             }
         },
         {
@@ -302,12 +302,12 @@ let createTrayMenuTemplate = () => {
             click() {
                 dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', ['m4a', 'mp3', 'mp4', 'wav', 'ogg'], appSoundDirectory, (error, soundFile) => {
                     if (error) {
-                        logger.error('pushbulletSoundFile', 'dialogProvider.file', error);
-                        return;
+                        logger.error('pushbulletSoundFile', 'dialogProvider.file', error)
+                        return
                     }
 
-                    configurationManager('pushbulletSoundFile').set(soundFile);
-                });
+                    configurationManager('pushbulletSoundFile').set(soundFile)
+                })
             }
         },
         {
@@ -323,7 +323,7 @@ let createTrayMenuTemplate = () => {
                     id: 'snooze-60',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().startSnooze(60, menuItem);
+                        getSnoozerService().startSnooze(60, menuItem)
                     }
                 },
                 {
@@ -331,7 +331,7 @@ let createTrayMenuTemplate = () => {
                     id: 'snooze-240',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().startSnooze(240, menuItem);
+                        getSnoozerService().startSnooze(240, menuItem)
                     }
                 },
                 {
@@ -339,7 +339,7 @@ let createTrayMenuTemplate = () => {
                     id: 'snooze-480',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().startSnooze(480, menuItem);
+                        getSnoozerService().startSnooze(480, menuItem)
                     }
                 },
                 {
@@ -347,7 +347,7 @@ let createTrayMenuTemplate = () => {
                     id: 'snooze-infinity',
                     type: 'checkbox',
                     click(menuItem) {
-                        getSnoozerService().startSnooze(Infinity, menuItem);
+                        getSnoozerService().startSnooze(Infinity, menuItem)
                     }
                 }
             ]
@@ -358,11 +358,11 @@ let createTrayMenuTemplate = () => {
         {
             label: `Quit ${appProductName}`,
             click() {
-                app.quit();
+                app.quit()
             }
         }
-    ];
-};
+    ]
+}
 
 
 /**
@@ -378,77 +378,77 @@ class TrayMenu extends Tray {
      * @constructor
      */
     constructor(template) {
-        logger.debug('constructor');
+        logger.debug('constructor')
 
-        super(trayIconDefault);
+        super(trayIconDefault)
 
-        this.template = template;
-        this.menu = Menu.buildFromTemplate(this.template);
+        this.template = template
+        this.menu = Menu.buildFromTemplate(this.template)
 
-        this.init();
+        this.init()
     }
 
     /**
      * Init
      */
     init() {
-        logger.debug('init');
+        logger.debug('init')
 
-        this.setContextMenu(this.menu);
+        this.setContextMenu(this.menu)
 
         /**
          * @listens Electron.Tray#click
          */
         this.on('click', () => {
-            logger.debug('TrayMenu#click');
+            logger.debug('TrayMenu#click')
 
-            if (platformTools.isMacOS) { return; }
+            if (platformTools.isMacOS) { return }
 
-            const mainWindow = getMainWindow();
-            if (!mainWindow) { return; }
+            const mainWindow = getMainWindow()
+            if (!mainWindow) { return }
 
             if (mainWindow.isVisible()) {
-                mainWindow.hide();
+                mainWindow.hide()
             } else {
-                mainWindow.show();
-                app.focus();
+                mainWindow.show()
+                app.focus()
             }
-        });
+        })
 
         /**
          * @listens ipcMain
          */
         ipcMain.on('online', (event, isOnline) => {
-            logger.debug('ipcMain#online', 'isOnline', isOnline);
+            logger.debug('ipcMain#online', 'isOnline', isOnline)
 
             switch (isOnline) {
                 case true:
-                    this.setImageName('default');
-                    break;
+                    this.setImageName('default')
+                    break
                 case false:
-                    this.setImageName('transparent');
-                    break;
+                    this.setImageName('transparent')
+                    break
             }
-        });
+        })
 
         /**
          * @listens ipcMain:
          */
         ipcMain.on('snooze', (event, isSnoozing) => {
-            logger.debug('ipcMain#snooze', 'isSnoozing', isSnoozing);
+            logger.debug('ipcMain#snooze', 'isSnoozing', isSnoozing)
 
             switch (isSnoozing) {
                 case true:
-                    this.setImageName('transparent-pause');
-                    break;
+                    this.setImageName('transparent-pause')
+                    break
                 case false:
-                    this.setImageName('default');
-                    break;
+                    this.setImageName('default')
+                    break
             }
-        });
+        })
 
         // Initial image
-        this.setImageName('transparent');
+        this.setImageName('transparent')
     }
 
     /**
@@ -456,22 +456,22 @@ class TrayMenu extends Tray {
      * @param {String} imageName - 'default', 'transparent', 'transparent-pause'
      */
     setImageName(imageName) {
-        logger.debug('setImageName');
+        logger.debug('setImageName')
 
-        if (this.imageName === imageName) { return; }
+        if (this.imageName === imageName) { return }
 
-        this.imageName = imageName;
+        this.imageName = imageName
 
         switch (this.imageName) {
             case 'transparent':
-                this.setImage(trayIconTransparent);
-                break;
+                this.setImage(trayIconTransparent)
+                break
             case 'transparent-pause':
-                this.setImage(trayIconTransparentPause);
-                break;
+                this.setImage(trayIconTransparentPause)
+                break
             case 'default':
-                this.setImage(trayIconDefault);
-                break;
+                this.setImage(trayIconDefault)
+                break
         }
     }
 }
@@ -481,26 +481,26 @@ class TrayMenu extends Tray {
  * Init
  */
 let init = () => {
-    logger.debug('init');
+    logger.debug('init')
 
     // Ensure single instance
     if (!global.trayMenu) {
-        global.trayMenu = new TrayMenu(createTrayMenuTemplate());
+        global.trayMenu = new TrayMenu(createTrayMenuTemplate())
     }
-};
+}
 
 
 /**
  * @listens Electron.App#Event:ready
  */
 app.once('ready', () => {
-    logger.debug('app#ready');
+    logger.debug('app#ready')
 
-    init();
-});
+    init()
+})
 
 
 /**
  * @exports
  */
-module.exports = global.trayMenu;
+module.exports = global.trayMenu

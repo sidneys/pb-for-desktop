@@ -1,4 +1,24 @@
 {
+  "7.4.0": {
+    "🍾 features": [
+      "Enables GPU hardware acceleration"
+    ],
+    "💎 improvements": [
+      "Addresses open security vulnerabilities"
+    ],
+    "🚨 fixes": [
+      "Adds intermittent hotfix for KDE Plasma tray indicator (https://github.com/sidneys/pb-for-desktop/issues/81) (Linux)",
+      "Fixes webview sidebar flickering",
+      "Addresses window transparency"
+    ],
+    "👷 internals": [
+      "Amends ESLint configuration",
+      "Reformatted JavaScript",
+      "Upgrades `node_modules`",
+      "Upgrades `services`",
+      "Upgrades `lib`"
+    ]
+  },
   "7.2.0": {
     "🍾 features": [
       "Adds [Tesla Motors](https://www.youtube.com/watch?v=isZ3fSbE_pg) notification sounds"

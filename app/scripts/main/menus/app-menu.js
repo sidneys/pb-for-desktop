@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,30 +6,30 @@
  * Node
  * @constant
  */
-const path = require('path');
+const path = require('path')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const { app, Menu, shell, webContents } = require('electron');
+const { app, Menu, shell, webContents } = require('electron')
 
 /**
  * Modules
  * External
  * @constant
  */
-const Appdirectory = require('appdirectory');
-const isDebug = require('@sidneys/is-env')('debug');
-const logger = require('@sidneys/logger')({ write: false });
+const Appdirectory = require('appdirectory')
+const isDebug = require('@sidneys/is-env')('debug')
+const logger = require('@sidneys/logger')({ write: false })
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const platformTools = require('@sidneys/platform-tools');
+const platformTools = require('@sidneys/platform-tools')
 
 
 /**
@@ -37,17 +37,17 @@ const platformTools = require('@sidneys/platform-tools');
  * @constant
  * @default
  */
-const appName = global.manifest.name;
-const appProductName = global.manifest.productName;
-const appHomepage = global.manifest.homepage;
+const appName = global.manifest.name
+const appProductName = global.manifest.productName
+const appHomepage = global.manifest.homepage
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appLogDirectory = (new Appdirectory(appName)).userLogs();
-const appLogFile = path.join(appLogDirectory, `${appName}.log`);
+const appLogDirectory = (new Appdirectory(appName)).userLogs()
+const appLogFile = path.join(appLogDirectory, `${appName}.log`)
 
 
 /**
@@ -102,15 +102,15 @@ let getAppMenuTemplate = () => {
                     label: 'Toggle Full Screen',
                     accelerator: (() => {
                         if (process.platform === 'darwin') {
-                            return 'Ctrl+Command+F';
+                            return 'Ctrl+Command+F'
                         }
                         else {
-                            return 'F11';
+                            return 'F11'
                         }
                     })(),
                     click(item, focusedWindow) {
                         if (focusedWindow) {
-                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
                         }
                     }
                 },
@@ -122,8 +122,8 @@ let getAppMenuTemplate = () => {
                     accelerator: 'CommandOrControl+0',
                     click() {
                         webContents.getAllWebContents().forEach((contents) => {
-                            contents.send('zoom', 'reset');
-                        });
+                            contents.send('zoom', 'reset')
+                        })
                     }
                 },
                 {
@@ -131,8 +131,8 @@ let getAppMenuTemplate = () => {
                     accelerator: 'CommandOrControl+Plus',
                     click() {
                         webContents.getAllWebContents().forEach((contents) => {
-                            contents.send('zoom', 'in');
-                        });
+                            contents.send('zoom', 'in')
+                        })
                     }
                 },
                 {
@@ -140,8 +140,8 @@ let getAppMenuTemplate = () => {
                     accelerator: 'CommandOrControl+-',
                     click() {
                         webContents.getAllWebContents().forEach((contents) => {
-                            contents.send('zoom', 'out');
-                        });
+                            contents.send('zoom', 'out')
+                        })
                     }
                 },
                 {
@@ -153,18 +153,18 @@ let getAppMenuTemplate = () => {
                     accelerator: 'CommandOrControl+R',
                     click(item, focusedWindow) {
                         if (focusedWindow) {
-                            focusedWindow.reload();
+                            focusedWindow.reload()
                         }
                     }
                 },
                 {
                     label: 'Toggle Developer Tools',
                     accelerator: (() => {
-                        return process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I';
+                        return process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I'
                     })(),
                     click(item, focusedWindow) {
                         if (focusedWindow) {
-                            focusedWindow.toggleDevTools();
+                            focusedWindow.toggleDevTools()
                         }
                     }
                 }
@@ -193,12 +193,12 @@ let getAppMenuTemplate = () => {
                 {
                     label: 'Learn More',
                     click() {
-                        shell.openExternal(appHomepage);
+                        shell.openExternal(appHomepage)
                     }
                 }
             ]
         }
-    ];
+    ]
 
     if (platformTools.isMacOS) {
         template.unshift({
@@ -214,14 +214,14 @@ let getAppMenuTemplate = () => {
                 {
                     label: `Open Logs...`,
                     click() {
-                        shell.openItem(appLogFile);
+                        shell.openItem(appLogFile)
                     }
                 },
                 {
                     label: `Restart in Debugging Mode...`,
                     click() {
-                        app.relaunch({ args: process.argv.slice(1).concat(['--debug']) });
-                        app.quit();
+                        app.relaunch({ args: process.argv.slice(1).concat(['--debug']) })
+                        app.quit()
                     }
                 },
                 {
@@ -256,42 +256,42 @@ let getAppMenuTemplate = () => {
                     label: 'Quit',
                     accelerator: 'Command+Q',
                     click() {
-                        app.quit();
+                        app.quit()
                     }
                 }
             ]
-        });
+        })
     }
 
-    return template;
-};
+    return template
+}
 
 
 /**
  * Init
  */
 let init = () => {
-    logger.debug('init');
+    logger.debug('init')
 
     // Ensure single instance
     if (!global.appMenu) {
-        global.appMenu = Menu.buildFromTemplate(getAppMenuTemplate());
-        Menu.setApplicationMenu(global.appMenu);
+        global.appMenu = Menu.buildFromTemplate(getAppMenuTemplate())
+        Menu.setApplicationMenu(global.appMenu)
     }
-};
+}
 
 
 /**
  * @listens Electron.App#Event:ready
  */
 app.on('ready', () => {
-    logger.debug('app#ready');
+    logger.debug('app#ready')
 
-    init();
-});
+    init()
+})
 
 
 /**
  * @exports
  */
-module.exports = global.appMenu;
+module.exports = global.appMenu

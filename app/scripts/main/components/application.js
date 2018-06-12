@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,36 +6,35 @@
  * Node
  * @constant
  */
-const events = require('events');
-const path = require('path');
+const path = require('path')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const electron = require('electron');
-const { app, BrowserWindow } = electron;
+const electron = require('electron')
+const { app, BrowserWindow } = electron
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path');
-const logger = require('@sidneys/logger')({ write: true });
-const platformTools = require('@sidneys/platform-tools');
+const appRootPath = require('app-root-path')
+const logger = require('@sidneys/logger')({ write: true })
+const platformTools = require('@sidneys/platform-tools')
 /* eslint-disable no-unused-vars */
-const debugService = require('@sidneys/electron-debug-service');
-const updaterService = require('@sidneys/electron-updater-service');
-const powerService = require('@sidneys/electron-power-service');
+const debugService = require('@sidneys/electron-debug-service')
+const updaterService = require('@sidneys/electron-updater-service')
+const powerService = require('@sidneys/electron-power-service')
 /* eslint-enable */
 
 /**
  * Modules
  * Configuration
  */
-appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
+appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
 
 /**
  * Modules
@@ -43,19 +42,25 @@ appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'));
  * @constant
  */
 /* eslint-disable no-unused-vars */
-const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'));
+const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
 /* eslint-enable */
 
 /**
- * Modules
- * Configuration
+ * Hotfix: Windows
+ * @see {@link https://github.com/electron/electron/issues/10864}
  */
-app.disableHardwareAcceleration();
-events.EventEmitter.defaultMaxListeners = Infinity;
-
-// Hotfix for skipped notifications (Windows) (https://github.com/electron/electron/issues/11340)
 if (platformTools.isWindows) {
-    app.setAppUserModelId(global.manifest.appId);
+    app.setAppUserModelId(global.manifest.appId)
+}
+
+/**
+ * Hotfix: Linux
+ * @see {@link https://github.com/electron/electron/issues/10427}
+ */
+if (platformTools.isLinux) {
+    if (process.env.XDG_DATA_DIRS.includes('plasma')) {
+        process.env.XDG_CURRENT_DESKTOP = 'Unity'
+    }
 }
 
 /**
@@ -64,11 +69,11 @@ if (platformTools.isWindows) {
  * @constant
  */
 /* eslint-disable no-unused-vars */
-const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'app-menu'));
-const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window'));
-const configurationManager = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'managers', 'configuration-manager'));
-const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'tray-menu'));
-const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service'));
+const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'app-menu'))
+const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window'))
+const configurationManager = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
+const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'tray-menu'))
+const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service'))
 /* eslint-enable */
 
 
@@ -76,38 +81,38 @@ const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'ma
  * @listens Electron.App#before-quit
  */
 app.on('before-quit', () => {
-    logger.debug('app#before-quit');
+    logger.debug('app#before-quit')
 
-    global.state.isQuitting = true;
-});
+    global.state.isQuitting = true
+})
 
 /**
  * @listens Electron.App#ready
  */
 app.once('ready', () => {
-    logger.debug('app#ready');
-});
+    logger.debug('app#ready')
+})
 
 /**
  * Ensure single instance
  */
 const isSecondInstance = app.makeSingleInstance(() => {
-    logger.debug('isSecondInstance', 'primary instance');
+    logger.debug('isSecondInstance', 'primary instance')
 
-    logger.warn('Multiple application instances detected', app.getPath('exe'));
-    logger.warn('Multiple application instances detected', 'Restoring primary application instance');
+    logger.warn('Multiple application instances detected', app.getPath('exe'))
+    logger.warn('Multiple application instances detected', 'Restoring primary application instance')
 
     BrowserWindow.getAllWindows().forEach((browserWindow) => {
-        browserWindow.restore();
-        app.focus();
-    });
-});
+        browserWindow.restore()
+        app.focus()
+    })
+})
 
 if (isSecondInstance) {
-    logger.debug('isSecondInstance', 'secondary instance');
+    logger.debug('isSecondInstance', 'secondary instance')
 
-    logger.warn('Multiple application instances detected', app.getPath('exe'));
-    logger.warn('Multiple application instances detected', 'Shutting down secondary application instances');
+    logger.warn('Multiple application instances detected', app.getPath('exe'))
+    logger.warn('Multiple application instances detected', 'Shutting down secondary application instances')
 
-    process.exit(0);
+    process.exit(0)
 }

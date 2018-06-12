@@ -1,20 +1,12 @@
-'use strict';
+'use strict'
 
-
-/**
- * Modules
- * Node
- * @constant
- */
-const path = require('path');
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-const logger = require('@sidneys/logger')({ write: true });
+const logger = require('@sidneys/logger')({ write: true })
 
 /** @namespace onecup.refresh */
 /** @namespace pb.api.accounts */
@@ -41,42 +33,42 @@ const logger = require('@sidneys/logger')({ write: true });
  * @private
  */
 let fetchSmsThreads = (callback = () => {}) => {
-    logger.debug('getSmsThreads');
+    logger.debug('getSmsThreads')
 
-    const pb = window.pb;
+    const pb = window.pb
 
     // Update SMS configuration
-    pb.api.pinger.ping_all();
-    const firstSmsDeviceIden = pb.api.sms.first_sms_device().iden || pb.db.get('last_sms_device_iden');
-    const device = pb.api.devices.objs[firstSmsDeviceIden];
+    pb.api.pinger.ping_all()
+    const firstSmsDeviceIden = pb.api.sms.first_sms_device().iden || pb.db.get('last_sms_device_iden')
+    const device = pb.api.devices.objs[firstSmsDeviceIden]
 
     // Update device configuration
     if (!pb.sms.target) {
-        pb.sms.target = pb.targets.make(device);
-        pb.sms.picker.target = pb.sms.target;
+        pb.sms.target = pb.targets.make(device)
+        pb.sms.picker.target = pb.sms.target
     }
-    pb.api.sms.fetch_device();
+    pb.api.sms.fetch_device()
 
     // Fetch latest message threads
     pb.net.get(`/v2/permanents/${pb.sms.target.obj.iden}_threads`, {}, (result) => {
-        if (!result) { return callback(new Error('no sms found')); }
+        if (!result) { return callback(new Error('no sms found')) }
 
-        let threads;
+        let threads
 
         if (result.encrypted) {
             try {
-                result = JSON.parse(pb.e2e.decrypt(result.ciphertext));
-                threads = result.threads || [];
+                result = JSON.parse(pb.e2e.decrypt(result.ciphertext))
+                threads = result.threads || []
             } catch (error1) {
-                threads = [];
+                threads = []
             }
         } else {
-            threads = result.threads || [];
+            threads = result.threads || []
         }
 
-        callback(null, threads);
-    });
-};
+        callback(null, threads)
+    })
+}
 
 /**
  * Send SMS reply
@@ -86,23 +78,23 @@ let fetchSmsThreads = (callback = () => {}) => {
  * @public
  */
 let sendReply = (reply, callback = () => {}) => {
-    logger.debug('sendReply');
+    logger.debug('sendReply')
 
-    const onecup = window.onecup;
-    const pb = window.pb;
+    const onecup = window.onecup
+    const pb = window.pb
 
     if (!Boolean(reply)) {
-        callback(new Error('no text provided for sms reply'));
-        return;
+        callback(new Error('no text provided for sms reply'))
+        return
     }
 
     // Fetch latest conversations
     fetchSmsThreads((error, threads) => {
         if (error) {
-            return callback(error);
+            return callback(error)
         }
 
-        const latestThread = threads[0];
+        const latestThread = threads[0]
 
         // Create Reply
         const push = {
@@ -114,21 +106,21 @@ let sendReply = (reply, callback = () => {}) => {
             body: reply,
             guid: pb.rand_iden(),
             thread_id: latestThread.id
-        };
+        }
 
         // Schedule UI Update
         let timeout = setTimeout(() => {
-            onecup.refresh();
+            onecup.refresh()
 
-            clearTimeout(timeout);
-        }, pb.sms.message_time_out + 1000);
+            clearTimeout(timeout)
+        }, pb.sms.message_time_out + 1000)
 
         // Send SMS
-        pb.api.texts.send(push.target.obj, push.addresses, push.body, push.guid, push.thread_id);
+        pb.api.texts.send(push.target.obj, push.addresses, push.body, push.guid, push.thread_id)
 
-        callback();
-    });
-};
+        callback()
+    })
+}
 
 
 /**
@@ -136,4 +128,4 @@ let sendReply = (reply, callback = () => {}) => {
  */
 module.exports = {
     sendReply: sendReply
-};
+}

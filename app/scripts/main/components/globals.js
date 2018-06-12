@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,21 +6,21 @@
  * Node
  * @constant
  */
-const path = require('path');
+const path = require('path')
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path');
+const appRootPath = require('app-root-path')
 
 /**
  * Modules
  * Internal
  * @constant
  */
-const packageJson = require(path.join(appRootPath['path'], 'package.json'));
+const packageJson = require(path.join(appRootPath['path'], 'package.json'))
 
 
 /**
@@ -34,7 +34,7 @@ global.manifest = {
     name: packageJson.name,
     productName: packageJson.productName || packageJson.name,
     version: packageJson.version
-};
+}
 
 /**
  * Filesystem
@@ -46,7 +46,7 @@ global.filesystem = {
         resources: process.resourcesPath,
         sounds: path.join(appRootPath['path'], 'sounds').replace('app.asar', 'app.asar.unpacked')
     }
-};
+}
 
 /**
  * State
@@ -54,10 +54,10 @@ global.filesystem = {
  */
 global.state = {
     isQuitting: false
-};
+}
 
 
 /**
  * @exports
  */
-module.exports = global;
+module.exports = global

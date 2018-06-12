@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 /**
@@ -6,25 +6,25 @@
  * Node
  * @constant
  */
-const path = require('path');
-const url = require('url');
+const path = require('path')
+const url = require('url')
 
 /**
  * Modules
  * Electron
  * @constant
  */
-const electron = require('electron');
-const { app, BrowserWindow, shell } = electron;
+const electron = require('electron')
+const { app, BrowserWindow, shell } = electron
 
 /**
  * Modules
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')['path'];
-const logger = require('@sidneys/logger')({ write: true });
-const platformTools = require('@sidneys/platform-tools');
+const appRootPath = require('app-root-path')['path']
+const logger = require('@sidneys/logger')({ write: true })
+const platformTools = require('@sidneys/platform-tools')
 
 
 /**
@@ -32,15 +32,15 @@ const platformTools = require('@sidneys/platform-tools');
  * @constant
  * @default
  */
-const windowHtml = path.join(appRootPath, 'app', 'html', 'main.html');
+const windowHtml = path.join(appRootPath, 'app', 'html', 'main.html')
 
 /**
  * Application
  * @constant
  * @default
  */
-const windowTitle = global.manifest.productName;
-const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml });
+const windowTitle = global.manifest.productName
+const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml })
 
 
 /**
@@ -63,7 +63,7 @@ class MainWindow extends BrowserWindow {
             thickFrame: platformTools.isWindows ? true : void 0,
             title: windowTitle,
             titleBarStyle: platformTools.isMacOS ? 'hiddenInset' : void 0,
-            transparent: platformTools.isMacOS ? true : false,
+            transparent: false,
             vibrancy: platformTools.isMacOS ? 'ultra-dark' : void 0,
             webPreferences: {
                 allowRunningInsecureContent: true,
@@ -80,43 +80,43 @@ class MainWindow extends BrowserWindow {
             width: void 0,
             x: void 0,
             y: void 0
-        });
+        })
 
-        this.init();
+        this.init()
     }
 
     /**
      * Init
      */
     init() {
-        logger.debug('init');
+        logger.debug('init')
 
         /**
          * @listens MainWindow#close
          */
         this.on('close', (event) => {
-            logger.debug('AppWindow#close');
+            logger.debug('AppWindow#close')
 
             if (global.state.isQuitting === false) {
-                event.preventDefault();
-                this.hide();
+                event.preventDefault()
+                this.hide()
             }
-        });
+        })
 
         /**
          * @listens MainWindow#will-navigate
          */
         this.webContents.on('will-navigate', (event, url) => {
-            logger.debug('AppWindow.webContents#will-navigate');
+            logger.debug('AppWindow.webContents#will-navigate')
 
             if (url) {
-                event.preventDefault();
-                shell.openExternal(url);
+                event.preventDefault()
+                shell.openExternal(url)
             }
-        });
+        })
 
 
-        this.loadURL(windowUrl);
+        this.loadURL(windowUrl)
     }
 }
 
@@ -125,35 +125,35 @@ class MainWindow extends BrowserWindow {
  * Init
  */
 let init = () => {
-    logger.debug('init');
+    logger.debug('init')
 
     // Ensure single instance
     if (!global.mainWindow) {
-        global.mainWindow = new MainWindow();
+        global.mainWindow = new MainWindow()
     }
-};
+}
 
 
 /**
  * @listens Electron.App#on
  */
 app.on('activate', () => {
-    logger.debug('app#activate');
+    logger.debug('app#activate')
 
-    global.mainWindow.show();
-});
+    global.mainWindow.show()
+})
 
 /**
  * @listens Electron.App#on
  */
 app.once('ready', () => {
-    logger.debug('app#ready');
+    logger.debug('app#ready')
 
-    init();
-});
+    init()
+})
 
 
 /**
  * @exports
  */
-module.exports = global.mainWindow;
+module.exports = global.mainWindow

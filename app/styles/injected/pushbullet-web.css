@@ -74,6 +74,11 @@ html.darwin #sink > div > div > div:nth-child(1)
     background-color: transparent !important;
 }
 
+.minitab:focus
+{
+    outline: none;
+}
+
 html.darwin #mainbar
 {
     transform: translateX(-1px); !important;
