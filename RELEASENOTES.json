@@ -1,4 +1,17 @@
 {
+  "7.6.0": {
+    "💎 improvements": [
+      "Various stability and performance improvements"
+    ],
+    "🚨 fixes": [
+      "Hotfix for upstream `Electron v2.0.2` issue (https://github.com/sidneys/pb-for-desktop/issues/85)",
+      "Fixes for application updater error (https://github.com/sidneys/pb-for-desktop/issues/86)"
+    ],
+    "👷 internals": [
+      "Upgrades `node_modules`",
+      "Upgrades `services`"
+    ]
+  },
   "7.4.0": {
     "🍾 features": [
       "Enables GPU hardware acceleration"

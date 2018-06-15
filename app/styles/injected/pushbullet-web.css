@@ -32,7 +32,7 @@
 ::-webkit-scrollbar-thumb
 {
     background: var(--color-accent-light) !important;
-    border-radius: none !important;
+    border-radius: 0 !important;
 }
 
 ::-webkit-scrollbar-thumb:hover
@@ -74,11 +74,6 @@ html.darwin #sink > div > div > div:nth-child(1)
     background-color: transparent !important;
 }
 
-.minitab:focus
-{
-    outline: none;
-}
-
 html.darwin #mainbar
 {
     transform: translateX(-1px); !important;
@@ -94,4 +89,13 @@ div:not(.pushfont-close)
 {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
   -webkit-font-smoothing: antialiased !important;
+}
+
+/* :focus
+   ========================================================================== */
+
+.minitab:focus,
+#sidebar div.target.pointer:focus
+{
+    outline: none !important;
 }

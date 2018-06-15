@@ -118,6 +118,7 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageAppAutoUpdate,
             type: 'checkbox',
             checked: configurationManager('appAutoUpdate').get(),
+            enabled: !process.defaultApp,
             click(menuItem) {
                 configurationManager('appAutoUpdate').set(menuItem.checked)
             }
@@ -165,7 +166,7 @@ let createTrayMenuTemplate = () => {
 
                                 if (sessionIndex === sessionList.length - 1) {
                                     app.relaunch()
-                                    app.exit()
+                                    app.quit()
                                 }
                             })
                         }
@@ -186,7 +187,7 @@ let createTrayMenuTemplate = () => {
                             logger.log('reconnect', 'relaunching')
 
                             app.relaunch()
-                            app.exit()
+                            app.quit()
                         }
                     })
             }

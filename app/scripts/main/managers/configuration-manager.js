@@ -28,14 +28,9 @@ const appRootPath = require('app-root-path')['path']
 const Appdirectory = require('appdirectory')
 const AutoLaunch = require('auto-launch')
 const electronSettings = require('electron-settings')
-
-/**
- * Modules
- * Internal
- * @constant
- */
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
+const electronUpdaterService = require('@sidneys/electron-updater-service')
 
 
 /**
@@ -44,7 +39,6 @@ const platformTools = require('@sidneys/platform-tools')
  * @default
  */
 const appName = global.manifest.name
-const appCurrentVersion = global.manifest.version
 
 /**
  * Filesystem
@@ -128,6 +122,8 @@ let configurationItems = {
         default: false,
         init() {
             logger.debug(this.keypath, 'init')
+
+            this.implement(this.get())
         },
         get() {
             logger.debug(this.keypath, 'get')
@@ -137,7 +133,17 @@ let configurationItems = {
         set(value) {
             logger.debug(this.keypath, 'set')
 
+            this.implement(value)
             electronSettings.set(this.keypath, value)
+        },
+        implement(value) {
+            logger.debug(this.keypath, 'implement', value)
+
+            if (!!value) {
+                electronUpdaterService.enable()
+            } else {
+                electronUpdaterService.disable()
+            }
         }
     },
     /**
@@ -146,26 +152,6 @@ let configurationItems = {
     appChangelog: {
         keypath: 'appChangelog',
         default: '',
-        init() {
-            logger.debug(this.keypath, 'init')
-        },
-        get() {
-            logger.debug(this.keypath, 'get')
-
-            return electronSettings.get(this.keypath)
-        },
-        set(value) {
-            logger.debug(this.keypath, 'set')
-
-            electronSettings.set(this.keypath, value)
-        }
-    },
-    /**
-     * appLastVersion
-     */
-    appLastVersion: {
-        keypath: 'appLastVersion',
-        default: appCurrentVersion,
         init() {
             logger.debug(this.keypath, 'init')
         },
@@ -205,7 +191,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
 
-            if (value) {
+            if (!!value) {
                 autoLauncher.enable()
             } else {
                 autoLauncher.disable()
@@ -257,7 +243,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
 
-            if (Boolean(value) === false) {
+            if (!!value === false) {
                 app.setBadgeCount(0)
             }
         }
@@ -423,7 +409,11 @@ let configurationItems = {
             if (!primaryWindow) { return }
             if (!primaryWindow.getBounds()) { return }
 
-            value === true ? primaryWindow.show() : primaryWindow.hide()
+            if (!!value) {
+                primaryWindow.show()
+            } else {
+                primaryWindow.hide()
+            }
         }
     },
     /**

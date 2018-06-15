@@ -6,6 +6,7 @@
  * Node
  * @constant
  */
+const events = require('events')
 const path = require('path')
 
 /**
@@ -45,8 +46,15 @@ appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
 const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
 /* eslint-enable */
 
+
 /**
- * Hotfix: Windows
+ * Hotfix
+ * @see {@link https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected}
+ */
+events.EventEmitter.defaultMaxListeners = Infinity
+
+/**
+ * Hotfix (Windows)
  * @see {@link https://github.com/electron/electron/issues/10864}
  */
 if (platformTools.isWindows) {
@@ -54,7 +62,7 @@ if (platformTools.isWindows) {
 }
 
 /**
- * Hotfix: Linux
+ * Hotfix (Linux)
  * @see {@link https://github.com/electron/electron/issues/10427}
  */
 if (platformTools.isLinux) {
@@ -62,6 +70,7 @@ if (platformTools.isLinux) {
         process.env.XDG_CURRENT_DESKTOP = 'Unity'
     }
 }
+
 
 /**
  * Modules
@@ -82,6 +91,15 @@ const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'ma
  */
 app.on('before-quit', () => {
     logger.debug('app#before-quit')
+
+    global.state.isQuitting = true
+})
+
+/**
+ * @listens Electron.App#before-quit-for-update
+ */
+app.on('before-quit-for-update', () => {
+    logger.debug('app#before-quit-for-update')
 
     global.state.isQuitting = true
 })
@@ -108,11 +126,14 @@ const isSecondInstance = app.makeSingleInstance(() => {
     })
 })
 
+/**
+ * Quit additional instances
+ */
 if (isSecondInstance) {
     logger.debug('isSecondInstance', 'secondary instance')
 
     logger.warn('Multiple application instances detected', app.getPath('exe'))
     logger.warn('Multiple application instances detected', 'Shutting down secondary application instances')
 
-    process.exit(0)
+    app.quit()
 }

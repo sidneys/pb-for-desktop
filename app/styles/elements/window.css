@@ -9,7 +9,9 @@ html
 {
     font-size: 62.5%;
     -webkit-font-smoothing: antialiased;
-    background-color: transparent;
+    /* Hotfix (Electron v2.0.2, github.com/electron/electron/issues/12726) */
+    /* background-color: transparent; */
+    background-color: rgba(0, 0, 0, 0.75);
     margin: 0;
     padding: 0;
     width: 100%;
@@ -18,7 +20,7 @@ html
 }
 
 /* body
-   ========================================================================== */
+========================================================================== */
 
 body
 {
