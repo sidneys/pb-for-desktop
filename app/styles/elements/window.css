@@ -9,9 +9,7 @@ html
 {
     font-size: 62.5%;
     -webkit-font-smoothing: antialiased;
-    /* Hotfix (Electron v2.0.2, github.com/electron/electron/issues/12726) */
-    /* background-color: transparent; */
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: transparent;
     margin: 0;
     padding: 0;
     width: 100%;

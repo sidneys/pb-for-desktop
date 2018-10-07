@@ -4,9 +4,23 @@
     "es6": true,
     "node": true
   },
-  "globals": {
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "globalReturn": true,
+      "impliedStrict": true,
+      "jsx": true
+    }
   },
+  "root": true,
   "rules": {
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": true
+      }
+    ],
     "camelcase": "off",
     "comma-dangle": [
       "error",
@@ -31,13 +45,16 @@
     "key-spacing": [
       "error",
       {
-        "beforeColon": false,
-        "afterColon": true
+        "afterColon": true,
+        "beforeColon": false
       }
     ],
     "keyword-spacing": [
       "error",
-      {}
+      {
+        "after": true,
+        "before": true
+      }
     ],
     "linebreak-style": [
       "error",
@@ -49,7 +66,13 @@
     "no-multi-str": "error",
     "no-trailing-spaces": "error",
     "no-undef": "error",
-    "no-unused-vars": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "none",
+        "vars": "local"
+      }
+    ],
     "no-use-before-define": [
       "error",
       {
@@ -61,6 +84,7 @@
       "error",
       "always"
     ],
+    "object-shorthand": "off",
     "quotes": [
       "error",
       "single",

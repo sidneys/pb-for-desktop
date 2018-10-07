@@ -1,4 +1,22 @@
 {
+  "8.0.4": {
+    "🍾 features": [
+      "Adds Nintendo® notification sounds"
+    ],
+    "💎 improvements": [
+      "Addresses CPU and memory usage (https://github.com/sidneys/pb-for-desktop/issues/90)",
+      "Various stability and performance improvements"
+    ],
+    "🚨 fixes": [
+      "Fixes Bad URI issue (https://github.com/sidneys/pb-for-desktop/issues/85)"
+    ],
+    "👷 internals": [
+      "Upgrades `electron` to `v3.0.3`",
+      "Upgrades `node_modules`",
+      "Upgrades `services`",
+      "Upgrades `lib`"
+    ]
+  },
   "7.6.0": {
     "💎 improvements": [
       "Various stability and performance improvements"

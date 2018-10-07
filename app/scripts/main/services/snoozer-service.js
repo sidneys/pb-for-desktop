@@ -53,90 +53,113 @@ class SnoozerService {
     infinitySnooze() {
         logger.debug('infinitySnooze')
 
+        // Set timestamp
         this.snoozeUntil = Infinity
+
+        // Emit
         this.onSnooze(true)
 
-        const notification = notificationProvider.create({ title: 'Snooze started', subtitle: `Snoozing indefinitely.` })
+        // Notification
+        const notification = notificationProvider.create({
+            title: 'Snooze started',
+            subtitle: 'Snoozing indefinitely.'
+        })
         notification.show()
     }
 
     /**
      * Schedule snooze
-     * @param {Number} duration - Snooze duration in minutes
+     * @param {Number} durationMinutes - Snooze duration
      * @param {Electron.MenuItem} menuItem - Menu item
      *
      * @private
      */
-    scheduleSnooze(duration, menuItem) {
+    scheduleSnooze(durationMinutes, menuItem) {
         logger.debug('scheduleSnooze')
 
-        if (duration === Infinity) {
+        if (durationMinutes === Infinity) {
             this.infinitySnooze()
+
             return
         }
 
-        let durationMs = Math.round(duration * (60 * 1000))
-        let durationHours = Math.round(duration / 60)
+        const durationMilliseconds = Math.round(durationMinutes * (60 * 1000))
 
-        // Calculate Timestamp
-        let snoozeEnd = (Date.now() + durationMs)
-        this.snoozeUntil = snoozeEnd
+        // Set timestamp
+        this.snoozeUntil = Date.now() + durationMilliseconds
+        const snoozeRemaining = this.snoozeUntil - Date.now()
 
+        // Notification
         const notification = notificationProvider.create({
-            title: 'Snooze started', subtitle: `Snooze will end in ${durationHours} ${durationHours > 1 ? 'hours' : 'hour'}.`
+            title: 'Snooze started',
+            subtitle: `Snooze ends in ${durationMinutes} minutes.`
         })
         notification.show()
 
+        // Emit
         this.onSnooze(true)
 
-        // Schedule to waking up
+        // Schedule wake up
         let timeout = setTimeout(() => {
-            logger.debug('setTimeout', durationHours)
+            logger.debug('setTimeout()', 'durationMinutes:', durationMinutes)
 
-            // End Snooze
+            // Set timestamp
             this.snoozeUntil = 0
+
+            // Uncheck menuItem
             menuItem.checked = false
 
+            // Notification
             const notification = notificationProvider.create({
-                title: 'Snooze ended', subtitle: `Snooze ended after ${durationHours} ${durationHours > 1 ? 'hours' : 'hour'}.`
+                title: 'Snooze ended',
+                subtitle: `Snooze ended after ${durationMinutes} minutes.`
             })
             notification.show()
 
+            // Emit
             this.onSnooze(false)
 
             clearTimeout(timeout)
-        }, (snoozeEnd - Date.now()))
+        }, snoozeRemaining)
     }
 
     /**
      * Start snooze
-     * @param {Number} duration - Snooze duration in minutes
+     * @param {Number} durationMinutes - Snooze duration
      * @param {Electron.MenuItem} menuItem - Menu item
      *
      * @public
      */
-    startSnooze(duration, menuItem) {
+    startSnooze(durationMinutes, menuItem) {
         logger.debug('startSnooze')
 
-        let menuItemList = menuItem['menu'].items.filter((item) => item.id && item.id.startsWith('snooze') && item.id !== menuItem['id'])
+        // Get menuItem state
         let isEnabled = menuItem.checked
 
-        // Disable related menuItems
-        menuItemList.forEach(item => item.checked = false)
+        // Get sibling menuItems
+        let siblingMenuItemList = menuItem['menu'].items.filter((item) => item.id && item.id.startsWith('snooze') && item.id !== menuItem['id'])
 
-        // Exit from all Snooze
+        // Uncheck sibling menuItems
+        siblingMenuItemList.forEach(item => item.checked = false)
+
+        // Cancel existing Snooze
         if (this.snoozeUntil !== 0) {
             this.snoozeUntil = 0
 
-            const notification = notificationProvider.create({ title: 'Snooze ended', subtitle: 'Snooze mode aborted.' })
+            // Notification
+            const notification = notificationProvider.create({
+                title: 'Snooze ended',
+                subtitle: 'Snooze aborted.'
+            })
             notification.show()
 
+            // Emit
             this.onSnooze(false)
         }
 
         // Init Snooze
         if ((this.snoozeUntil === 0) && isEnabled) {
-            this.scheduleSnooze(duration, menuItem)
+            this.scheduleSnooze(durationMinutes, menuItem)
         }
     }
 }

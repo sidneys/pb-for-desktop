@@ -23,6 +23,7 @@ const { app, ipcMain, Menu, Tray, webContents } = require('electron')
  */
 const appRootPath = require('app-root-path')['path']
 const dialogProvider = require('@sidneys/electron-dialog-provider')
+const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
 
@@ -32,6 +33,7 @@ const platformTools = require('@sidneys/platform-tools')
  * @constant
  */
 const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
+const notificationProvider = require('@sidneys/electron-notification-provider')
 
 
 /**
@@ -48,6 +50,13 @@ const appProductName = global.manifest.productName
  * @default
  */
 const appSoundDirectory = global.filesystem.directories.sounds
+
+/**
+ * App icons
+ * @constant
+ */
+const appIcon = path.join(appRootPath, 'app', 'images', 'logo.png')
+
 
 /**
  * Tray icons
@@ -301,6 +310,7 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImagePushbulletSoundFile,
             type: 'normal',
             click() {
+                app.focus()
                 dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', ['m4a', 'mp3', 'mp4', 'wav', 'ogg'], appSoundDirectory, (error, soundFile) => {
                     if (error) {
                         logger.error('pushbulletSoundFile', 'dialogProvider.file', error)
@@ -315,12 +325,29 @@ let createTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
-            id: 'Snooze',
-            label: 'Snooze',
+            id: 'snoozeNotifications',
+            label: 'Snooze Notifications',
             icon: trayMenuItemImageSnooze,
             submenu: [
                 {
-                    label: '1 hour snooze',
+                    label: 'Snooze 1 Minute',
+                    id: 'snooze-1',
+                    type: 'checkbox',
+                    visible: isDebug,
+                    click(menuItem) {
+                        getSnoozerService().startSnooze(1, menuItem)
+                    }
+                },
+                {
+                    label: 'Snooze 30 Minutes',
+                    id: 'snooze-30',
+                    type: 'checkbox',
+                    click(menuItem) {
+                        getSnoozerService().startSnooze(30, menuItem)
+                    }
+                },
+                {
+                    label: 'Snooze 1 Hour',
                     id: 'snooze-60',
                     type: 'checkbox',
                     click(menuItem) {
@@ -328,7 +355,7 @@ let createTrayMenuTemplate = () => {
                     }
                 },
                 {
-                    label: '4 hour snooze',
+                    label: 'Snooze 4 Hours',
                     id: 'snooze-240',
                     type: 'checkbox',
                     click(menuItem) {
@@ -336,7 +363,7 @@ let createTrayMenuTemplate = () => {
                     }
                 },
                 {
-                    label: '8 hour snooze',
+                    label: 'Snooze 8 Hours',
                     id: 'snooze-480',
                     type: 'checkbox',
                     click(menuItem) {
@@ -344,7 +371,7 @@ let createTrayMenuTemplate = () => {
                     }
                 },
                 {
-                    label: 'Indefinite snooze',
+                    label: 'Snooze Indefinitely',
                     id: 'snooze-infinity',
                     type: 'checkbox',
                     click(menuItem) {
@@ -352,6 +379,20 @@ let createTrayMenuTemplate = () => {
                     }
                 }
             ]
+        },
+        {
+            id: 'showTestNotification',
+            label: 'Show Test Notification',
+            click() {
+                const notification = notificationProvider.create({
+                    body: 'This is a test notification.',
+                    icon: appIcon,
+                    title: 'Test Notification',
+                    silent: false,
+                    subtitle: 'Test Notification Subtitle'
+                })
+                notification.show()
+            }
         },
         {
             type: 'separator'
@@ -424,10 +465,14 @@ class TrayMenu extends Tray {
 
             switch (isOnline) {
                 case true:
+                    // Online
                     this.setImageName('default')
+
                     break
                 case false:
+                    // Offline
                     this.setImageName('transparent')
+
                     break
             }
         })
@@ -440,10 +485,14 @@ class TrayMenu extends Tray {
 
             switch (isSnoozing) {
                 case true:
+                    // Snooze started
                     this.setImageName('transparent-pause')
+
                     break
                 case false:
+                    // Snooze ended
                     this.setImageName('default')
+
                     break
             }
         })

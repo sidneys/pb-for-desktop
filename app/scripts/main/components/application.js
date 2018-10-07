@@ -49,12 +49,35 @@ const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main',
 
 /**
  * Hotfix
+ * Window Translucency
+ * @see {@link https://github.com/electron/electron/issues/2170}
+ */
+// app.disableHardwareAcceleration()
+
+/**
+ * Hotfix
+ * EventEmitter Memory Leak
  * @see {@link https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected}
  */
 events.EventEmitter.defaultMaxListeners = Infinity
 
 /**
- * Hotfix (Windows)
+ * Hotfix
+ * Chrome 66 Autoplay Policy
+ * @see {@link https://github.com/electron/electron/issues/13525}
+ */
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
+/**
+ * Hotfix
+ * Electron Security Warning
+ * @see {@link https://stackoverflow.com/questions/48854265/why-do-i-see-an-electron-security-warning-after-updating-my-electron-project-t}
+ */
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+
+/**
+ * Hotfix
+ * Notification API not working (Windows)
  * @see {@link https://github.com/electron/electron/issues/10864}
  */
 if (platformTools.isWindows) {
@@ -62,7 +85,8 @@ if (platformTools.isWindows) {
 }
 
 /**
- * Hotfix (Linux)
+ * Hotfix
+ * Missing App Indicator (Linux)
  * @see {@link https://github.com/electron/electron/issues/10427}
  */
 if (platformTools.isLinux) {
