@@ -156,7 +156,8 @@
         "AppImage",
         "deb",
         "pacman",
-        "rpm"
+        "rpm",
+        "snap"
       ]
     },
     "dmg": {
