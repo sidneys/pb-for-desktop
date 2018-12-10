@@ -103,8 +103,7 @@ let getAppMenuTemplate = () => {
                     accelerator: (() => {
                         if (process.platform === 'darwin') {
                             return 'Ctrl+Command+F'
-                        }
-                        else {
+                        } else {
                             return 'F11'
                         }
                     })(),
@@ -220,7 +219,7 @@ let getAppMenuTemplate = () => {
                 {
                     label: `Restart in Debugging Mode...`,
                     click() {
-                        app.relaunch({ args: process.argv.slice(1).concat(['--debug']) })
+                        app.relaunch({ args: process.argv.slice(1).concat([ '--debug' ]) })
                         app.quit()
                     }
                 },

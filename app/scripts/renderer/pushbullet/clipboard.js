@@ -57,9 +57,7 @@ let retrievePushbulletClipboardEnabled = () => configurationManager('pushbulletC
 let getDevice = () => {
     logger.debug('getDevice')
 
-    const pb = window.pb
-
-    return pb.api.devices.all.filter((device) => {
+    return window.pb.api.devices.all.filter((/** Pushbullet.Device */ device) => {
         return (device.model === 'pb-for-desktop')
     })[0]
 }

@@ -1,4 +1,23 @@
 {
+  "8.6.0": {
+    "🍾 features": [
+      "Adds In-Line Reply (Notification actions) to Pushbullet Chats (macOS)",
+      "Adds 'Push Dismissal': When closing individual or multiple Desktop Notifications, the corresponding pushes are marked as `seen` within the backend, too (https://docs.pushbullet.com/#update-push) (macOS)",
+      "Adds throttled queue to limit the amount of triggered Notifications to a maximum of 1 per second"
+    ],
+    "💎 improvements": [
+      "Displays a Chat partners' profile picture within Chat notifications",
+      "Increases 'In-Line Reply' (interactive Notifications) responsiveness for SMS Messages (macOS)",
+      "Improves automated dependency installation for global `pb-for-desktop` Nodejs module"
+    ],
+    "📒 documentation": [
+      "Adds TypeScript declaration file [pushbullet.d.ts](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html) for official Pushbullet API as well as undocumented Browser Client (`window.pb`)"
+    ],
+    "👷 internals": [
+      "Upgrades `electron` to `v4.0.0`",
+      "Upgrades `node_modules`"
+    ]
+  },
   "8.1.1": {
     "🍾 features": [
       "supports macOS Mojaves' system-wide dark mode (macOS)",

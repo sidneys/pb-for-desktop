@@ -672,7 +672,7 @@ let removeLegacyItems = (callback = () => {}) => {
 
 
 /**
- * @listens Electron.App#Event:ready
+ * @listens Electron.App:ready
  */
 app.once('ready', () => {
     logger.debug('app#ready')
@@ -690,7 +690,7 @@ app.once('ready', () => {
 })
 
 /**
- * @listens Electron.App#before-quit
+ * @listens Electron.App:before-quit
  */
 app.on('quit', () => {
     logger.debug('app#quit')

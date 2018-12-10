@@ -15,12 +15,9 @@ const logger = require('@sidneys/logger')({ write: true })
 const defaultInterval = 2000
 
 
-/** @namespace window.dispatchEvent */
-
-
 /**
  * Create 'pb-for-desktop' device values
- * @return {{has_sms: boolean, icon: string, manufacturer: string, model: string, nickname: string}}
+ * @return {Object}
  */
 let createDeviceValues = () => {
     logger.debug('createDeviceValues')
@@ -51,7 +48,7 @@ let createDevice = () => {
 let getDevices = () => {
     logger.debug('getDevices')
 
-    return window.pb.api.devices.all.filter((device) => {
+    return window.pb.api.devices.all.filter((/** Pushbullet.Device */ device) => {
         return (device.model === 'pb-for-desktop')
     })
 }

@@ -48,35 +48,35 @@ const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main',
 
 
 /**
- * Hotfix
+ * HOTFIX
  * Window Translucency
  * @see {@link https://github.com/electron/electron/issues/2170}
  */
-// app.disableHardwareAcceleration()
+app.disableHardwareAcceleration()
 
 /**
- * Hotfix
+ * HOTFIX
  * EventEmitter Memory Leak
  * @see {@link https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected}
  */
 events.EventEmitter.defaultMaxListeners = Infinity
 
 /**
- * Hotfix
+ * HOTFIX
  * Chrome 66 Autoplay Policy
  * @see {@link https://github.com/electron/electron/issues/13525}
  */
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
 /**
- * Hotfix
+ * HOTFIX
  * Electron Security Warning
  * @see {@link https://stackoverflow.com/questions/48854265/why-do-i-see-an-electron-security-warning-after-updating-my-electron-project-t}
  */
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 /**
- * Hotfix
+ * HOTFIX
  * Notification API not working (Windows)
  * @see {@link https://github.com/electron/electron/issues/10864}
  */
@@ -85,7 +85,7 @@ if (platformTools.isWindows) {
 }
 
 /**
- * Hotfix
+ * HOTFIX
  * Missing App Indicator (Linux)
  * @see {@link https://github.com/electron/electron/issues/10427}
  */
@@ -123,7 +123,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 /**
- * @listens Electron.App#second-instance
+ * @listens Electron.App:second-instance
  */
 app.on('second-instance', (event, commandLine, workingDirectory) => {
     logger.warn('Additional application instance detected:', app.getPath('exe'))
@@ -136,7 +136,7 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 })
 
 /**
- * @listens Electron.App#before-quit
+ * @listens Electron.App:before-quit
  */
 app.on('before-quit', () => {
     logger.debug('app#before-quit')
@@ -145,7 +145,7 @@ app.on('before-quit', () => {
 })
 
 /**
- * @listens Electron.App#before-quit-for-update
+ * @listens Electron.App:before-quit-for-update
  */
 app.on('before-quit-for-update', () => {
     logger.debug('app#before-quit-for-update')
@@ -154,7 +154,7 @@ app.on('before-quit-for-update', () => {
 })
 
 /**
- * @listens Electron.App#ready
+ * @listens Electron.App:ready
  */
 app.once('ready', () => {
     logger.debug('app#ready')
@@ -162,7 +162,7 @@ app.once('ready', () => {
 
 
 /**
- * @listens Electron.systemPreferences#appearance-changed
+ * @listens Electron.systemPreferences:appearance-changed
  */
 systemPreferences.on('appearance-changed', (newAppearance) => {
     logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)

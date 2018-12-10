@@ -56,6 +56,7 @@ class MainWindow extends BrowserWindow {
             // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
             // backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
             backgroundColor: '#303030',
+            backgroundThrottling: false,
             frame: true,
             hasShadow: platformTools.isMacOS ? true : void 0,
             height: void 0,
@@ -110,7 +111,7 @@ class MainWindow extends BrowserWindow {
         })
 
         /**
-         * @listens MainWindow#will-navigate
+         * @listens MainWindow:will-navigate
          */
         this.webContents.on('will-navigate', (event, url) => {
             logger.debug('AppWindow.webContents#will-navigate')

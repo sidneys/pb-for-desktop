@@ -14,7 +14,7 @@ const path = require('path')
  * Electron
  * @constant
  */
-const { app, ipcMain, Menu, Tray, webContents } = require('electron')
+const { app, ipcMain, Menu, MenuItem, Tray, webContents } = require('electron')
 
 /**
  * Modules
@@ -166,8 +166,8 @@ let createTrayMenuTemplate = () => {
                                 if (!session.clearCache) { return }
                                 session.clearCache(() => {
                                     session.clearStorageData({
-                                        storages: ['appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql'],
-                                        quotas: ['persistent', 'syncable', 'temporary']
+                                        storages: [ 'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql' ],
+                                        quotas: [ 'persistent', 'syncable', 'temporary' ]
                                     }, () => {
                                         logger.info('logout', 'cleared cache and storage')
                                     })
@@ -311,7 +311,7 @@ let createTrayMenuTemplate = () => {
             type: 'normal',
             click() {
                 app.focus()
-                dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', ['m4a', 'mp3', 'mp4', 'wav', 'ogg'], appSoundDirectory, (error, soundFile) => {
+                dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', [ 'm4a', 'mp3', 'mp4', 'wav', 'ogg' ], appSoundDirectory, (error, soundFile) => {
                     if (error) {
                         logger.error('pushbulletSoundFile', 'dialogProvider.file', error)
                         return
@@ -425,9 +425,24 @@ class TrayMenu extends Tray {
         super(trayIconDefault)
 
         this.template = template
-        this.menu = Menu.buildFromTemplate(this.template)
+        // this.menu = Menu.buildFromTemplate(this.template)
+
+        this.menu = new Menu()
+        template.forEach((menuItem) => {
+            this.menu.append(new MenuItem(menuItem))
+        })
 
         this.init()
+    }
+
+    /**
+     * @fires TrayMenu#EventEmitter:tray-close
+     */
+    onClose() {
+        logger.debug('onClose')
+
+        // Notify Embedders
+        webContents.getAllWebContents().forEach(contents => contents.send('tray-close'))
     }
 
     /**
@@ -455,6 +470,16 @@ class TrayMenu extends Tray {
                 mainWindow.show()
                 app.focus()
             }
+        })
+
+        /**
+         * @listens Electron.Menu#menu-will-close'
+         */
+        this.menu.on('menu-will-close', () => {
+            logger.debug('TrayMenu#menu-will-close')
+
+            // Emit
+            this.onClose()
         })
 
         /**

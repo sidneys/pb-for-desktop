@@ -16,14 +16,13 @@ const url = require('url')
  * @constant
  */
 const electron = require('electron')
-const { remote } = electron
+const { remote, ipcRenderer } = electron
 
 /**
  * Modules
  * External
  * @constant
  */
-const _ = require('lodash')
 const appRootPath = require('app-root-path')['path']
 const dataUriToBuffer = require('data-uri-to-buffer')
 const fileType = require('file-type')
@@ -38,6 +37,8 @@ const moment = require('moment')
 const notificationProvider = remote.require('@sidneys/electron-notification-provider')
 const opn = require('opn')
 const shortid = require('shortid')
+const throttledQueue = require('throttled-queue')
+const _ = require('lodash')
 
 /**
  * Modules
@@ -57,37 +58,37 @@ const appName = remote.getGlobal('manifest').name
 const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPath : os.tmpdir()
 
 
-/** @namespace Audio */
-/** @namespace pb.api.accounts */
-/** @namespace pb.api.grants */
-/** @namespace pb.api.pushes */
-/** @namespace pb.api.pushes.dismiss */
-/** @namespace pb.sms */
-/** @namespace push.application_name */
-/** @namespace push.dismissed */
-/** @namespace push.file_name */
-/** @namespace push.file_url */
-/** @namespace push.image_url */
-/** @namespace push.notifications */
-
-
 /**
  * Urls
  * @constant
  */
-const besticonEndpointUrl = 'pb-for-desktop-besticon.herokuapp.com'
-const pushbulletUrl = 'www.pushbullet.com'
-const youtubeUrl = 'img.youtube.com'
+const besticonUrl = 'https://pb-for-desktop-besticon.herokuapp.com'
+const pushbulletUrl = 'https://www.pushbullet.com'
+const youtubeUrl = 'https://img.youtube.com'
 
 /**
- * Notifications
+ * Defaults
  * @constant
  * @default
  */
-const notificationInterval = 2000
-const maxRecentNotifications = 5
-const faviconImageSize = 120
+const recentPushesAmount = 5
+const besticonIconSize = 120
+const notificationInterval = 1000
 const notificationImageSize = 88
+
+/**
+ * Notifications Queue
+ * @global
+ */
+let queueNotification = throttledQueue(1, notificationInterval, true)
+
+
+/**
+ * Global Settings
+ * @global
+ */
+let lastNotificationTimestamp
+let audioElement
 
 
 /**
@@ -112,7 +113,7 @@ let retrieveAppShowBadgeCount = () => configurationManager('appShowBadgeCount').
 /**
  * Retrieve PushbulletHideNotificationBody
  * @return {Boolean} - Hide
- */
+ // */
 let retrievePushbulletHideNotificationBody = () => configurationManager('pushbulletHideNotificationBody').get()
 
 /**
@@ -141,162 +142,184 @@ let retrievePushbulletSoundVolume = () => configurationManager('pushbulletSoundV
 
 
 /**
- * @instance
- */
-let lastNotificationTimestamp
-let appSoundVolume
-
-/**
  * Set application badge count
  * @param {Number} total - Number to set
- *
  */
 let updateBadge = (total) => {
     logger.debug('updateBadge')
 
-    if (Boolean(retrieveAppShowBadgeCount()) === false) {
-        return
-    }
+    const appShowBadgeCount = retrieveAppShowBadgeCount()
+    if (!!appShowBadgeCount) { return }
 
     remote.app.setBadgeCount(total)
 }
 
 /**
  * Play Sound
- * @param {String} file - Path to WAV audio
- * @param {Function=} callback  - Callback
- *
  */
-let playSound = (file, callback = () => {}) => {
+let playSound = () => {
     logger.debug('playSound')
 
-    let url = fileUrl(file)
-    let AudioElement = new Audio(url)
+    // Retrieve State
+    const pushbulletSoundEnabled = retrievePushbulletSoundEnabled()
 
-    AudioElement.volume = appSoundVolume
+    // Skip if not enabled
+    if (!pushbulletSoundEnabled) { return }
 
-    /**
-     * @listens audio:MediaEvent#error
-     */
-    AudioElement.addEventListener('error', (error) => {
-        logger.error('playSound', error)
-        callback(error)
-    })
+    // Retrieve File, Volume
+    const pushbulletSoundFile = retrievePushbulletSoundFile()
+    const pushbulletSoundVolume = retrievePushbulletSoundVolume()
 
-    AudioElement.play().then(() => {
+    // Create File URL
+    const url = fileUrl(pushbulletSoundFile)
+
+    // Setup Audio Element
+    audioElement = new Audio(url)
+    audioElement.volume = pushbulletSoundVolume
+
+    // Errorhandling
+    audioElement.onerror = () => {
+        logger.error('playSound', url, audioElement.error.message, audioElement.error.code)
+    }
+
+    // Play
+    audioElement.play().then(() => {
         logger.debug('playSound', url)
-        callback(null)
     })
 }
 
 /**
- * Find images for Pushbullet push
- * @param {Object} push - Push Object
- * @returns {String} Image URI
+ * Get Timestamp with Milliseconds
+ * @returns {String} - Timestamp
+ *
  */
-let generateImageUrl = (push) => {
-    logger.debug('generateImageUrl')
+let getTimestamp = () => {
+    const date = new Date()
+    return `${date.toLocaleTimeString()}.${date.getMilliseconds()}`
+}
 
-    const pb = window.pb
 
-    let iconUrl
+/**
+ * Generate Image for Notification
+ * @param {Object} push - Push Object
+ * @returns {String} - Image URL
+ */
+let generateNotificationImage = (push) => {
+    logger.debug('generateNotificationImage')
 
-    /**
-     * Account icon
-     */
+    // Account Image
     let iconAccount
-    const accountIdShort = push['receiver_iden']
+    const accountId = push.receiver_iden
 
-    for (let account of pb.api.accounts.all) {
-        if (account['iden'].startsWith(accountIdShort)) {
-            iconAccount = account['image_url']
+    for (let account of window.pb.api.accounts.all) {
+        if (account['iden'].startsWith(accountId)) {
+            iconAccount = account.image_url
         }
     }
 
-    /**
-     * Channel icon
-     */
-    let iconChannel
-    const channelId = push['client_iden']
+    // Grant Image
+    let iconGrant
+    const grantId = push.client_iden
 
-    for (let channel of pb.api.grants.all) {
-        if (channel['client']['iden'] === channelId) {
-            iconChannel = channel['client']['image_url']
+    for (let grant of window.pb.api.grants.all) {
+        if (grant['client']['iden'] === grantId) {
+            iconGrant = grant['client']['image_url']
         }
     }
 
-    /**
-     * Device icon
-     */
+    // Device Image
     let iconDevice
-    const deviceId = push['source_device_iden']
+    const deviceId = push.source_device_iden
 
-    for (let device of pb.api.devices.all) {
-        if (device['iden'] === deviceId) {
-            iconDevice = `http://${pushbulletUrl}/img/deviceicons/${device.icon}.png`
+    for (let device of window.pb.api.devices.all) {
+        if (device.iden === deviceId) {
+            iconDevice = `${pushbulletUrl}/img/deviceicons/${device.icon}.png`
         }
     }
 
-    /**
-     * SMS icon
-     */
-    if (push['type'] === 'sms_changed') {
-        iconDevice = `http://${pushbulletUrl}/img/deviceicons/phone.png`
+    // SMS Image
+    let iconSms
+
+    if (push.type === 'sms_changed') {
+        iconSms = `${pushbulletUrl}/img/deviceicons/phone.png`
     }
 
-    /**
-     * Mirror icon
-     */
-    let iconMirror
+    // Chat Image
+    let iconChat
 
-    if (push['type'] === 'mirror') {
-        iconMirror = `data:image/jpeg;base64,${push.icon}`
+    if (!!push.sender_email) {
+        const target = window.pb.targets.by_email(push.sender_email)
+        iconChat = target.image_url
     }
 
-    /**
-     * Website icon
-     */
-    let iconWebsite
+    // Mirroring Image
+    let iconMirroring
 
-    if (push['type'] === 'link') {
-        // YouTube
-        if (getYouTubeID(push['url'])) {
-            iconWebsite = `http://${youtubeUrl}/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`
+    if (push.type === 'mirror') {
+        iconMirroring = `data:image/jpeg;base64,${push.icon}`
+    }
+
+    // Link Image
+    let iconLink
+
+    if (push.type === 'link') {
+        // Handle YouTube URLs (Thumbnail)
+        if (getYouTubeID(push.url)) {
+            iconLink = `${youtubeUrl}/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`
         } else {
-            iconWebsite
-                = `https://${besticonEndpointUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${faviconImageSize}..200&url=${push['url']}`
+            // Handle other URLS (Favicon)
+            iconLink = `${besticonUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${besticonIconSize}..200&url=${push.url}`
         }
     }
 
-    // Fallback
-    iconUrl = iconWebsite || iconMirror || iconChannel || iconDevice || iconAccount
+    // Image Fallbacks Sequence
+    const iconUrl = iconLink || iconMirroring || iconChat || iconGrant || iconDevice || iconSms || iconAccount
 
     return iconUrl
 }
 
 /**
- * Dismiss Pushbullet push
- * @param {Object} push - Push Object
- *
+ * Create Note Push
+ * @param {String} message - Message
+ * @param {String=} email - Target E-Mail
+ * @param {String} deviceId - Target Device Id
+ * @param {function=} callback - Callback
  */
-let dismissPushbulletPush = (push) => {
-    logger.debug('dismissPushbulletPush')
+let createNotePush = (message, email, deviceId, callback = () => {}) => {
+    logger.debug('createNotePush')
 
-    const pb = window.pb
+    window.pb.api.pushes.create({
+        type: 'note',
+        email: !!deviceId ? void 0 : email,
+        device_iden: !!email ? void 0 : deviceId,
+        title: message,
+        body: message
+    })
+
+    // Callback
+    callback(email || deviceId)
+}
+
+/**
+ * Dismiss Push
+ * @param {Pushbullet.Push} push - Push Object
+ */
+let dismissPush = (push) => {
+    logger.debug('dismissPush')
 
     // direction: self
     if (push.direction === 'self') {
         if (!push.dismissed && !push.target_device_iden) {
-            logger.debug('dismissPushbulletPush', 'self', 'push.title:', push.title)
-            pb.api.pushes.dismiss(push)
+            logger.debug('dismissPush', 'self', 'push.title:', push.title)
+            window.pb.api.pushes.dismiss(push)
         }
     }
 
     // direction: incoming
     if (push.direction === 'incoming') {
         if (!push.dismissed) {
-            logger.debug('dismissPushbulletPush', 'incoming', 'push.title:', push.title)
-            pb.api.pushes.dismiss(push)
+            logger.debug('dismissPush', 'incoming', 'push.title:', push.title)
+            window.pb.api.pushes.dismiss(push)
         }
     }
 }
@@ -315,10 +338,11 @@ let parsePush = (message) => {
     let subtitle = message
     let title = message
 
+    // Parse Push for Notification Formatting
+    // [ Title ] [ Subtitle ] Body Text
     // characters for tag detection
     const tagStart = '['
     const tagEnd = ']'
-
 
     let tagList = title.match(new RegExp(`\\${tagStart}(.*?)\\${tagEnd}`, 'gi')) || []
     let titleList = title.match(new RegExp(`${tagStart}^${tagStart}\\${tagEnd}${tagEnd}+(?=${tagEnd})`, 'gi')) || []
@@ -348,110 +372,107 @@ let parsePush = (message) => {
 
 /**
  * Decorate Push objects
- * @param {Object} push - Push Object
- * @returns {Object} - Push Object
+ * @param {Pushbullet.Push|SmsEphemeral|SmsChangeEphemeral|NotificationEphemeral|DismissalEphemeral|ClipboardEphemeral} push - Pushbullet Push
+ * @returns {DecoratedPush} - Push Object
  */
-let decoratePushbulletPush = (push) => {
-    logger.debug('decoratePushbulletPush', push.type)
-    //logger.debug('decoratePushbulletPush', 'undecorated:', push);
+let decoratePush = (push) => {
+    logger.debug('decoratePush', push.type)
 
-    switch (push.type) {
+    // Copy Push Object
+    const decoratedPush = Object.assign({}, push)
+
+    switch (decoratedPush.type) {
         // Link
         case 'link':
-            push.url = push['url']
-            push.icon = generateImageUrl(push)
+            decoratedPush.icon = generateNotificationImage(decoratedPush)
 
-            if (!push.body && !push.title) {
-                push.title = push.url
+            if (!decoratedPush.body && !decoratedPush.title) {
+                decoratedPush.title = decoratedPush.url
             }
 
-            if (!push.body && push.title) {
-                let parsed = parsePush(push.title)
+            if (!decoratedPush.body && decoratedPush.title) {
+                let parsed = parsePush(decoratedPush.title)
 
-                push.body = parsed.body
-                push.subtitle = parsed.subtitle
-                push.title = parsed.title
+                decoratedPush.body = parsed.body
+                decoratedPush.subtitle = parsed.subtitle
+                decoratedPush.title = parsed.title
             }
 
             break
         // Note
         case 'note':
-            push.title = push.title || push.body
-            push.body = push.body || push.title
-            push.icon = generateImageUrl(push)
-            //push.title = `Note | ${push.title}`;
+            decoratedPush.title = decoratedPush.title || decoratedPush.body
+            decoratedPush.body = decoratedPush.body || decoratedPush.title
+            decoratedPush.icon = generateNotificationImage(decoratedPush)
+            //push.title = `Note | ${push.title}`
 
             break
         // File
         case 'file':
-            push.title = push.title || push.file_name
-            push.body = push.body || push.title
-            push.url = push.file_url
-            push.icon = push.image_url || generateImageUrl(push)
-            //push.title = `File | ${push.title}`;
+            decoratedPush.title = decoratedPush.title || decoratedPush.file_name
+            decoratedPush.body = decoratedPush.body || decoratedPush.title
+            decoratedPush.url = decoratedPush.file_url
+            decoratedPush.icon = decoratedPush.image_url || generateNotificationImage(decoratedPush)
+            //push.title = `File | ${push.title}`
 
             break
         // Mirror
         case 'mirror':
-            if (push.application_name && push.title) {
-                push.title = `${push.application_name} | ${push.title}`
-            } else if (push.application_name && !push.title) {
-                push.title = push.application_name
+            if (decoratedPush.application_name && decoratedPush.title) {
+                decoratedPush.title = `${decoratedPush.application_name} | ${decoratedPush.title}`
+            } else if (decoratedPush.application_name && !decoratedPush.title) {
+                decoratedPush.title = decoratedPush.application_name
             }
 
-            push.body = push.body || push.title
-            push.url = push.file_url
-            push.icon = push.image_url || generateImageUrl(push)
+            decoratedPush.body = decoratedPush.body || decoratedPush.title
+            decoratedPush.url = decoratedPush.file_url
+            decoratedPush.icon = decoratedPush.image_url || generateNotificationImage(decoratedPush)
 
             break
         // SMS
         case 'sms_changed':
-            if (push.notifications.length !== 0) {
-                let sms = push.notifications[0]
-                let phonenumber = sms.title
-                let text = sms.body
-                let time = (new Date(0)).setUTCSeconds(sms.timestamp)
+            if (decoratedPush.notifications.length === 0) { return }
 
-                push.title = `SMS | ${phonenumber}`
-                push.body = `${text}${os.EOL}${moment(time).fromNow()}`
-                push.icon = push.image_url || generateImageUrl(push)
-            }
+            let sms = decoratedPush.notifications[0]
+            let phonenumber = sms.title
+            let text = sms.body
+            let time = (new Date(0)).setUTCSeconds(sms.timestamp)
+
+            decoratedPush.title = `SMS | ${phonenumber}`
+            decoratedPush.body = `${text}${os.EOL}${moment(time).fromNow()}`
+            decoratedPush.icon = decoratedPush.image_url || generateNotificationImage(decoratedPush)
+
             break
     }
 
     // Detect URLs in title
-    let detectedUrl = (push.title && push.title.match(/\bhttps?:\/\/\S+/gi)) || []
-    if (!push.url && detectedUrl.length > 0) {
-        push.url = detectedUrl[0]
+    let detectedUrl = (decoratedPush.title && decoratedPush.title.match(/\bhttps?:\/\/\S+/gi)) || []
+    if (!decoratedPush.url && detectedUrl.length > 0) {
+        decoratedPush.url = detectedUrl[0]
     }
 
     // Trim
-    push.title = push.title && push.title.trim()
-    push.body = push.body && push.body.trim()
+    decoratedPush.title = decoratedPush.title && decoratedPush.title.trim()
+    decoratedPush.body = decoratedPush.body && decoratedPush.body.trim()
 
-    //logger.debug('decoratePushbulletPush', 'decorated:', push);
-
-    return push
+    return decoratedPush
 }
+
 
 /**
  * Show Notification
  * @param {Object} notificationOptions - NotificationConfiguration
- * @param {Object=} pushObject - Pushbullet Push
+ * @param {Pushbullet.Push|Object=} push - Pushbullet Push
  */
-let renderNotification = (notificationOptions, pushObject) => {
-    logger.debug('renderNotification')
+let showNotification = (notificationOptions, push) => {
+    logger.info('showNotification')
 
-    /**
-     * Create notification
-     */
+    // Create Notification
     const notification = notificationProvider.create(notificationOptions)
 
-    /**
-     * @listens notification:PointerEvent#click
-     */
+    /** @listens notification#click */
     notification.on('click', () => {
-        logger.debug('notification#click')
+        logger.info('notification#click')
 
         // Open url
         if (notificationOptions.url) {
@@ -459,63 +480,68 @@ let renderNotification = (notificationOptions, pushObject) => {
         }
 
         // Dismiss within Pushbullet
-        if (pushObject) {
-            dismissPushbulletPush(pushObject)
+        if (push) {
+            dismissPush(push)
         }
     })
 
-    /**
-     * @listens notification:PointerEvent#close
-     */
+    /** @listens notification#close */
     notification.on('close', () => {
-        logger.debug('notification#close')
+        logger.info('notification#close')
 
         // Dismiss within Pushbullet
-        if (pushObject) {
-            dismissPushbulletPush(pushObject)
+        if (push) {
+            dismissPush(push)
         }
     })
 
-    /**
-     * @listens notification:PointerEvent#reply
-     */
-    notification.on('reply', (event, reply) => {
-        logger.debug('notification#reply')
+    /** @listens notification#reply */
+    notification.on('reply', (event, message) => {
+        logger.info('notification#reply')
 
-        pbSms.sendReply(reply, (error) => {
-            if (error) {
-                logger.error('notification#reply', error)
-            }
-        })
+        if (!!!message) {
+            logger.warn('reply message was empty')
+
+            return
+        }
+
+        // SMS Reply
+        if (push.type === 'sms_changed') {
+            pbSms.reply(message, push.source_device_iden, pbSms.getMessageThreadId(push), (target) => {
+                logger.info('reply message sent', 'to:', target)
+            })
+        }
+
+        // Chat Reply
+        if (push.type === 'note' || push.type === 'link' || push.type === 'file') {
+            createNotePush(message, push.sender_email, null, (target) => {
+                logger.info('reply message sent', 'to:', target)
+            })
+        }
+
     })
 
-    /**
-     * @listens notification:PointerEvent#error
-     */
+    /** @listens notification#error */
     notification.on('error', (error) => {
         logger.error('notification#error', error)
     })
 
-    /**
-     * @listens notification:PointerEvent#show
-     */
+    /** @listens notification#show */
     notification.on('show', (event) => {
-        logger.debug('notification#show', event)
+        logger.info('notification#show')
     })
 
 
-    /**
-     * Show notification
-     */
-    notification.show()
+    // Queue Throttled Notification
+    queueNotification(() => {
+        logger.info('Triggering Notification at:', getTimestamp())
 
+        // Show Notification
+        notification.show()
 
-    /**
-     * Play sound
-     */
-    if (retrievePushbulletSoundEnabled()) {
-        playSound(retrievePushbulletSoundFile())
-    }
+        // Play Sound
+        playSound()
+    })
 }
 
 /**
@@ -531,6 +557,7 @@ let writeResizeImage = (source, target, callback = () => {}) => {
         if (error) {
             logger.error('writeResizeImage', 'jimp.read', error)
             callback(error)
+
             return
         }
 
@@ -538,6 +565,7 @@ let writeResizeImage = (source, target, callback = () => {}) => {
             if (error) {
                 logger.error('writeResizeImage', 'result.resize', error)
                 callback(error)
+
                 return
             }
 
@@ -550,192 +578,137 @@ let writeResizeImage = (source, target, callback = () => {}) => {
 
 /**
  * Create Notification from Push Objects
- * @param {Object} push - Push Object
+ * @param {Pushbullet.Push|SmsEphemeral|SmsChangeEphemeral|NotificationEphemeral|DismissalEphemeral|ClipboardEphemeral} push - Pushbullet Push
  */
 let convertPushToNotification = (push) => {
     logger.debug('convertPushToNotification')
 
-    /**
-     * Decorate Push object
-     */
-    push = decoratePushbulletPush(push)
+    // Copy Push Object
+    const decoratedPush = decoratePush(push)
 
-    /**
-     * Create Options
-     */
+    // Create Options
     const notificationOptions = {
-        body: push.body,
-        icon: push.icon,
-        subtitle: push.subtitle,
-        tag: push.iden,
-        title: push.title,
-        url: push.url
+        body: decoratedPush.body,
+        icon: decoratedPush.icon,
+        subtitle: decoratedPush.subtitle,
+        tag: decoratedPush.iden,
+        title: decoratedPush.title,
+        url: decoratedPush.url
     }
 
-    /**
-     * Body
-     */
-    const hideNotificationBody = retrievePushbulletHideNotificationBody()
-    if (hideNotificationBody) {
-        notificationOptions.body = void 0
+    // SMS Feature Enabled?
+    if (decoratedPush.type === 'sms_changed') {
+        const pushbulletSmsEnabled = retrievePushbulletSmsEnabled()
+        if (!pushbulletSmsEnabled) { return }
     }
 
-    /**
-     * Reply
-     */
-    if (push.type === 'sms_changed') {
+    // Hide Notification Body?
+    const pushbulletHideNotificationBody = retrievePushbulletHideNotificationBody()
+    if (pushbulletHideNotificationBody) {
+        notificationOptions.body = ''
+    }
+
+    // Enable SMS Reply?
+    if (decoratedPush.type === 'sms_changed') {
         notificationOptions.hasReply = true
         notificationOptions.replyPlaceholder = 'Your SMS Reply'
     }
 
-    /**
-     * Fetch Favicon
-     */
+    // Enable Chat Reply?
+    if ((decoratedPush.type === 'note' || decoratedPush.type === 'link' || decoratedPush.type === 'file') && decoratedPush.direction === 'incoming' && !!decoratedPush.sender_email) {
+        notificationOptions.hasReply = true
+        notificationOptions.replyPlaceholder = 'Your Chat Reply'
+    }
+
+    // Image: Create Temporary Path
     const imageUrl = notificationOptions.icon || ''
     const imageProtocol = url.parse(imageUrl).protocol
     const imageFilepathTemporary = path.join(appTemporaryDirectory, `${appName}.push.${shortid.generate()}.png`)
 
-    /**
-     * Image: None
-     */
+    // Image: Skip
     if (!imageProtocol) {
-        renderNotification(notificationOptions, push)
+        showNotification(notificationOptions, decoratedPush)
 
         return
     }
 
-    /**
-     * Image: From DataURI
-     */
+    // Image: Generate from Data URL
     if (imageProtocol === 'data:') {
         writeResizeImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, (error, imageFilepathConverted) => {
-            if (error) {
-                return
-            }
+            if (error) { return }
 
             notificationOptions.icon = imageFilepathConverted
-            renderNotification(notificationOptions, push)
+            showNotification(notificationOptions, decoratedPush)
         })
 
         return
     }
 
-    /**
-     * Image: From URI
-     */
+    // Image: Download from Web
     imageDownloader.image({ url: imageUrl, dest: imageFilepathTemporary })
-                   .then((result) => {
-                       const imageFilepathDownloaded = result.filename
-                       const imageBuffer = result.image
-                       const imageType = fileType(imageBuffer)
-                       const isIco = icojs.isICO(imageBuffer)
-                       const isPng = imageType.mime === 'image/png'
-                       const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg'
+        .then((result) => {
+            const imageFilepathDownloaded = result.filename
+            const imageBuffer = result.image
+            const imageType = fileType(imageBuffer)
+            const isIco = icojs.isICO(imageBuffer)
+            const isPng = imageType.mime === 'image/png'
+            const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg'
 
-                       logger.debug('convertPushToNotification', 'imageDownloader', 'imageUrl:', imageUrl, 'imageFilepathDownloaded:', imageFilepathDownloaded, 'imageType:', imageType)
+            // From .PNG
+            if (isPng || isJpeg) {
+                writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
+                    if (error) { return }
 
-                       /**
-                        * .PNG
-                        */
-                       if (isPng || isJpeg) {
-                           writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
-                               if (error) {
-                                   return
-                               }
+                    notificationOptions.icon = imageFilepathConverted
+                    showNotification(notificationOptions, decoratedPush)
+                })
 
-                               notificationOptions.icon = imageFilepathConverted
-                               renderNotification(notificationOptions, push)
-                           })
+                return
+            }
 
-                           return
-                       }
+            // From .ICO
+            if (isIco) {
+                icojs.parse(imageBuffer, 'image/png').then(imageList => {
+                    const imageMaximum = imageList[imageList.length - 1]
+                    writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
+                        if (error) { return }
 
-                       /**
-                        * .ICO -> .PNG
-                        */
-                       if (isIco) {
-                           icojs.parse(imageBuffer, 'image/png').then(imageList => {
-                               const imageMaximum = imageList[imageList.length - 1]
-                               writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
-                                   if (error) {
-                                       return
-                                   }
+                        notificationOptions.icon = imageFilepathConverted
+                        showNotification(notificationOptions, decoratedPush)
+                    })
+                })
+            }
 
-                                   notificationOptions.icon = imageFilepathConverted
-                                   renderNotification(notificationOptions, push)
-                               })
-                           })
-                       }
+        })
+        // Image: Fallback to App Icon
+        .catch((error) => {
+            logger.warn('convertPushToNotification', 'imageDownloader', error)
 
-                   })
-                   /**
-                    * Image Downloader failed: Fallback to AppIcon
-                    */
-                   .catch((error) => {
-                       logger.warn('convertPushToNotification', 'imageDownloader', error)
-
-                       renderNotification(notificationOptions, push)
-                   })
+            showNotification(notificationOptions, decoratedPush)
+        })
 }
 
 /**
- * Test if a notification should be shown for this push
+ * Test if Push is ignored
  * @param {Object} push - Push Object
- * @returns {Boolean|void}
+ * @returns {Boolean} - Yes / No
  */
-let shouldShowPush = (push) => {
-    //logger.debug('shouldShowPush');
+let testIfPushIsIgnored = (push) => {
+    //logger.debug('testIfPushIsIgnored')
 
-    // Activity
-    if (push.hasOwnProperty('active')) {
-        // Push is not active
-        if (Boolean(push.active) === false) {
-            // logger.debug('shouldShowPush', false, 'push is not active');
-            return false
-        }
+    // Push inactive?
+    if (!!!push.active) {
+        return true
     }
 
-    // Direction
-    if (push.direction === 'self') {
-        // Don't show if Push was dismissed
-        if (Boolean(push.dismissed) === true) {
-            // logger.debug('shouldShowPush', false, 'push was dismissed already');
-            return false
-        }
+    // Push dismissed
+    if (push.direction === 'self' && !!push.dismissed) {
+        return true
     }
 
-    // SMS
-    if (push.type === 'sms_changed') {
-        // Don't show if SMS is disabled
-        const pushbulletSmsEnabled = retrievePushbulletSmsEnabled()
-        if (!pushbulletSmsEnabled) {
-            // logger.debug('shouldShowPush', false, 'sms mirroring is not enabled');
-            return false
-        }
-        // Don't show if SMS has no attached notifications
-        if (push.notifications.length === 0) {
-            // logger.debug('shouldShowPush', false, 'sms push is empty');
-            return false
-        }
-    }
-
-    // logger.debug('shouldShowPush:', true, 'type:', push.type);
-
-    return true
-}
-
-/**
- * Show Pushbullet push
- * @param {Object} push - Push Object
- */
-let showPush = (push) => {
-    //logger.debug('showPush');
-
-    // Test if in snooze mode
-    const isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'))
-
-    if (!isSnoozing && shouldShowPush(push)) {
-        convertPushToNotification(push)
+    // Push SMS notifications empty?
+    if (push.type === 'sms_changed' && !!!push.notifications.length) {
+        return true
     }
 }
 
@@ -744,23 +717,13 @@ let showPush = (push) => {
  * @param {Number=} queueLimit - Limit result to fixed number
  * @returns {Array|undefined} List of Pushes
  */
-let getRecentPushesList = (queueLimit = 0) => {
-    logger.debug('fetchRecentPushes')
+let getRecentPushes = (queueLimit = 0) => {
+    logger.debug('getRecentPushes')
 
-    const pb = window.pb
+    // List recent Pushes
+    const recentPushesList = window.pb.api.pushes.all.filter(push => !testIfPushIsIgnored(push))
 
-    let recentPushesList = []
-
-    // Build list of recent active pushes
-    for (let iden in pb.api.pushes.objs) {
-        if (pb.api.pushes.objs.hasOwnProperty(iden)) {
-            if (shouldShowPush(pb.api.pushes.objs[iden])) {
-                recentPushesList.push(pb.api.pushes.objs[iden])
-            }
-        }
-    }
-
-    // Sort recent pushes by date created
+    // Sort recent Pushes (by date)
     recentPushesList.sort((pushA, pushB) => {
         const dateA = pushA.created
         const dateB = pushB.created
@@ -773,10 +736,8 @@ let getRecentPushesList = (queueLimit = 0) => {
         return 0
     })
 
-    // Apply size limit to recent pushes
-    recentPushesList = recentPushesList.slice(recentPushesList.length - queueLimit, recentPushesList.length)
-
-    return recentPushesList
+    // Return sliced list
+    return recentPushesList.slice(recentPushesList.length - queueLimit, recentPushesList.length)
 }
 
 /**
@@ -789,49 +750,49 @@ let getRecentPushesList = (queueLimit = 0) => {
 let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback = () => {}) => {
     logger.debug('enqueuePush')
 
-    pushes = _.isArray(pushes) ? pushes : [pushes]
+    pushes = _.isArray(pushes) ? pushes : [ pushes ]
 
     if (pushes.length === 0) {
         logger.warn('enqueuePush', 'pushes list was empty')
         callback(null, 0)
+
         return
     }
 
     let nextPushesList = pushes
     let notifyAfter = lastNotificationTimestamp || 0
 
-    // Remove pushes older than 'lastNotification' from array
-    if (Boolean(ignoreDate) === false) {
-        nextPushesList = pushes.filter((element) => {
-            return (element.created) > notifyAfter
-        })
+    // Filter Pushes before lastNotificationTimestamp
+    if (!!!ignoreDate) {
+        nextPushesList = pushes.filter(push => push.created > notifyAfter)
     }
 
-    nextPushesList.forEach((push, pushIndex) => {
-        //logger.debug('enqueuePush', 'push:', push);
+    nextPushesList.forEach((push, pushIndex, pushList) => {
+        // Client Snoozing?
+        const isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'))
 
-        let timeout = setTimeout(() => {
+        // Push ignored?
+        const isIgnoredPush = testIfPushIsIgnored(push)
 
-            // Show local notification
-            showPush(push)
+        if (!isSnoozing && !isIgnoredPush) {
+            convertPushToNotification(push)
+        }
 
-            // Update saved lastNotification
-            if (push.created > notifyAfter) {
-                lastNotificationTimestamp = push.created
-                storePushbulletLastNotificationTimestamp(push.created)
-            }
+        // Last Iteration?
+        if (pushIndex !== pushList.length - 1) { return }
 
-            // Last push triggered
-            if (nextPushesList.length === (pushIndex + 1)) {
-                if (updateBadgeCount) {
-                    updateBadge(remote.app.getBadgeCount() + nextPushesList.length)
-                }
+        // Store lastNotificationTimestamp
+        if (push.created > notifyAfter) {
+            lastNotificationTimestamp = push.created
+            storePushbulletLastNotificationTimestamp(push.created)
+        }
 
-                callback(null, nextPushesList.length)
+        // Update AppIcon Badge
+        if (updateBadgeCount) {
+            updateBadge(remote.app.getBadgeCount() + nextPushesList.length)
+        }
 
-                clearTimeout(timeout)
-            }
-        }, (Math.round(notificationInterval) * (pushIndex + 1)))
+        callback(null, pushList.length)
     })
 }
 
@@ -843,12 +804,13 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
 let enqueueRecentPushes = (callback = () => {}) => {
     logger.debug('enqueueRecentPushes')
 
-    const pushesList = getRecentPushesList(maxRecentNotifications)
+    const pushesList = getRecentPushes(recentPushesAmount)
 
     enqueuePush(pushesList, true, false, (error, count) => {
         if (error) {
             logger.error('enqueueRecentPushes', error)
             callback(error)
+
             return
         }
 
@@ -863,9 +825,15 @@ let init = () => {
     logger.debug('init')
 
     lastNotificationTimestamp = retrievePushbulletLastNotificationTimestamp()
-    appSoundVolume = retrievePushbulletSoundVolume()
 }
 
+
+/**
+ * @listens ipcRenderer:tray-close
+ */
+ipcRenderer.on('tray-close', () => {
+    logger.debug('ipcRenderer#tray-close')
+})
 
 /**
  * @listens window:UIEvent#load
@@ -885,3 +853,8 @@ module.exports = {
     enqueueRecentPushes: enqueueRecentPushes,
     updateBadge: updateBadge
 }
+
+/**
+ * @typedef DecoratedPush
+ * @mixes {Pushbullet.Push}
+ */

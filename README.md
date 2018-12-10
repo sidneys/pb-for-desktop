@@ -1,89 +1,103 @@
 # PB for Desktop [![travis](https://travis-ci.org/sidneys/pb-for-desktop.svg?branch=master)](http://travis-ci.org/sidneys/pb-for-desktop) [![appveyor](https://ci.appveyor.com/api/projects/status/25mhkye21umnbd79?svg=true)](https://ci.appveyor.com/project/sidneys/pb-for-desktop) [![npm](https://img.shields.io/npm/v/pb-for-desktop.svg?style=flat-square)](https://npmjs.com/package/pb-for-desktop)
 
 <p align="center">
-  <b>PB for Desktop</b> is a <b>lightweight</b> open-source <b>Desktop app</b> for <b><a href="https://pushbullet.com/">PushBullet</a></b>.<br>
+    <b>PB for Desktop</b> is a <b>lightweight</b> open-source <b>Desktop app</b> for <b><a href="https://pushbullet.com/">PushBullet</a></b>.<br>
   Receive native push notifications on macOS, Windows and Linux.</b><br><br>
-  <img height="200px" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/graphics/icon.png"/><br><br>
-  <i>Not affiliated with PushBullet Incorporated.</i><br><br>
+    <img height="200px" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/graphics/icon.png"/><br><br>
+    <i>Not affiliated with PushBullet, Inc.</i><br><br>
 </p>
 
 
 ------
 
-![Screenshot: Pushbullet for Desktop (macOS)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-macos.png)
+<p align="center">
+    <img alt="Pushbullet for Desktop, macOS" width="75%" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-macos.png"/><br>
+    <sub><sup>macOS</sup></sub>
+</p>
 
-![Screenshot: Pushbullet for Desktop (Windows)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-win32.png)
+<p align="center">
+    <img alt="Pushbullet for Desktop on Windows" width="75%" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-win32.png"/><br>
+    <sub><sup>Windows</sup></sub>
+</p>
 
-![Screenshot: Pushbullet for Desktop (Linux)](https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-linux.png)
+<p align="center">
+    <img alt="Pushbullet for Desktop, Linux" width="75%" src="https://raw.githubusercontent.com/sidneys/pb-for-desktop/master/resources/screenshots/screenshot-linux.png"/><br>
+    <sub><sup>Linux</sup></sub>
+</p>
 
 ------
 
-> **Native Notifications**
 
-Uses the macOS [Notification Center](https://en.wikipedia.org/wiki/Notification_Center), the Windows 10 [Action Center](https://en.wikipedia.org/wiki/Action_Center) and [libnotify](https://launchpad.net/ubuntu/+source/libnotify) for Linux.
-
-> **Cross-Platform**
+> **Cross Platform**
 
 Tested on:
 
-- macOS: 10.11, 10.12, 10.13
-- Windows 10: 1607, 1703, 1709
-- Linux: Ubuntu 16.04/17.04, elementaryOS 0.4, Linuxmint 18
+ - **macOS** 10.11 (El Capitan), 10.12 (Sierra), 10.13 (High Sierra), 10.14 (Mojave)
+ - **Windows 10** 1607, 1703, 1709, 1803
+ - **Linux** Ubuntu (16, 17, 18), elementaryOS (0.4)
 
 > **Unobtrusive**
 
-Small resource footprint - runs as a macOS Menu Bar app or a Windows System Tray app.
+Runs as a Menubar (macOS) or a SysTray (Windows) app. Small resource footprint.
+
+> **Native Notifications**
+
+Uses macOS' [Notification Center](https://en.wikipedia.org/wiki/Notification_Center), the Windows 10 [Action Center](https://en.wikipedia.org/wiki/Action_Center) and [libnotify](https://launchpad.net/ubuntu/+source/libnotify) for Linux.
+
+> **Notification Thumbnails**
+
+For text-based pushes, notification thumbnails are generated on-the-fly based on a the originating Websites' favicon.
+For pushes containing image content, a thumbnail-sized image is shown within the notification.
 
 > **Simple Setup**
 
 No wrestling with API-Keys or other technical knowledge required.
 Login to Pushbullet using Google or Facebook.
 
-> **Channel Images**
+> **Custom Notification Sounds**
 
-Channel-specific  (e.g. [IFTTT](https://ifttt.com/), [Zapier](https://zapier.com/), [Chat](http://lifehacker.com/huge-pushbullet-update-adds-instant-messaging-chat-hea-1714870644)) icon images for most notifications.
+Use the default PushBullet sound or one of your choice.
+Ships multiple sound effect sets: Android, iOS, Tesla Motors, Slack, Nintendo, Windows, macOS
+Or use your own custom sound (supported formats: `.m4a`, `.mp3`, `.mp4`, `.ogg` and `.wav`)
 
-> **Push Previews**
-
-Preview thumbnails for pushes containing images.
-
-> **Custom Notification Sound Effect**
-
-Use the default Pushbullet notification sound effect or one of your choice.
-Supports `.m4a`, `.mp3`, `.mp4`, `.ogg` and `.wav`.
-
-> **Dedicated Push Target**
-
-Use the *PB for Desktop* PushBullet device to only send pushes to your desktop.
-
-> **Inline Notification SMS Message Reply**
-
-Reply to SMS messages directly within native Desktop notifications (macOS).
-
-> **Mirroring**
-
-Mirror Android notifications (Android).
-
-> **SMS** [![Feature Status: Beta](https://img.shields.io/badge/feature-alpha-blue.svg?style=flat-square)]()
+> **SMS** [![Feature Status: Alpha](https://img.shields.io/badge/feature-beta-red.svg?style=flat-square)]()
 
 Send & receive SMS to Android devices.
 
-> **Emoji** [![Feature Status: Alpha](https://img.shields.io/badge/feature-beta-red.svg?style=flat-square)]()
+> **Inline SMS Message Reply** [![Feature Status: Alpha](https://img.shields.io/badge/feature-beta-red.svg?style=flat-square)]()
 
-Use tags to add emoji to notifications, e.g.: add  `{video}` to show a 📺 with every notification.
+Reply to SMS messages directly within native Desktop notifications (macOS).
+
+> **Channel Images for IFTTT and Zapier**
+
+Channel-specific  (e.g. [IFTTT](https://ifttt.com/), [Zapier](https://zapier.com/), [Chat](http://lifehacker.com/huge-pushbullet-update-adds-instant-messaging-chat-hea-1714870644)) icon images for most notifications.
+
+> **Notification Mirroring**
+
+Mirror Android notifications (Android).
+
+> **Direct Pushes to Desktop**
+
+Adds a `PB for Desktop` PushBullet device for sending pushes to your desktop.
+
+> **Developer Friendly**
+
+Ships multiple NodeJS-driven command scripts for Developers, as [code contributions are welcome](#contribute).
+
 
 
 ## Contents
 
 1. [Installation](#installation)
-1. [Developers](#development)
-1. [Continuous Integration](#continuous-integration)
+1. [Development](#development)
+1. [Building](#building)
 1. [Roadmap](#roadmap)
 1. [Contribute](#contribute)
 1. [Author](#author)
 
 
-## <a name="installation"/></a> Installation
+
+## <a name="installation"/></a>Installation
 
 ### Standard  Installation
 
@@ -95,25 +109,27 @@ Grab the latest version here: [Download Pushbullet for Desktop](https://sidneys.
 npm install --global pb-for-desktop
 ```
 
-## <a name="developers"/></a> Developers
 
-### Sources
 
-Clone the repo and install dependencies.
+## <a name="development"/></a>Development
 
-```shell
-git clone https://github.com/sidneys/pb-for-desktop.git pb-for-desktop
+### Getting the Sourcecode
+
+To clone the Git repository and install the required dependencies, run these Shell commands:
+
+```bash
+git clone https://github.com/sidneys/pb-for-desktop.git
 cd pb-for-desktop
 npm install
 ```
 
-### Scripts
+### Developer Commands
+
+The following `npm` scripts are available for development purposes:
 
 #### *start*
 
 Runs the app in development mode.
-
-Usage:
 
 ```bash
 npm run start
@@ -122,14 +138,10 @@ npm run start
 Parameters:
 
  - `--debug` Start with development tools
- - `--livereload` Start with live reload
-
 
 #### *localsetup*
 
-Install the app in the System app folder and start it.
-
-Usage:
+Installs the app in the System app folder and starts it.
 
 ```bash
 npm run localsetup
@@ -137,16 +149,15 @@ npm run localsetup
 
 Parameters:
 
- - `--build` Rebuild project before installation
- - `--debug` Start with development tools
+ - `--build` Rebuilds app before installation
+ - `--debug` Start with enabled development tools
+ - `--beta` Build Beta application version
 
-
-#### *build*
+#### <a name="build"/></a>*build*
 
 Builds the application and creates platform-specific installation packages (see [requirements](#build-requirements)).
 If no parameter is supplied, the current platform is built.
-
-Usage:
+Supports building a Beta application version, which is running side-by-side with the regular version.
 
 ```bash
 npm run build
@@ -157,78 +168,56 @@ Parameters:
  - `--macos` Build & Package for macOS
  - `--windows` Build & Package for Windows 
  - `--linux` Build & Package for Linux 
- - `--metadata` Generate Auto-Updater metadata
+ - `--beta` Build Beta application version
 
 
-### Build Requirements
 
-- Building for Windows requires [`wine`](https://winehq.org) and [`mono`](https://nsis.sourceforge.net/Docs/Chapter3.htm) (on macOS, Linux)
-- Building for Linux requires  [`fakeroot`](https://wiki.debian.org/FakeRoot) and [`dpkg `](https://wiki.ubuntuusers.de/dpkg/) (on macOS, Windows)
-- Only macOS can build for other platforms.
+## <a name="building"/></a>Building
 
-#### macOS Build Setup
+### Build the App for the current Platform
 
-Install [Homebrew](https://brew.sh), then run:
+See the [`build`](#build) Developer command.
+
+### Multi-Platform Builds
+
+- Only macOS can build all other platforms and requires [Homebrew](https://brew.sh) to install the prerequisite software.
+- Building Windows (on macOS, Linux) requires [`wine`](https://winehq.org), [`mono`](https://nsis.sourceforge.net/Docs/Chapter3.htm)
+- Building Linux (on macOS, Windows) requires [`fakeroot`](https://wiki.debian.org/FakeRoot), [`dpkg `](https://wiki.ubuntuusers.de/dpkg/)
+
+#### Build-for-Windows Preparation on macOS
 
 ```bash
-brew install wine mono fakeroot dpkg
+brew install wine mono
 ```
 
-#### Linux  Build Setup
+#### Build-for-Linux Preparation on macOS
 
 ```bash
-sudo apt-get install wine mono fakeroot dpkg
+brew install fakeroot dpkg
 ```
 
+#### Build-for-Windows Preparation on Linux
 
-## <a name="continuous-integration"/></a> Continuous Integration
+```bash
+apt-get install wine mono gcc-multilib g++-multilib
+```
 
-> Turnkey **build-in-the-cloud** integration.
-
-The CI deployment is managed by a custom layer of node scripts and Electron-optimized configuration templates.
-Completed Installation packages are deployed to [GitHub Releases](https://github.com/sidneys/pb-for-desktop/masters). Builds for all platforms and architectures take about 5 minutes.
-Backed by the open-source-friendly guys at [Travis](http://travis-ci.org/) and AppVeyor](https://ci.appveyor.com/) and running [electron-packager](https://github.com/electron-userland/electron-packager) under the hood.
-
-### Setup
-
-1.  [Fork](https://github.com/sidneys/pb-for-desktop/fork) the repo
-1.  Generate your GitHub [Personal Access Token](https://github.com/settings/tokens) using "repo" as scope. Copy it to the clipboard.
-1.  **macOS + Linux**
-     1. Sign in to [Travis](http://travis-ci.org/) using GitHub.
-     2. Open your [Travis Profile](https://travis-ci.org/profile), click "Sync Account" and wait for the process to complete.
-     3. Find this repository in the list, enable it and click "⚙" to open its settings.
-     4. Create a new Environment Variable named **GITHUB_TOKEN**. Paste your Token from step 2 as *value*. 
-1.  **Windows**
-     1. Sign in to [AppVeyor](https://ci.appveyor.com/) using GitHub.
-     2. Click on ["New Project"](https://ci.appveyor.com/projects/new), select "GitHub", look up this repo in the list and click "Add".
-     3. After import navigate to the *Settings* > *Environment* subsection
-     4. Select "Add Variable", insert **GITHUB_TOKEN** for *name*, paste your Token as *value*. Save.
-
-### Triggering Builds
-
-1. Add a new Tag to start the build process:
-
-   ```shell
-   git tag -a v1.0.1
-   git push --tags
-   ```
-   The builds are started in parallel and added to the "Releases" page of the GitHub repo (in draft mode).
-1. Use the editing feature to publish the new app version.
-1. There is no step 3
 
 
 ## <a name="roadmap"/></a> Roadmap
 
-- [ ] Signed binaries
+- [ ] Binaries signed for Distribution (macOS, Windows)
 - [ ] End-To-End Tests (see [Spectron](https://github.com/electron/spectron))
+
 
 
 ## <a name="contribute"/></a> Contribute ![Contributions Wanted](https://img.shields.io/badge/contributions-wanted-red.svg?style=flat-square)
 
 Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/blob/master/CONTRIBUTING.md) first.
 
-- [Dev Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
 - [Issues](http;//github.com/sidneys/pb-for-desktop/issues) File bugs and document issues.
+- [Developer Chat](http://gitter.im/sidneys/pb-for-desktop): Talk about features and suggestions.
+
 
 
 ## <a name="license"/></a> License
@@ -236,8 +225,8 @@ Read the [contribution documentation](https://github.com/sidneys/pb-for-desktop/
 MIT
 
 
+
 ## <a name="author"/></a> Author
 
-[sidneys](http://sidneys.github.io) 2017
-
+[sidneys](http://sidneys.github.io) 2018
 

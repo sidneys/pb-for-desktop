@@ -8,18 +8,19 @@
  * @constant
  */
 const path = require('path')
-const child_process = require('child_process')
+const childProcess = require('child_process')
+const os = require('os')
 
 /**
  * Modules
  * External
  * @constant
  */
+const _ = require('lodash')
 const appRootPath = require('app-root-path')
-const parseSemver = require('parse-semver')
+const readPkg = require('read-pkg')
 const simpleReload = require('simple-reload')
-const tryRequire = require('try-require')
-
+const detectInstalled = require('detect-installed')
 /**
  * Modules
  * Configuration
@@ -32,7 +33,7 @@ appRootPath.setPath(path.join(__dirname, '..'))
  * @constant
  */
 const packageJson = require(path.join(appRootPath.path, 'package.json'))
-const logger = require(path.join(appRootPath.path, 'lib', 'logger'))({ namespace: packageJson.productName, timestamp: false })
+const logger = require('@sidneys/logger')({ write: false })
 
 /**
  * Filesystem
@@ -43,117 +44,125 @@ const applicationPath = path.join(appRootPath.path, packageJson.main)
 
 
 /**
- * Install required Dependencies
- * @param {Object} dependencyObject - package.json dependency map
- * @param {Function} callback  - Callback
+ * Reads dependencies, devDependencies, peerDependencies, bundleDependencies
+ * from package.json and returns them as an Array in shorthand format (name@version).
+ * @param {String=} targetDirectory - Path to the root of an analysed module.
+ * @returns {String[]}
  */
-let installDependencies = (dependencyObject, callback) => {
-    logger.debug('installDependencies', dependencyObject)
+let readPackageDependencies = (targetDirectory = appRootPath.path) => {
+    logger.debug('readPackageDependencies', targetDirectory)
 
-    let cb = callback || function() {}
+    const packageJson = readPkg.sync({ cwd: targetDirectory })
 
-    // Generate list of dependencies
-    let dependencyNameList = Object.keys(dependencyObject)
+    const dependenciesTreeList = _(packageJson).pickBy((v, k) => k.match(/dependencies/gi)).values().value()
+    const unifiedDependenciesTree = _.merge(...dependenciesTreeList)
+    // const semverList = _(unifiedDependenciesTree).map((v, k) => `${k}@${v}`).value()
+    const nameList = _(unifiedDependenciesTree).map((v, k) => k).value()
 
-    // Determine uninstalled dependencies
-    dependencyNameList = dependencyNameList.filter((dependencyName) => {
-        const isInstalled = tryRequire.resolve(dependencyName)
-        return !isInstalled
-    })
-
-    // Generate package names
-    let dependencyList = dependencyNameList.map((dependencyName) => {
-        const foundVersion = dependencyObject[dependencyName]
-        let parsedVersion
-
-        try {
-            parsedVersion = parseSemver(`${dependencyName}@${foundVersion}`).version
-        } catch (err) {
-            parsedVersion = foundVersion
-        }
-
-        return `${dependencyName}@${parsedVersion}`
-    })
-
-    // Install
-    if (dependencyList.length > 0) {
-        /**
-         * npm install
-         */
-        logger.info('installing dependencies:', `"${dependencyList.join('", "')}"`)
-
-        child_process.execSync(`npm install ${dependencyList.join(' ')} --loglevel silent`, {
-            cwd: appRootPath.path,
-            maxBuffer: (20000 * 1024),
-            stdio: 'inherit'
-        })
-
-        logger.info(`installing dependencies complete.`)
-    }
-
-    cb(null)
+    return nameList
 }
 
 /**
- * Launch App
- * @param {String} electronPath - Path to Electron
- * @param {String} applicationPath - Path to App
+ * Install Packages
+ * @param {String=} targetDirectory - Path to the root of an analysed module.
+ * @param {Function=} callback  - Callback
  */
-let launchApplication = (electronPath, applicationPath) => {
-    logger.debug('launchApplication')
+let installPackages = (targetDirectory, callback = () => {}) => {
+    logger.debug('installPackages')
 
-    /**
-     * Launch application
-     */
-    logger.info('application location:', `"${appRootPath.path}"`)
-    logger.info('electron installation:', `"${path.relative(appRootPath.path, electronPath)}"`)
+    // Determine Missing Package Names
+    const packageNameList = _(readPackageDependencies(targetDirectory))
+    const unresolvedPackageNameList = packageNameList.filter(packageName => !detectInstalled.sync(packageName, { local: true }))
 
-    const child = child_process.spawn(electronPath, [applicationPath], {
+    unresolvedPackageNameList.forEach((packageName, index, array) => {
+        logger.debug('npm install', packageName)
+
+        // npm install
+        // childProcess.execSync(`npm install ${unresolvedPackageName}`, {
+        const npm = childProcess.spawn(`npm`, [ 'install', packageName ], {
+            cwd: appRootPath.path
+        })
+
+        npm.stdout.on('data', (data) => {
+            data.toString().trim().split(os.EOL).forEach(line => logger.info('npm', line))
+        })
+        npm.stderr.on('data', (data) => {
+            data.toString().trim().split(os.EOL).forEach(line => logger.error('npm', line))
+        })
+
+        npm.on('close', (code) => {
+            if (index === array.length - 1) {
+                logger.info(`Installing Packages complete.`)
+                callback()
+            }
+        })
+
+        // // npm install
+        // childProcess.execSync(`npm install ${unresolvedPackageName}`, {
+        //     cwd: appRootPath.path,
+        //     stdio: 'inherit'
+        // })
+        //
+        // // Las Iteration
+        // if (index === array.length - 1) {
+        //     logger.info(`Installing Packages complete.`)
+        //     callback()
+        // }
+    })
+}
+
+/**
+ * Wait until Package is available
+ * @param {String} packageName - Package Name
+ * @param {Function=} callback - Callback
+ */
+let waitForPackage = (packageName, callback = () => {}) => {
+    logger.debug('waitForPackage')
+
+    // Wait until Package is ready
+    const interval = setInterval(() => {
+        const packagePath = simpleReload(packageName)
+
+        if (!packagePath) { return }
+
+        // Callback
+        callback(packagePath)
+        clearInterval(interval)
+    }, 2000)
+}
+
+/**
+ * Launch Package
+ * @param {String} packagePath - Package Path
+ * @param {Array=} launchArguments - Launch Arguments
+ */
+let launchPackage = (packagePath, launchArguments) => {
+    logger.debug('launchPackage')
+
+    // Launch Application
+    logger.info('Launching Application', appRootPath.path)
+
+    const child = childProcess.spawn(packagePath, launchArguments, {
         cwd: appRootPath.path,
         detached: true,
         stdio: 'ignore'
     })
 
-    /**
-     * Fork process
-     */
+    // Fork
     child.unref()
 
-    /**
-     * Exit
-     */
-    process.on('exit', () => {
-        logger.info('successfully started.')
-    })
-
+    // Exit
     process.exit(0)
 }
 
 
 /**
- * Main
- */
-let main = () => {
-    logger.debug('main')
-
-    installDependencies(packageJson.devDependencies, () => {
-        let interval = setInterval(() => {
-            const electron = simpleReload('electron')
-
-            if (!electron) {
-                return
-            }
-
-            launchApplication(electron, applicationPath)
-            clearInterval(interval)
-        }, 2000)
-    })
-}
-
-
-/**
- * Init
+ * Handle Start as (global) CLI Module
  */
 if (require.main === module) {
-    main()
+    installPackages(appRootPath.path, () => {
+        waitForPackage('electron', (packagePath) => {
+            launchPackage(packagePath, [ applicationPath ])
+        })
+    })
 }

@@ -50,6 +50,13 @@ let retrieveAppShowBadgeCount = () => configurationManager('appShowBadgeCount').
 
 
 /**
+ * Background Throttling Restoration Delay
+ * @constant
+ */
+const backgroundThrottlingDelay = 5000
+
+
+/**
  * DOM Components
  * @constant
  */
@@ -118,6 +125,29 @@ let onLogin = () => {
     domTools.setText(spinnerTextElement, 'logged in')
 }
 
+/** @namespace webContents.getLastWebPreferences() */
+
+/**
+ * Tray Menu Close handler
+ */
+let onTrayClose = () => {
+    logger.debug('onTrayClose')
+
+    const webContents = remote.getCurrentWebContents()
+
+    // Get webPreferences
+    const webPreferences = webContents.getLastWebPreferences()
+
+    // Disable backgroundThrottling – then restore after Delay
+    webContents.setBackgroundThrottling(true)
+    const timeout = setTimeout(() => {
+        webContents.setBackgroundThrottling(!!webPreferences.backgroundThrottling)
+
+        clearTimeout(timeout)
+    }, backgroundThrottlingDelay)
+}
+
+
 /**
  * Set application badge count
  * @param {Number} total - Number to set
@@ -154,7 +184,17 @@ ipcRenderer.on('zoom', (event, direction) => {
 
 
 /**
- * @listens webviewViewElement#did-fail-load
+ * @listens ipcRenderer#Event:tray-close
+ */
+ipcRenderer.on('tray-close', () => {
+    logger.debug('ipcRenderer#tray-close')
+
+    onTrayClose()
+})
+
+
+/**
+ * @listens webviewViewElement#Event:did-fail-load
  */
 webviewViewElement.addEventListener('did-fail-load', () => {
     logger.debug('webviewViewElement#did-fail-load')
@@ -163,7 +203,7 @@ webviewViewElement.addEventListener('did-fail-load', () => {
 })
 
 /**
- * @listens webviewViewElement#did-navigate-in-page
+ * @listens webviewViewElement#Event:did-navigate-in-page
  */
 webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
     logger.debug('webviewViewElement#did-navigate-in-page')
@@ -188,7 +228,7 @@ webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
 })
 
 /**
- * @listens webviewViewElement#dom-ready
+ * @listens webviewViewElement#Event:dom-ready
  */
 webviewViewElement.addEventListener('dom-ready', () => {
     logger.debug('webviewViewElement#dom-ready')
@@ -200,7 +240,7 @@ webviewViewElement.addEventListener('dom-ready', () => {
 /** @namespace event.channel */
 
 /**
- * @listens webviewViewElement#ipc-message
+ * @listens webviewViewElement#Event:ipc-message
  */
 webviewViewElement.addEventListener('ipc-message', (event) => {
     logger.debug('playerViewElement#ipc-message', 'channel', event.channel, 'args', event.args.join())
@@ -224,7 +264,7 @@ webviewViewElement.addEventListener('ipc-message', (event) => {
 })
 
 /**
- * @listens webviewViewElement#load-commit
+ * @listens webviewViewElement#Event:load-commit
  */
 webviewViewElement.addEventListener('load-commit', (event) => {
     logger.debug('webviewViewElement#load-commit')
@@ -264,7 +304,7 @@ webviewViewElement.addEventListener('load-commit', (event) => {
 })
 
 /**
- * @listens webviewViewElement#new-window
+ * @listens webviewViewElement#Event:new-window
  */
 webviewViewElement.addEventListener('new-window', (event) => {
     logger.debug('webviewViewElement#new-window')

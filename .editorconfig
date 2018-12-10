@@ -15,6 +15,9 @@ indent_size = 2
 [*.json]
 indent_size = 2
 
+[*.ts]
+indent_size = 2
+
 [*.md]
 trim_trailing_whitespace = false
 

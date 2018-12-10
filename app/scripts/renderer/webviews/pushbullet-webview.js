@@ -15,8 +15,7 @@ const path = require('path')
  * @constant
  */
 const electron = require('electron')
-const { remote } = electron
-const { ipcRenderer } = electron
+const { remote, ipcRenderer } = electron
 
 /**
  * Modules
@@ -59,17 +58,6 @@ const appName = remote.getGlobal('manifest').name
 const defaultInterval = 500
 const defaultTimeout = 500
 
-
-/** @namespace item.created */
-/** @namespace newPush.target_device_iden */
-/** @namespace pb.api.devices */
-/** @namespace pb.api.pushes */
-/** @namespace pb.e2e */
-/** @namespace pb.e2e.decrypt */
-/** @namespace push.iden */
-/** @namespace window.onecup */
-/** @namespace window.pb */
-
 /**
  * Retrieve PushbulletLastNotificationTimestamp
  * @return {Number} - timestamp
@@ -109,12 +97,12 @@ let injectAppKeyboardNavigation = () => {
 
     // Add interaction
     buttonElementList.forEach((element) => {
-        element.setAttribute('tabindex', 0)
+        element.setAttribute('tabindex', '0')
         element.onkeyup = (event) => {
             logger.debug('injectAppKeyboardNavigation', 'element.onkeyup')
 
             // Require Enter or Space key
-            if ([13, 32].includes(event.keyCode)) {
+            if ([ 13, 32 ].includes(event.keyCode)) {
                 element.click()
             }
         }
@@ -133,7 +121,7 @@ let injectMessageKeyboardNavigation = () => {
     // Add interaction
     pushElementList.forEach((element) => {
         element.style.userSelect = 'all'
-        element.setAttribute('tabindex', 0)
+        element.setAttribute('tabindex', '0')
 
         // Ignore elements with no textual content
         if (!Boolean(element.textContent.trim())) { return }
@@ -424,10 +412,8 @@ let init = () => {
         if (!pb || !navigator.onLine) { return }
         logger.info('pushbullet', 'online')
 
-        const isOnline = true
-
-        ipcRenderer.send('online', isOnline)
-        ipcRenderer.sendToHost('online', isOnline)
+        ipcRenderer.send('online', true)
+        ipcRenderer.sendToHost('online', true)
 
         loginPushbulletUser()
 
@@ -445,23 +431,24 @@ process.once('loaded', () => {
 })
 
 /**
- * @listens ipcRenderer#did-navigate-in-page
+ * @listens ipcRenderer:did-navigate-in-page
  */
-ipcRenderer.on('did-navigate-in-page', (event) => {
-    logger.debug('ipcRenderer#did-navigate-in-page', event)
+ipcRenderer.on('did-navigate-in-page', () => {
+    logger.debug('ipcRenderer#did-navigate-in-page')
 
     // Inject interface improvements
     injectAppKeyboardNavigation()
     injectMessageKeyboardNavigation()
 })
 
+
 /**
- * @listens window:Event#contextmenu
+ * @listens window:Event:contextmenu
  */
-window.addEventListener('contextmenu', (ev) => {
+window.addEventListener('contextmenu', (event) => {
     logger.debug('window#contextmenu')
 
-    if (!ev.target['closest']('textarea, input, [contenteditable="true"]')) {
+    if (!event.target['closest']('textarea, input, [contenteditable="true"]')) {
         return
     }
 
@@ -478,10 +465,8 @@ window.addEventListener('contextmenu', (ev) => {
 window.addEventListener('offline', () => {
     logger.debug('window#offline')
 
-    const isOnline = false
-
-    ipcRenderer.send('online', isOnline)
-    ipcRenderer.sendToHost('online', isOnline)
+    ipcRenderer.send('online', false)
+    ipcRenderer.sendToHost('online', false)
 })
 
 /**
@@ -490,10 +475,8 @@ window.addEventListener('offline', () => {
 window.addEventListener('online', () => {
     logger.debug('window#online')
 
-    const isOnline = true
-
-    ipcRenderer.send('online', isOnline)
-    ipcRenderer.sendToHost('online', isOnline)
+    ipcRenderer.send('online', true)
+    ipcRenderer.sendToHost('online', true)
 })
 
 /**

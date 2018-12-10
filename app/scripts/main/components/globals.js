@@ -23,6 +23,9 @@ const appRootPath = require('app-root-path')
 const packageJson = require(path.join(appRootPath['path'], 'package.json'))
 
 
+/** @namespace global */
+
+
 /**
  * Manifest
  * @global

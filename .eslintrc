@@ -14,6 +14,13 @@
   },
   "root": true,
   "rules": {
+    "array-bracket-spacing": [
+      "error",
+      "always",
+      {
+        "singleValue": true
+      }
+    ],
     "brace-style": [
       "error",
       "1tbs",
@@ -38,7 +45,7 @@
       "error",
       4,
       {
-        "MemberExpression": "off",
+        "MemberExpression": 1,
         "SwitchCase": 1
       }
     ],
