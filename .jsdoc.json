@@ -1,24 +1,40 @@
 {
-    "tags": {
-        "allowUnknownTags": true,
-        "dictionaries": ["jsdoc"]
+  "docdash": {
+    "static": false,
+    "sort": true
+  },
+  "markdown": {
+    "parser": "gfm",
+    "hardwrap": true
+  },
+  "opts": {
+    "destination": "./docs",
+    "encoding": "utf8",
+    "recurse": true,
+    "template": "./node_modules/docdash",
+    "verbose": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
     },
-    "source": {
-        "include": ["app", "lib", "package.json", "README.md"],
-        "includePattern": ".js$",
-        "excludePattern": "(node_modules/|docs)"
-    },
-    "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": true,
-        "useLongnameInNav": false,
-        "showInheritedInNav": true
-    },
-    "opts": {
-        "destination": "./docs/",
-        "encoding": "utf8",
-        "private": true,
-        "recurse": true,
-        "template": "./node_modules/minami"
-    }
+    "monospaceLinks": false
+  },
+  "recurseDepth": 10,
+  "source": {
+    "include": [
+      "./app",
+      "./bin"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules/|docs)"
+  }
 }

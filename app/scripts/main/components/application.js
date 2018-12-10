@@ -15,7 +15,7 @@ const path = require('path')
  * @constant
  */
 const electron = require('electron')
-const { app, BrowserWindow } = electron
+const { app, BrowserWindow, systemPreferences } = electron
 
 /**
  * Modules
@@ -49,12 +49,35 @@ const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main',
 
 /**
  * Hotfix
+ * Window Translucency
+ * @see {@link https://github.com/electron/electron/issues/2170}
+ */
+// app.disableHardwareAcceleration()
+
+/**
+ * Hotfix
+ * EventEmitter Memory Leak
  * @see {@link https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected}
  */
 events.EventEmitter.defaultMaxListeners = Infinity
 
 /**
- * Hotfix (Windows)
+ * Hotfix
+ * Chrome 66 Autoplay Policy
+ * @see {@link https://github.com/electron/electron/issues/13525}
+ */
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
+/**
+ * Hotfix
+ * Electron Security Warning
+ * @see {@link https://stackoverflow.com/questions/48854265/why-do-i-see-an-electron-security-warning-after-updating-my-electron-project-t}
+ */
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+
+/**
+ * Hotfix
+ * Notification API not working (Windows)
  * @see {@link https://github.com/electron/electron/issues/10864}
  */
 if (platformTools.isWindows) {
@@ -62,7 +85,8 @@ if (platformTools.isWindows) {
 }
 
 /**
- * Hotfix (Linux)
+ * Hotfix
+ * Missing App Indicator (Linux)
  * @see {@link https://github.com/electron/electron/issues/10427}
  */
 if (platformTools.isLinux) {
@@ -85,6 +109,31 @@ const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', '
 const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service'))
 /* eslint-enable */
 
+
+/**
+ * Ensure single instance
+ */
+if (!app.requestSingleInstanceLock()) {
+    logger.warn('Additional application instance detected:', app.getPath('exe'))
+    logger.warn('Exiting additional instance.')
+
+    app.quit()
+
+    return
+}
+
+/**
+ * @listens Electron.App#second-instance
+ */
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+    logger.warn('Additional application instance detected:', app.getPath('exe'))
+    logger.warn('Restoring primary window..')
+
+    BrowserWindow.getAllWindows().forEach((browserWindow) => {
+        browserWindow.restore()
+        app.focus()
+    })
+})
 
 /**
  * @listens Electron.App#before-quit
@@ -111,29 +160,10 @@ app.once('ready', () => {
     logger.debug('app#ready')
 })
 
+
 /**
- * Ensure single instance
+ * @listens Electron.systemPreferences#appearance-changed
  */
-const isSecondInstance = app.makeSingleInstance(() => {
-    logger.debug('isSecondInstance', 'primary instance')
-
-    logger.warn('Multiple application instances detected', app.getPath('exe'))
-    logger.warn('Multiple application instances detected', 'Restoring primary application instance')
-
-    BrowserWindow.getAllWindows().forEach((browserWindow) => {
-        browserWindow.restore()
-        app.focus()
-    })
+systemPreferences.on('appearance-changed', (newAppearance) => {
+    logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
 })
-
-/**
- * Quit additional instances
- */
-if (isSecondInstance) {
-    logger.debug('isSecondInstance', 'secondary instance')
-
-    logger.warn('Multiple application instances detected', app.getPath('exe'))
-    logger.warn('Multiple application instances detected', 'Shutting down secondary application instances')
-
-    app.quit()
-}

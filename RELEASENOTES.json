@@ -1,4 +1,25 @@
 {
+  "8.1.1": {
+    "🍾 features": [
+      "supports macOS Mojaves' system-wide dark mode (macOS)",
+      "adds Nintendo® notification sounds",
+      "adds VoiceOver notification sounds"
+    ],
+    "💎 improvements": [
+      "normalizes all notification sounds according to EBU R128 (http://k.ylo.ph/2016/04/04/loudnorm.html)",
+      "addresses CPU and memory usage (https://github.com/sidneys/pb-for-desktop/issues/90)",
+      "various stability and performance improvements"
+    ],
+    "🚨 fixes": [
+      "fixes Bad URI issue (https://github.com/sidneys/pb-for-desktop/issues/85)"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v3.0.10`",
+      "upgrades `node_modules`",
+      "upgrades `services`",
+      "upgrades `lib`"
+    ]
+  },
   "7.6.0": {
     "💎 improvements": [
       "Various stability and performance improvements"

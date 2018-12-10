@@ -29,7 +29,7 @@ const dataUriToBuffer = require('data-uri-to-buffer')
 const fileType = require('file-type')
 const fileUrl = require('file-url')
 const getYouTubeID = require('get-youtube-id')
-const ICO = require('icojs')
+const icojs = require('icojs')
 const imageDownloader = require('image-downloader')
 const isDebug = require('@sidneys/is-env')('debug')
 const jimp = require('jimp')
@@ -458,7 +458,7 @@ let renderNotification = (notificationOptions, pushObject) => {
             opn(notificationOptions.url, { wait: false })
         }
 
-        // Dismiss within API
+        // Dismiss within Pushbullet
         if (pushObject) {
             dismissPushbulletPush(pushObject)
         }
@@ -469,6 +469,11 @@ let renderNotification = (notificationOptions, pushObject) => {
      */
     notification.on('close', () => {
         logger.debug('notification#close')
+
+        // Dismiss within Pushbullet
+        if (pushObject) {
+            dismissPushbulletPush(pushObject)
+        }
     })
 
     /**
@@ -623,7 +628,7 @@ let convertPushToNotification = (push) => {
                        const imageFilepathDownloaded = result.filename
                        const imageBuffer = result.image
                        const imageType = fileType(imageBuffer)
-                       const isIco = ICO.isICO(imageBuffer)
+                       const isIco = icojs.isICO(imageBuffer)
                        const isPng = imageType.mime === 'image/png'
                        const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg'
 
@@ -649,7 +654,7 @@ let convertPushToNotification = (push) => {
                         * .ICO -> .PNG
                         */
                        if (isIco) {
-                           ICO.parse(imageBuffer, 'image/png').then(imageList => {
+                           icojs.parse(imageBuffer, 'image/png').then(imageList => {
                                const imageMaximum = imageList[imageList.length - 1]
                                writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
                                    if (error) {

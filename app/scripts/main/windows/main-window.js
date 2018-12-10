@@ -53,9 +53,9 @@ class MainWindow extends BrowserWindow {
         super({
             acceptFirstMouse: true,
             autoHideMenuBar: true,
-            // Hotfix (Electron v2.0.2, github.com/electron/electron/issues/12726)
+            // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
             // backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
-            backgroundColor: '#00000000',
+            backgroundColor: '#303030',
             frame: true,
             hasShadow: platformTools.isMacOS ? true : void 0,
             height: void 0,
@@ -65,8 +65,10 @@ class MainWindow extends BrowserWindow {
             thickFrame: platformTools.isWindows ? true : void 0,
             title: windowTitle,
             titleBarStyle: platformTools.isMacOS ? 'hiddenInset' : void 0,
-            transparent: true,
-            // Hotfix (Electron v2.0.2, github.com/electron/electron/issues/12726)
+            // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
+            // transparent: true,
+            transparent: false,
+            // Hotfix: Crash on exit, https://github.com//electron/electron/issues/12726
             // vibrancy: platformTools.isMacOS ? 'dark' : void 0,
             vibrancy: void 0,
             webPreferences: {
