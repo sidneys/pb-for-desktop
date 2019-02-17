@@ -243,7 +243,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
 
-            if (!!value === false) {
+            if (!value) {
                 app.setBadgeCount(0)
             }
         }
@@ -461,7 +461,7 @@ let configurationItems = {
      */
     pushbulletRepeatRecentNotifications: {
         keypath: 'pushbulletRepeatRecentNotifications',
-        default: true,
+        default: false,
         init() {
             logger.debug(this.keypath, 'init')
         },

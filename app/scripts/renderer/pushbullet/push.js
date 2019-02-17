@@ -148,8 +148,7 @@ let retrievePushbulletSoundVolume = () => configurationManager('pushbulletSoundV
 let updateBadge = (total) => {
     logger.debug('updateBadge')
 
-    const appShowBadgeCount = retrieveAppShowBadgeCount()
-    if (!!appShowBadgeCount) { return }
+    if (!retrieveAppShowBadgeCount()) { return }
 
     remote.app.setBadgeCount(total)
 }

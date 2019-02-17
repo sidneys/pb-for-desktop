@@ -1,6 +1,6 @@
-// Type definitions for Pushbullet
-// Project: https://docs.pushbullet.com/
-// Definitions by: sidneys <https://github.com/sidneys>
+// TypeScript Type definitions for Pushbullet Web Client (https://pushbullet.com)
+// sidneys
+// https://github.com/sidneys/pb-for-desktop
 
 /// <reference types="node" />
 
