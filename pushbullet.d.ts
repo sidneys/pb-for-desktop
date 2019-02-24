@@ -413,6 +413,47 @@ declare namespace Pushbullet {
   }
 
   /**
+   * User
+   */
+  interface User extends Item {
+    /**
+     * Email address
+     * Example: "elon@teslamotors.com"
+     */
+    email: string
+    /**
+     * Canonical email address
+     * Example: "elon@teslamotors.com"
+     */
+    email_normalized: string
+    /**
+     * Full name if available
+     * Example: "Elon Musk"
+     */
+    name: string
+    /**
+     * URL for image of user or placeholder image
+     * Example: "https://static.pushbullet.com/missing-image/55a7dc-45"
+     */
+    image_url: string
+    /**
+     * Maximum upload size in bytes
+     * Example: 26214400
+     */
+    max_upload_size: number
+    /**
+     * Number of users referred by this user
+     * Example: 2
+     */
+    referred_count: number
+    /**
+     * 	User iden for the user that referred the current user, if set
+     * Example: "ujlxm0aiz2"
+     */
+    referrer_iden: string
+  }
+
+  /**
    * OAuth Grants (Connected Apps)
    */
   interface Grant extends Item {
@@ -782,7 +823,7 @@ declare namespace PushbulletBrowserClient {
         invite_picker: Picker
         invite_emails: {}
       }
-      account: PushbulletApiSuite.Account
+      account: Pushbullet.User
       pushbox: {
         target: object
         scroll_lock: boolean

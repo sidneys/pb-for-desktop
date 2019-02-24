@@ -45,18 +45,21 @@ const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml })
 
 /**
  * @class MainWindow
- * @extends Electron.BrowserWindow
+ * @property {Electron.BrowserWindow} browserWindow
  * @namespace Electron
  */
-class MainWindow extends BrowserWindow {
+class MainWindow {
+    /**
+     * @constructor
+     */
     constructor() {
-        super({
+        // Create BrowserWindow
+        this.browserWindow = new BrowserWindow({
             acceptFirstMouse: true,
             autoHideMenuBar: true,
             // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
             // backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
             backgroundColor: '#303030',
-            backgroundThrottling: false,
             frame: true,
             hasShadow: platformTools.isMacOS ? true : void 0,
             height: void 0,
@@ -78,10 +81,11 @@ class MainWindow extends BrowserWindow {
                 experimentalCanvasFeatures: true,
                 experimentalFeatures: true,
                 nodeIntegration: true,
+                nodeIntegrationInWorker: true,
                 partition: 'persist:app',
                 scrollBounce: platformTools.isMacOS ? true : void 0,
                 webaudio: true,
-                webgl: false,
+                webgl: true,
                 webSecurity: false
             },
             width: void 0,
@@ -89,6 +93,7 @@ class MainWindow extends BrowserWindow {
             y: void 0
         })
 
+        // Init
         this.init()
     }
 
@@ -99,21 +104,21 @@ class MainWindow extends BrowserWindow {
         logger.debug('init')
 
         /**
-         * @listens MainWindow#close
+         * @listens Electron.BrowserWindow#close
          */
-        this.on('close', (event) => {
+        this.browserWindow.on('close', (event) => {
             logger.debug('AppWindow#close')
 
             if (global.state.isQuitting === false) {
                 event.preventDefault()
-                this.hide()
+                this.browserWindow.hide()
             }
         })
 
         /**
-         * @listens MainWindow:will-navigate
+         * @listens Electron.webContents:will-navigate
          */
-        this.webContents.on('will-navigate', (event, url) => {
+        this.browserWindow.webContents.on('will-navigate', (event, url) => {
             logger.debug('AppWindow.webContents#will-navigate')
 
             if (url) {
@@ -123,7 +128,7 @@ class MainWindow extends BrowserWindow {
         })
 
 
-        this.loadURL(windowUrl)
+        this.browserWindow.loadURL(windowUrl)
     }
 }
 
@@ -136,7 +141,8 @@ let init = () => {
 
     // Ensure single instance
     if (!global.mainWindow) {
-        global.mainWindow = new MainWindow()
+        const mainWindow = new MainWindow()
+        global.mainWindow = mainWindow.browserWindow
     }
 }
 

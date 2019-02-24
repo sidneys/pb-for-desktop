@@ -17,6 +17,61 @@ const path = require('path')
 const electron = require('electron')
 const { app, BrowserWindow, systemPreferences } = electron
 
+
+/**
+ * HOTFIX
+ * Window Translucency
+ * @see {@link https://github.com/electron/electron/issues/2170}
+ */
+app.disableHardwareAcceleration()
+
+/**
+ * HOTFIX
+ * Chrome 66 Autoplay Policy
+ * @see {@link https://github.com/electron/electron/issues/13525}
+ */
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
+/**
+ * HOTFIX
+ * Audio Playback
+ * @see {@link https://github.com/electron/electron/issues/12048}
+ */
+// app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
+/**
+ * HOTFIX
+ * Electron Security Warning
+ * @see {@link https://stackoverflow.com/questions/48854265}
+ */
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+
+/**
+ * HOTFIX
+ * EventEmitter Memory Leak
+ * @see {@link https://stackoverflow.com/questions/9768444}
+ */
+events.EventEmitter.defaultMaxListeners = Infinity
+
+/**
+ * HOTFIX (Windows)
+ * Notification API not working
+ * @see {@link https://github.com/electron/electron/issues/10864}
+ */
+process.platform === 'win32' ? app.setAppUserModelId(global.manifest.appId) : void 0
+
+/**
+ * HOTFIX (Linux)
+ * Missing App Indicator
+ * @see {@link https://github.com/electron/electron/issues/10427}
+ */
+if (process.platform === 'linux') {
+    if (process.env.XDG_DATA_DIRS.includes('plasma')) {
+        process.env.XDG_CURRENT_DESKTOP = 'Unity'
+    }
+}
+
+
 /**
  * Modules
  * External
@@ -24,7 +79,6 @@ const { app, BrowserWindow, systemPreferences } = electron
  */
 const appRootPath = require('app-root-path')
 const logger = require('@sidneys/logger')({ write: true })
-const platformTools = require('@sidneys/platform-tools')
 /* eslint-disable no-unused-vars */
 const debugService = require('@sidneys/electron-debug-service')
 const updaterService = require('@sidneys/electron-updater-service')
@@ -45,56 +99,6 @@ appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
 /* eslint-disable no-unused-vars */
 const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
 /* eslint-enable */
-
-
-/**
- * HOTFIX
- * Window Translucency
- * @see {@link https://github.com/electron/electron/issues/2170}
- */
-app.disableHardwareAcceleration()
-
-/**
- * HOTFIX
- * EventEmitter Memory Leak
- * @see {@link https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected}
- */
-events.EventEmitter.defaultMaxListeners = Infinity
-
-/**
- * HOTFIX
- * Chrome 66 Autoplay Policy
- * @see {@link https://github.com/electron/electron/issues/13525}
- */
-app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
-
-/**
- * HOTFIX
- * Electron Security Warning
- * @see {@link https://stackoverflow.com/questions/48854265/why-do-i-see-an-electron-security-warning-after-updating-my-electron-project-t}
- */
-process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
-/**
- * HOTFIX
- * Notification API not working (Windows)
- * @see {@link https://github.com/electron/electron/issues/10864}
- */
-if (platformTools.isWindows) {
-    app.setAppUserModelId(global.manifest.appId)
-}
-
-/**
- * HOTFIX
- * Missing App Indicator (Linux)
- * @see {@link https://github.com/electron/electron/issues/10427}
- */
-if (platformTools.isLinux) {
-    if (process.env.XDG_DATA_DIRS.includes('plasma')) {
-        process.env.XDG_CURRENT_DESKTOP = 'Unity'
-    }
-}
-
 
 /**
  * Modules

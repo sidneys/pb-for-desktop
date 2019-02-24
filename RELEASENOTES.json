@@ -1,4 +1,28 @@
 {
+  "8.9.5": {
+    "🍾 features": [
+      "implements `Web Audio`-based audio pipeline, superseding usages of `AudioElement`, fixing delayed/skipped notification sounds when running in the background",
+      "adds `PB for Desktop Preview` app build, allowing for installation of prerelease builds side-by-side with the regular app",
+      "optimizes rendering / backgrounding strategy for continuous background usage"
+    ],
+    "🚨 fixes": [
+      "adds fix for `electron/electron` upstream issue: [BrowserWindow.getAllWindows doesn't return windows that inherit BrowserWindow](https://github.com/electron/electron/issues/15456)",
+      "adds fix for `goldfire/howler.js` upstream issue: [Chrome 52 audio can't be heard after _autoResume](https://github.com/goldfire/howler.js/issues/593)"
+    ],
+    "💎 improvements": [
+      "upgrades `Favicon Finder` backend to latest upstream revision: https://pb-for-desktop-besticon.herokuapp.com",
+      "consolidated format of all enclosed audio assets (44.1 kHz, Wave/PCM, 16 bit, 2 channels)"
+    ],
+    "📒 documentation": [
+      "updates README",
+      "extends Pushbullet TypeScript declaration file"
+    ],
+    "👷 internals": [
+      "extends development & deployment toolchain",
+      "upgrades internal modules",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.8.8": {
     "🚨 fixes": [
       "fixes intermittent rendering of Dock Icon Count badge when disabled ",

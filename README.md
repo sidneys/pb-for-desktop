@@ -150,8 +150,8 @@ npm run localsetup
 Parameters:
 
  - `--build` Rebuilds app before installation
+ - `--preview` Build "Preview" app
  - `--debug` Start with enabled development tools
- - `--beta` Build Beta application version
 
 #### <a name="build"/></a>*build*
 
@@ -168,7 +168,7 @@ Parameters:
  - `--macos` Build & Package for macOS
  - `--windows` Build & Package for Windows 
  - `--linux` Build & Package for Linux 
- - `--beta` Build Beta application version
+ - `--preview` Build "Preview" app
 
 
 
@@ -228,5 +228,5 @@ MIT
 
 ## <a name="author"/></a> Author
 
-[sidneys](http://sidneys.github.io) 2018
+[sidneys](http://sidneys.github.io) 2019
 

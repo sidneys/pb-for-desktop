@@ -27,7 +27,8 @@ const appRootPath = require('app-root-path')['path']
 const dataUriToBuffer = require('data-uri-to-buffer')
 const fileType = require('file-type')
 const fileUrl = require('file-url')
-const getYouTubeID = require('get-youtube-id')
+const getYoutubeId = require('get-youtube-id')
+const { Howl, Howler } = require('howler')
 const icojs = require('icojs')
 const imageDownloader = require('image-downloader')
 const isDebug = require('@sidneys/is-env')('debug')
@@ -39,6 +40,7 @@ const opn = require('opn')
 const shortid = require('shortid')
 const throttledQueue = require('throttled-queue')
 const _ = require('lodash')
+
 
 /**
  * Modules
@@ -59,36 +61,37 @@ const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPath : os
 
 
 /**
- * Urls
- * @constant
- */
-const besticonUrl = 'https://pb-for-desktop-besticon.herokuapp.com'
-const pushbulletUrl = 'https://www.pushbullet.com'
-const youtubeUrl = 'https://img.youtube.com'
-
-/**
- * Defaults
+ * General Defaults
  * @constant
  * @default
  */
 const recentPushesAmount = 5
-const besticonIconSize = 120
-const notificationInterval = 1000
-const notificationImageSize = 88
 
 /**
- * Notifications Queue
- * @global
+ * URL Defaults
+ * @constant
+ * @default
  */
-let queueNotification = throttledQueue(1, notificationInterval, true)
+const faviconEndpoint = 'https://pb-for-desktop-besticon.herokuapp.com/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..120..200&url='
+const pushbulletIconEndpoint = 'https://www.pushbullet.com/img/deviceicons/'
+const youtubeThumbnailEndpoint = 'https://img.youtube.com/vi/'
 
 
 /**
- * Global Settings
+ * Notifications Defaults
+ * @constant
+ * @default
  * @global
  */
-let lastNotificationTimestamp
-let audioElement
+const notificationsInterval = 2000
+const notificationsIconWidth = 88
+
+/**
+ * Notifications Globals
+ * @constant
+ * @global
+ */
+const notificationQueue = throttledQueue(1, notificationsInterval, true)
 
 
 /**
@@ -154,36 +157,56 @@ let updateBadge = (total) => {
 }
 
 /**
- * Play Sound
+ * Play Sound File
+ * @param {Function=} callback - Callback
  */
-let playSound = () => {
-    logger.debug('playSound')
+let playSoundFile = (callback = () => {}) => {
+    logger.debug('playSoundFile')
 
-    // Retrieve State
+    // Retrieve pushbulletSoundEnabled
     const pushbulletSoundEnabled = retrievePushbulletSoundEnabled()
 
     // Skip if not enabled
     if (!pushbulletSoundEnabled) { return }
 
-    // Retrieve File, Volume
+    // Retrieve pushbulletSoundFile, pushbulletSoundVolume
     const pushbulletSoundFile = retrievePushbulletSoundFile()
     const pushbulletSoundVolume = retrievePushbulletSoundVolume()
 
-    // Create File URL
+    // Create file:// URL
     const url = fileUrl(pushbulletSoundFile)
 
-    // Setup Audio Element
-    audioElement = new Audio(url)
-    audioElement.volume = pushbulletSoundVolume
+    // Create Sound
+    const sound = new Howl({
+        volume: pushbulletSoundVolume,
+        src: [ url ],
+        autoplay: true,
+        preload: true,
+        loop: false
+    })
 
-    // Errorhandling
-    audioElement.onerror = () => {
-        logger.error('playSound', url, audioElement.error.message, audioElement.error.code)
-    }
+    /** @listens sound:Event#loaderror */
+    sound.on('loaderror', (id, error) => {
+        logger.error('playSoundFile', 'sound#loaderror', id, error)
 
-    // Play
-    audioElement.play().then(() => {
-        logger.debug('playSound', url)
+        // Callback
+        callback(error)
+    })
+
+    /** @listens sound:Event#playerror */
+    sound.on('playerror', (id, error) => {
+        logger.error('playSoundFile', 'sound#playerror', id, error)
+
+        // Callback
+        callback(error)
+    })
+
+    /** @listens sound:Event#end */
+    sound.on('end', (id) => {
+        logger.debug('playSoundFile', 'sound#end', id)
+
+        // Callback
+        callback()
     })
 }
 
@@ -232,7 +255,7 @@ let generateNotificationImage = (push) => {
 
     for (let device of window.pb.api.devices.all) {
         if (device.iden === deviceId) {
-            iconDevice = `${pushbulletUrl}/img/deviceicons/${device.icon}.png`
+            iconDevice = `${pushbulletIconEndpoint}${device.icon}.png`
         }
     }
 
@@ -240,7 +263,7 @@ let generateNotificationImage = (push) => {
     let iconSms
 
     if (push.type === 'sms_changed') {
-        iconSms = `${pushbulletUrl}/img/deviceicons/phone.png`
+        iconSms = `${pushbulletIconEndpoint}phone.png`
     }
 
     // Chat Image
@@ -262,12 +285,14 @@ let generateNotificationImage = (push) => {
     let iconLink
 
     if (push.type === 'link') {
-        // Handle YouTube URLs (Thumbnail)
-        if (getYouTubeID(push.url)) {
-            iconLink = `${youtubeUrl}/vi/${getYouTubeID(push['url'])}/hqdefault.jpg`
+        // Is YouTube URL?
+        const youtubeId = getYoutubeId(push.url)
+        if (youtubeId) {
+            // Fetch YouTube Thumbnail
+            iconLink = `${youtubeThumbnailEndpoint}${youtubeId}/hqdefault.jpg`
         } else {
-            // Handle other URLS (Favicon)
-            iconLink = `${besticonUrl}/icon?fallback_icon_color=4AB367&formats=ico,png&size=1..${besticonIconSize}..200&url=${push.url}`
+            // Fetch Favicon
+            iconLink = `${faviconEndpoint}${push.url}`
         }
     }
 
@@ -380,7 +405,7 @@ let decoratePush = (push) => {
     // Copy Push Object
     const decoratedPush = Object.assign({}, push)
 
-    switch (decoratedPush.type) {
+    switch (String(decoratedPush.type)) {
         // Link
         case 'link':
             decoratedPush.icon = generateNotificationImage(decoratedPush)
@@ -464,14 +489,14 @@ let decoratePush = (push) => {
  * @param {Pushbullet.Push|Object=} push - Pushbullet Push
  */
 let showNotification = (notificationOptions, push) => {
-    logger.info('showNotification')
+    logger.debug('showNotification')
 
     // Create Notification
     const notification = notificationProvider.create(notificationOptions)
 
     /** @listens notification#click */
     notification.on('click', () => {
-        logger.info('notification#click')
+        logger.debug('notification#click')
 
         // Open url
         if (notificationOptions.url) {
@@ -486,7 +511,7 @@ let showNotification = (notificationOptions, push) => {
 
     /** @listens notification#close */
     notification.on('close', () => {
-        logger.info('notification#close')
+        logger.debug('notification#close')
 
         // Dismiss within Pushbullet
         if (push) {
@@ -496,7 +521,7 @@ let showNotification = (notificationOptions, push) => {
 
     /** @listens notification#reply */
     notification.on('reply', (event, message) => {
-        logger.info('notification#reply')
+        logger.debug('notification#reply')
 
         if (!!!message) {
             logger.warn('reply message was empty')
@@ -507,14 +532,14 @@ let showNotification = (notificationOptions, push) => {
         // SMS Reply
         if (push.type === 'sms_changed') {
             pbSms.reply(message, push.source_device_iden, pbSms.getMessageThreadId(push), (target) => {
-                logger.info('reply message sent', 'to:', target)
+                logger.debug('reply message sent', 'to:', target)
             })
         }
 
         // Chat Reply
         if (push.type === 'note' || push.type === 'link' || push.type === 'file') {
             createNotePush(message, push.sender_email, null, (target) => {
-                logger.info('reply message sent', 'to:', target)
+                logger.debug('reply message sent', 'to:', target)
             })
         }
 
@@ -527,42 +552,43 @@ let showNotification = (notificationOptions, push) => {
 
     /** @listens notification#show */
     notification.on('show', (event) => {
-        logger.info('notification#show')
+        logger.debug('notification#show')
+
+        logger.info('Notification', 'created:', notificationOptions.title, getTimestamp())
     })
 
 
-    // Queue Throttled Notification
-    queueNotification(() => {
-        logger.info('Triggering Notification at:', getTimestamp())
+    // Enqueue Notification
+    notificationQueue(() => {
+        // Play Sound
+        playSoundFile()
 
         // Show Notification
         notification.show()
-
-        // Play Sound
-        playSound()
     })
 }
 
 /**
- * Write & resize image
- * @param {ArrayBuffer|Array|*} source - Source image
- * @param {String} target - Target file
+ * Asprect-Resize image and write it to disk
+ * @param {ArrayBuffer|Array|*} source - Source image path
+ * @param {String} target - Target image path
+ * @param {Number} width - Image width
  * @param {Function=} callback - Callback
  */
-let writeResizeImage = (source, target, callback = () => {}) => {
-    logger.debug('writeResizeImage')
+let resizeWriteImage = (source, target, width, callback = () => {}) => {
+    logger.debug('resizeWriteImage')
 
     jimp.read(source, (error, result) => {
         if (error) {
-            logger.error('writeResizeImage', 'jimp.read', error)
+            logger.error('resizeWriteImage', 'jimp.read', error)
             callback(error)
 
             return
         }
 
-        result.resize(notificationImageSize, jimp.AUTO).write(target, (error) => {
+        result.resize(width, jimp.AUTO).write(target, (error) => {
             if (error) {
-                logger.error('writeResizeImage', 'result.resize', error)
+                logger.error('resizeWriteImage', 'result.resize', error)
                 callback(error)
 
                 return
@@ -571,7 +597,7 @@ let writeResizeImage = (source, target, callback = () => {}) => {
             callback(null, target)
         })
     }).then((result) => {
-        logger.debug('writeResizeImage', 'result', result)
+        logger.debug('resizeWriteImage', 'result', result)
     })
 }
 
@@ -633,7 +659,7 @@ let convertPushToNotification = (push) => {
 
     // Image: Generate from Data URL
     if (imageProtocol === 'data:') {
-        writeResizeImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, (error, imageFilepathConverted) => {
+        resizeWriteImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, notificationsIconWidth, (error, imageFilepathConverted) => {
             if (error) { return }
 
             notificationOptions.icon = imageFilepathConverted
@@ -655,7 +681,7 @@ let convertPushToNotification = (push) => {
 
             // From .PNG
             if (isPng || isJpeg) {
-                writeResizeImage(imageBuffer, imageFilepathDownloaded, (error, imageFilepathConverted) => {
+                resizeWriteImage(imageBuffer, imageFilepathDownloaded, notificationsIconWidth, (error, imageFilepathConverted) => {
                     if (error) { return }
 
                     notificationOptions.icon = imageFilepathConverted
@@ -669,7 +695,7 @@ let convertPushToNotification = (push) => {
             if (isIco) {
                 icojs.parse(imageBuffer, 'image/png').then(imageList => {
                     const imageMaximum = imageList[imageList.length - 1]
-                    writeResizeImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, (error, imageFilepathConverted) => {
+                    resizeWriteImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, notificationsIconWidth, (error, imageFilepathConverted) => {
                         if (error) { return }
 
                         notificationOptions.icon = imageFilepathConverted
@@ -746,24 +772,28 @@ let getRecentPushes = (queueLimit = 0) => {
  * @param {Boolean} updateBadgeCount - Update badge counter
  * @param {Function=} callback - Callback
  */
-let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback = () => {}) => {
-    logger.debug('enqueuePush')
+let enqueuePushes = (pushes, ignoreDate = false, updateBadgeCount = true, callback = () => {}) => {
+    logger.debug('enqueuePushes')
 
     pushes = _.isArray(pushes) ? pushes : [ pushes ]
 
     if (pushes.length === 0) {
-        logger.warn('enqueuePush', 'pushes list was empty')
+        logger.warn('enqueuePushes', 'pushes list was empty')
         callback(null, 0)
 
         return
     }
 
-    let nextPushesList = pushes
-    let notifyAfter = lastNotificationTimestamp || 0
+    // Retrieve pushbulletLastNotificationTimestamp
+    const pushbulletLastNotificationTimestamp = retrievePushbulletLastNotificationTimestamp()
 
-    // Filter Pushes before lastNotificationTimestamp
+    // Init pushes variables
+    let nextPushesList = pushes
+    let notifyAfterTimestamp = pushbulletLastNotificationTimestamp || 0
+
+    // Filter Pushes before notifyAfterTimestamp
     if (!!!ignoreDate) {
-        nextPushesList = pushes.filter(push => push.created > notifyAfter)
+        nextPushesList = pushes.filter(push => push.created > notifyAfterTimestamp)
     }
 
     nextPushesList.forEach((push, pushIndex, pushList) => {
@@ -780,9 +810,8 @@ let enqueuePush = (pushes, ignoreDate = false, updateBadgeCount = true, callback
         // Last Iteration?
         if (pushIndex !== pushList.length - 1) { return }
 
-        // Store lastNotificationTimestamp
-        if (push.created > notifyAfter) {
-            lastNotificationTimestamp = push.created
+        // Store pushbulletLastNotificationTimestamp
+        if (push.created > notifyAfterTimestamp) {
             storePushbulletLastNotificationTimestamp(push.created)
         }
 
@@ -805,7 +834,7 @@ let enqueueRecentPushes = (callback = () => {}) => {
 
     const pushesList = getRecentPushes(recentPushesAmount)
 
-    enqueuePush(pushesList, true, false, (error, count) => {
+    enqueuePushes(pushesList, true, false, (error, count) => {
         if (error) {
             logger.error('enqueueRecentPushes', error)
             callback(error)
@@ -823,7 +852,9 @@ let enqueueRecentPushes = (callback = () => {}) => {
 let init = () => {
     logger.debug('init')
 
-    lastNotificationTimestamp = retrievePushbulletLastNotificationTimestamp()
+    // Configure Web Audio
+    // https://github.com/goldfire/howler.js/issues/593
+    Howler.autoSuspend = false
 }
 
 
@@ -848,7 +879,7 @@ window.addEventListener('load', () => {
  * @exports
  */
 module.exports = {
-    enqueuePush: enqueuePush,
+    enqueuePushes: enqueuePushes,
     enqueueRecentPushes: enqueueRecentPushes,
     updateBadge: updateBadge
 }

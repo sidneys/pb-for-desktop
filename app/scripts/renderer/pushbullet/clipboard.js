@@ -38,11 +38,6 @@ const configurationManager = remote.require(path.join(appRootPath, 'app', 'scrip
  */
 const defaultInterval = 2000
 
-
-/** @namespace pb.account.pro  */
-/** @namespace pb.e2e.encrypt */
-
-
 /**
  * Retrieve PushbulletClipboardEnabled
  * @return {Boolean} - Enabled

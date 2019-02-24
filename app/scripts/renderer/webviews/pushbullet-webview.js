@@ -217,7 +217,7 @@ let registerTextsProxy = () => {
                     const isTarget = value.data && value.data.hasOwnProperty('target_device_iden') ? appIsTargeted(value.data.target_device_iden) : true
 
                     if (isTarget) {
-                        pbPush.enqueuePush(value)
+                        pbPush.enqueuePushes(value)
                     }
                 }
 
@@ -253,7 +253,7 @@ let registerPushProxy = () => {
                     const isIncoming = value.hasOwnProperty('direction') ? value.direction !== 'outgoing' : true
 
                     if (isTarget && isIncoming) {
-                        pbPush.enqueuePush(value)
+                        pbPush.enqueuePushes(value)
                     }
                 }
 
@@ -339,7 +339,7 @@ let addWebsocketEventHandlers = () => {
                 case 'mirror':
                 /** SMS */
                 case 'sms_changed':
-                    pbPush.enqueuePush(message.push, true)
+                    pbPush.enqueuePushes(message.push, true)
                     break
                 /** Clipboard */
                 case 'clip':
@@ -362,7 +362,7 @@ let loginPushbulletUser = () => {
 
     let interval = setInterval(() => {
         if (!(pb && pb.account && pb.account.active)) { return }
-        logger.info('pushbullet', 'logged in')
+        logger.info('Pushbullet.com', 'login:', pb.account.email)
 
         pb.DEBUG = isDebug
 
@@ -377,14 +377,14 @@ let loginPushbulletUser = () => {
                 return (item.created) > lastNotificationTimestamp
             }).length
 
-            logger.debug('loginPushbulletUser', 'unreadCount:', unreadCount)
+            logger.debug('Pushbullet.com', 'unread notifications:', unreadCount)
 
             pbPush.updateBadge(unreadCount)
         }
 
         if (retrievePushbulletRepeatRecentNotifications()) {
             pbPush.enqueueRecentPushes((err, count) => {
-                logger.info('replayed pushes on after launch:', count)
+                logger.info('Pushbullet.com', 'replaying recent pushes')
             })
         }
 
@@ -410,7 +410,7 @@ let init = () => {
 
     let interval = setInterval(() => {
         if (!pb || !navigator.onLine) { return }
-        logger.info('pushbullet', 'online')
+        logger.info('Pushbullet.com', 'connection established')
 
         ipcRenderer.send('online', true)
         ipcRenderer.sendToHost('online', true)

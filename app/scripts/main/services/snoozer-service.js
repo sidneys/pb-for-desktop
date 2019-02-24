@@ -29,6 +29,9 @@ const notificationProvider = require('@sidneys/electron-notification-provider')
  * @namespace Electron
  */
 class SnoozerService {
+    /**
+     * @constructor
+     */
     constructor() {
         this.snoozeUntil = 0
     }
