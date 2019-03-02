@@ -46,8 +46,11 @@ const appHomepage = global.manifest.homepage
  * @constant
  * @default
  */
-const appLogDirectory = (new Appdirectory(appName)).userLogs()
-const appLogFile = path.join(appLogDirectory, `${appName}.log`)
+const logFileExtension = 'log'
+const logDirectoryName = appProductName || appName
+const logFileTitle = appProductName || appName
+const logDirectory = (new Appdirectory(logDirectoryName)).userLogs()
+const logFilePath = path.join(logDirectory, `${logFileTitle}.${logFileExtension}`)
 
 
 /**
@@ -211,13 +214,13 @@ let getAppMenuTemplate = () => {
                     type: 'separator'
                 },
                 {
-                    label: `Open Logs...`,
+                    label: `Open Log...`,
                     click() {
-                        shell.openItem(appLogFile)
+                        shell.openItem(logFilePath)
                     }
                 },
                 {
-                    label: `Restart in Debugging Mode...`,
+                    label: `Restart in Developer Mode...`,
                     click() {
                         app.relaunch({ args: process.argv.slice(1).concat([ '--debug' ]) })
                         app.quit()

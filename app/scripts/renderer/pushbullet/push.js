@@ -554,7 +554,7 @@ let showNotification = (notificationOptions, push) => {
     notification.on('show', (event) => {
         logger.debug('notification#show')
 
-        logger.info('Notification', 'created:', notificationOptions.title, getTimestamp())
+        logger.info('New Notification', notificationOptions.title)
     })
 
 
@@ -726,12 +726,12 @@ let testIfPushIsIgnored = (push) => {
         return true
     }
 
-    // Push dismissed
-    if (push.direction === 'self' && !!push.dismissed) {
-        return true
-    }
+    // // Push directed at PB for Desktop and Push dismissed?
+    // if (push.direction === 'self' && !!push.dismissed) {
+    //     return true
+    // }
 
-    // Push SMS notifications empty?
+    // Push is an SMS without enclosed notification?
     if (push.type === 'sms_changed' && !!!push.notifications.length) {
         return true
     }

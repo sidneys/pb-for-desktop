@@ -77,7 +77,7 @@ class MainWindow {
             vibrancy: void 0,
             webPreferences: {
                 allowRunningInsecureContent: true,
-                backgroundThrottling: true,
+                backgroundThrottling: false,
                 experimentalCanvasFeatures: true,
                 experimentalFeatures: true,
                 nodeIntegration: true,

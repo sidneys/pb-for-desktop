@@ -1,4 +1,13 @@
 {
+  "8.10.1": {
+    "🚨 fixes": [
+      "attempts fix at macOS push reception (#100)"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v4.0.6`",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.9.5": {
     "🍾 features": [
       "implements `Web Audio`-based audio pipeline, superseding usages of `AudioElement`, fixing delayed/skipped notification sounds when running in the background",
