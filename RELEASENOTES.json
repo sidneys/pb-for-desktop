@@ -1,4 +1,17 @@
 {
+  "8.12.0": {
+    "🚨 fixes": [
+      "adds fix for `electron` upstream issue: [Chromium FileReader Vulnerability Fix](https://electronjs.org/blog/filereader-fix)"
+    ],
+    "💎 improvements": [
+      "various stability and performance improvements"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v4.0.8`",
+      "upgrades internal modules",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.10.1": {
     "🚨 fixes": [
       "attempts fix at macOS push reception (#100)"
