@@ -1,4 +1,13 @@
 {
+  "8.15.0": {
+    "🚨 fixes": [
+      "adds fix for upstream issue: [use a more unique identifier for NSUserNotification instances](https://github.com/electron/electron/pull/17469)"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v4.1.1`",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.12.0": {
     "🚨 fixes": [
       "adds fix for `electron` upstream issue: [Chromium FileReader Vulnerability Fix](https://electronjs.org/blog/filereader-fix)"
