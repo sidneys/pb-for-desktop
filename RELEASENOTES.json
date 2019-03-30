@@ -1,4 +1,13 @@
 {
+  "8.16.0": {
+    "💎 improvements": [
+      "various stability and performance improvements"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v4.1.3`",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.15.0": {
     "🚨 fixes": [
       "adds fix for upstream issue: [use a more unique identifier for NSUserNotification instances](https://github.com/electron/electron/pull/17469)"
