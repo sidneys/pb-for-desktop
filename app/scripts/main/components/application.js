@@ -17,6 +17,21 @@ const path = require('path')
 const electron = require('electron')
 const { app, BrowserWindow, systemPreferences } = electron
 
+/**
+ * Modules
+ * External
+ * @constant
+ */
+const appRootPath = require('app-root-path')
+appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
+
+/**
+ * Modules
+ * Internal
+ * @constant
+ */
+require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
+
 
 /**
  * HOTFIX
@@ -77,27 +92,11 @@ if (process.platform === 'linux') {
  * External
  * @constant
  */
-const appRootPath = require('app-root-path')
 const logger = require('@sidneys/logger')({ write: true })
 /* eslint-disable no-unused-vars */
 const debugService = require('@sidneys/electron-debug-service')
 const updaterService = require('@sidneys/electron-updater-service')
 const powerService = require('@sidneys/electron-power-service')
-/* eslint-enable */
-
-/**
- * Modules
- * Configuration
- */
-appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
-
-/**
- * Modules
- * Internal
- * @constant
- */
-/* eslint-disable no-unused-vars */
-const globals = require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
 /* eslint-enable */
 
 /**

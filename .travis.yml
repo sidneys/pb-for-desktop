@@ -25,18 +25,24 @@ addons:
       - gcc-multilib
       - graphicsmagick
       - icnsutils
+      - libxss-dev:i386
       - rpm
+      - snapd
       - xz-utils
 
+env:
+  - PATH=/snap/bin:$PATH
+
 before_install:
-  - echo "🚦 Authorizing Build"
   - echo "🔧 Setting up Node"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 11.9.0 && nvm use 11.9.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 11.14.0 && nvm use 11.14.0
   - npm --global update npm
   - npm --global install yarn
 
 install:
+  - echo "🚦 Preparing Environment"
+  - sudo snap install snapcraft --classic
   - echo "📥 Installing Dependencies"
   - yarn install
 
