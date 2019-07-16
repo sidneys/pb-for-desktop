@@ -14,7 +14,7 @@ const path = require('path')
  * Electron
  * @constant
  */
-const { app, ipcMain, Menu, MenuItem, Tray, webContents } = require('electron')
+const { app, ipcMain, Menu, MenuItem, shell, Tray, webContents } = require('electron')
 
 /**
  * Modules
@@ -79,11 +79,12 @@ const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPa
 const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`)
 const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`)
 const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletSoundFile = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFile${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSoundFilePath = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFilePath${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletNotificationFilterFilePath = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletNotificationFilterFilePath${platformTools.menuItemImageExtension}`)
 
 
 /**
@@ -152,7 +153,7 @@ let createTrayMenuTemplate = () => {
                             configurationManager('pushbulletRepeatRecentNotifications').set(configurationManager('pushbulletRepeatRecentNotifications').default)
                             configurationManager('pushbulletSmsEnabled').set(configurationManager('pushbulletSmsEnabled').default)
                             configurationManager('pushbulletSoundEnabled').set(configurationManager('pushbulletSoundEnabled').default)
-                            configurationManager('pushbulletSoundFile').set(configurationManager('pushbulletSoundFile').default)
+                            configurationManager('pushbulletSoundFilePath').set(configurationManager('pushbulletSoundFilePath').default)
                             configurationManager('pushbulletSoundVolume').set(configurationManager('pushbulletSoundVolume').default)
                             configurationManager('windowBounds').set(configurationManager('windowBounds').default)
                             configurationManager('windowTopmost').set(configurationManager('windowTopmost').default)
@@ -205,14 +206,49 @@ let createTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
+            id: 'appLaunchOnStartup',
+            label: 'Launch on Startup',
+            icon: trayMenuItemImageAppLaunchOnStartup,
+            type: 'checkbox',
+            checked: configurationManager('appLaunchOnStartup').get(),
+            click(menuItem) {
+                configurationManager('appLaunchOnStartup').set(menuItem.checked)
+            }
+        },
+        {
+            id: 'pushbulletRepeatRecentNotifications',
+            label: 'Replay Pushes on Launch',
+            icon: trayMenuItemImagePushbulletRepeatRecentNotifications,
+            type: 'checkbox',
+            checked: configurationManager('pushbulletRepeatRecentNotifications').get(),
+            click(menuItem) {
+                configurationManager('pushbulletRepeatRecentNotifications').set(menuItem.checked)
+            }
+        },
+        {
+            type: 'separator'
+        },
+        {
+            id: 'pushbulletNotificationFilterFilePath',
+            label: 'Notification Filter...',
+            icon: trayMenuItemImagePushbulletNotificationFilterFilePath,
+            type: 'normal',
+            click(menuItem) {
+                shell.openItem(configurationManager('pushbulletNotificationFilterFilePath').get())
+            }
+        },
+        {
             id: 'pushbulletHideNotificationBody',
-            label: 'Hide Notification Body Text',
+            label: 'Hide Notification Body',
             icon: trayMenuItemImagePushbulletHideNotificationBody,
             type: 'checkbox',
             checked: configurationManager('pushbulletHideNotificationBody').get(),
             click(menuItem) {
                 configurationManager('pushbulletHideNotificationBody').set(menuItem.checked)
             }
+        },
+        {
+            type: 'separator'
         },
         {
             id: 'pushbulletClipboardEnabled',
@@ -232,29 +268,6 @@ let createTrayMenuTemplate = () => {
             checked: configurationManager('pushbulletSmsEnabled').get(),
             click(menuItem) {
                 configurationManager('pushbulletSmsEnabled').set(menuItem.checked)
-            }
-        },
-        {
-            type: 'separator'
-        },
-        {
-            id: 'appLaunchOnStartup',
-            label: 'Launch on Startup',
-            icon: trayMenuItemImageAppLaunchOnStartup,
-            type: 'checkbox',
-            checked: configurationManager('appLaunchOnStartup').get(),
-            click(menuItem) {
-                configurationManager('appLaunchOnStartup').set(menuItem.checked)
-            }
-        },
-        {
-            id: 'pushbulletRepeatRecentNotifications',
-            label: 'Replay Pushes on Launch',
-            icon: trayMenuItemImagePushbulletRepeatRecentNotifications,
-            type: 'checkbox',
-            checked: configurationManager('pushbulletRepeatRecentNotifications').get(),
-            click(menuItem) {
-                configurationManager('pushbulletRepeatRecentNotifications').set(menuItem.checked)
             }
         },
         {
@@ -305,19 +318,19 @@ let createTrayMenuTemplate = () => {
             }
         },
         {
-            id: 'pushbulletSoundFile',
+            id: 'pushbulletSoundFilePath',
             label: 'Open Sound File...',
-            icon: trayMenuItemImagePushbulletSoundFile,
+            icon: trayMenuItemImagePushbulletSoundFilePath,
             type: 'normal',
             click() {
                 app.focus()
                 dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', [ 'm4a', 'mp3', 'mp4', 'wav', 'ogg' ], appSoundDirectory, (error, soundFile) => {
                     if (error) {
-                        logger.error('pushbulletSoundFile', 'dialogProvider.file', error)
+                        logger.error('pushbulletSoundFilePath', 'dialogProvider.file', error)
                         return
                     }
 
-                    configurationManager('pushbulletSoundFile').set(soundFile)
+                    configurationManager('pushbulletSoundFilePath').set(soundFile)
                 })
             }
         },

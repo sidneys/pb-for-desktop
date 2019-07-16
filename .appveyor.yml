@@ -20,7 +20,7 @@ init:
 
 install:
   - cmd: echo 🔧 Setting up Node
-  - ps: Install-Product node Current
+  - ps: Update-NodeJsInstallation 12.6.0
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 

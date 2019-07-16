@@ -497,16 +497,40 @@ let configurationItems = {
         }
     },
     /**
-     * pushbulletSoundFile
+     * pushbulletSoundFilePath
      */
-    pushbulletSoundFile: {
-        keypath: 'pushbulletSoundFile',
+    pushbulletSoundFilePath: {
+        keypath: 'pushbulletSoundFilePath',
         default: path.join(appSoundDirectory, 'default.wav'),
         init() {
             logger.debug(this.keypath, 'init')
 
             if (!fs.existsSync(this.get())) {
                 this.set(this.default)
+            }
+        },
+        get() {
+            logger.debug(this.keypath, 'get')
+
+            return electronSettings.get(this.keypath)
+        },
+        set(value) {
+            logger.debug(this.keypath, 'set')
+            electronSettings.set(this.keypath, value)
+        }
+    },
+    /**
+     * pushbulletNotificationFilterFilePath
+     */
+    pushbulletNotificationFilterFilePath: {
+        keypath: 'pushbulletNotificationFilterFilePath',
+        default: path.join(path.dirname(electronSettings.file()), 'filter.txt'),
+        init() {
+            logger.debug(this.keypath, 'init')
+
+            // Install default "filter.txt" if it does not exist within the users settings yet
+            if (!fs.existsSync(this.get())) {
+                fs.copySync(path.join(appRootPath, 'app', 'settings', 'filter-template.txt'), this.default)
             }
         },
         get() {

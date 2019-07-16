@@ -1,4 +1,24 @@
 {
+  "9.0.9": {
+    "🍾 features": [
+      "adds file-based `Notification Filter` for hiding notifications via text or regular expression pattern (https://github.com/sidneys/pb-for-desktop/issues/76)"
+    ],
+    "💎 improvements": [
+      "various stability and performance improvements"
+    ],
+      "🚨 fixes": [
+        "fixes auto updates & code notarization issues (https://github.com/sidneys/pb-for-desktop/issues/104)",
+        "fixes Google login issues encountered on some devices"
+    ],
+    "📒 documentation": [
+      "updates README"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v5.0.7`",
+      "upgrades internal `node_modules`",
+      "upgrades external `node_modules`"
+    ]
+  },
   "8.18.2": {
     "🍾 features": [
       "contributed by @LyzardKing: [Add snap package](https://github.com/sidneys/pb-for-desktop/pull/93) (Linux)"

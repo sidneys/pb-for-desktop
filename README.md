@@ -49,16 +49,21 @@ Uses macOS' [Notification Center](https://en.wikipedia.org/wiki/Notification_Cen
 For text-based pushes, notification thumbnails are generated on-the-fly based on a the originating Websites' favicon.
 For pushes containing image content, a thumbnail-sized image is shown within the notification.
 
-> **Simple Setup**
-
-No wrestling with API-Keys or other technical knowledge required.
-Login to Pushbullet using Google or Facebook.
-
-> **Custom Notification Sounds**
+> **Custom Sound Effects**
 
 Use the default PushBullet sound or one of your choice.
 Ships multiple sound effect sets: Android, iOS, Tesla Motors, Slack, Nintendo, Windows, macOS
 Or use your own custom sound (supported formats: `.m4a`, `.mp3`, `.mp4`, `.ogg` and `.wav`)
+
+> **Notification Filter**
+
+A portable, file-based filter allows you to skip notifications you don't need.
+Supports regular expressions.
+
+> **Simple Setup**
+
+No wrestling with API-Keys or other technical knowledge required.
+Login to Pushbullet using Google or Facebook.
 
 > **SMS** [![Feature Status: Alpha](https://img.shields.io/badge/feature-beta-red.svg?style=flat-square)]()
 

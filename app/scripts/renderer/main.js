@@ -235,7 +235,7 @@ webviewViewElement.addEventListener('dom-ready', () => {
 
     domTools.injectCSS(webviewViewElement, stylesheetFilepath)
 
-   /**
+    /**
     * HOTFIX
     * Input cursor invisible after navigation in webview
     * @see {@link https://github.com/electron/electron/issues/14474}

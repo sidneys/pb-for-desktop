@@ -36,7 +36,7 @@ env:
 before_install:
   - echo "🔧 Setting up Node"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 11.14.0 && nvm use 11.14.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 12.6.0 && nvm use 12.6.0
   - npm --global update npm
   - npm --global install yarn
 

@@ -6,8 +6,10 @@
  * Node
  * @constant
  */
+const fs = require('fs')
 const os = require('os')
 const path = require('path')
+const readline = require('readline')
 const url = require('url')
 
 /**
@@ -78,20 +80,22 @@ const youtubeThumbnailEndpoint = 'https://img.youtube.com/vi/'
 
 
 /**
- * Notifications Defaults
+ * Notification Defaults
  * @constant
  * @default
  * @global
  */
-const notificationsInterval = 2000
-const notificationsIconWidth = 88
+const notificationDisplayInterval = 2000
+const notificationIconWidth = 88
+const notificationFilterCommentTag = '//'
+const notificationFilterDebugPrefix = '[FILTERED]'
 
 /**
- * Notifications Globals
+ * Notification Globals
  * @constant
  * @global
  */
-const notificationQueue = throttledQueue(1, notificationsInterval, true)
+const notificationQueue = throttledQueue(1, notificationDisplayInterval, true)
 
 
 /**
@@ -132,16 +136,22 @@ let retrievePushbulletSoundEnabled = () => configurationManager('pushbulletSound
 let retrievePushbulletSmsEnabled = () => configurationManager('pushbulletSmsEnabled').get()
 
 /**
- * Retrieve PushbulletSoundFile
+ * Retrieve PushbulletSoundFilePath
  * @return {String} - Path
  */
-let retrievePushbulletSoundFile = () => configurationManager('pushbulletSoundFile').get()
+let retrievePushbulletSoundFilePath = () => configurationManager('pushbulletSoundFilePath').get()
 
 /**
  * Retrieve AppSoundVolume
  * @return {Number} - Volume
  */
 let retrievePushbulletSoundVolume = () => configurationManager('pushbulletSoundVolume').get()
+
+/**
+ * Retrieve PushbulletNotificationFilterFilePath
+ * @return {String} - Path
+ */
+let retrievePushbulletNotificationFilterFilePath = () => configurationManager('pushbulletNotificationFilterFilePath').get()
 
 
 /**
@@ -169,12 +179,12 @@ let playSoundFile = (callback = () => {}) => {
     // Skip if not enabled
     if (!pushbulletSoundEnabled) { return }
 
-    // Retrieve pushbulletSoundFile, pushbulletSoundVolume
-    const pushbulletSoundFile = retrievePushbulletSoundFile()
+    // Retrieve pushbulletSoundFilePath, pushbulletSoundVolume
+    const pushbulletSoundFilePath = retrievePushbulletSoundFilePath()
     const pushbulletSoundVolume = retrievePushbulletSoundVolume()
 
     // Create file:// URL
-    const url = fileUrl(pushbulletSoundFile)
+    const url = fileUrl(pushbulletSoundFilePath)
 
     // Create Sound
     const sound = new Howl({
@@ -191,6 +201,7 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback(error)
+        return
     })
 
     /** @listens sound:Event#playerror */
@@ -199,6 +210,7 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback(error)
+        return
     })
 
     /** @listens sound:Event#end */
@@ -207,6 +219,7 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback()
+        return
     })
 }
 
@@ -482,6 +495,84 @@ let decoratePush = (push) => {
     return decoratedPush
 }
 
+/**
+ * Check ANY of multiple regular expression patterns matches a given string
+ * @param {String} text - String to test
+ * @param {Array} patternList - List of regular expression patterns
+ */
+let matchTextAgainstRegexList = (text, patternList) => {
+    logger.debug('matchTextAgainstRegexList')
+
+    // Test if any of the regular expression patterns match
+    const isMatch = patternList.some((pattern) => {
+        // Convert pattern to regex
+        const patternRegex = new RegExp(pattern, 'i')
+
+        // DEBUG
+        // logger.debug('matchTextAgainstRegexList', 'patternRegex', patternRegex)
+
+        return patternRegex.test(text)
+    })
+
+    // Returns true if any regex pattern was matched
+    return Boolean(isMatch)
+}
+
+/**
+ * Parse a file, interpret each line as regex pattern, and check against a list of texts to determine if any matches
+ * @param {String} filterFilePath - Absolute path to filter file
+ * @param {Array} textList - List of strings to check against filter
+ * @param {Function=} callback - Callback
+ */
+let compareTextListAgainstFilterFile = (filterFilePath, textList, callback = () => {}) => {
+    logger.debug('compareTextListAgainstFilterFile')
+
+    // Initialize filter entry list
+    let filterEntryList = []
+
+    // Initialize filter file reader
+    const reader = readline.createInterface({
+        input: fs.createReadStream(filterFilePath)
+    })
+
+    // Filter file reader: read next line
+    reader.on('line', (line) => {
+        logger.debug('compareTextListAgainstFilterFile', 'readline#line')
+
+        // Only add filter entry if it's not comment (starting with "//")
+        if (!line.startsWith(notificationFilterCommentTag)) {
+            filterEntryList.push(line)
+        }
+    })
+
+    // Filter file reader: error
+    reader.on('error', (error) => {
+        logger.error('compareTextListAgainstFilterFile', 'reader', error)
+
+        // Callback
+        callback(error)
+        return
+    })
+
+    // Filter file reader: complete
+    reader.on('close', () => {
+        logger.debug('compareTextListAgainstFilterFile', 'readline#close')
+
+        // Cleanup filter entries, removing empty
+        filterEntryList = filterEntryList.filter(Boolean)
+
+        // DEBUG
+        // logger.debug('filter entries:')
+        // filterEntryList.forEach(entry => logger.debug(entry))
+
+        // Check if any filter entry matches any text
+        const isFilterMatch = textList.some(text => matchTextAgainstRegexList(text, filterEntryList))
+
+        // Callback
+        callback(null, isFilterMatch)
+        return
+    })
+}
 
 /**
  * Show Notification
@@ -490,6 +581,9 @@ let decoratePush = (push) => {
  */
 let showNotification = (notificationOptions, push) => {
     logger.debug('showNotification')
+
+    // Retrieve pushbulletNotificationFilterFilePath
+    const pushbulletNotificationFilterFilePath = retrievePushbulletNotificationFilterFilePath()
 
     // Create Notification
     const notification = notificationProvider.create(notificationOptions)
@@ -557,14 +651,30 @@ let showNotification = (notificationOptions, push) => {
         logger.info('New Notification', notificationOptions.title)
     })
 
+    // Notification Filter
+    // Checks if notification title or body contain filtered terms
+    compareTextListAgainstFilterFile(pushbulletNotificationFilterFilePath, [ notification.title, notification.body ], (error, isFiltered) => {
+        // Filtered
+        if (isFiltered) {
+            logger.warn('Filtered:', notification.title)
 
-    // Enqueue Notification
-    notificationQueue(() => {
-        // Play Sound
-        playSoundFile()
+            // DEBUG
+            if (isDebug) {
+                // Prefix Notification
+                notification.title = `${notificationFilterDebugPrefix} ${notification.title}`
+            } else {
+                // Skip Notification
+                return
+            }
+        }
 
-        // Show Notification
-        notification.show()
+        // Not filtered
+        notificationQueue(() => {
+            // Play Sound
+            playSoundFile()
+            // Show Notification
+            notification.show()
+        })
     })
 }
 
@@ -581,20 +691,23 @@ let resizeWriteImage = (source, target, width, callback = () => {}) => {
     jimp.read(source, (error, result) => {
         if (error) {
             logger.error('resizeWriteImage', 'jimp.read', error)
-            callback(error)
 
+            // Callback
+            callback(error)
             return
         }
 
         result.resize(width, jimp.AUTO).write(target, (error) => {
             if (error) {
                 logger.error('resizeWriteImage', 'result.resize', error)
-                callback(error)
 
+                callback(error)
                 return
             }
 
+            // Callback
             callback(null, target)
+            return
         })
     }).then((result) => {
         logger.debug('resizeWriteImage', 'result', result)
@@ -659,7 +772,7 @@ let convertPushToNotification = (push) => {
 
     // Image: Generate from Data URL
     if (imageProtocol === 'data:') {
-        resizeWriteImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, notificationsIconWidth, (error, imageFilepathConverted) => {
+        resizeWriteImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, notificationIconWidth, (error, imageFilepathConverted) => {
             if (error) { return }
 
             notificationOptions.icon = imageFilepathConverted
@@ -681,7 +794,7 @@ let convertPushToNotification = (push) => {
 
             // From .PNG
             if (isPng || isJpeg) {
-                resizeWriteImage(imageBuffer, imageFilepathDownloaded, notificationsIconWidth, (error, imageFilepathConverted) => {
+                resizeWriteImage(imageBuffer, imageFilepathDownloaded, notificationIconWidth, (error, imageFilepathConverted) => {
                     if (error) { return }
 
                     notificationOptions.icon = imageFilepathConverted
@@ -695,7 +808,7 @@ let convertPushToNotification = (push) => {
             if (isIco) {
                 icojs.parse(imageBuffer, 'image/png').then(imageList => {
                     const imageMaximum = imageList[imageList.length - 1]
-                    resizeWriteImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, notificationsIconWidth, (error, imageFilepathConverted) => {
+                    resizeWriteImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, notificationIconWidth, (error, imageFilepathConverted) => {
                         if (error) { return }
 
                         notificationOptions.icon = imageFilepathConverted
@@ -714,7 +827,7 @@ let convertPushToNotification = (push) => {
 }
 
 /**
- * Test if Push is ignored
+ * Test if Push is dismissed via API
  * @param {Object} push - Push Object
  * @returns {Boolean} - Yes / No
  */
@@ -779,8 +892,9 @@ let enqueuePushes = (pushes, ignoreDate = false, updateBadgeCount = true, callba
 
     if (pushes.length === 0) {
         logger.warn('enqueuePushes', 'pushes list was empty')
-        callback(null, 0)
 
+        // Callback
+        callback(null, 0)
         return
     }
 
@@ -820,7 +934,9 @@ let enqueuePushes = (pushes, ignoreDate = false, updateBadgeCount = true, callba
             updateBadge(remote.app.getBadgeCount() + nextPushesList.length)
         }
 
+        // Callback
         callback(null, pushList.length)
+        return
     })
 }
 
@@ -837,12 +953,15 @@ let enqueueRecentPushes = (callback = () => {}) => {
     enqueuePushes(pushesList, true, false, (error, count) => {
         if (error) {
             logger.error('enqueueRecentPushes', error)
-            callback(error)
 
+            // Callback
+            callback(error)
             return
         }
 
+        // Callback
         callback(null, count)
+        return
     })
 }
 

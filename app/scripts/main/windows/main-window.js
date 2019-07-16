@@ -86,6 +86,7 @@ class MainWindow {
                 scrollBounce: platformTools.isMacOS ? true : void 0,
                 webaudio: true,
                 webgl: true,
+                webviewTag: true,
                 webSecurity: false
             },
             width: void 0,
