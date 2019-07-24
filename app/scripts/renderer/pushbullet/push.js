@@ -284,7 +284,9 @@ let generateNotificationImage = (push) => {
 
     if (!!push.sender_email) {
         const target = window.pb.targets.by_email(push.sender_email)
-        iconChat = target.image_url
+        if (target && target.hasOwnProperty('image_url')) {
+            iconChat = target.image_url
+        }
     }
 
     // Mirroring Image
