@@ -277,7 +277,7 @@ let addWebsocketEventHandlers = () => {
         if (!(pb && pb.ws && pb.ws.socket)) { return }
 
         pb.ws.socket.addEventListener('message', (ev) => {
-            logger.debug('pb.ws.socket#message')
+            // logger.debug('pb.ws.socket#message')
 
             let message
 
@@ -287,6 +287,8 @@ let addWebsocketEventHandlers = () => {
                 logger.warn('pb.ws.socket#message', err.message)
                 return
             }
+
+            logger.debug('pb.ws.socket#message', 'type:', message.type)
 
             if (message.type !== 'push') { return }
 

@@ -214,13 +214,13 @@ let getAppMenuTemplate = () => {
                     type: 'separator'
                 },
                 {
-                    label: `Open Log...`,
+                    label: `Show Logfile...`,
                     click() {
-                        shell.openItem(logFilePath)
+                        shell.showItemInFolder(logFilePath)
                     }
                 },
                 {
-                    label: `Restart in Developer Mode...`,
+                    label: `Restart in Debugging Mode...`,
                     click() {
                         app.relaunch({ args: process.argv.slice(1).concat([ '--debug' ]) })
                         app.quit()

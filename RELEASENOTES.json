@@ -1,4 +1,30 @@
 {
+  "9.3.9": {
+    "🍾 features": [
+      "adds `msi` installer package (Windows)",
+      "adds portable application package (Windows)"
+    ],
+      "🚨 fixes": [
+        "fixes multiple isses regarding application auto updates"
+    ],
+    "👷 internals": [
+      "upgrades internal `node_modules`",
+      "upgrades external `node_modules`"
+    ]
+  },
+  "9.1.1": {
+    "💎 improvements": [
+      "various stability and performance improvements"
+    ],
+      "🚨 fixes": [
+        "migrates `electron` APIs to v6.0.0"
+    ],
+    "👷 internals": [
+      "upgrades `electron` to `v6.0.0`",
+      "upgrades internal `node_modules`",
+      "upgrades external `node_modules`"
+    ]
+  },
   "9.0.9": {
     "🍾 features": [
       "adds file-based `Notification Filter` for hiding notifications via text or regular expression pattern (https://github.com/sidneys/pb-for-desktop/issues/76)"

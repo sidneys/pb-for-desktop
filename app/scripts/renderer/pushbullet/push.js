@@ -40,7 +40,7 @@ const moment = require('moment')
 const notificationProvider = remote.require('@sidneys/electron-notification-provider')
 const opn = require('opn')
 const shortid = require('shortid')
-const throttledQueue = require('throttled-queue')
+const dynamicThrottledQueue = require('dynamic-throttled-queue')
 const _ = require('lodash')
 
 
@@ -80,22 +80,16 @@ const youtubeThumbnailEndpoint = 'https://img.youtube.com/vi/'
 
 
 /**
- * Notification Defaults
+ * Notification Defaults & Globals
  * @constant
  * @default
  * @global
  */
-const notificationDisplayInterval = 2000
+const notificationDisplayInterval = 1000
 const notificationIconWidth = 88
 const notificationFilterCommentTag = '//'
 const notificationFilterDebugPrefix = '[FILTERED]'
-
-/**
- * Notification Globals
- * @constant
- * @global
- */
-const notificationQueue = throttledQueue(1, notificationDisplayInterval, true)
+const notificationQueue = dynamicThrottledQueue({ min_rpi: 1, interval: notificationDisplayInterval, evenly_spaced: true })
 
 
 /**

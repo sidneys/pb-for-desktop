@@ -23,6 +23,7 @@ const { app, ipcMain, Menu, MenuItem, shell, Tray, webContents } = require('elec
  */
 const appRootPath = require('app-root-path')['path']
 const dialogProvider = require('@sidneys/electron-dialog-provider')
+const electronUpdaterService = require('@sidneys/electron-updater-service')
 const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
@@ -134,6 +135,15 @@ let createTrayMenuTemplate = () => {
             }
         },
         {
+            id: 'simulateAppUpdate',
+            label: 'Simulate App Update...',
+            type: 'normal',
+            visible: process.defaultApp || isDebug,
+            click(menuItem) {
+                electronUpdaterService.simulate()
+            }
+        },
+        {
             type: 'separator'
         },
         {
@@ -142,9 +152,16 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageReset,
             type: 'normal',
             click() {
-                dialogProvider.question('Are you sure you want to reset?',
+                dialogProvider.showConfirmation('Are you sure you want to reset?',
                     `${appProductName} will reset to its initial state.${os.EOL}Unsaved changes will be lost.`,
-                    (result) => {
+                    (error, result) => {
+                        // Handle Error
+                        if (error) {
+                            logger.error('reset', 'dialogProvider.showConfirmation', error)
+                            return
+                        }
+
+                        // Handle Result
                         if (result === 0) {
                             configurationManager('appLaunchOnStartup').set(configurationManager('appLaunchOnStartup').default)
                             configurationManager('appShowBadgeCount').set(configurationManager('appShowBadgeCount').default)
@@ -164,7 +181,10 @@ let createTrayMenuTemplate = () => {
                             })
 
                             sessionList.forEach((session, sessionIndex) => {
-                                if (!session.clearCache) { return }
+                                if (!session.clearCache) {
+                                    return
+                                }
+
                                 session.clearCache(() => {
                                     session.clearStorageData({
                                         storages: [ 'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql' ],
@@ -189,15 +209,23 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImageReconnect,
             type: 'normal',
             click() {
-                dialogProvider.question('Are you sure you want to reconnect to Pushbullet?',
+                dialogProvider.showConfirmation('Are you sure you want to reconnect to Pushbullet?',
                     `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
                     `All unsaved changes will be lost.`,
-                    (result) => {
-                        if (result === 0) {
+                    (error, result) => {
+                        // Handle Error
+                        if (error) {
+                            logger.error('reconnect', 'dialogProvider.showConfirmation', error)
+                            return
+                        }
+
+                        // Handle Result
+                        if (result === 1) {
                             logger.log('reconnect', 'relaunching')
 
                             app.relaunch()
                             app.quit()
+                            return
                         }
                     })
             }
@@ -324,13 +352,20 @@ let createTrayMenuTemplate = () => {
             type: 'normal',
             click() {
                 app.focus()
-                dialogProvider.file('Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)', [ 'm4a', 'mp3', 'mp4', 'wav', 'ogg' ], appSoundDirectory, (error, soundFile) => {
-                    if (error) {
-                        logger.error('pushbulletSoundFilePath', 'dialogProvider.file', error)
-                        return
-                    }
+                dialogProvider.openFile(
+                    'Open Sound File (.m4a, .mp3, .mp4, .ogg, .wav)',
+                    [ 'm4a', 'mp3', 'mp4', 'wav', 'ogg' ],
+                    appSoundDirectory,
+                    (error, filePath) => {
+                        // Handle Error
+                        if (error) {
+                            logger.error('pushbulletSoundFilePath', 'dialogProvider.openFile', error)
 
-                    configurationManager('pushbulletSoundFilePath').set(soundFile)
+                            return
+                        }
+
+                        // Handle Result
+                        configurationManager('pushbulletSoundFilePath').set(filePath)
                 })
             }
         },
@@ -395,7 +430,8 @@ let createTrayMenuTemplate = () => {
         },
         {
             id: 'showTestNotification',
-            label: 'Show Test Notification',
+            label: 'Show Test Notification...',
+            type: 'normal',
             click() {
                 const notification = notificationProvider.create({
                     body: 'This is a test notification.',

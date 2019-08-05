@@ -2,7 +2,7 @@
   "name": "pb-for-desktop",
   "appId": "de.sidneys.pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "9.0.9",
+  "version": "9.3.9",
   "description": "PB for Desktop is a Pushbullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -46,38 +46,39 @@
   ],
   "preferGlobal": true,
   "dependencies": {
-    "@sidneys/dom-tools": "^1.66.0",
-    "@sidneys/electron-build": "^1.90.0",
-    "@sidneys/electron-debug-service": "^0.69.0",
-    "@sidneys/electron-deploy-github": "^1.75.0",
-    "@sidneys/electron-dialog-provider": "^1.70.0",
-    "@sidneys/electron-localsetup": "^1.71.0",
-    "@sidneys/electron-notification-provider": "^0.70.0",
-    "@sidneys/electron-power-service": "^0.69.0",
-    "@sidneys/electron-updater-service": "^0.84.0",
-    "@sidneys/is-env": "^1.73.0",
-    "@sidneys/logger": "^1.79.0",
-    "@sidneys/platform-tools": "^1.79.0",
-    "@sidneys/releasenotes": "^1.69.0",
+    "@sidneys/dom-tools": "^1.78.0",
+    "@sidneys/electron-build": "^1.103.0",
+    "@sidneys/electron-debug-service": "^0.81.0",
+    "@sidneys/electron-deploy-github": "^1.87.0",
+    "@sidneys/electron-dialog-provider": "^1.83.0",
+    "@sidneys/electron-localsetup": "^1.83.0",
+    "@sidneys/electron-notification-provider": "^0.83.0",
+    "@sidneys/electron-power-service": "^0.81.0",
+    "@sidneys/electron-updater-service": "^0.109.0",
+    "@sidneys/is-env": "^1.85.0",
+    "@sidneys/logger": "^1.91.0",
+    "@sidneys/platform-tools": "^1.91.0",
+    "@sidneys/releasenotes": "^1.81.0",
     "app-root-path": "^2.2.1",
     "appdirectory": "^0.1.0",
     "auto-launch": "git+https://sidneys@github.com/sidneys/node-auto-launch.git#bugfixes-maintainance",
     "data-uri-to-buffer": "^2.0.1",
     "detect-installed": "^2.0.4",
+    "dynamic-throttled-queue": "^1.1.1",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^3.2.0",
     "electron-updater": "^4.1.2",
-    "file-type": "^12.0.1",
+    "file-type": "^12.1.0",
     "file-url": "^3.0.0",
     "filesize": "^4.1.2",
     "fs-extra": "^8.1.0",
     "get-youtube-id": "^1.0.1",
     "howler": "^2.1.2",
     "icojs": "^0.13.1",
-    "image-downloader": "^3.4.2",
+    "image-downloader": "^3.5.0",
     "jimp": "^0.6.4",
-    "lodash": "^4.17.14",
-    "mocha": "^6.1.4",
+    "lodash": "^4.17.15",
+    "mocha": "^6.2.0",
     "moment": "^2.24.0",
     "opn": "^6.0.0",
     "parse-domain": "^2.3.1",
@@ -85,14 +86,13 @@
     "read-pkg-up": "^6.0.0",
     "shortid": "^2.2.14",
     "simple-reload": "0.0.4",
-    "start": "^5.1.0",
-    "throttled-queue": "^1.0.5"
+    "start": "^5.1.0"
   },
   "devDependencies": {
     "@wabson/list-dependencies": "^0.1.0",
     "docdash": "^1.1.1",
-    "electron": "5.0.7",
-    "eslint": "^6.0.1",
+    "electron": "6.0.0",
+    "eslint": "^6.1.0",
     "jsdoc": "^3.6.3",
     "typescript": "^3.5.3"
   },
@@ -135,33 +135,39 @@
       "!website/**"
     ],
     "mac": {
-      "darkModeSupport": true,
-      "category": "public.app-category.utilities",
-      "icon": "./icons/mac/icon.icns",
       "target": [
         "dir",
         "dmg",
         "zip"
-      ]
+      ],
+      "artifactName": "${name}-${version}-${os}.${ext}",
+      "icon": "./icons/mac/icon.icns",
+      "category": "public.app-category.utilities",
+      "darkModeSupport": true
     },
     "win": {
-      "icon": "./icons/win/icon.ico",
       "target": [
-        "nsis"
-      ]
+        "nsis",
+        "msi",
+        "portable"
+      ],
+      "artifactName": "${name}-${version}.${ext}",
+      "icon": "./icons/win/icon.ico"
     },
     "linux": {
-      "category": "Utility",
-      "icon": "./icons/linux/png",
       "target": [
         "AppImage",
         "deb",
         "pacman",
         "rpm",
         "snap"
-      ]
+      ],
+      "artifactName": "${name}-${version}-${arch}.${ext}",
+      "icon": "./icons/linux/png",
+      "category": "Utility"
     },
     "dmg": {
+      "artifactName": "${name}-${version}.${ext}",
       "background": "./resources/setup/dmg-background.png",
       "icon": "./resources/setup/dmg-icon.icns"
     },
@@ -175,6 +181,11 @@
       "oneClick": false,
       "runAfterFinish": false
     },
-    "productName": "PB for Desktop"
+    "productName": "PB for Desktop",
+    "releaseInfo": {
+      "releaseDate": "2019-08-06T10:52:44.831Z",
+      "releaseName": "PB for Desktop",
+      "releaseNotes": "## 9.2.9\n\n#### 🚨 Fixes\n\n - fixes multiple isses regarding application auto updates\n\n#### 👷 Internals\n\n - upgrades internal `node_modules`\n - upgrades external `node_modules`\n\n"
+    }
   }
 }
