@@ -196,7 +196,11 @@ ipcRenderer.on('tray-close', () => {
 /**
  * @listens webviewViewElement#Event:did-fail-load
  */
-webviewViewElement.addEventListener('did-fail-load', () => {
+webviewViewElement.addEventListener('did-fail-load', (e) => {
+    if (e.errorCode === -3) {
+        return
+    }
+
     logger.debug('webviewViewElement#did-fail-load')
 
     onOffline()
