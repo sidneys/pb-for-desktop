@@ -1,4 +1,29 @@
 {
+    "10.0.1": {
+        "🍾 features": [
+            "adds native blurred translucent `NSVisualEffectView` menu sidebar (macOS)"
+        ],
+        "💎 improvements": [
+            "various stability and performance improvements"
+        ],
+        "🚨 fixes": [
+            "fixes injection of local stylesheet into webview",
+            "fixes bootstrapping of application bundle",
+            "adds fix by [btaens](https://github.com/sidneys/pb-for-desktop/pull/107): [Not getting any pushes on my Mac desktop anymore](https://github.com/sidneys/pb-for-desktop/issues/100)",
+            "adds fix by [btaens](https://github.com/sidneys/pb-for-desktop/pull/106): [Login stays on Connecting](https://github.com/sidneys/pb-for-desktop/issues/105)"
+        ],
+        "📒 documentation": [
+            "updates `jsdoc` documentation coverage"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v7.1.1`",
+            "migrates `electron` APIs to v7",
+            "upgrades internal `node_modules`",
+            "upgrades external `node_modules`",
+            "upgrades `babel` and `nodejs`",
+            "refactors application file structure"
+        ]
+    },
     "9.5.0": {
         "🍾 features": [
             "add new application icons"

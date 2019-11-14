@@ -2,16 +2,14 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const fs = require('fs-extra')
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
@@ -19,12 +17,11 @@ const { remote, BrowserWindow } = electron
 const app = electron.app ? electron.app : remote.app
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const _ = require('lodash')
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
 const Appdirectory = require('appdirectory')
 const AutoLaunch = require('auto-launch')
 const electronSettings = require('electron-settings')
@@ -47,11 +44,10 @@ const appName = global.manifest.name
  */
 const appLogDirectory = (new Appdirectory(appName)).userLogs()
 const appSettingsFilepath = path.join(path.dirname(electronSettings.file()), `${appName}.json`)
-const appSoundDirectory = path.join(appRootPath, 'sounds').replace('app.asar', 'app.asar.unpacked')
+const appSoundDirectory = path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked')
 
 /**
- * Modules
- * Configuration
+ * Module Configuration
  */
 const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } })
 electronSettings.setPath(appSettingsFilepath)
@@ -111,7 +107,7 @@ let setAppTrayOnly = (trayOnly) => {
 /** @namespace electronSettings.setPath */
 
 /**
- * Configuration Items
+ * configuration Items
  */
 let configurationItems = {
     /**
@@ -244,7 +240,7 @@ let configurationItems = {
             logger.debug(this.keypath, 'implement', value)
 
             if (!value) {
-                app.setBadgeCount(0)
+                app.badgeCount = 0
             }
         }
     },
@@ -530,7 +526,7 @@ let configurationItems = {
 
             // Install default "filter.txt" if it does not exist within the users settings yet
             if (!fs.existsSync(this.get())) {
-                fs.copySync(path.join(appRootPath, 'app', 'settings', 'filter-template.txt'), this.default)
+                fs.copySync(path.join(appRootPathDirectory, 'app', 'settings', 'filter-template.txt'), this.default)
             }
         },
         get() {
@@ -607,7 +603,7 @@ let configurationItems = {
 
 /**
  * Access single item
- * @param {String} playlistItemId - Configuration item identifier
+ * @param {String} playlistItemId - configuration item identifier
  * @returns {Object|void}
  */
 let getItem = (playlistItemId) => {
@@ -654,7 +650,7 @@ let setConfigurationDefaults = (callback = () => {}) => {
  * @function
  */
 let initializeItems = (callback = () => {}) => {
-    logger.debug('initConfigurationItems')
+    logger.debug('initconfigurationItems')
 
     let configurationItemList = Object.keys(configurationItems)
 
@@ -663,7 +659,7 @@ let initializeItems = (callback = () => {}) => {
 
         // Last item
         if (configurationItemList.length === (itemIndex + 1)) {
-            logger.debug('initConfigurationItems', 'complete')
+            logger.debug('initconfigurationItems', 'complete')
             callback()
         }
     })
@@ -675,7 +671,7 @@ let initializeItems = (callback = () => {}) => {
  * @function
  */
 let removeLegacyItems = (callback = () => {}) => {
-    logger.debug('cleanConfiguration')
+    logger.debug('cleanconfiguration')
 
     let savedSettings = electronSettings.getAll()
     let savedSettingsList = Object.keys(savedSettings)
@@ -683,12 +679,12 @@ let removeLegacyItems = (callback = () => {}) => {
     savedSettingsList.forEach((item, itemIndex) => {
         if (!configurationItems.hasOwnProperty(item)) {
             electronSettings.delete(item)
-            logger.debug('cleanConfiguration', 'deleted', item)
+            logger.debug('cleanconfiguration', 'deleted', item)
         }
 
         // Last item
         if (savedSettingsList.length === (itemIndex + 1)) {
-            logger.debug('cleanConfiguration', 'complete')
+            logger.debug('cleanconfiguration', 'complete')
             callback()
         }
     })

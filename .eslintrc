@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "browser": true,
     "es6": true,
@@ -12,7 +13,6 @@
       "jsx": true
     }
   },
-  "root": true,
   "rules": {
     "array-bracket-spacing": [
       "error",

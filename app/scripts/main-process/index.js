@@ -2,35 +2,24 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const events = require('events')
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
-const { app, BrowserWindow, systemPreferences } = electron
+const { app, BrowserWindow, dialog, systemPreferences } = electron
 
 /**
- * Modules
- * External
+ * Modules (Local)
  * @constant
  */
-const appRootPath = require('app-root-path')
-appRootPath.setPath(path.join(__dirname, '..', '..', '..', '..'))
-
-/**
- * Modules
- * Internal
- * @constant
- */
-require(path.join(appRootPath['path'], 'app', 'scripts', 'main', 'components', 'globals'))
+require('app/scripts/main-process/components/globals')
 
 
 /**
@@ -88,8 +77,7 @@ if (process.platform === 'linux') {
 
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const logger = require('@sidneys/logger')({ write: true })
@@ -100,21 +88,28 @@ const powerService = require('@sidneys/electron-power-service')
 /* eslint-enable */
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
 /* eslint-disable no-unused-vars */
-const appMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'app-menu'))
-const mainWindow = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'windows', 'main-window'))
-const configurationManager = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
-const trayMenu = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'menus', 'tray-menu'))
-const snoozerService = require(path.join(appRootPath.path, 'app', 'scripts', 'main', 'services', 'snoozer-service'))
+const appMenu = require('app/scripts/main-process/menus/app-menu')
+const dialogProvider = require('@sidneys/electron-dialog-provider')
+const mainWindow = require('app/scripts/main-process/windows/main-window')
+const configurationManager = require('app/scripts/main-process/managers/configuration-manager')
+const trayMenu = require('app/scripts/main-process/menus/tray-menu')
+const snoozerService = require('app/scripts/main-process/services/snoozer-service')
 /* eslint-enable */
+
+/**
+ * Application
+ * @constant
+ * @default
+ */
+const appProductName = global.manifest.productName
 
 
 /**
- * Ensure single instance
+ * Force Singular Instance
  */
 if (!app.requestSingleInstanceLock()) {
     logger.warn('Additional application instance detected:', app.getPath('exe'))
@@ -157,16 +152,20 @@ app.on('before-quit-for-update', () => {
 })
 
 /**
- * @listens Electron.App:ready
- */
-app.once('ready', () => {
-    logger.debug('app#ready')
-})
-
-
-/**
  * @listens Electron.systemPreferences:appearance-changed
  */
 systemPreferences.on('appearance-changed', (newAppearance) => {
     logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
+})
+
+
+/**
+ * @listens Electron.App:ready
+ */
+app.once('ready', () => {
+    logger.debug('app#ready')
+
+    if (!process.defaultApp && app.isInApplicationsFolder()) {
+        return
+    }
 })

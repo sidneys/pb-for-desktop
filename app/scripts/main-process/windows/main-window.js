@@ -2,27 +2,24 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const path = require('path')
 const url = require('url')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
 const { app, BrowserWindow, shell } = electron
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
 
@@ -32,7 +29,7 @@ const platformTools = require('@sidneys/platform-tools')
  * @constant
  * @default
  */
-const windowHtml = path.join(appRootPath, 'app', 'html', 'main.html')
+const windowHtml = path.join(appRootPathDirectory, 'app', 'html', 'main.html')
 
 /**
  * Application
@@ -59,27 +56,24 @@ class MainWindow {
             autoHideMenuBar: true,
             // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
             // backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
-            backgroundColor: '#303030',
+            backgroundColor: platformTools.isMacOS ? void 0 : '#303030',
+            darkTheme: platformTools.isLinux ? true : void 0,
             frame: true,
             hasShadow: platformTools.isMacOS ? true : void 0,
-            height: void 0,
-            minHeight: 256,
-            minWidth: 128,
             show: false,
             thickFrame: platformTools.isWindows ? true : void 0,
             title: windowTitle,
             titleBarStyle: platformTools.isMacOS ? 'hiddenInset' : void 0,
             // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
             // transparent: true,
-            transparent: false,
+            transparent: platformTools.isMacOS ? true : false,
             // Hotfix: Crash on exit, https://github.com//electron/electron/issues/12726
-            // vibrancy: platformTools.isMacOS ? 'dark' : void 0,
-            vibrancy: void 0,
+            vibrancy: platformTools.isMacOS ? 'dark' : void 0,
+            // vibrancy: void 0,
             webPreferences: {
                 allowRunningInsecureContent: true,
                 backgroundThrottling: false,
                 contextIsolation: false,
-                experimentalFeatures: true,
                 experimentalFeatures: true,
                 nodeIntegration: true,
                 nodeIntegrationInSubFrames: true,
@@ -92,9 +86,13 @@ class MainWindow {
                 webviewTag: true,
                 webSecurity: false
             },
-            width: void 0,
             x: void 0,
-            y: void 0
+            y: void 0,
+            height: void 0,
+            width: void 0,
+            minHeight: 256,
+            minWidth: 128,
+            zoomToPageWidth: true
         })
 
         // Init

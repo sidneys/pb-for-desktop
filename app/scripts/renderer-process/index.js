@@ -2,44 +2,40 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const path = require('path')
 const url = require('url')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
 const { ipcRenderer, remote } = electron
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
 const logger = require('@sidneys/logger')({ write: true })
 const parseDomain = require('parse-domain')
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
 const domTools = require('@sidneys/dom-tools')
-const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
+const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 
 
 /**
  * Filesystem
  * @constant
  */
-const stylesheetFilepath = path.join(appRootPath, 'app', 'styles', 'injected', 'pushbullet-web.css')
+const stylesheetFilepath = path.join(appRootPathDirectory, 'app', 'styles', 'injected', 'pushbullet-webview.css')
 
 
 /**
@@ -158,7 +154,7 @@ let updateBadge = (total) => {
 
     if (!retrieveAppShowBadgeCount()) { return }
 
-    remote.app.setBadgeCount(total)
+    remote.app.badgeCount = total
 }
 
 
@@ -196,12 +192,14 @@ ipcRenderer.on('tray-close', () => {
 /**
  * @listens webviewViewElement#Event:did-fail-load
  */
-webviewViewElement.addEventListener('did-fail-load', (e) => {
-    if (e.errorCode === -3) {
+webviewViewElement.addEventListener('did-fail-load', (error) => {
+    logger.debug('webviewViewElement#did-fail-load')
+
+    // An operation was aborted (due to user action)
+    // https://cs.chromium.org/chromium/src/net/base/net_error_list.h
+    if (error.errorCode === -3) {
         return
     }
-
-    logger.debug('webviewViewElement#did-fail-load')
 
     onOffline()
 })

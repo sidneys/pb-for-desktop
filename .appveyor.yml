@@ -1,4 +1,4 @@
-os: Visual Studio 2017
+os: Visual Studio 2019
 
 platform:
   - x64
@@ -13,14 +13,17 @@ cache:
   - "node_modules"
   - "%LOCALAPPDATA%\\Yarn"
 
+test: off
+
 init:
-  - cmd: echo 🚦 Authorizing Build
+  - cmd: echo 🚦 Verifying Build
   - ps: if ($env:OS -eq "Windows_NT" -And $env:DEPLOY_WINDOWS -eq "0") { $host.SetShouldExit(0) }
-  - cmd: git config --global core.autocrlf input
 
 install:
-  - cmd: echo 🔧 Setting up Node
-  - ps: Update-NodeJsInstallation 12.7.0
+  - cmd: echo 🔧 Preparing Build Environment (Git)
+  - cmd: git config --global core.autocrlf input
+  - cmd: echo 🔧 Preparing Build Environment (Node.js)
+  - ps: Update-NodeJsInstallation 13.1.0
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 
@@ -29,11 +32,11 @@ before_build:
   - cmd: yarn install
 
 build_script:
-  - cmd: echo 📦 Building
-  - cmd: npm run build --metadata
+  - cmd: echo 📦 Building Project
+  - cmd: npm run build
 
 deploy_script:
-  - cmd: echo 📮 Deploying to GitHub
+  - cmd: echo 📮 Deploying Project
   - cmd: npm run deploy
 
 artifacts:
@@ -41,10 +44,8 @@ artifacts:
 
 notifications:
   - provider: Webhook
-    url: https://webhooks.gitter.im/e/f29f98b58ec67b5f0f59
+    url: https://webhooks.gitter.im/e/65966d679f4ebeae4b3b
     method: GET
     on_build_success: true
     on_build_failure: true
     on_build_status_changed: true
-
-test: off

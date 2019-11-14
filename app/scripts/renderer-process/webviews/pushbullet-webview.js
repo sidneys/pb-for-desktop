@@ -2,53 +2,56 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const os = require('os')
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
 const { remote, ipcRenderer } = electron
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const _ = require('lodash')
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
+const appModulePath = require('app-module-path')
 const electronEditorContextMenu = remote.require('electron-editor-context-menu')
-
-/**
- * Modules
- * Internal
- * @constant
- */
 const logger = require('@sidneys/logger')({ write: true })
 const domTools = require('@sidneys/dom-tools')
 const isDebug = require('@sidneys/is-env')('debug')
 const notificationProvider = remote.require('@sidneys/electron-notification-provider')
 const platformTools = require('@sidneys/platform-tools')
-const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
+
+/**
+ * Module Configuration
+ */
+appModulePath.addPath(appRootPathDirectory)
+
+/**
+ * Modules (Local)
+ * @constant
+ */
+const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 /* eslint-disable no-unused-vars */
-const pbClipboard = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'clipboard'))
-const pbDevices = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'device'))
-const pbPush = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'push'))
+const pbClipboard = require('app/scripts/renderer-process/pushbullet/clipboard')
+const pbDevices = require('app/scripts/renderer-process/pushbullet/device')
+const pbPush = require('app/scripts/renderer-process/pushbullet/push')
 /* eslint-enable */
+
 
 /**
  * Application
  * @constant
  * @default
  */
-const appIcon = path.join(appRootPath, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`)
+const appIcon = path.join(appRootPathDirectory, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`)
 const appName = remote.getGlobal('manifest').name
 
 /**

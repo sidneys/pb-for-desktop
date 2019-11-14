@@ -2,25 +2,22 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const path = require('path')
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')
+const appRootPathDirectory = require('app-root-path').path
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
-const packageJson = require(path.join(appRootPath['path'], 'package.json'))
+const packageJson = require(path.join(appRootPathDirectory, 'package.json'))
 
 
 /**
@@ -44,7 +41,7 @@ global.manifest = {
 global.filesystem = {
     directories: {
         resources: process.resourcesPath,
-        sounds: path.join(appRootPath['path'], 'sounds').replace('app.asar', 'app.asar.unpacked')
+        sounds: path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked')
     }
 }
 

@@ -2,34 +2,29 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const { remote } = require('electron')
 const { clipboard } = remote
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')['path']
 const logger = require('@sidneys/logger')({ write: true })
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
-const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
+const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 
 
 /**

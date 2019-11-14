@@ -2,39 +2,35 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const os = require('os')
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const { app, ipcMain, Menu, MenuItem, shell, Tray, webContents } = require('electron')
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
 const dialogProvider = require('@sidneys/electron-dialog-provider')
 const electronUpdaterService = require('@sidneys/electron-updater-service')
 const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
+const notificationProvider = require('@sidneys/electron-notification-provider')
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
-const configurationManager = require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
-const notificationProvider = require('@sidneys/electron-notification-provider')
+const configurationManager = require('app/scripts/main-process/managers/configuration-manager')
 
 
 /**
@@ -56,36 +52,36 @@ const appSoundDirectory = global.filesystem.directories.sounds
  * App icons
  * @constant
  */
-const appIcon = path.join(appRootPath, 'app', 'images', 'logo.png')
+const appIcon = path.join(appRootPathDirectory, 'app', 'images', 'logo.png')
 
 
 /**
  * Tray icons
  * @constant
  */
-const trayIconDefault = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-default${platformTools.templateImageExtension(platformTools.type)}`)
-const trayIconTransparent = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent${platformTools.templateImageExtension(platformTools.type)}`)
-const trayIconTransparentPause = path.join(appRootPath, 'app', 'images', `${platformTools.type}-tray-icon-transparent-pause${platformTools.templateImageExtension(platformTools.type)}`)
+const trayIconDefault = path.join(appRootPathDirectory, 'app', 'images', `${platformTools.type}-tray-icon-default${platformTools.templateImageExtension(platformTools.type)}`)
+const trayIconTransparent = path.join(appRootPathDirectory, 'app', 'images', `${platformTools.type}-tray-icon-transparent${platformTools.templateImageExtension(platformTools.type)}`)
+const trayIconTransparentPause = path.join(appRootPathDirectory, 'app', 'images', `${platformTools.type}-tray-icon-transparent-pause${platformTools.templateImageExtension(platformTools.type)}`)
 
 /**
  * Tray images
  * @constant
  */
-const trayMenuItemImageAppAutoUpdate = path.join(appRootPath, 'app', 'images', `tray-item-appAutoUpdate${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPath, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageAppShowBadgeCount = path.join(appRootPath, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageAppTrayOnly = path.join(appRootPath, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletSoundFilePath = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletSoundFilePath${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageReconnect = path.join(appRootPath, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageReset = path.join(appRootPath, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageSnooze = path.join(appRootPath, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageWindowTopmost = path.join(appRootPath, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`)
-const trayMenuItemImagePushbulletNotificationFilterFilePath = path.join(appRootPath, 'app', 'images', `tray-item-pushbulletNotificationFilterFilePath${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppAutoUpdate = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appAutoUpdate${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppLaunchOnStartup = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appLaunchOnStartup${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppShowBadgeCount = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appShowBadgeCount${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppTrayOnly = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appTrayOnly${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletHideNotificationBody = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletHideNotificationBody${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletRepeatRecentNotifications = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletRepeatRecentNotifications${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletClipboardEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletSoundFilePath = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSoundFilePath${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageReconnect = path.join(appRootPathDirectory, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageReset = path.join(appRootPathDirectory, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageSnooze = path.join(appRootPathDirectory, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageWindowTopmost = path.join(appRootPathDirectory, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`)
+const trayMenuItemImagePushbulletNotificationFilterFilePath = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletNotificationFilterFilePath${platformTools.menuItemImageExtension}`)
 
 
 /**
@@ -148,7 +144,7 @@ let createTrayMenuTemplate = () => {
         },
         {
             id: 'reset',
-            label: 'Reset Configuration...',
+            label: 'Reset configuration...',
             icon: trayMenuItemImageReset,
             type: 'normal',
             click() {

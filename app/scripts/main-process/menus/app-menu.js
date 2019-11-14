@@ -2,22 +2,19 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const path = require('path')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const { app, Menu, shell, webContents } = require('electron')
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const Appdirectory = require('appdirectory')
@@ -25,8 +22,7 @@ const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: false })
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
 const platformTools = require('@sidneys/platform-tools')

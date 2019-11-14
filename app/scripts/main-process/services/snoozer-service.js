@@ -2,15 +2,13 @@
 
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const { app, ipcMain } = require('electron')
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const logger = require('@sidneys/logger')({ write: true })
@@ -18,8 +16,7 @@ const notificationProvider = require('@sidneys/electron-notification-provider')
 
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
 

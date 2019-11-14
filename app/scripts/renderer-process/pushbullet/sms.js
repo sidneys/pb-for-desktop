@@ -2,8 +2,7 @@
 
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
 const logger = require('@sidneys/logger')({ write: true })

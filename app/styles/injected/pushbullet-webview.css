@@ -76,7 +76,7 @@ html.darwin #sink > div > div > div:nth-child(1)
 
 html.darwin #mainbar
 {
-    transform: translateX(-1px); !important;
+    transform: translateX(-1px) !important;
 }
 
 /* :not(.pushfont-*)

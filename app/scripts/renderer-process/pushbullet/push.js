@@ -2,8 +2,7 @@
 
 
 /**
- * Modules
- * Node
+ * Modules (Node.js)
  * @constant
  */
 const fs = require('fs')
@@ -13,19 +12,17 @@ const readline = require('readline')
 const url = require('url')
 
 /**
- * Modules
- * Electron
+ * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
 const { remote, ipcRenderer } = electron
 
 /**
- * Modules
- * External
+ * Modules (Third party)
  * @constant
  */
-const appRootPath = require('app-root-path')['path']
+const appRootPathDirectory = require('app-root-path').path
 const dataUriToBuffer = require('data-uri-to-buffer')
 const fileType = require('file-type')
 const fileUrl = require('file-url')
@@ -45,12 +42,11 @@ const _ = require('lodash')
 
 
 /**
- * Modules
- * Internal
+ * Modules (Local)
  * @constant
  */
-const configurationManager = remote.require(path.join(appRootPath, 'app', 'scripts', 'main', 'managers', 'configuration-manager'))
-const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'pushbullet', 'sms'))
+const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
+const pbSms = require('app/scripts/renderer-process/pushbullet/sms')
 
 
 /**
@@ -59,7 +55,7 @@ const pbSms = require(path.join(appRootPath, 'app', 'scripts', 'renderer', 'push
  * @default
  */
 const appName = remote.getGlobal('manifest').name
-const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPath : os.tmpdir()
+const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPathDirectory : os.tmpdir()
 
 
 /**
@@ -157,7 +153,7 @@ let updateBadge = (total) => {
 
     if (!retrieveAppShowBadgeCount()) { return }
 
-    remote.app.setBadgeCount(total)
+    remote.app.badgeCount = total
 }
 
 /**
@@ -572,7 +568,7 @@ let compareTextListAgainstFilterFile = (filterFilePath, textList, callback = () 
 
 /**
  * Show Notification
- * @param {Object} notificationOptions - NotificationConfiguration
+ * @param {Object} notificationOptions - Notificationconfiguration
  * @param {Pushbullet.Push|Object=} push - Pushbullet Push
  */
 let showNotification = (notificationOptions, push) => {
@@ -831,8 +827,10 @@ let testIfPushIsIgnored = (push) => {
     //logger.debug('testIfPushIsIgnored')
 
     // Push inactive?
-    if (!!!push.active) {
-        return true
+    if (push.hasOwnProperty('active')) {
+        if (push.active === false) {
+            return true
+        }
     }
 
     // // Push directed at PB for Desktop and Push dismissed?

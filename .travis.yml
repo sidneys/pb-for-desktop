@@ -1,8 +1,7 @@
 matrix:
   include:
     - os: linux
-      dist: xenial
-      sudo: required
+      dist: bionic
       group: edge
       compiler: clang
 
@@ -12,10 +11,17 @@ branches:
   only:
     - master
 
+env:
+  global:
+    - LC_ALL: "C.UTF-8"
+    - LANG: "C.UTF-8"
+    - PATH: "/snap/bin:${PATH}"
+
 cache:
   directories:
     - "./node_modules"
     - "${HOME}/.yarn-cache"
+    - ${TRAVIS_BUILD_DIR}/snaps-cache
 
 addons:
   apt:
@@ -25,33 +31,36 @@ addons:
       - gcc-multilib
       - graphicsmagick
       - icnsutils
+      - libopenjp2-tools
       - libxss-dev:i386
       - rpm
       - snapd
       - xz-utils
-
-env:
-  - PATH=/snap/bin:$PATH
+  snaps:
+    - name: multipass
+      confinement: classic
+      channel: edge
+    - name: snapcraft
+      confinement: classic
+      channel: edge
 
 before_install:
-  - echo "🔧 Setting up Node"
+  - echo "🔧 Preparing Build Environment (Node.js)"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 12.8.0 && nvm use 12.8.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 13.1.0 && nvm use 13.1.0
   - npm --global update npm
   - npm --global install yarn
 
 install:
-  - echo "🚦 Preparing Environment"
-  - sudo snap install snapcraft --classic
   - echo "📥 Installing Dependencies"
   - yarn install
 
 script:
-  - echo "📦 Building"
-  - npm run build --metadata
+  - echo "📦 Building Project"
+  - npm run build
 
 after_success:
-  - echo "📮 Deploying to Github"
+  - echo "📮 Deploying Project"
   - npm run deploy
 
 notifications:
