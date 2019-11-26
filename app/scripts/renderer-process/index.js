@@ -20,6 +20,7 @@ const { ipcRenderer, remote } = electron
  * @constant
  */
 const appRootPathDirectory = require('app-root-path').path
+const domTools = require('@sidneys/dom-tools')
 const logger = require('@sidneys/logger')({ write: true })
 const parseDomain = require('parse-domain')
 
@@ -27,7 +28,6 @@ const parseDomain = require('parse-domain')
  * Modules (Local)
  * @constant
  */
-const domTools = require('@sidneys/dom-tools')
 const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 
 

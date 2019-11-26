@@ -1,4 +1,17 @@
 {
+    "10.2.0": {
+        "💎 improvements": [
+            "various stability and performance improvements"
+        ],
+        "🚨 fixes": [
+            "fixes startup issue (Linux, Windows)"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v7.1.2`",
+            "upgrades local `node_modules`",
+            "upgrades third-party `node_modules`"
+        ]
+    },
     "10.0.1": {
         "🍾 features": [
             "adds native blurred translucent `NSVisualEffectView` menu sidebar (macOS)"

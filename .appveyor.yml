@@ -23,7 +23,7 @@ install:
   - cmd: echo 🔧 Preparing Build Environment (Git)
   - cmd: git config --global core.autocrlf input
   - cmd: echo 🔧 Preparing Build Environment (Node.js)
-  - ps: Update-NodeJsInstallation 13.1.0
+  - ps: Update-NodeJsInstallation 13.2.0
   - cmd: npm --global update npm
   - cmd: npm --global install yarn
 

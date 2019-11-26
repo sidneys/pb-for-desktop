@@ -109,7 +109,7 @@ const appProductName = global.manifest.productName
 
 
 /**
- * Force Singular Instance
+ * Force single Instance
  */
 if (!app.requestSingleInstanceLock()) {
     logger.warn('Additional application instance detected:', app.getPath('exe'))
@@ -152,20 +152,16 @@ app.on('before-quit-for-update', () => {
 })
 
 /**
- * @listens Electron.systemPreferences:appearance-changed
- */
-systemPreferences.on('appearance-changed', (newAppearance) => {
-    logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
-})
-
-
-/**
  * @listens Electron.App:ready
  */
 app.once('ready', () => {
     logger.debug('app#ready')
+})
 
-    if (!process.defaultApp && app.isInApplicationsFolder()) {
-        return
-    }
+
+/**
+ * @listens Electron.systemPreferences:appearance-changed
+ */
+systemPreferences.on('appearance-changed', (newAppearance) => {
+    logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
 })
