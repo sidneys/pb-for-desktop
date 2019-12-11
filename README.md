@@ -32,9 +32,9 @@
 
 Tested on:
 
- - **macOS** 10.11 (El Capitan), 10.12 (Sierra), 10.13 (High Sierra), 10.14 (Mojave)
+ - **macOS Mojave**  10.14.6 (18G1012)
  - **Windows 10** 1607, 1703, 1709, 1803
- - **Linux** Ubuntu (16, 17, 18), elementaryOS (0.4)
+ - **Linux** Ubuntu 19, elementaryOS 0.4
 
 > **Unobtrusive**
 

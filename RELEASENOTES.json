@@ -1,10 +1,23 @@
 {
+    "10.3.0": {
+        "💎 improvements": [
+            "enhances installer (Windows)"
+        ],
+        "🚨 fixes": [
+            "fixes Google 2FA sign-in issue (https://github.com/sidneys/pb-for-desktop/issues/114)"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v7.1.4`",
+            "upgrades local `node_modules`",
+            "upgrades third-party `node_modules`"
+        ]
+    },
     "10.2.0": {
         "💎 improvements": [
             "various stability and performance improvements"
         ],
         "🚨 fixes": [
-            "fixes startup issue (Linux, Windows)"
+            "fixes startup issue (https://github.com/sidneys/pb-for-desktop/issues/97) (Linux, Windows)"
         ],
         "👷 internals": [
             "upgrades `electron` to `v7.1.2`",

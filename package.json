@@ -2,7 +2,7 @@
   "name": "pb-for-desktop",
   "appId": "de.sidneys.pb-for-desktop",
   "productName": "PB for Desktop",
-  "version": "10.2.0",
+  "version": "10.3.0",
   "description": "PB for Desktop is a Pushbullet desktop application for macOS, Windows and Linux",
   "license": "MIT",
   "homepage": "https://sidneys.github.io/pb-for-desktop",
@@ -46,19 +46,19 @@
   ],
   "preferGlobal": true,
   "dependencies": {
-    "@sidneys/dom-tools": "^1.92.0",
-    "@sidneys/electron-build": "^1.116.0",
-    "@sidneys/electron-debug-service": "^0.95.0",
-    "@sidneys/electron-deploy-github": "^1.100.0",
-    "@sidneys/electron-dialog-provider": "^1.95.0",
-    "@sidneys/electron-localsetup": "^1.95.0",
-    "@sidneys/electron-notification-provider": "^0.95.0",
-    "@sidneys/electron-power-service": "^0.93.0",
-    "@sidneys/electron-updater-service": "^0.121.0",
-    "@sidneys/is-env": "^1.100.0",
-    "@sidneys/logger": "^1.106.0",
-    "@sidneys/platform-tools": "^1.106.0",
-    "@sidneys/releasenotes": "^1.95.0",
+    "@sidneys/dom-tools": "^1.93.0",
+    "@sidneys/electron-build": "^1.117.0",
+    "@sidneys/electron-debug-service": "^0.96.0",
+    "@sidneys/electron-deploy-github": "^1.101.0",
+    "@sidneys/electron-dialog-provider": "^1.96.0",
+    "@sidneys/electron-localsetup": "^1.96.0",
+    "@sidneys/electron-notification-provider": "^0.96.0",
+    "@sidneys/electron-power-service": "^0.94.0",
+    "@sidneys/electron-updater-service": "^0.122.0",
+    "@sidneys/is-env": "^1.101.0",
+    "@sidneys/logger": "^1.107.0",
+    "@sidneys/platform-tools": "^1.107.0",
+    "@sidneys/releasenotes": "^1.96.0",
     "app-module-path": "^2.2.0",
     "app-root-path": "^3.0.0",
     "appdirectory": "^0.1.0",
@@ -74,7 +74,7 @@
     "howler": "^2.1.2",
     "icojs": "^0.14.0",
     "image-downloader": "^3.5.0",
-    "jimp": "^0.8.5",
+    "jimp": "^0.9.3",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "opn": "^6.0.0",
@@ -83,8 +83,8 @@
   },
   "devDependencies": {
     "docdash": "^1.1.1",
-    "electron": "7.1.2",
-    "eslint": "^6.7.1",
+    "electron": "7.1.4",
+    "eslint": "^6.7.2",
     "jsdoc": "^3.6.3"
   },
   "main": "./app/scripts/app.js",
@@ -101,6 +101,7 @@
   },
   "build": {
     "appId": "de.sidneys.pb-for-desktop",
+    "productName": "PB for Desktop",
     "asar": true,
     "asarUnpack": [
       "sounds"
@@ -136,14 +137,36 @@
       "category": "public.app-category.utilities",
       "darkModeSupport": true
     },
+    "dmg": {
+      "artifactName": "${name}-${version}.${ext}",
+      "background": "./resources/setup/dmg-background.png",
+      "icon": "./resources/setup/dmg-icon.icns"
+    },
     "win": {
       "target": [
         "nsis",
         "msi",
         "portable"
       ],
-      "artifactName": "${name}-${version}.${ext}",
       "icon": "./icons/win/icon.ico"
+    },
+    "nsis": {
+      "artifactName": "${name}-${version}-setup.${ext}",
+      "oneClick": false,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "menuCategory": "PB for Desktop",
+      "installerHeader": "./resources/setup/nsis-installer-header.bmp",
+      "installerHeaderIcon": "./resources/setup/nsis-installer-header-icon.ico",
+      "installerIcon": "./resources/setup/nsis-installer-icon.ico",
+      "installerSidebar": "./resources/setup/nsis-installer-sidebar.bmp"
+    },
+    "msi": {
+      "artifactName": "${name}-${version}-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "${name}-${version}-portable.${ext}"
     },
     "linux": {
       "target": [
@@ -156,22 +179,6 @@
       "artifactName": "${name}-${version}-${arch}.${ext}",
       "icon": "./icons/linux/png",
       "category": "Utility"
-    },
-    "dmg": {
-      "artifactName": "${name}-${version}.${ext}",
-      "background": "./resources/setup/dmg-background.png",
-      "icon": "./resources/setup/dmg-icon.icns"
-    },
-    "nsis": {
-      "artifactName": "${name}-${version}-setup.${ext}",
-      "deleteAppDataOnUninstall": true,
-      "installerHeader": "./resources/setup/nsis-installer-header.bmp",
-      "installerHeaderIcon": "./resources/setup/nsis-installer-header-icon.ico",
-      "installerIcon": "./resources/setup/nsis-installer-icon.ico",
-      "installerSidebar": "./resources/setup/nsis-installer-sidebar.bmp",
-      "oneClick": false,
-      "runAfterFinish": false
-    },
-    "productName": "PB for Desktop"
+    }
   }
 }
