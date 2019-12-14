@@ -6,7 +6,6 @@
  * @constant
  */
 const os = require('os')
-const path = require('path')
 
 /**
  * Modules (Electron)
@@ -27,7 +26,6 @@ const logger = require('@sidneys/logger')({ write: true })
 const domTools = require('@sidneys/dom-tools')
 const isDebug = require('@sidneys/is-env')('debug')
 const notificationProvider = remote.require('@sidneys/electron-notification-provider')
-const platformTools = require('@sidneys/platform-tools')
 
 /**
  * Module Configuration
@@ -38,6 +36,8 @@ appModulePath.addPath(appRootPathDirectory)
  * Modules (Local)
  * @constant
  */
+const appFilesystem = remote.require('app/scripts/main-process/components/globals').appFilesystem
+const appManifest = remote.require('app/scripts/main-process/components/globals').appManifest
 const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 /* eslint-disable no-unused-vars */
 const pbClipboard = require('app/scripts/renderer-process/pushbullet/clipboard')
@@ -51,8 +51,14 @@ const pbPush = require('app/scripts/renderer-process/pushbullet/push')
  * @constant
  * @default
  */
-const appIcon = path.join(appRootPathDirectory, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`)
-const appName = remote.getGlobal('manifest').name
+const appName = appManifest.name
+
+/**
+ * Filesystem
+ * @constant
+ * @default
+ */
+const appIconFile = appFilesystem.icon
 
 /**
  * @constant
@@ -302,7 +308,7 @@ let addWebsocketEventHandlers = () => {
                 if (!pb.e2e.enabled) {
                     const notificationOptions = {
                         body: `Could not decrypt message.${os.EOL}Click here to enter your password.`,
-                        icon: appIcon,
+                        icon: appIconFile,
                         subtitle: 'End-to-End Encryption',
                         title: appName
                     }

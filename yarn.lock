@@ -623,27 +623,27 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@sidneys/dom-tools@^1.93.0":
-  version "1.93.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/dom-tools/-/dom-tools-1.93.0.tgz#ae86c2fc7616d7e5bb71b7e77d9a5dcfea698332"
-  integrity sha512-1cjuyMopwwP26nb7JrxZCI3Xj3zcrwu1WFBUa1EIIYLa9ti93LAWsuhJgwQXL89Tk3t1mBIcqSFdVbU4JoMdqQ==
+"@sidneys/dom-tools@^1.95.0":
+  version "1.95.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/dom-tools/-/dom-tools-1.95.0.tgz#8add13670395cf2f795f739dd4ff25a71af31244"
+  integrity sha512-CGVWXUf/8pFFMfKKnhYpiU6YsV7AnSrjEbGEkYA1endw/YZvok/SjS4YeJifsntLlwkVL6GN98v0zVkU5rpjfQ==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
+    "@sidneys/logger" "^1.110.0"
     clean-css "^4.2.1"
     file-url "^3.0.0"
     lodash "^4.17.15"
     moment "^2.24.0"
     moment-duration-format "^2.3.2"
 
-"@sidneys/electron-build@^1.117.0":
-  version "1.117.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-build/-/electron-build-1.117.0.tgz#f6b0227ef11708564eba774868bdd94f9505a9eb"
-  integrity sha512-Lo1HUUcRkTr64YNfnksAoRz6hCKVrqv3wGbKaxYPCCF87ul0UfSRHjzVQRckjgjaTUkN3NZi/cN3QnEt+TT+bA==
+"@sidneys/electron-build@^1.119.0":
+  version "1.119.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-build/-/electron-build-1.119.0.tgz#a284d02bd584b3fb5fe916e61e42220bb5e1fd16"
+  integrity sha512-tDXR8pJpfdM4C9QVvoDbEtzpNAM/Gwa8aWGNBM4qI3/tV0cMhTlaZ9r+L0lJ44gqpfsFXzOzwng8QRED5WQTjg==
   dependencies:
-    "@sidneys/electron-deploy-github" "^1.101.0"
-    "@sidneys/is-env" "^1.101.0"
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/releasenotes" "^1.96.0"
+    "@sidneys/electron-deploy-github" "^1.103.0"
+    "@sidneys/is-env" "^1.103.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/releasenotes" "^1.98.0"
     app-root-path "^3.0.0"
     electron-builder "21.2.0"
     electron-icon-maker "^0.0.4"
@@ -652,23 +652,23 @@
     lodash "^4.17.15"
     minimist "^1.2.0"
 
-"@sidneys/electron-debug-service@^0.96.0":
-  version "0.96.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-debug-service/-/electron-debug-service-0.96.0.tgz#d3f775ca6b9d0cda730de80e3febc8a87e99fb93"
-  integrity sha512-FTQ4Hlrjulo9FZV7AFYtZm0Fzvad64wEmUuT96jWYzPBcDnBCcc6Z9JvodVZAGSCWe3qDJyQ2K1qEYdklGYpWg==
+"@sidneys/electron-debug-service@^0.98.0":
+  version "0.98.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-debug-service/-/electron-debug-service-0.98.0.tgz#30bb5bb6782813e8e512cd7753386bb3a6a054fa"
+  integrity sha512-9Txh3uwjnVAE1TDmffpDAEY8tIPF5XTVdZsiAsMNZxKjVVnVRcFrr7spysXtSxuPiW7SkvEXpunmwPDGrYRiVQ==
   dependencies:
-    "@sidneys/is-env" "^1.101.0"
-    "@sidneys/logger" "^1.107.0"
+    "@sidneys/is-env" "^1.103.0"
+    "@sidneys/logger" "^1.110.0"
     filesize "^6.0.1"
     try-require "^1.2.1"
 
-"@sidneys/electron-deploy-github@^1.101.0":
-  version "1.101.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-deploy-github/-/electron-deploy-github-1.101.0.tgz#1dd3bcd79a1e9cb02a0156ece2a2591460a34c05"
-  integrity sha512-8K+aBFAEta9JrYT69HJWnMOQF0mE9gqYTGrtQ4kXZi6SMz/xysGk0r3rLd417RDCWMqCAaoNNCzKr7FKqnIHmQ==
+"@sidneys/electron-deploy-github@^1.103.0":
+  version "1.103.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-deploy-github/-/electron-deploy-github-1.103.0.tgz#1d1164060ea464a22645b0000de20e17a12c3b17"
+  integrity sha512-dX9srvgCYMwSm1LzpZiKZElPt+9QqpCdxdNPu1uzbo3Mxy63U+Gcn1RuV1lsRgQsUvrKNf/GSIWKBf9c9NWFdA==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/releasenotes" "^1.96.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/releasenotes" "^1.98.0"
     app-root-path "^3.0.0"
     git-branch "^2.0.1"
     globby "^10.0.1"
@@ -677,23 +677,23 @@
     progress "^2.0.3"
     publish-release sidneys/publish-release.git#pin-dependencies
 
-"@sidneys/electron-dialog-provider@^1.96.0":
-  version "1.96.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-dialog-provider/-/electron-dialog-provider-1.96.0.tgz#0d2bbb9fd902f76df287b3729de985ac0f733f9d"
-  integrity sha512-xyteKHaWu6xtx4c1uJt4tVANrO2wuZrIfX2OnHU8QgvB/+x5caGWM7i2rZXZzPtNq2sJ2U/DC11lf9F4osTeSg==
+"@sidneys/electron-dialog-provider@^1.98.0":
+  version "1.98.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-dialog-provider/-/electron-dialog-provider-1.98.0.tgz#01186c2db45245cd0718b9f558b68cea2613d967"
+  integrity sha512-8lbo18xOVkGngfmNpeWAz1ihKdF7wxP1yilXfVRL8wfqgOW+ZpLunhqDH20OkZBPuMQmI3g5/m5aCkkmDrUJEA==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/platform-tools" "^1.107.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/platform-tools" "^1.109.0"
     fs-extra "^8.1.0"
 
-"@sidneys/electron-localsetup@^1.96.0":
-  version "1.96.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-localsetup/-/electron-localsetup-1.96.0.tgz#a4b9c923728c9cf16561c228eecb9ba4ca0bea13"
-  integrity sha512-I1yP5pkE0RB/4LX6U77D9NpDutkzoPwTImZPKPLtQgIYdp71Snrzq2hVkkrzqBGCsV5XCEaxJ0v7j46Mw6CLtg==
+"@sidneys/electron-localsetup@^1.98.0":
+  version "1.98.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-localsetup/-/electron-localsetup-1.98.0.tgz#9d62b283b4d599eb623f3d58460168e108123033"
+  integrity sha512-v6C+CyE7LUwr36LRYL7Dlxxm/5e28v0YpPj7oCtLsG3KKfzJzGY6nbJU10i+s0I7cF0piUlc73XVCQL9d9Bg1w==
   dependencies:
-    "@sidneys/is-env" "^1.101.0"
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/platform-tools" "^1.107.0"
+    "@sidneys/is-env" "^1.103.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/platform-tools" "^1.109.0"
     app-root-path "^3.0.0"
     fkill "^6.2.0"
     fs-extra "^8.1.0"
@@ -703,31 +703,31 @@
     minimist "^1.2.0"
     try-require "^1.2.1"
 
-"@sidneys/electron-notification-provider@0.96.0", "@sidneys/electron-notification-provider@^0.96.0":
-  version "0.96.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-notification-provider/-/electron-notification-provider-0.96.0.tgz#9a94e6d6294dad93fd79d11bccc5fb9fdf6a88f4"
-  integrity sha512-qZWSBopEh4Q7T5WS8dZNnzKQ+p7p7UEkTamplsU6QKtLMQKcZOOhcO81v9l3E26odf42oocWyE7+6m70ZWbwTw==
+"@sidneys/electron-notification-provider@0.98.0", "@sidneys/electron-notification-provider@^0.98.0":
+  version "0.98.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-notification-provider/-/electron-notification-provider-0.98.0.tgz#2ea7ebf1b3ac47c6ba17883a8fca7fe725ecc33e"
+  integrity sha512-Em69Yp0+zmX8D/46Uq0cQkSL+RrTLUV4yjZT/775nOI7yGcw+DUF5K7VWDE9UsDQFYoLg4lL9QFAWJSR6REMNA==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
+    "@sidneys/logger" "^1.110.0"
     lodash "^4.17.15"
 
-"@sidneys/electron-power-service@^0.94.0":
-  version "0.94.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-power-service/-/electron-power-service-0.94.0.tgz#f2a2b749313dcc39cee9f901c5b4cb8a5e15eca4"
-  integrity sha512-cb9lK61+c5SxnPo//JLGtY4oYmUiCuz2CSVU5bZLDTui0H66VPfPg6O/AWxHRhlJNQXF9iEM1+uWWX9ap524uw==
+"@sidneys/electron-power-service@^0.96.0":
+  version "0.96.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-power-service/-/electron-power-service-0.96.0.tgz#ab97b997f99ae015f34109ba4d713ff55c4b0c45"
+  integrity sha512-IZT5XMb9bOQ8KgP2sX7ATD8xLpAjcX0xNNgMtd5PNa4PuQ0AJCI2HbkPJDURIXa7DJXM17gnDRT1o7zQUpgLRA==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/platform-tools" "^1.107.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/platform-tools" "^1.109.0"
 
-"@sidneys/electron-updater-service@^0.122.0":
-  version "0.122.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/electron-updater-service/-/electron-updater-service-0.122.0.tgz#f347adfca9acae23d1ac78df78d624449198eec1"
-  integrity sha512-Gr6tWW/oj8ak4fioQ42qAWoagfNzLnOILatulopB+XvUIfkMCzo5wEphbQYvz2WHQP8evmKeGEXtbEc2TG+jJA==
+"@sidneys/electron-updater-service@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/electron-updater-service/-/electron-updater-service-1.2.0.tgz#de823681064517cea59bf78e963e3742d20a4cd1"
+  integrity sha512-+58klsMCosySysphawWEmeYmdiFNiJ9afCu41kIgO35NRpWsGixis7MDWl1cPzZpzF87b7ZtTtzIFPomOr9Bcg==
   dependencies:
-    "@sidneys/electron-dialog-provider" "^1.96.0"
-    "@sidneys/electron-notification-provider" "0.96.0"
-    "@sidneys/logger" "^1.107.0"
-    "@sidneys/platform-tools" "^1.107.0"
+    "@sidneys/electron-dialog-provider" "^1.98.0"
+    "@sidneys/electron-notification-provider" "0.98.0"
+    "@sidneys/logger" "^1.110.0"
+    "@sidneys/platform-tools" "^1.109.0"
     app-root-path "^3.0.0"
     electron-store "^5.1.0"
     electron-updater "^4.2.0"
@@ -738,24 +738,24 @@
     semver "^6.3.0"
     semver-compare "^1.0.0"
 
-"@sidneys/is-env@^1.101.0":
-  version "1.101.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/is-env/-/is-env-1.101.0.tgz#2c7538e8f89eb774a88a1629093ae51f2c0fcc6a"
-  integrity sha512-KJHUkVu8ZmIrb/Brr2SHggdqguWH3qDEkiuMrvBQMkDu7HYIFdWq+TSiKDhR1oYYxqxXPFFLMcOOX2mcYSJdOQ==
+"@sidneys/is-env@^1.103.0":
+  version "1.103.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/is-env/-/is-env-1.103.0.tgz#fae2c4b60084580fdb6bc08d1e7ddb2e44a96805"
+  integrity sha512-4DHDlGWvER2ObtfVyxtVXJFhmSPTEtXyR1EY7VgOtwxn0Pz3tvyfJFnoRO02Cjdn2/kK8a+4cZdO8ExoYzLEgA==
   dependencies:
-    "@sidneys/required-count" "^1.114.0"
+    "@sidneys/required-count" "^1.116.0"
     chalk "^3.0.0"
     chalkline "^0.0.5"
     lodash "^4.17.15"
     minimist "^1.2.0"
     try-require "^1.2.1"
 
-"@sidneys/logger@^1.107.0":
-  version "1.107.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/logger/-/logger-1.107.0.tgz#52ba699487020884d20dad3c34a2a69801d6ff71"
-  integrity sha512-le1414/mxXHpZgClbZFZ/SXol917H3rwZUZ1br+ReyVt+fW87/Kojg7TiTOqzl1DsdQOVcV4dvV8g8uXqPyWjA==
+"@sidneys/logger@^1.110.0":
+  version "1.110.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/logger/-/logger-1.110.0.tgz#4df113bf8a3eeff61e460ab4bbeddb53efb7cdcd"
+  integrity sha512-6nLk6DNHm0+5hI3kEruxG4JnaT5Jrij9bJXkqWpDS1cl/wKcztBOrX9w+A4Qnx0/BHHVO4gl7Bjh5hpiMhIJHw==
   dependencies:
-    "@sidneys/is-env" "^1.101.0"
+    "@sidneys/is-env" "^1.103.0"
     appdirectory "^0.1.0"
     chalk "^3.0.0"
     electron-process-type "^4.1.0"
@@ -766,29 +766,41 @@
     read-pkg-up "^7.0.1"
     root-path "^0.2.1"
 
-"@sidneys/platform-tools@^1.107.0":
-  version "1.107.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/platform-tools/-/platform-tools-1.107.0.tgz#ebf621c1cc8813d5f8480d3ae683bdb5dd154a69"
-  integrity sha512-n/1HpIh47i6TKMp1sE37wSkHgQg5O3C2Iez7+gCezgzhaki+eA2fEpXUbuBmZcv/irLXNOJVY3TPCjhhvxh+LQ==
+"@sidneys/platform-tools@^1.109.0":
+  version "1.109.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/platform-tools/-/platform-tools-1.109.0.tgz#5fdf57de7a5351d268ed0743c81f1e4761b72dac"
+  integrity sha512-MFMjbTrwNNyBQzgM+kHGOnnvwx3axWLcq5tIQcu1XlSBIsDF7ewJ9UKsD389d0h+3mjctS1Wa4jC/92y7w0iQw==
   dependencies:
     lodash "^4.17.15"
 
-"@sidneys/releasenotes@^1.96.0":
-  version "1.96.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/releasenotes/-/releasenotes-1.96.0.tgz#75e3cb6065b16edcdaa33f8d10efb1b56a7826ea"
-  integrity sha512-Ba0ovO4xsMEIQNUJ9IMlENbfEPbho8v5SrJJdaGB9WC+pN3FcgdYC8q+TKTfzXq7VNesQ4pF8+suBvMgYwAyaA==
+"@sidneys/releasenotes@^1.98.0":
+  version "1.98.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/releasenotes/-/releasenotes-1.98.0.tgz#fd8ecd105f424298efaf5247e338f6889887b282"
+  integrity sha512-KyKSWQlirbQv2Bj8A3JU70oQwztW382hscywk8To009oshKBjXwr12Z2WPAIawDw2okENvd9GMaJ6cHEhHUXIw==
   dependencies:
-    "@sidneys/logger" "^1.107.0"
+    "@sidneys/logger" "^1.110.0"
     app-root-path "^3.0.0"
     fs-extra "^8.1.0"
     json2md "^1.6.5"
     lodash "^4.17.15"
     remove-markdown "^0.3.0"
 
-"@sidneys/required-count@^1.114.0":
-  version "1.114.0"
-  resolved "https://registry.yarnpkg.com/@sidneys/required-count/-/required-count-1.114.0.tgz#87d70a9f241ff6432e8e0abbec4df6195f8ac80d"
-  integrity sha512-6FRu6v1ru0qjn+Je8EY8Qpux/IKhriM6Rn+ABzOA7708iYdOPj5r+QPnPtWytW35ji2o6KoABcoXBH8LHiHmOw==
+"@sidneys/required-count@^1.116.0":
+  version "1.116.0"
+  resolved "https://registry.yarnpkg.com/@sidneys/required-count/-/required-count-1.116.0.tgz#eb9fd97e0f7f6deef993a741e95f63b245fd9dfc"
+  integrity sha512-L1cxTdQOqFwY07j9dbhH/l61lVHlzyP8HDrvgwmITSwXr7MypwPL3IbsdT7ePBcCeqwQlunVcrK7agtrzn2uDQ==
+
+"@sindresorhus/df@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-1.0.1.tgz#c69b66f52f6fcdd287c807df210305dbaf78500d"
+  integrity sha1-xptm9S9vzdKHyAffIQMF2694UA0=
+
+"@sindresorhus/df@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-2.1.0.tgz#d208cf27e06f0bb476d14d7deccd7d726e9aa389"
+  integrity sha1-0gjPJ+BvC7R20U197M19cm6ao4k=
+  dependencies:
+    execa "^0.2.2"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -799,6 +811,11 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
   integrity sha512-ONhaKPIufzzrlNbqtWFFd+jlnemX6lJAgq9ZeiZtS7I1PIf/la7CW4m83rTXRnVnsMbW2k56pGYu7AUFJD9Pow==
+
+"@stroncium/procfs@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@stroncium/procfs/-/procfs-1.0.0.tgz#b7989b3783070e1bc2f25cba7d4eab17e607f770"
+  integrity sha512-EuCojbgxRWqhdCWdYZ0/LhcXfTGXBjqfDhYhHHWQqPG/VihFvRT3P0hIzNZzS2joIGxanVo3AYDGBdVTaw+IJw==
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -1902,6 +1919,25 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
+cp-file@^6.1.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/cp-file/-/cp-file-6.2.0.tgz#40d5ea4a1def2a9acdd07ba5c0b0246ef73dc10d"
+  integrity sha512-fmvV4caBnofhPe8kOcitBwSn2f39QLjnAnGq3gO9dfd75mUytzKNZB1hde6QHunW2Rt+OwuBOMc3i1tNElbszA==
+  dependencies:
+    graceful-fs "^4.1.2"
+    make-dir "^2.0.0"
+    nested-error-stacks "^2.0.0"
+    pify "^4.0.1"
+    safe-buffer "^5.0.1"
+
+cross-spawn-async@^2.1.1:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/cross-spawn-async/-/cross-spawn-async-2.2.5.tgz#845ff0c0834a3ded9d160daca6d390906bb288cc"
+  integrity sha1-hF/wwINKPe2dFg2sptOQkGuyiMw=
+  dependencies:
+    lru-cache "^4.0.0"
+    which "^1.2.8"
+
 cross-spawn@^5.0.1:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -2146,6 +2182,13 @@ diff-sequences@^24.9.0:
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.9.0.tgz#5715d6244e2aa65f48bba0bc972db0b0b11e95b5"
   integrity sha512-Dj6Wk3tWyTE+Fo1rW8v0Xhwk80um6yFYKbuAxc9c3EZxIHFDYwbi34Uk42u1CdnIiVorvt4RmlSDjIPyzGC2ew==
 
+dir-glob@^2.0.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/dir-glob/-/dir-glob-2.2.2.tgz#fa09f0694153c8918b18ba0deafae94769fc50c4"
+  integrity sha512-f9LBi5QWzIW3I6e//uxZoLBlUt9kcp66qo0sSCxL6YZKc75R1c4MFCoe/LaZiBGmgujvQdxc5Bn3QhfyvK5Hsw==
+  dependencies:
+    path-type "^3.0.0"
+
 dir-glob@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/dir-glob/-/dir-glob-3.0.1.tgz#56dbf73d992a4a93ba1584f4534063fd2e41717f"
@@ -2334,10 +2377,10 @@ electron-updater@^4.2.0:
     pako "^1.0.10"
     semver "^6.3.0"
 
-electron@7.1.4:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-7.1.4.tgz#ea10b4b61a2456e893e7ad34d62705bbaca150c9"
-  integrity sha512-OcihtthS/C4aNKiQtVm7gAVGMgwYzAmqN6U8jdsGvpE2EXqX8tdcN6q150GDCmcUr6v2+PSoLQP181NuZUzxuA==
+electron@7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-7.1.5.tgz#414c9590cbab2056a0e12c86960451d3a1edcd8e"
+  integrity sha512-jagsvNz6Axu2Lsp5PqDgkcR+4BwoPP9YyLgMu9lhpFNRNKpNgfsEqUbtNolkFN/TtmWjxGO+iioWRrGqZHmJ8w==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
@@ -2544,6 +2587,17 @@ exec-sh@^0.3.2:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/exec-sh/-/exec-sh-0.3.4.tgz#3a018ceb526cc6f6df2bb504b2bfe8e3a4934ec5"
   integrity sha512-sEFIkc61v75sWeOe72qyrqg2Qg0OuLESziUDk/O/z2qgS15y2gWVFrI6f2Qn/qw/0/NCfCEsmNA4zOjkwEZT1A==
+
+execa@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-0.2.2.tgz#e2ead472c2c31aad6f73f1ac956eef45e12320cb"
+  integrity sha1-4urUcsLDGq1vc/GslW7vReEjIMs=
+  dependencies:
+    cross-spawn-async "^2.1.1"
+    npm-run-path "^1.0.0"
+    object-assign "^4.0.1"
+    path-key "^1.0.0"
+    strip-eof "^1.0.0"
 
 execa@^0.7.0:
   version "0.7.0"
@@ -3191,6 +3245,18 @@ globby@^5.0.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+globby@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-7.1.1.tgz#fb2ccff9401f8600945dfada97440cca972b8680"
+  integrity sha1-+yzP+UAfhgCUXfral0QMypcrhoA=
+  dependencies:
+    array-union "^1.0.1"
+    dir-glob "^2.0.0"
+    glob "^7.1.2"
+    ignore "^3.3.5"
+    pify "^3.0.0"
+    slash "^1.0.0"
+
 got@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/got/-/got-8.3.2.tgz#1d23f64390e97f776cac52e5b936e5f514d2e937"
@@ -3488,6 +3554,11 @@ ignore-walk@^3.0.1:
   integrity sha512-m7o6xuOaT1aqheYHKf8W6J5pYH85ZI9w077erOzLje3JsB1gkafkAhHHY19dqjulgIZHFm32Cp5uNZgcQqdJKw==
   dependencies:
     minimatch "^3.0.4"
+
+ignore@^3.3.5:
+  version "3.3.10"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.10.tgz#0a97fb876986e8081c631160f8f9f389157f0043"
+  integrity sha512-Pgs951kaMm5GXP7MOvxERINe3gsaVjUWFm+UZPSq9xYriQAksyhg0csnS0KXSNRD5NmNdapXEpjxG49+AKh/ug==
 
 ignore@^4.0.6:
   version "4.0.6"
@@ -3849,6 +3920,11 @@ is-path-inside@^1.0.0:
   integrity sha1-jvW33lBDej/cprToZe96pVy0gDY=
   dependencies:
     path-is-inside "^1.0.1"
+
+is-path-inside@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/is-path-inside/-/is-path-inside-3.0.2.tgz#f5220fc82a3e233757291dddc9c5877f2a1f3017"
+  integrity sha512-/2UGPSgmtqwo1ktx8NDHjuPwZWmHhO+gj0f93EkhLB5RgW9RZevWYYlIkS6zePc6U2WpOdQYIwHe9YC4DWEBVg==
 
 is-plain-obj@^1.0.0:
   version "1.1.0"
@@ -4829,7 +4905,7 @@ lowercase-keys@^2.0.0:
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-2.0.0.tgz#2603e78b7b4b0006cbca2fbcc8a3202558ac9479"
   integrity sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==
 
-lru-cache@^4.0.1:
+lru-cache@^4.0.0, lru-cache@^4.0.1:
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.5.tgz#8bbe50ea85bed59bc9e33dcab8235ee9bcf443cd"
   integrity sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==
@@ -4844,7 +4920,7 @@ make-dir@^1.0.0:
   dependencies:
     pify "^3.0.0"
 
-make-dir@^2.1.0:
+make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-2.1.0.tgz#5f0310e18b8be898cc07009295a30ae41e91e6f5"
   integrity sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==
@@ -5095,6 +5171,24 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
+mount-point@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mount-point/-/mount-point-3.0.0.tgz#665cb9edebe80d110e658db56c31d0aef51a8f97"
+  integrity sha1-Zly57evoDREOZY21bDHQrvUaj5c=
+  dependencies:
+    "@sindresorhus/df" "^1.0.1"
+    pify "^2.3.0"
+    pinkie-promise "^2.0.1"
+
+move-file@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/move-file/-/move-file-1.2.0.tgz#789f92d276c62511d214b1b285aa16e015c2f2fc"
+  integrity sha512-USHrRmxzGowUWAGBbJPdFjHzEqtxDU03pLHY0Rfqgtnq+q8FOIs8wvkkf+Udmg77SJKs47y9sI0jJvQeYsmiCA==
+  dependencies:
+    cp-file "^6.1.0"
+    make-dir "^3.0.0"
+    path-exists "^3.0.0"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -5179,6 +5273,11 @@ neo-async@^2.6.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
+
+nested-error-stacks@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
+  integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -5293,6 +5392,13 @@ npm-run-all@^4.1.5:
     read-pkg "^3.0.0"
     shell-quote "^1.6.1"
     string.prototype.padend "^3.0.0"
+
+npm-run-path@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/npm-run-path/-/npm-run-path-1.0.0.tgz#f5c32bf595fe81ae927daec52e82f8b000ac3c8f"
+  integrity sha1-9cMr9ZX+ga6Sfa7FLoL4sACsPI8=
+  dependencies:
+    path-key "^1.0.0"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
@@ -5501,6 +5607,13 @@ p-locate@^4.1.0:
   dependencies:
     p-limit "^2.2.0"
 
+p-map@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/p-map/-/p-map-3.0.0.tgz#d704d9af8a2ba684e2600d9a215983d4141a979d"
+  integrity sha512-d3qXVTF/s+W+CdJ5A29wywV2n8CQQYahlgz2bFiA+4eVNJbHJodPZ+/gXwPGh0bOqA+j8S+6+ckmvLGPk1QpxQ==
+  dependencies:
+    aggregate-error "^3.0.0"
+
 p-reduce@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-reduce/-/p-reduce-1.0.0.tgz#18c2b0dd936a4690a529f8231f58a0fdb6a47dfa"
@@ -5513,7 +5626,7 @@ p-timeout@^2.0.1:
   dependencies:
     p-finally "^1.0.0"
 
-p-try@^2.0.0:
+p-try@^2.0.0, p-try@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
@@ -5643,6 +5756,11 @@ path-is-inside@^1.0.1:
   resolved "https://registry.yarnpkg.com/path-is-inside/-/path-is-inside-1.0.2.tgz#365417dede44430d1c11af61027facf074bdfc53"
   integrity sha1-NlQX3t5EQw0cEa9hAn+s8HS9/FM=
 
+path-key@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/path-key/-/path-key-1.0.0.tgz#5d53d578019646c0d68800db4e146e6bdc2ac7af"
+  integrity sha1-XVPVeAGWRsDWiADbThRua9wqx68=
+
 path-key@^2.0.0, path-key@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
@@ -5721,7 +5839,7 @@ pidtree@^0.3.0:
   resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.3.0.tgz#f6fada10fccc9f99bf50e90d0b23d72c9ebc2e6b"
   integrity sha512-9CT4NFlDcosssyg8KVFltgokyKZIFjoBxw8CTGy+5F38Y1eQWrt8tRayiUOXE+zVKQnYu5BR8JjCtvK3BcnBhg==
 
-pify@^2.0.0, pify@^2.2.0:
+pify@^2.0.0, pify@^2.2.0, pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
   integrity sha1-7RQaasBDqEnqWISY59yosVMw6Qw=
@@ -5736,7 +5854,7 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pinkie-promise@^2.0.0:
+pinkie-promise@^2.0.0, pinkie-promise@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/pinkie-promise/-/pinkie-promise-2.0.1.tgz#2135d6dfa7a358c069ac9b178776288228450ffa"
   integrity sha1-ITXW36ejWMBprJsXh3YogihFD/o=
@@ -6527,6 +6645,11 @@ sisteransi@^1.0.3:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.3.tgz#98168d62b79e3a5e758e27ae63c4a053d748f4eb"
   integrity sha512-SbEG75TzH8G7eVXFSN5f9EExILKfly7SUvVY5DhhYLvfhKqhDFY0OzevWa/zwak0RLRfWS5AvfMWpd9gJvr5Yg==
 
+slash@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
+  integrity sha1-xB8vbDn8FtHNF61LXYlhFK5HDVU=
+
 slash@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-2.0.0.tgz#de552851a1759df3a8f206535442f5ec4ddeab44"
@@ -7180,6 +7303,21 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+trash@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/trash/-/trash-6.1.1.tgz#8fb863421b31f32571f2650b53534934d5e63025"
+  integrity sha512-4i56lCmz2RG6WZN018hf4L75L5HboaFuKkHx3wDG/ihevI99e0OgFyl8w6G4ioqBm62V4EJqCy5xw3vQSNXU8A==
+  dependencies:
+    "@stroncium/procfs" "^1.0.0"
+    globby "^7.1.1"
+    is-path-inside "^3.0.2"
+    make-dir "^3.0.0"
+    move-file "^1.1.0"
+    p-map "^3.0.0"
+    p-try "^2.2.0"
+    uuid "^3.3.2"
+    xdg-trashdir "^2.1.1"
+
 trim-newlines@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-1.0.0.tgz#5887966bb582a4503a41eb524f7d35011815a613"
@@ -7370,6 +7508,13 @@ use@^3.1.0:
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
 
+user-home@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/user-home/-/user-home-2.0.0.tgz#9c70bfd8169bc1dcbf48604e0f04b8b49cde9e9f"
+  integrity sha1-nHC/2Babwdy/SGBODwS4tJzenp8=
+  dependencies:
+    os-homedir "^1.0.0"
+
 utf8-byte-length@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/utf8-byte-length/-/utf8-byte-length-1.0.4.tgz#f45f150c4c66eee968186505ab93fcbb8ad6bf61"
@@ -7481,7 +7626,7 @@ which-module@^2.0.0:
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
   integrity sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=
 
-which@^1.2.10, which@^1.2.14, which@^1.2.9, which@^1.3.0:
+which@^1.2.10, which@^1.2.14, which@^1.2.8, which@^1.2.9, which@^1.3.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/which/-/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
   integrity sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==
@@ -7586,10 +7731,28 @@ ws@^5.2.0:
   dependencies:
     async-limiter "~1.0.0"
 
+xdg-basedir@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-2.0.0.tgz#edbc903cc385fc04523d966a335504b5504d1bd2"
+  integrity sha1-7byQPMOF/ARSPZZqM1UEtVBNG9I=
+  dependencies:
+    os-homedir "^1.0.0"
+
 xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
   integrity sha1-SWsswQnsqNus/i3HK2A8F8WHCtQ=
+
+xdg-trashdir@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/xdg-trashdir/-/xdg-trashdir-2.1.1.tgz#59a60aaf8e6f9240c1daed9a0944b2f514c27d8e"
+  integrity sha512-KcVhPaOu2ZurYNHSRTf1+ZHORkTZGCQ+u0JHN17QixRISJq4pXOnjt/lQcehvtHL5QAKhSzKgyjrcNnPdkPBHA==
+  dependencies:
+    "@sindresorhus/df" "^2.1.0"
+    mount-point "^3.0.0"
+    pify "^2.2.0"
+    user-home "^2.0.0"
+    xdg-basedir "^2.0.0"
 
 xhr@^2.0.1:
   version "2.5.0"

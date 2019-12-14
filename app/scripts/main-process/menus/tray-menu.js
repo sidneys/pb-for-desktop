@@ -25,12 +25,17 @@ const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
 const notificationProvider = require('@sidneys/electron-notification-provider')
+const trash = require('trash')
 
 /**
  * Modules (Local)
  * @constant
  */
+const appManifest = require('app/scripts/main-process/components/globals').appManifest
+const appFilesystem = require('app/scripts/main-process/components/globals').appFilesystem
 const configurationManager = require('app/scripts/main-process/managers/configuration-manager')
+
+/** @namespace global **/
 
 
 /**
@@ -38,22 +43,16 @@ const configurationManager = require('app/scripts/main-process/managers/configur
  * @constant
  * @default
  */
-const appCurrentVersion = global.manifest.version
-const appProductName = global.manifest.productName
+const appCurrentVersion = appManifest.version
+const appProductName = appManifest.productName
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appSoundDirectory = global.filesystem.directories.sounds
-
-/**
- * App icons
- * @constant
- */
-const appIcon = path.join(appRootPathDirectory, 'app', 'images', 'logo.png')
-
+const appSoundDirectory = appFilesystem.sounds
+const appIconFile = appFilesystem.icon
 
 /**
  * Tray icons
@@ -77,22 +76,22 @@ const trayMenuItemImagePushbulletClipboardEnabled = path.join(appRootPathDirecto
 const trayMenuItemImagePushbulletSmsEnabled = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSmsEnabled${platformTools.menuItemImageExtension}`)
 const trayMenuItemImagePushbulletSoundEnabled = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSoundEnabled${platformTools.menuItemImageExtension}`)
 const trayMenuItemImagePushbulletSoundFilePath = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletSoundFilePath${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageReconnect = path.join(appRootPathDirectory, 'app', 'images', `tray-item-reconnect${platformTools.menuItemImageExtension}`)
-const trayMenuItemImageReset = path.join(appRootPathDirectory, 'app', 'images', `tray-item-reset${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppRestart = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appRestart${platformTools.menuItemImageExtension}`)
+const trayMenuItemImageAppReset = path.join(appRootPathDirectory, 'app', 'images', `tray-item-appReset${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageSnooze = path.join(appRootPathDirectory, 'app', 'images', `tray-item-snooze${platformTools.menuItemImageExtension}`)
 const trayMenuItemImageWindowTopmost = path.join(appRootPathDirectory, 'app', 'images', `tray-item-windowTopmost${platformTools.menuItemImageExtension}`)
 const trayMenuItemImagePushbulletNotificationFilterFilePath = path.join(appRootPathDirectory, 'app', 'images', `tray-item-pushbulletNotificationFilterFilePath${platformTools.menuItemImageExtension}`)
 
 
 /**
- * Get mainWindow
+ * Get the main BrowserWindow
  * @returns {Electron.BrowserWindow}
  */
-let getMainWindow = () => global.mainWindow
+let getMainWindow = () => global.mainWindow.browserWindow
 
 /**
  * Get snoozerService
- * @returns {Electron.BrowserWindow}
+ * @returns {SnoozerService}
  */
 let getSnoozerService = () => global.snoozerService
 
@@ -107,7 +106,7 @@ let createTrayMenuTemplate = () => {
             id: 'appProductName',
             label: `Show ${appProductName}`,
             click() {
-                global.mainWindow.show()
+                getMainWindow.show()
             }
         },
         {
@@ -132,10 +131,10 @@ let createTrayMenuTemplate = () => {
         },
         {
             id: 'simulateAppUpdate',
-            label: 'Simulate App Update...',
+            label: 'Trigger simulated App Update...',
             type: 'normal',
             visible: process.defaultApp || isDebug,
-            click(menuItem) {
+            click() {
                 electronUpdaterService.simulate()
             }
         },
@@ -143,85 +142,77 @@ let createTrayMenuTemplate = () => {
             type: 'separator'
         },
         {
-            id: 'reset',
-            label: 'Reset configuration...',
-            icon: trayMenuItemImageReset,
+            id: 'appRestart',
+            label: 'Restart application...',
+            icon: trayMenuItemImageAppRestart,
             type: 'normal',
             click() {
-                dialogProvider.showConfirmation('Are you sure you want to reset?',
-                    `${appProductName} will reset to its initial state.${os.EOL}Unsaved changes will be lost.`,
+                dialogProvider.showConfirmation('Are you sure you want to restart PB for Desktop?',
+                    `${appProductName} will restart and reconnect to Pushbullet.` +
+                    `${os.EOL}${os.EOL}` +
+                    `All unsaved changes will be lost.`,
                     (error, result) => {
+                        logger.debug('appRestart', 'error:', error, 'result:', result)
+
                         // Handle Error
                         if (error) {
-                            logger.error('reset', 'dialogProvider.showConfirmation', error)
+                            logger.error('appRestart', error)
                             return
                         }
 
                         // Handle Result
-                        if (result === 0) {
-                            configurationManager('appLaunchOnStartup').set(configurationManager('appLaunchOnStartup').default)
-                            configurationManager('appShowBadgeCount').set(configurationManager('appShowBadgeCount').default)
-                            configurationManager('appTrayOnly').set(configurationManager('appTrayOnly').default)
-                            configurationManager('pushbulletLastNotificationTimestamp').set(configurationManager('pushbulletLastNotificationTimestamp').default)
-                            configurationManager('pushbulletRepeatRecentNotifications').set(configurationManager('pushbulletRepeatRecentNotifications').default)
-                            configurationManager('pushbulletSmsEnabled').set(configurationManager('pushbulletSmsEnabled').default)
-                            configurationManager('pushbulletSoundEnabled').set(configurationManager('pushbulletSoundEnabled').default)
-                            configurationManager('pushbulletSoundFilePath').set(configurationManager('pushbulletSoundFilePath').default)
-                            configurationManager('pushbulletSoundVolume').set(configurationManager('pushbulletSoundVolume').default)
-                            configurationManager('windowBounds').set(configurationManager('windowBounds').default)
-                            configurationManager('windowTopmost').set(configurationManager('windowTopmost').default)
-                            configurationManager('windowVisible').set(configurationManager('windowVisible').default)
+                        if (result.response === 1) {
+                            // Status
+                            logger.info('appRestart', 'relaunching')
 
-                            const sessionList = webContents.getAllWebContents().map((contents) => {
-                                return contents.session.clearCache ? contents.session : void 0
-                            })
-
-                            sessionList.forEach((session, sessionIndex) => {
-                                if (!session.clearCache) {
-                                    return
-                                }
-
-                                session.clearCache(() => {
-                                    session.clearStorageData({
-                                        storages: [ 'appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'serviceworkers', 'shadercache', 'websql' ],
-                                        quotas: [ 'persistent', 'syncable', 'temporary' ]
-                                    }, () => {
-                                        logger.info('logout', 'cleared cache and storage')
-                                    })
-                                })
-
-                                if (sessionIndex === sessionList.length - 1) {
-                                    app.relaunch()
-                                    app.quit()
-                                }
-                            })
+                            // Restart
+                            app.relaunch()
+                            app.quit()
                         }
                     })
             }
         },
         {
-            id: 'reconnect',
-            label: 'Reconnect...',
-            icon: trayMenuItemImageReconnect,
+            id: 'appReset',
+            label: 'Reset application...',
+            icon: trayMenuItemImageAppReset,
             type: 'normal',
             click() {
-                dialogProvider.showConfirmation('Are you sure you want to reconnect to Pushbullet?',
-                    `${appProductName} will reconnect to Pushbullet.${os.EOL}` +
+                dialogProvider.showConfirmation('Are you sure you want to reset?',
+                    `${appProductName} will clear its configuration and revert the application to its initial state.` +
+                    `${os.EOL}${os.EOL}` +
                     `All unsaved changes will be lost.`,
                     (error, result) => {
+                        logger.debug('appReset', 'error:', error, 'result:', result)
+
                         // Handle Error
                         if (error) {
-                            logger.error('reconnect', 'dialogProvider.showConfirmation', error)
+                            logger.error('appReset', error)
                             return
                         }
 
                         // Handle Result
-                        if (result === 1) {
-                            logger.log('reconnect', 'relaunching')
+                        if (result.response === 1) {
+                            // Get user data directory
+                            const userDataDirectory = app.getPath('userData')
 
-                            app.relaunch()
-                            app.quit()
-                            return
+                            // Delete user data directory
+                            trash(userDataDirectory)
+                                .then(() => {
+                                    // Status
+                                    logger.info('appReset', 'deleted user data:', userDataDirectory)
+                                })
+                                .catch((error) => {
+                                    logger.error('appReset', 'trash', error)
+                                })
+                                .finally(() => {
+                                    // Status
+                                    logger.info('appReset', 'relaunching')
+
+                                    // Restart
+                                    app.relaunch()
+                                    app.exit()
+                                })
                         }
                     })
             }
@@ -257,7 +248,7 @@ let createTrayMenuTemplate = () => {
             label: 'Notification Filter...',
             icon: trayMenuItemImagePushbulletNotificationFilterFilePath,
             type: 'normal',
-            click(menuItem) {
+            click() {
                 shell.openItem(configurationManager('pushbulletNotificationFilterFilePath').get())
             }
         },
@@ -362,7 +353,7 @@ let createTrayMenuTemplate = () => {
 
                         // Handle Result
                         configurationManager('pushbulletSoundFilePath').set(filePath)
-                })
+                    })
             }
         },
         {
@@ -431,7 +422,7 @@ let createTrayMenuTemplate = () => {
             click() {
                 const notification = notificationProvider.create({
                     body: 'This is a test notification.',
-                    icon: appIcon,
+                    icon: appIconFile,
                     title: 'Test Notification',
                     silent: false,
                     subtitle: 'Test Notification Subtitle'
@@ -486,7 +477,7 @@ class TrayMenu extends Tray {
     onClose() {
         logger.debug('onClose')
 
-        // Notify Embedders
+        // Notify webContents
         webContents.getAllWebContents().forEach(contents => contents.send('tray-close'))
     }
 

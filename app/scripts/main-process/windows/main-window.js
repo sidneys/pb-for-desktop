@@ -23,6 +23,14 @@ const appRootPathDirectory = require('app-root-path').path
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
 
+/**
+ * Modules (Local)
+ * @constant
+ */
+const appManifest = require('app/scripts/main-process/components/globals').appManifest
+
+/** @namespace global **/
+
 
 /**
  * Filesystem
@@ -36,13 +44,14 @@ const windowHtml = path.join(appRootPathDirectory, 'app', 'html', 'main.html')
  * @constant
  * @default
  */
-const windowTitle = global.manifest.productName
+const windowTitle = appManifest.productName
 const windowUrl = url.format({ protocol: 'file:', pathname: windowHtml })
 
 
 /**
  * @class MainWindow
  * @property {Electron.BrowserWindow} browserWindow
+ * @property {Boolean} allowQuit
  * @namespace Electron
  */
 class MainWindow {
@@ -50,11 +59,11 @@ class MainWindow {
      * @constructor
      */
     constructor() {
-        // Create BrowserWindow
+        // Init BrowserWindow
         this.browserWindow = new BrowserWindow({
             acceptFirstMouse: true,
             autoHideMenuBar: true,
-            // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
+            // HOTFIX: Window Translucency, https://github.com//electron/electron/issues/2170
             // backgroundColor: platformTools.isMacOS ? void 0 : '#95A5A6',
             backgroundColor: platformTools.isMacOS ? void 0 : '#303030',
             darkTheme: platformTools.isLinux ? true : void 0,
@@ -64,10 +73,10 @@ class MainWindow {
             thickFrame: platformTools.isWindows ? true : void 0,
             title: windowTitle,
             titleBarStyle: platformTools.isMacOS ? 'hiddenInset' : void 0,
-            // Hotfix: Window Translucency, https://github.com//electron/electron/issues/2170
+            // HOTFIX: Window Translucency, https://github.com//electron/electron/issues/2170
             // transparent: true,
-            transparent: platformTools.isMacOS ? true : false,
-            // Hotfix: Crash on exit, https://github.com//electron/electron/issues/12726
+            transparent: platformTools.isMacOS,
+            // HOTFIX: Crash on exit, https://github.com//electron/electron/issues/12726
             vibrancy: platformTools.isMacOS ? 'dark' : void 0,
             // vibrancy: void 0,
             webPreferences: {
@@ -96,6 +105,8 @@ class MainWindow {
         })
 
         // Init
+        this.allowQuit = false
+
         this.init()
     }
 
@@ -106,12 +117,13 @@ class MainWindow {
         logger.debug('init')
 
         /**
-         * @listens Electron.BrowserWindow#close
+         * @listens Electron.BrowserWindow:close
          */
         this.browserWindow.on('close', (event) => {
-            logger.debug('AppWindow#close')
+            logger.debug('MainWindow.browserWindow:close')
 
-            if (global.state.isQuitting === false) {
+            // Don't quit application when closing main window
+            if (this.allowQuit === false) {
                 event.preventDefault()
                 this.browserWindow.hide()
             }
@@ -121,16 +133,31 @@ class MainWindow {
          * @listens Electron.webContents:will-navigate
          */
         this.browserWindow.webContents.on('will-navigate', (event, url) => {
-            logger.debug('AppWindow.webContents#will-navigate')
+            logger.debug('MainWindow.browserWindow.webContents:will-navigate')
 
+            // Handle external URLs
             if (url) {
                 event.preventDefault()
+
+                // Open URL
                 shell.openExternal(url)
+                    .then((result) => {
+                        logger.debug('MainWindow.browserWindow.webContents:will-navigate', 'shell.openExternal', 'result:', result)
+                    })
+                    .catch((error) => {
+                        logger.error('MainWindow.browserWindow.webContents:will-navigate', 'shell.openExternal', error)
+                    })
             }
         })
 
-
+        // Load HTML
         this.browserWindow.loadURL(windowUrl)
+            .then((result) => {
+                logger.debug('MainWindow.browserWindow#loadURL', 'result:', result)
+            })
+            .catch((error) => {
+                logger.error('MMainWindow.browserWindow#loadURL', error)
+            })
     }
 }
 
@@ -143,26 +170,36 @@ let init = () => {
 
     // Ensure single instance
     if (!global.mainWindow) {
-        const mainWindow = new MainWindow()
-        global.mainWindow = mainWindow.browserWindow
+        global.mainWindow = new MainWindow()
     }
 }
 
 
 /**
- * @listens Electron.App#on
+ * Show main Window when activating app
+ * @listens Electron.App:activate
  */
 app.on('activate', () => {
-    logger.debug('app#activate')
+    logger.debug('app:activate')
 
-    global.mainWindow.show()
+    global.mainWindow.browserWindow.show()
 })
 
 /**
- * @listens Electron.App#on
+ * Allow to exit app when "quit" was directly called
+ * @listens Electron.App:before-quit
+ */
+app.on('before-quit', () => {
+    logger.debug('app:before-quit')
+
+    global.mainWindow.allowQuit = true
+})
+
+/**
+ * @listens Electron.App:ready
  */
 app.once('ready', () => {
-    logger.debug('app#ready')
+    logger.debug('app:ready')
 
     init()
 })

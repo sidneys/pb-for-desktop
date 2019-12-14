@@ -22,35 +22,40 @@ const app = electron.app ? electron.app : remote.app
  */
 const _ = require('lodash')
 const appRootPathDirectory = require('app-root-path').path
-const Appdirectory = require('appdirectory')
 const AutoLaunch = require('auto-launch')
 const electronSettings = require('electron-settings')
 const logger = require('@sidneys/logger')({ write: true })
 const platformTools = require('@sidneys/platform-tools')
 const electronUpdaterService = require('@sidneys/electron-updater-service')
 
+/**
+ * Modules (Local)
+ * @constant
+ */
+const appManifest = require('app/scripts/main-process/components/globals').appManifest
+const appFilesystem = require('app/scripts/main-process/components/globals').appFilesystem
 
 /**
  * Application
  * @constant
  * @default
  */
-const appName = global.manifest.name
+const appName = appManifest.name
 
 /**
  * Filesystem
  * @constant
  * @default
  */
-const appLogDirectory = (new Appdirectory(appName)).userLogs()
-const appSettingsFilepath = path.join(path.dirname(electronSettings.file()), `${appName}.json`)
-const appSoundDirectory = path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked')
+const appLogsDirectory = appFilesystem.logs
+const appSettingsFile = appFilesystem.settings
+const appSoundsDirectory = appFilesystem.sounds
 
 /**
  * Module Configuration
  */
 const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } })
-electronSettings.setPath(appSettingsFilepath)
+electronSettings.setPath(appSettingsFile)
 
 /**
  * @constant
@@ -61,10 +66,10 @@ const defaultDebounce = 1000
 
 
 /**
- * Get primary BrowserWindow
+ * Get the main BrowserWindow
  * @returns {BrowserWindow}
  */
-let getPrimaryWindow = () => global.mainWindow
+let getMainWindow = () => global.mainWindow.browserWindow
 
 /**
  * Show app in menubar or task bar only
@@ -74,7 +79,7 @@ let setAppTrayOnly = (trayOnly) => {
     logger.debug('setAppTrayOnly')
 
     let interval = setInterval(() => {
-        const primaryWindow = getPrimaryWindow()
+        const primaryWindow = getMainWindow()
         if (!primaryWindow) { return }
         if (!primaryWindow.getBounds()) { return }
 
@@ -199,7 +204,7 @@ let configurationItems = {
      */
     appLogFile: {
         keypath: 'appLogFile',
-        default: path.join(appLogDirectory, appName + '.log'),
+        default: path.join(appLogsDirectory, appName + '.log'),
         init() {
             logger.debug(this.keypath, 'init')
         },
@@ -283,7 +288,7 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow()
+                const primaryWindow = getMainWindow()
                 if (!primaryWindow) { return }
                 if (!primaryWindow.getBounds()) { return }
 
@@ -313,7 +318,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
 
-            const primaryWindow = getPrimaryWindow()
+            const primaryWindow = getMainWindow()
             if (!primaryWindow) { return }
             if (!primaryWindow.getBounds()) { return }
 
@@ -331,7 +336,7 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow()
+                const primaryWindow = getMainWindow()
                 if (!primaryWindow) { return }
                 if (!primaryWindow.getBounds()) { return }
 
@@ -370,7 +375,7 @@ let configurationItems = {
 
             // Wait for window
             let interval = setInterval(() => {
-                const primaryWindow = getPrimaryWindow()
+                const primaryWindow = getMainWindow()
                 if (!primaryWindow) { return }
                 if (!primaryWindow.getBounds()) { return }
 
@@ -401,7 +406,7 @@ let configurationItems = {
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
 
-            const primaryWindow = getPrimaryWindow()
+            const primaryWindow = getMainWindow()
             if (!primaryWindow) { return }
             if (!primaryWindow.getBounds()) { return }
 
@@ -497,7 +502,7 @@ let configurationItems = {
      */
     pushbulletSoundFilePath: {
         keypath: 'pushbulletSoundFilePath',
-        default: path.join(appSoundDirectory, 'default.wav'),
+        default: path.join(appSoundsDirectory, 'default.wav'),
         init() {
             logger.debug(this.keypath, 'init')
 
@@ -602,9 +607,18 @@ let configurationItems = {
 }
 
 /**
+ * @typedef ConfigurationItem
+ * @property {String} keypath
+ * @property {Boolean} default
+ * @property {function} init
+ * @property {function} get
+ * @property {function} set
+ */
+
+/**
  * Access single item
  * @param {String} playlistItemId - configuration item identifier
- * @returns {Object|void}
+ * @returns {ConfigurationItem|void}
  */
 let getItem = (playlistItemId) => {
     //logger.debug('getConfigurationItem', playlistItemId);
@@ -710,10 +724,10 @@ app.once('ready', () => {
 })
 
 /**
- * @listens Electron.App:before-quit
+ * @listens Electron.App:will-quit
  */
-app.on('quit', () => {
-    logger.debug('app#quit')
+app.on('will-quit', () => {
+    logger.debug('app#will-quit')
 
     // Prettify
     electronSettings.setAll(electronSettings.getAll(), { prettify: true })

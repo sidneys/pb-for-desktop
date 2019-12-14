@@ -22,7 +22,6 @@ const { remote, ipcRenderer } = electron
  * Modules (Third party)
  * @constant
  */
-const appRootPathDirectory = require('app-root-path').path
 const dataUriToBuffer = require('data-uri-to-buffer')
 const fileType = require('file-type')
 const fileUrl = require('file-url')
@@ -45,6 +44,8 @@ const _ = require('lodash')
  * Modules (Local)
  * @constant
  */
+const appManifest = remote.require('app/scripts/main-process/components/globals').appManifest
+const appFilesystem = remote.require('app/scripts/main-process/components/globals').appFilesystem
 const configurationManager = remote.require('app/scripts/main-process/managers/configuration-manager')
 const pbSms = require('app/scripts/renderer-process/pushbullet/sms')
 
@@ -54,8 +55,8 @@ const pbSms = require('app/scripts/renderer-process/pushbullet/sms')
  * @constant
  * @default
  */
-const appName = remote.getGlobal('manifest').name
-const appTemporaryDirectory = (isDebug && process.defaultApp) ? appRootPathDirectory : os.tmpdir()
+const appName = appManifest.name
+const appTemporaryDirectory = appFilesystem.tempdir
 
 
 /**
@@ -191,7 +192,6 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback(error)
-        return
     })
 
     /** @listens sound:Event#playerror */
@@ -200,7 +200,6 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback(error)
-        return
     })
 
     /** @listens sound:Event#end */
@@ -209,18 +208,7 @@ let playSoundFile = (callback = () => {}) => {
 
         // Callback
         callback()
-        return
     })
-}
-
-/**
- * Get Timestamp with Milliseconds
- * @returns {String} - Timestamp
- *
- */
-let getTimestamp = () => {
-    const date = new Date()
-    return `${date.toLocaleTimeString()}.${date.getMilliseconds()}`
 }
 
 
@@ -302,9 +290,7 @@ let generateNotificationImage = (push) => {
     }
 
     // Image Fallbacks Sequence
-    const iconUrl = iconLink || iconMirroring || iconChat || iconGrant || iconDevice || iconSms || iconAccount
-
-    return iconUrl
+    return iconLink || iconMirroring || iconChat || iconGrant || iconDevice || iconSms || iconAccount
 }
 
 /**
@@ -491,6 +477,7 @@ let decoratePush = (push) => {
  * Check ANY of multiple regular expression patterns matches a given string
  * @param {String} text - String to test
  * @param {Array} patternList - List of regular expression patterns
+ * @returns {Boolean} - Yes/No
  */
 let matchTextAgainstRegexList = (text, patternList) => {
     logger.debug('matchTextAgainstRegexList')
@@ -543,7 +530,6 @@ let compareTextListAgainstFilterFile = (filterFilePath, textList, callback = () 
 
         // Callback
         callback(error)
-        return
     })
 
     // Filter file reader: complete
@@ -562,7 +548,6 @@ let compareTextListAgainstFilterFile = (filterFilePath, textList, callback = () 
 
         // Callback
         callback(null, isFilterMatch)
-        return
     })
 }
 
@@ -699,7 +684,6 @@ let resizeWriteImage = (source, target, width, callback = () => {}) => {
 
             // Callback
             callback(null, target)
-            return
         })
     }).then((result) => {
         logger.debug('resizeWriteImage', 'result', result)
@@ -930,7 +914,6 @@ let enqueuePushes = (pushes, ignoreDate = false, updateBadgeCount = true, callba
 
         // Callback
         callback(null, pushList.length)
-        return
     })
 }
 
@@ -955,7 +938,6 @@ let enqueueRecentPushes = (callback = () => {}) => {
 
         // Callback
         callback(null, count)
-        return
     })
 }
 

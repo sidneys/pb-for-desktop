@@ -1,4 +1,19 @@
 {
+    "10.4.3": {
+        "💎 improvements": [
+            "enhances update installation / app restart auto-update user flow"
+        ],
+        "🚨 fixes": [
+            "fixes macOS 10.15 Catalina startup issue with .zip-based packages & auto-updater payloads (https://github.com/sidneys/pb-for-desktop/issues/113) (macOS)",
+            "fixes application restart, reconnecting to Pushbullet",
+            "fixes application reset, user data removal"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v7.1.5`",
+            "upgrades local `node_modules`",
+            "upgrades third-party `node_modules`"
+        ]
+    },
     "10.3.0": {
         "💎 improvements": [
             "enhances installer (Windows)"

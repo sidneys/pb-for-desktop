@@ -5,6 +5,7 @@
  * Modules (Node.js)
  * @constant
  */
+const os = require('os')
 const path = require('path')
 
 /**
@@ -12,6 +13,10 @@ const path = require('path')
  * @constant
  */
 const appRootPathDirectory = require('app-root-path').path
+const logger = require('@sidneys/logger')({ write: true })
+const electronSettings = require('electron-settings')
+const isDebug = require('@sidneys/is-env')('debug')
+const platformTools = require('@sidneys/platform-tools')
 
 /**
  * Modules (Local)
@@ -19,13 +24,13 @@ const appRootPathDirectory = require('app-root-path').path
  */
 const packageJson = require(path.join(appRootPathDirectory, 'package.json'))
 
-
 /**
- * Manifest
+ * Global Application Manifest
  * @global
  * @constant
+ * @namespace global.appManifest
  */
-global.manifest = {
+global.appManifest = {
     appId: packageJson.appId || `com.${packageJson.author}.${packageJson.name}`,
     homepage: packageJson.homepage,
     name: packageJson.name,
@@ -34,25 +39,19 @@ global.manifest = {
 }
 
 /**
- * Filesystem
+ * Global Application Filesystem
  * @global
  * @constant
+ * @namespace global.appFilesystem
  */
-global.filesystem = {
-    directories: {
-        resources: process.resourcesPath,
-        sounds: path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked')
-    }
+global.appFilesystem = {
+    resources: process.resourcesPath,
+    settings: path.join(path.dirname(electronSettings.file()), `${packageJson.name}.json`),
+    sounds: path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked'),
+    tempdir: (isDebug && process.defaultApp) ? appRootPathDirectory : os.tmpdir(),
+    logs: logger.getConfiguration().logfile,
+    icon: path.join(appRootPathDirectory, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`)
 }
-
-/**
- * State
- * @global
- */
-global.state = {
-    isQuitting: false
-}
-
 
 /**
  * @exports

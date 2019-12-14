@@ -6,20 +6,19 @@
  * @constant
  */
 const events = require('events')
-const path = require('path')
 
 /**
  * Modules (Electron)
  * @constant
  */
 const electron = require('electron')
-const { app, BrowserWindow, dialog, systemPreferences } = electron
+const { app, BrowserWindow, systemPreferences } = electron
 
 /**
  * Modules (Local)
  * @constant
  */
-require('app/scripts/main-process/components/globals')
+const appManifest = require('app/scripts/main-process/components/globals').appManifest
 
 
 /**
@@ -62,7 +61,7 @@ events.EventEmitter.defaultMaxListeners = Infinity
  * Notification API not working
  * @see {@link https://github.com/electron/electron/issues/10864}
  */
-process.platform === 'win32' ? app.setAppUserModelId(global.manifest.appId) : void 0
+process.platform === 'win32' ? app.setAppUserModelId(appManifest.appId) : void 0
 
 /**
  * HOTFIX (Linux)
@@ -100,16 +99,9 @@ const trayMenu = require('app/scripts/main-process/menus/tray-menu')
 const snoozerService = require('app/scripts/main-process/services/snoozer-service')
 /* eslint-enable */
 
-/**
- * Application
- * @constant
- * @default
- */
-const appProductName = global.manifest.productName
-
 
 /**
- * Force single Instance
+ * Enforce single application instance
  */
 if (!app.requestSingleInstanceLock()) {
     logger.warn('Additional application instance detected:', app.getPath('exe'))
@@ -123,7 +115,7 @@ if (!app.requestSingleInstanceLock()) {
 /**
  * @listens Electron.App:second-instance
  */
-app.on('second-instance', (event, commandLine, workingDirectory) => {
+app.on('second-instance', () => {
     logger.warn('Additional application instance detected:', app.getPath('exe'))
     logger.warn('Restoring primary window..')
 
@@ -131,24 +123,6 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
         browserWindow.restore()
         app.focus()
     })
-})
-
-/**
- * @listens Electron.App:before-quit
- */
-app.on('before-quit', () => {
-    logger.debug('app#before-quit')
-
-    global.state.isQuitting = true
-})
-
-/**
- * @listens Electron.App:before-quit-for-update
- */
-app.on('before-quit-for-update', () => {
-    logger.debug('app#before-quit-for-update')
-
-    global.state.isQuitting = true
 })
 
 /**
@@ -165,3 +139,4 @@ app.once('ready', () => {
 systemPreferences.on('appearance-changed', (newAppearance) => {
     logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
 })
+

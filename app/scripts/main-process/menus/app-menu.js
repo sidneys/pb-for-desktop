@@ -2,12 +2,6 @@
 
 
 /**
- * Modules (Node.js)
- * @constant
- */
-const path = require('path')
-
-/**
  * Modules (Electron)
  * @constant
  */
@@ -17,15 +11,15 @@ const { app, Menu, shell, webContents } = require('electron')
  * Modules (Third party)
  * @constant
  */
-const Appdirectory = require('appdirectory')
 const isDebug = require('@sidneys/is-env')('debug')
 const logger = require('@sidneys/logger')({ write: false })
+const platformTools = require('@sidneys/platform-tools')
 
 /**
  * Modules (Local)
  * @constant
  */
-const platformTools = require('@sidneys/platform-tools')
+const appManifest = require('app/scripts/main-process/components/globals').appManifest
 
 
 /**
@@ -33,21 +27,12 @@ const platformTools = require('@sidneys/platform-tools')
  * @constant
  * @default
  */
-const appName = global.manifest.name
-const appProductName = global.manifest.productName
-const appHomepage = global.manifest.homepage
+const appProductName = appManifest.productName
+const appHomepage = appManifest.homepage
 
-/**
- * Filesystem
- * @constant
- * @default
- */
-const logFileExtension = 'log'
-const logDirectoryName = appProductName || appName
-const logFileTitle = appProductName || appName
-const logDirectory = (new Appdirectory(logDirectoryName)).userLogs()
-const logFilePath = path.join(logDirectory, `${logFileTitle}.${logFileExtension}`)
 
+/** @namespace global **/
+/** @namespace getAllWebContents **/
 
 /**
  * App Menu Template
@@ -191,7 +176,14 @@ let getAppMenuTemplate = () => {
                 {
                     label: 'Learn More',
                     click() {
+                        // Open URL
                         shell.openExternal(appHomepage)
+                            .then((result) => {
+                                logger.debug('AppMenu', 'shell.openExternal', 'result:', result)
+                            })
+                            .catch((error) => {
+                                logger.error('AppMenu', 'shell.openExternal', error)
+                            })
                     }
                 }
             ]
@@ -212,7 +204,7 @@ let getAppMenuTemplate = () => {
                 {
                     label: `Show Logfile...`,
                     click() {
-                        shell.showItemInFolder(logFilePath)
+                        shell.showItemInFolder(logger.getConfiguration().logfile)
                     }
                 },
                 {
