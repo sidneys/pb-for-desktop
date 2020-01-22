@@ -163,24 +163,15 @@ class MainWindow {
 
 
 /**
- * Init
- */
-let init = () => {
-    logger.debug('init')
-
-    // Ensure single instance
-    if (!global.mainWindow) {
-        global.mainWindow = new MainWindow()
-    }
-}
-
-
-/**
  * Show main Window when activating app
  * @listens Electron.App:activate
  */
 app.on('activate', () => {
     logger.debug('app:activate')
+
+    // Ensure single instance
+    if (!global.mainWindow) { return }
+    if (!global.mainWindow.browserWindow) { return }
 
     global.mainWindow.browserWindow.show()
 })
@@ -192,8 +183,23 @@ app.on('activate', () => {
 app.on('before-quit', () => {
     logger.debug('app:before-quit')
 
+    // Ensure single instance
+    if (!global.mainWindow) { return }
+
     global.mainWindow.allowQuit = true
 })
+
+/**
+ * Init
+ */
+let init = () => {
+    logger.debug('init')
+
+    // Ensure single instance
+    if (global.mainWindow) { return }
+
+    global.mainWindow = new MainWindow()
+}
 
 /**
  * @listens Electron.App:ready

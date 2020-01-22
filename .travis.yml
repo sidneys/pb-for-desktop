@@ -47,7 +47,7 @@ addons:
 before_install:
   - echo "🔧 Preparing Build Environment (Node.js)"
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | NVM_DIR="${HOME}"/.nvm sh
-  - source "${HOME}"/.nvm/nvm.sh && nvm install 13.3.0 && nvm use 13.3.0
+  - source "${HOME}"/.nvm/nvm.sh && nvm install 13.7.0 && nvm use 13.7.0
   - npm --global update npm
   - npm --global install yarn
 

@@ -1,4 +1,20 @@
 {
+    "10.5.0": {
+        "💎 improvements": [
+            "enhances auto-update user interaction flow"
+        ],
+        "🚨 fixes": [
+            "fixes upstream auto-update issue which prevented update installation (https://github.com/electron/electron/pull/21645)",
+            "fixes application restart, reconnecting to Pushbullet",
+            "fixes application reset, user data removal",
+            "fixes macOS 10.15 Catalina startup issue with .zip-based packages & auto-updater payloads (https://github.com/sidneys/pb-for-desktop/issues/113) (macOS)"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v7.1.9`",
+            "upgrades local `node_modules`",
+            "upgrades third-party `node_modules`"
+        ]
+    },
     "10.4.3": {
         "💎 improvements": [
             "enhances update installation / app restart auto-update user flow"
