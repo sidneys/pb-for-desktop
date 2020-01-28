@@ -106,7 +106,7 @@ let createTrayMenuTemplate = () => {
             id: 'appProductName',
             label: `Show ${appProductName}`,
             click() {
-                getMainWindow.show()
+                getMainWindow().show()
             }
         },
         {
