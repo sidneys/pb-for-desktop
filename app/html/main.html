@@ -31,11 +31,14 @@
 
 <!-- webview -->
 <webview id="webview"
-        disablewebsecurity="true"
-        partition="persist:app"
-        preload="../scripts/renderer-process/webviews/pushbullet-webview.js"
-        useragent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0"
-        src="https://www.pushbullet.com">
+         src="https://www.pushbullet.com"
+         preload="../scripts/renderer-process/webviews/pushbullet-webview.js"
+         partition="persist:app"
+         disablewebsecurity="true"
+         enableblinkfeatures="OutOfBlinkCors"
+         enableremotemodule="true"
+         useragent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0"
+>
 </webview>
 <!-- webview-->
 

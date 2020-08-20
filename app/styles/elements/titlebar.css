@@ -25,7 +25,8 @@ html.linux .titlebar
 
 .titlebar.top
 {
-    background-color: var(--color-accent);
+    /* background-color: var(--color-accent); */
+    background: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%), var(--color-accent);
     left: 0;
     right: 0;
     height: var(--margin-titlebar);

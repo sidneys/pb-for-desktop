@@ -23,6 +23,7 @@ const appRootPathDirectory = require('app-root-path').path
 const domTools = require('@sidneys/dom-tools')
 const logger = require('@sidneys/logger')({ write: true })
 const parseDomain = require('parse-domain')
+const { ParseResultType } = parseDomain
 
 /**
  * Modules (Local)
@@ -60,7 +61,7 @@ const body = document.querySelector('body')
 const webviewViewElement = document.querySelector('#webview')
 const spinnerViewElement = document.querySelector('#spinner')
 const spinnerTextElement = document.querySelector('#spinner__text')
-const supplementalMenuElement = document.querySelector('#supplemental-menu')
+const helperMenuElement = document.querySelector('#supplemental-menu')
 const buttons = {
     home: {
         element: document.querySelector('.supplemental-menu__button.home'),
@@ -147,7 +148,6 @@ let onTrayClose = () => {
 /**
  * Set application badge count
  * @param {Number} total - Number to set
- *
  */
 let updateBadge = (total) => {
     logger.debug('updateBadge')
@@ -155,6 +155,22 @@ let updateBadge = (total) => {
     if (!retrieveAppShowBadgeCount()) { return }
 
     remote.app.badgeCount = total
+}
+
+/**
+ * Wrapper for parse-domain URL Domain Parsing library
+ * @param {String} url - URL
+ * @returns {ParseResultType} - Domain Parsing Result
+ */
+let parseUrlDomains = (url) => {
+    logger.debug('parseUrlDomains')
+
+    // Try to parse url domain
+    const parseResult = parseDomain.parseDomain(parseDomain.fromUrl(url))
+
+    // Return parsing result or void if impossible
+
+    return (parseResult.type === ParseResultType.Invalid) ? void 0 : parseResult
 }
 
 
@@ -168,10 +184,10 @@ ipcRenderer.on('zoom', (event, direction) => {
 
     switch (direction) {
         case 'in':
-            webContents.getZoomLevel(level => webContents.setZoomLevel(level + 1))
+            webContents.setZoomLevel(webContents.getZoomLevel() + 1)
             break
         case 'out':
-            webContents.getZoomLevel(level => webContents.setZoomLevel(level - 1))
+            webContents.setZoomLevel(webContents.getZoomLevel() - 1)
             break
         case 'reset':
             webContents.setZoomLevel(0)
@@ -210,6 +226,13 @@ webviewViewElement.addEventListener('did-fail-load', (error) => {
 webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
     logger.debug('webviewViewElement#did-navigate-in-page')
 
+    /**
+     * HOTFIX
+     * Convert Event to Plain Object to satisfy Electron 9 V8 Structured Clone Algorithm limitations
+     * @see {@link https://github.com/getsentry/sentry-electron/pull/215/files}
+     */
+    event = JSON.parse(JSON.stringify(event))
+
     // Forward event to webview for detecting navigation
     webviewViewElement.send('did-navigate-in-page', event)
 
@@ -235,13 +258,14 @@ webviewViewElement.addEventListener('did-navigate-in-page', (event) => {
 webviewViewElement.addEventListener('dom-ready', () => {
     logger.debug('webviewViewElement#dom-ready')
 
-    domTools.injectCSS(webviewViewElement, stylesheetFilepath)
+    // Inject Page CSS
+    domTools.injectStylesheet(webviewViewElement, stylesheetFilepath)
 
     /**
-    * HOTFIX
-    * Input cursor invisible after navigation in webview
-    * @see {@link https://github.com/electron/electron/issues/14474}
-    */
+     * HOTFIX
+     * Input cursor invisible after navigation in webview
+     * @see {@link https://github.com/electron/electron/issues/14474}
+     */
     webviewViewElement.blur()
     webviewViewElement.focus()
 })
@@ -273,44 +297,79 @@ webviewViewElement.addEventListener('ipc-message', (event) => {
     }
 })
 
+
 /**
+ * Generate a unique identifier for the (Webview) URL from subdomain or pathname of a URL
+ * @param {String} href - URL Href
+ * @returns {String} Identifier
+ */
+let generateIdentifierForUrl = (href) => {
+    logger.debug('generateIdentifierForUrl')
+
+    // Try to parse URL domain
+    const parsedDomains = parseUrlDomains(href)
+
+    // Lookup URL subdomain, ignore if it is the "www" subdomain
+    const subDomainList = parsedDomains.subDomains || []
+    let subDomain = subDomainList.join('.')
+    subDomain = !!subDomain && (subDomain !== 'www') ? subDomain : void 0
+
+    // Lookup URL path name
+    const pathName = url.parse(href).path.split(path.sep).filter(Boolean).pop()
+
+    // Prefer subdomain as identifier, fallback to pathName
+    return subDomain || pathName
+}
+
+/**
+ *
  * @listens webviewViewElement#Event:load-commit
  */
 webviewViewElement.addEventListener('load-commit', (event) => {
     logger.debug('webviewViewElement#load-commit')
 
-    domTools.injectCSS(webviewViewElement, stylesheetFilepath)
+    // Inject Page CSS
+    domTools.injectStylesheet(webviewViewElement, stylesheetFilepath)
 
-    if (!parseDomain(event.url)) { return }
+    // Try to parse url domain
+    const parsedDomains = parseUrlDomains(event.url)
+    // Abort if impossible
+    if (!parsedDomains) { return }
 
-    let domain = parseDomain(event.url)['domain'] || ''
-    let subdomain = parseDomain(event.url)['subdomain'] || ''
-    let urlpath = url.parse(event.url).path || ''
+    // Generate page identifier
+    const pageIdentifier = generateIdentifierForUrl(event.url)
 
-    // User did not sign in
-    switch (domain) {
+    switch (parsedDomains.domain) {
+        // External Pages: GOOGLE, YOUTUBE, FACEBOOK
         case 'google':
         case 'youtube':
         case 'facebook':
-            domTools.setVisibility(supplementalMenuElement, true)
-
+            domTools.setVisibility(helperMenuElement, true)
             body.style.backgroundColor = 'rgb(236, 240, 240)'
             break
-        case 'pushbullet':
-            // Pushbullet 'help'
-            if (subdomain.includes('help')) {
-                domTools.setVisibility(supplementalMenuElement, true)
-            } else {
-                domTools.setVisibility(supplementalMenuElement, false)
-            }
 
-            // Pushbullet 'signin'
-            if (urlpath.includes('signin')) {
-                body.style.backgroundColor = 'rgb(236, 240, 240)'
-            } else {
-                body.style.backgroundColor = 'transparent'
+        // Internal Pages: APPS, CHANNELS, BLOG, API, HELP
+        case 'pushbullet':
+            switch (pageIdentifier) {
+                case 'apps':
+                case 'channels':
+                case 'blog':
+                case 'pro':
+                case 'docs':
+                case 'help':
+                    // Show helper menu
+                    domTools.setVisibility(helperMenuElement, true)
+                    break
+                default:
+                    // Hide helper menu
+                    domTools.setVisibility(helperMenuElement, false)
             }
     }
+
+    // Status
+    logger.debug('webview page loaded', 'url:', event.url)
+    logger.debug('webview page loaded', 'domain:', parsedDomains.domain)
+    logger.debug('webview page loaded', 'id:', `${pageIdentifier ? pageIdentifier : '-'}`)
 })
 
 /**
@@ -321,16 +380,19 @@ webviewViewElement.addEventListener('new-window', (event) => {
 
     event.preventDefault()
 
-    let domain = parseDomain(event.url)['domain'] || ''
+    // Try to parse URL domain
+    const parsedDomains = parseUrlDomains(event.url)
 
-    if (domain === 'pushbullet') {
-        // Internal Link
-        logger.info('webviewViewElement#new-window', 'opening internal url:', event.url)
-        webviewViewElement.loadURL(event.url)
+    if (parsedDomains.domain) {
+        // Domain detected: External URL
+        remote.shell.openExternal(event.url).then(() => {
+            logger.info('Opened External Page URL:', event.url)
+        })
     } else {
-        // External Link
-        logger.info('webviewViewElement#new-window', 'opening external url:', event.url)
-        remote.shell.openExternal(event.url)
+        // No Domain detected: Internal URL
+        webviewViewElement.loadURL(event.url).then(() => {
+            logger.info('Opened Internal Page URL:', event.url)
+        })
     }
 })
 

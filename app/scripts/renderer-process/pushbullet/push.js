@@ -5,7 +5,9 @@
  * Modules (Node.js)
  * @constant
  */
-const fs = require('fs')
+const fs = require('fs-extra')
+const { Buffer } = require('buffer')
+const { https } = require('follow-redirects')
 const os = require('os')
 const path = require('path')
 const readline = require('readline')
@@ -16,21 +18,20 @@ const url = require('url')
  * @constant
  */
 const electron = require('electron')
-const { remote, ipcRenderer } = electron
+const { ipcRenderer, remote } = electron
 
 /**
  * Modules (Third party)
  * @constant
  */
 const dataUriToBuffer = require('data-uri-to-buffer')
-const fileType = require('file-type')
+const FileType = require('file-type/browser')
 const fileUrl = require('file-url')
 const getYoutubeId = require('get-youtube-id')
 const { Howl, Howler } = require('howler')
-const icojs = require('icojs')
-const imageDownloader = require('image-downloader')
+const ICO = require('icojs')
 const isDebug = require('@sidneys/is-env')('debug')
-const jimp = require('jimp')
+const Jimp = require('jimp')
 const logger = require('@sidneys/logger')({ write: true })
 const moment = require('moment')
 const notificationProvider = remote.require('@sidneys/electron-notification-provider')
@@ -83,7 +84,7 @@ const youtubeThumbnailEndpoint = 'https://img.youtube.com/vi/'
  * @global
  */
 const notificationDisplayInterval = 1000
-const notificationIconWidth = 88
+const notificationIconSize = 176
 const notificationFilterCommentTag = '//'
 const notificationFilterDebugPrefix = '[FILTERED]'
 const notificationQueue = dynamicThrottledQueue({ min_rpi: 1, interval: notificationDisplayInterval, evenly_spaced: true })
@@ -553,7 +554,7 @@ let compareTextListAgainstFilterFile = (filterFilePath, textList, callback = () 
 
 /**
  * Show Notification
- * @param {Object} notificationOptions - Notificationconfiguration
+ * @param {Object} notificationOptions - Notification Configuration
  * @param {Pushbullet.Push|Object=} push - Pushbullet Push
  */
 let showNotification = (notificationOptions, push) => {
@@ -569,9 +570,11 @@ let showNotification = (notificationOptions, push) => {
     notification.on('click', () => {
         logger.debug('notification#click')
 
-        // Open url
+        // Open Notification URL
         if (notificationOptions.url) {
-            opn(notificationOptions.url, { wait: false })
+            opn(notificationOptions.url, { wait: false }).then(() => {
+                logger.info('Opened Notification URL:', notificationOptions.url)
+            })
         }
 
         // Dismiss within Pushbullet
@@ -622,10 +625,11 @@ let showNotification = (notificationOptions, push) => {
     })
 
     /** @listens notification#show */
-    notification.on('show', (event) => {
+    notification.on('show', () => {
         logger.debug('notification#show')
 
-        logger.info('New Notification', notificationOptions.title)
+        // Status
+        logger.info('Showing Notification', notificationOptions.title)
     })
 
     // Notification Filter
@@ -656,16 +660,16 @@ let showNotification = (notificationOptions, push) => {
 }
 
 /**
- * Asprect-Resize image and write it to disk
- * @param {ArrayBuffer|Array|*} source - Source image path
- * @param {String} target - Target image path
- * @param {Number} width - Image width
+ * Aspect-Resize Image and Write to File
+ * @param {ArrayBuffer|Uint8Array|Array|*} imageData - Image Data
+ * @param {String} outputPath - Output Image file path
+ * @param {Number} width - Output Image width
  * @param {Function=} callback - Callback
  */
-let resizeWriteImage = (source, target, width, callback = () => {}) => {
+let resizeWriteImage = (imageData, outputPath, width, callback = () => {}) => {
     logger.debug('resizeWriteImage')
 
-    jimp.read(source, (error, result) => {
+    Jimp.read(imageData, (error, result) => {
         if (error) {
             logger.error('resizeWriteImage', 'jimp.read', error)
 
@@ -674,16 +678,16 @@ let resizeWriteImage = (source, target, width, callback = () => {}) => {
             return
         }
 
-        result.resize(width, jimp.AUTO).write(target, (error) => {
+        result.resize(width, Jimp.AUTO).write(outputPath, (error) => {
             if (error) {
-                logger.error('resizeWriteImage', 'result.resize', error)
+                logger.error('resizeWriteImage', 'jimp.resize', error)
 
                 callback(error)
                 return
             }
 
             // Callback
-            callback(null, target)
+            callback(null)
         })
     }).then((result) => {
         logger.debug('resizeWriteImage', 'result', result)
@@ -734,72 +738,130 @@ let convertPushToNotification = (push) => {
         notificationOptions.replyPlaceholder = 'Your Chat Reply'
     }
 
-    // Image: Create Temporary Path
+    // Icon: Prepare temporary Image path
+    const temporaryImagePath = path.join(appTemporaryDirectory, `${appName}.push.${shortid.generate()}.png`)
+
+    // Icon: Ensure temporary Image folder exists
+    if (!fs.existsSync(appTemporaryDirectory)) {
+        fs.mkdirpSync(appTemporaryDirectory)
+
+        // Status
+        logger.info('mkdirpSync', 'appTemporaryDirectory:', appTemporaryDirectory)
+    }
+
+    // Icon: Analyze Image URL
     const imageUrl = notificationOptions.icon || ''
     const imageProtocol = url.parse(imageUrl).protocol
-    const imageFilepathTemporary = path.join(appTemporaryDirectory, `${appName}.push.${shortid.generate()}.png`)
 
-    // Image: Skip
+    // Icon: Skip Image if protocol could not be detected
     if (!imageProtocol) {
         showNotification(notificationOptions, decoratedPush)
 
+        // Return
         return
     }
 
-    // Image: Generate from Data URL
+    // Icon: Create Image by generating from Data URL
     if (imageProtocol === 'data:') {
-        resizeWriteImage(dataUriToBuffer(imageUrl), imageFilepathTemporary, notificationIconWidth, (error, imageFilepathConverted) => {
+        resizeWriteImage(dataUriToBuffer(imageUrl), temporaryImagePath, notificationIconSize, (error) => {
             if (error) { return }
 
-            notificationOptions.icon = imageFilepathConverted
+            notificationOptions.icon = temporaryImagePath
             showNotification(notificationOptions, decoratedPush)
         })
 
+        // Return
         return
     }
 
-    // Image: Download from Web
-    imageDownloader.image({ url: imageUrl, dest: imageFilepathTemporary })
-        .then((result) => {
-            const imageFilepathDownloaded = result.filename
-            const imageBuffer = result.image
-            const imageType = fileType(imageBuffer)
-            const isIco = icojs.isICO(imageBuffer)
-            const isPng = imageType.mime === 'image/png'
-            const isJpeg = imageType.mime === 'image/jpg' || imageType.mime === 'image/jpeg'
+    // Icon: Create Image by downloading from normal URL into Buffer
+    https
+        .request(imageUrl, { timeout: 3000 }, (response) => {
+            let fileBuffer = Buffer.alloc(0, 'Uint8Array')
 
-            // From .PNG
-            if (isPng || isJpeg) {
-                resizeWriteImage(imageBuffer, imageFilepathDownloaded, notificationIconWidth, (error, imageFilepathConverted) => {
-                    if (error) { return }
+            // Error
+            response.on('error', (error) => {
+                logger.error('icon file download', error)
+            })
 
-                    notificationOptions.icon = imageFilepathConverted
-                    showNotification(notificationOptions, decoratedPush)
-                })
+            // Download
+            response.on('data', (chunk) => {
+                // logger.debug('image download', 'data')
+                fileBuffer = Buffer.concat([ fileBuffer, Buffer.from(chunk) ])
+            })
 
-                return
-            }
+            // Complete
+            response.on('end', () => {
+                logger.debug('icon file download', 'complete')
 
-            // From .ICO
-            if (isIco) {
-                icojs.parse(imageBuffer, 'image/png').then(imageList => {
-                    const imageMaximum = imageList[imageList.length - 1]
-                    resizeWriteImage(Buffer.from(imageMaximum.buffer), imageFilepathDownloaded, notificationIconWidth, (error, imageFilepathConverted) => {
-                        if (error) { return }
+                // DEBUG
+                // logger.debug('fileBuffer:')
+                // console.dir(fileBuffer)
 
-                        notificationOptions.icon = imageFilepathConverted
+                // Icon: Detect File Type
+                FileType.fromBuffer(fileBuffer)
+                    .then((fileType) => {
+                        logger.debug('file type', fileType)
+
+                        // Icon: Detect Mimetype
+                        const isICO = ICO.isICO(fileBuffer)
+                        const isPNG = fileType.mime === 'image/png'
+                        const isJPG = fileType.mime === 'image/jpg' || fileType.mime === 'image/jpeg'
+
+                        // Icon: PNG/JPG Handling
+                        if (isPNG || isJPG) {
+                            resizeWriteImage(fileBuffer, temporaryImagePath, notificationIconSize, (error) => {
+                                if (error) {
+                                    logger.error('resizeWriteImage', error)
+
+                                    // Return
+                                    return
+                                }
+
+                                notificationOptions.icon = temporaryImagePath
+                                showNotification(notificationOptions, decoratedPush)
+                            })
+
+                            return
+                        }
+
+                        // Icon: ICO Handling
+                        if (isICO) {
+                            // Lookup biggest image version inside .ICO
+                            ICO.parse(fileBuffer, 'image/png').then(iconSet => {
+                                const imageMaximum = iconSet[iconSet.length - 1]
+
+                                // DEBUG
+                                logger.debug('imageMaximum', imageMaximum)
+                                logger.debug('iconSet:')
+                                console.dir(iconSet)
+
+                                resizeWriteImage(Buffer.from(imageMaximum.buffer), temporaryImagePath, notificationIconSize, (error) => {
+                                    if (error) {
+                                        logger.error('ICO.parse', 'resizeWriteImage', error)
+
+                                        // Return
+                                        return
+                                    }
+
+                                    notificationOptions.icon = temporaryImagePath
+                                    showNotification(notificationOptions, decoratedPush)
+                                })
+                            })
+                        }
+
+                    })
+                    .catch((error) => {
+                        logger.warn('FileType.fromBuffer', error)
+
                         showNotification(notificationOptions, decoratedPush)
                     })
-                })
-            }
-
+            })
         })
-        // Image: Fallback to App Icon
-        .catch((error) => {
-            logger.warn('convertPushToNotification', 'imageDownloader', error)
-
-            showNotification(notificationOptions, decoratedPush)
+        .on('error', (error) => {
+            logger.error('http image download', error)
         })
+        .end()
 }
 
 /**
@@ -837,7 +899,7 @@ let getRecentPushes = (queueLimit = 0) => {
     logger.debug('getRecentPushes')
 
     // List recent Pushes
-    const recentPushesList = window.pb.api.pushes.all.filter(push => !testIfPushIsIgnored(push))
+    const recentPushesList = window.pb.api.pushes.all.filter((push) => !testIfPushIsIgnored(push))
 
     // Sort recent Pushes (by date)
     recentPushesList.sort((pushA, pushB) => {
@@ -888,7 +950,7 @@ let enqueuePushes = (pushes, ignoreDate = false, updateBadgeCount = true, callba
         nextPushesList = pushes.filter(push => push.created > notifyAfterTimestamp)
     }
 
-    nextPushesList.forEach((push, pushIndex, pushList) => {
+    nextPushesList.forEach((/** Pushbullet.Push */ push, pushIndex, pushList) => {
         // Client Snoozing?
         const isSnoozing = (Date.now() < remote.getGlobal('snoozeUntil'))
 

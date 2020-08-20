@@ -1,0 +1,15 @@
+// PB FOR DESKTOP
+// Pushbullet Notification Filter
+//
+// USAGE:
+// - add a text entry to hide all notifications containing that text
+// - one entry per line
+// - entries starting with '//' are ignored
+// - case-insensitive
+// - supports regular expressions
+//
+// EXAMPLE:
+// politics
+// censorship
+// *mark*zuckerberg*
+

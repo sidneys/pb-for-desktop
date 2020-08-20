@@ -12,7 +12,7 @@ const events = require('events')
  * @constant
  */
 const electron = require('electron')
-const { app, BrowserWindow, systemPreferences } = electron
+const { app, BrowserWindow, nativeTheme, session } = electron
 
 /**
  * Modules (Local)
@@ -41,6 +41,13 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
  * @see {@link https://github.com/electron/electron/issues/12048}
  */
 // app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
+/**
+ * HOTFIX
+ * Electron 9 webSecurity option no longer disables CORS
+ * @see {@link https://github.com/electron/electron/issues/23664}
+ */
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
 
 /**
  * HOTFIX
@@ -130,13 +137,25 @@ app.on('second-instance', () => {
  */
 app.once('ready', () => {
     logger.debug('app#ready')
+
+    /**
+     * HOTFIX
+     * Register file:// protocol for default session
+     * @see {@link https://www.electronjs.org/docs/api/protocol}
+     * @see {@link https://github.com/electron/electron/issues/23757#issuecomment-640146333}
+     */
+    const appSession = session.fromPartition('persist:app')
+    appSession.protocol.registerFileProtocol('file', (request, callback) => {
+        const filePath = decodeURI(request.url.replace('file:///', ''))
+        callback(filePath)
+    })
 })
 
 
 /**
- * @listens Electron.systemPreferences:appearance-changed
+ * @listens Electron.nativeTheme:updated
  */
-systemPreferences.on('appearance-changed', (newAppearance) => {
-    logger.debug('systemPreferences#appearance-changed', 'newAppearance:', newAppearance)
+nativeTheme.on('updated', () => {
+    logger.debug('nativeTheme#updated', 'nativeTheme.themeSource', nativeTheme.themeSource)
 })
 

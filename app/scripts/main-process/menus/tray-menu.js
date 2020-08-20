@@ -106,7 +106,11 @@ let createTrayMenuTemplate = () => {
             id: 'appProductName',
             label: `Show ${appProductName}`,
             click() {
-                getMainWindow.show()
+                const mainWindow = getMainWindow()
+                if (!mainWindow) { return }
+
+                mainWindow.show()
+                app.focus()
             }
         },
         {
@@ -249,7 +253,7 @@ let createTrayMenuTemplate = () => {
             icon: trayMenuItemImagePushbulletNotificationFilterFilePath,
             type: 'normal',
             click() {
-                shell.openItem(configurationManager('pushbulletNotificationFilterFilePath').get())
+                shell.openPath(configurationManager('pushbulletNotificationFilterFilePath').get())
             }
         },
         {

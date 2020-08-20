@@ -48,14 +48,19 @@ const appName = appManifest.name
  * @default
  */
 const appLogsDirectory = appFilesystem.logs
-const appSettingsFile = appFilesystem.settings
+const appSettingsFilePath = appFilesystem.settings
 const appSoundsDirectory = appFilesystem.sounds
 
 /**
  * Module Configuration
  */
 const autoLauncher = new AutoLaunch({ name: appName, mac: { useLaunchAgent: true } })
-electronSettings.setPath(appSettingsFile)
+electronSettings.configure({
+    dir: path.dirname(appSettingsFilePath),
+    fileName: path.basename(appSettingsFilePath),
+    numSpaces: 4,
+    prettify: true
+})
 
 /**
  * @constant
@@ -67,7 +72,7 @@ const defaultDebounce = 1000
 
 /**
  * Get the main BrowserWindow
- * @returns {BrowserWindow}
+ * @returns {Electron.BrowserWindow}
  */
 let getMainWindow = () => global.mainWindow.browserWindow
 
@@ -88,7 +93,9 @@ let setAppTrayOnly = (trayOnly) => {
             case 'darwin':
                 if (trayOnly) {
                     app.dock.hide()
-                } else { app.dock.show() }
+                } else {
+                    app.dock.show().then()
+                }
                 break
             case 'win32':
                 primaryWindow.setSkipTaskbar(trayOnly)
@@ -102,14 +109,11 @@ let setAppTrayOnly = (trayOnly) => {
     }, defaultInterval)
 }
 
-/** @namespace electronSettings.delete */
-/** @namespace electronSettings.deleteAll */
+/** @namespace electronSettings.unsetSync */
 /** @namespace electronSettings.file */
-/** @namespace electronSettings.get */
-/** @namespace electronSettings.getAll */
-/** @namespace electronSettings.set */
-/** @namespace electronSettings.setAll */
-/** @namespace electronSettings.setPath */
+/** @namespace electronSettings.getSync */
+/** @namespace electronSettings.setSync */
+/** @namespace electronSettings.configure */
 
 /**
  * configuration Items
@@ -129,13 +133,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
             this.implement(value)
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         },
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
@@ -159,12 +163,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -181,13 +185,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set', value)
 
             this.implement(value)
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         },
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
@@ -211,12 +215,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -233,13 +237,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
             this.implement(value)
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         },
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
@@ -263,13 +267,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
             this.implement(value)
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         },
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
@@ -305,13 +309,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set', value)
 
             let debounced = _.debounce(() => {
-                electronSettings.set(this.keypath, value)
+                electronSettings.setSync(this.keypath, value)
             }, defaultDebounce)
             debounced()
         },
@@ -348,13 +352,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set', value)
 
             this.implement(value)
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         },
         implement(value) {
             logger.debug(this.keypath, 'implement', value)
@@ -392,13 +396,13 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set', value)
 
             let debounced = _.debounce(() => {
-                electronSettings.set(this.keypath, value)
+                electronSettings.setSync(this.keypath, value)
             }, defaultDebounce)
 
             debounced()
@@ -429,12 +433,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -449,12 +453,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -469,12 +473,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -489,12 +493,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -513,11 +517,11 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return String(electronSettings.getSync(this.keypath))
         },
         set(value) {
             logger.debug(this.keypath, 'set')
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -531,17 +535,17 @@ let configurationItems = {
 
             // Install default "filter.txt" if it does not exist within the users settings yet
             if (!fs.existsSync(this.get())) {
-                fs.copySync(path.join(appRootPathDirectory, 'app', 'settings', 'filter-template.txt'), this.default)
+                fs.copySync(path.join(appRootPathDirectory, 'app', 'user-settings', 'filter-template.txt'), this.default)
             }
         },
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return String(electronSettings.getSync(this.keypath))
         },
         set(value) {
             logger.debug(this.keypath, 'set')
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -556,12 +560,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return parseFloat(electronSettings.get(this.keypath))
+            return parseFloat(String(electronSettings.getSync(this.keypath)))
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, parseFloat(value))
+            electronSettings.setSync(this.keypath, parseFloat(value))
         }
     },
     /**
@@ -576,12 +580,12 @@ let configurationItems = {
         get() {
             // logger.debug(this.keypath, 'get');
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     },
     /**
@@ -596,12 +600,12 @@ let configurationItems = {
         get() {
             logger.debug(this.keypath, 'get')
 
-            return electronSettings.get(this.keypath)
+            return electronSettings.getSync(this.keypath)
         },
         set(value) {
             logger.debug(this.keypath, 'set')
 
-            electronSettings.set(this.keypath, value)
+            electronSettings.setSync(this.keypath, value)
         }
     }
 }
@@ -650,10 +654,10 @@ let getConfigurationDefaults = () => {
 let setConfigurationDefaults = (callback = () => {}) => {
     logger.debug('setConfigurationDefaults')
 
-    let configuration = electronSettings.getAll()
+    let configuration = electronSettings.getSync()
     let configurationDefaults = getConfigurationDefaults()
 
-    electronSettings.setAll(_.defaultsDeep(configuration, configurationDefaults))
+    electronSettings.setSync(_.defaultsDeep(configuration, configurationDefaults))
 
     callback()
 }
@@ -680,25 +684,25 @@ let initializeItems = (callback = () => {}) => {
 }
 
 /**
- * Remove unknown items
+ * Remove unknown or stale settings items
  * @param {function(*)} callback - Callback
  * @function
  */
-let removeLegacyItems = (callback = () => {}) => {
-    logger.debug('cleanconfiguration')
+let removeLegacySettings = (callback = () => {}) => {
+    logger.debug('removeLegacySettings')
 
-    let savedSettings = electronSettings.getAll()
+    let savedSettings = electronSettings.getSync()
     let savedSettingsList = Object.keys(savedSettings)
 
-    savedSettingsList.forEach((item, itemIndex) => {
-        if (!configurationItems.hasOwnProperty(item)) {
-            electronSettings.delete(item)
-            logger.debug('cleanconfiguration', 'deleted', item)
+    savedSettingsList.forEach((keypath, keypathIndex) => {
+        if (!configurationItems.hasOwnProperty(keypath)) {
+            electronSettings.unsetSync(keypath)
+            logger.debug('removeLegacySettings', 'unset:', keypath)
         }
 
-        // Last item
-        if (savedSettingsList.length === (itemIndex + 1)) {
-            logger.debug('cleanconfiguration', 'complete')
+        // Last item keypath
+        if (savedSettingsList.length === (keypathIndex + 1)) {
+            logger.debug('removeLegacySettings', 'complete')
             callback()
         }
     })
@@ -716,7 +720,7 @@ app.once('ready', () => {
         // Initialize items
         initializeItems(() => {
             // Set Defaults
-            removeLegacyItems(() => {
+            removeLegacySettings(() => {
                 logger.debug('app#will-finish-launching', 'complete')
             })
         })
@@ -729,10 +733,13 @@ app.once('ready', () => {
 app.on('will-quit', () => {
     logger.debug('app#will-quit')
 
-    // Prettify
-    electronSettings.setAll(electronSettings.getAll(), { prettify: true })
+    // Save settings
+    electronSettings.setSync(electronSettings.getSync())
 
-    logger.debug('settings', electronSettings.getAll())
+    // Prettify settings file
+    electronSettings.configure({ numSpaces: 4, prettify: true })
+
+    logger.debug('settings', electronSettings.getSync())
     logger.debug('file', electronSettings.file())
 })
 

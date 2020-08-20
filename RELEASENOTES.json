@@ -1,16 +1,51 @@
 {
+    "11.0.2": {
+        "💎 improvements": [
+            "adds notification sound effects (102) from Google Sounds v2.3",
+            "reduces application size by ~45%, installer size by ~30%",
+            "upgrades notification thumbnail generator backend (pb-for-desktop-besticon.herokuapp.com)",
+            "migrates some non-user-facing components to Electron v10 compatibility (@electron/remote)",
+            "improves system-wide dark mode support (macOS 10.15)",
+            "multiple user interface quality improvements",
+            "various stability and performance improvements"
+        ],
+        "🚨 fixes": [
+            "fixes notification thumbnail image download and rendering issues",
+            "addresses various ipc-communication issues with regards to some upstream breaking changes",
+            "satisfy requirements of the v8 structured clone algorithm requirements",
+            "address audio playback issues with 'file://' protocol",
+            "fixes 'push could not be updated' issues",
+            "adhere cors configuration to match changed upstream (electron) configuration defaults",
+            "adds fix for [Error with 'Show PB for Desktop' menu, MacOS Catalina 10.15.2](https://github.com/sidneys/pb-for-desktop/issues/117) contributed by [MockingMagician](https://github.com/MockingMagician)",
+            "adds fix for [Cannot open main window](https://github.com/sidneys/pb-for-desktop/issues/116) contributed by [MockingMagician](https://github.com/MockingMagician)"
+        ],
+        "📒 documentation": [
+            "amends notification filter usage hints (filter-template.txt)",
+            "extends `jsdoc` documentation coverage"
+        ],
+        "👷 internals": [
+            "upgrades `electron` to `v9.2.1`",
+            "migrates `electron` APIs to v9",
+            "upgrades `nodejs` on ci backend",
+            "upgrades local `node_modules`",
+            "upgrades third-party `node_modules`",
+            "improves readability of log messages"
+        ]
+    },
     "10.5.0": {
         "💎 improvements": [
-            "enhances auto-update user interaction flow"
+            "enhances auto-update user interaction flow",
+            "enhances installer (Windows)"
         ],
         "🚨 fixes": [
             "fixes upstream auto-update issue which prevented update installation (https://github.com/electron/electron/pull/21645)",
             "fixes application restart, reconnecting to Pushbullet",
             "fixes application reset, user data removal",
-            "fixes macOS 10.15 Catalina startup issue with .zip-based packages & auto-updater payloads (https://github.com/sidneys/pb-for-desktop/issues/113) (macOS)"
+            "fixes macOS 10.15 Catalina startup issue with .zip-based packages & auto-updater payloads (https://github.com/sidneys/pb-for-desktop/issues/113) (macOS)",
+            "fixes Google 2FA sign-in issue (https://github.com/sidneys/pb-for-desktop/issues/114)"
         ],
         "👷 internals": [
-            "upgrades `electron` to `v7.1.9`",
+            "upgrades `electron` to `v8.2.0`",
             "upgrades local `node_modules`",
             "upgrades third-party `node_modules`"
         ]

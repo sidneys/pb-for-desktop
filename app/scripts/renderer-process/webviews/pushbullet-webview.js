@@ -394,8 +394,11 @@ let loginPushbulletUser = () => {
         }
 
         if (retrievePushbulletRepeatRecentNotifications()) {
-            pbPush.enqueueRecentPushes((err, count) => {
-                logger.info('Pushbullet.com', 'replaying recent pushes')
+            pbPush.enqueueRecentPushes((error, count) => {
+                if (error) {
+                    logger.warn('Pushbullet.com', 'replaying recent pushes', error)
+                }
+                logger.info('Pushbullet.com', 'replaying recent pushes', 'count:', count)
             })
         }
 

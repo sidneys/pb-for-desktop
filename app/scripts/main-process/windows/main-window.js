@@ -84,6 +84,7 @@ class MainWindow {
                 backgroundThrottling: false,
                 contextIsolation: false,
                 experimentalFeatures: true,
+                enableRemoteModule: true,
                 nodeIntegration: true,
                 nodeIntegrationInSubFrames: true,
                 nodeIntegrationInWorker: true,

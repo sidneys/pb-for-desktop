@@ -2,12 +2,6 @@
 
 
 /**
- * Modules (Node.js)
- * @constant
- */
-const path = require('path')
-
-/**
  * Modules (Electron)
  * @constant
  */

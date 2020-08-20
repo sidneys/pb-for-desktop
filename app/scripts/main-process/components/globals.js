@@ -48,7 +48,7 @@ global.appFilesystem = {
     resources: process.resourcesPath,
     settings: path.join(path.dirname(electronSettings.file()), `${packageJson.name}.json`),
     sounds: path.join(appRootPathDirectory, 'sounds').replace('app.asar', 'app.asar.unpacked'),
-    tempdir: (isDebug && process.defaultApp) ? appRootPathDirectory : os.tmpdir(),
+    tempdir: (isDebug && process.defaultApp) ? path.join(appRootPathDirectory, 'temp') : os.tmpdir(),
     logs: logger.getConfiguration().logfile,
     icon: path.join(appRootPathDirectory, 'icons', platformTools.type, `icon${platformTools.iconImageExtension(platformTools.type)}`)
 }
