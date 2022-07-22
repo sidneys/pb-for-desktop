@@ -63,7 +63,7 @@
     "dynamic-throttled-queue": "^1.1.2",
     "electron-editor-context-menu": "^1.1.1",
     "electron-settings": "^4.0.2",
-    "file-type": "^14.7.1",
+    "file-type": "^16.5.4",
     "file-url": "^3.0.0",
     "follow-redirects": "^1.13.0",
     "fs-extra": "^9.0.1",
